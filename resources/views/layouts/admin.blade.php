@@ -9,9 +9,11 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>SB Admin 2 - Dashboard</title>
+  <title>Cahaya Prima Lestari</title>
 
+  @stack('prepend-style')
   @include('includes.style')
+  @stack('addon-style')
 
 </head>
 
@@ -75,7 +77,9 @@
     </div>
   </div>
 
+  @stack('prepend-script')
   @include('includes.script')
+  @stack('addon-script')
 
 </body>
 

@@ -2,11 +2,11 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-    <div class="sidebar-brand-icon rotate-n-15">
-    </div>
-    <div class="sidebar-brand-text mx-3">Cahaya Prima Lestari</div>
-  </a>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <div class="sidebar-brand-icon rotate-n-15">
+      </div>
+      <div class="sidebar-brand-text mx-3">Cahaya Prima Lestari</div>
+    </a>
 
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
@@ -21,39 +21,52 @@
   <!-- Divider -->
   <hr class="sidebar-divider">
 
-  <!-- Heading -->
+  <!-- Heading Sales and Purchases -->
   <div class="sidebar-heading">
     Sales and Purchases
   </div>
 
-  <!-- Nav Item - Pages Collapse Menu -->
+  <!-- Nav Item - Master Menu -->
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
       <i class="fas fa-fw fa-folder"></i>
       <span>Master</span>
     </a>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+    <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{ route('supplier.index') }}">Supplier</a>
         <a class="collapse-item" href="buttons.html">Customer</a>
         <a class="collapse-item" href="cards.html">Barang</a>
         <a class="collapse-item" href="cards.html">Harga</a>
+        <a class="collapse-item" href="cards.html">Gudang</a>
       </div>
     </div>
   </li>
 
-  <!-- Nav Item - Utilities Collapse Menu -->
+  <!-- Nav Item - Pembelian Menu -->
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-      <i class="fas fa-fw fa-wrench"></i>
-      <span>Utilities</span>
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePembelian" aria-expanded="true" aria-controls="collapsePembelian">
+      <i class="fas fa-fw fa-shopping-cart"></i>
+      <span>Pembelian</span>
     </a>
-    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+    <div id="collapsePembelian" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Custom Utilities:</h6>
-        <a class="collapse-item" href="utilities-color.html">Colors</a>
-        <a class="collapse-item" href="utilities-border.html">Borders</a>
-        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-        <a class="collapse-item" href="utilities-other.html">Other</a>
+        <a class="collapse-item" href="utilities-color.html">Purchase Order</a>
+        <a class="collapse-item" href="utilities-border.html">Penerimaan Barang</a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Nav Item - Penjualan Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePenjualan" aria-expanded="true" aria-controls="collapsePenjualan">
+      <i class="fas fa-fw fa-shipping-fast"></i>
+      <span>Penjualan</span>
+    </a>
+    <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="utilities-color.html">Sales Order</a>
+        <a class="collapse-item" href="utilities-border.html">Surat Jalan</a>
       </div>
     </div>
   </li>

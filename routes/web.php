@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'DashboardController@index')->name('dashboard');
+Route::resource('supplier', 'SupplierController');
