@@ -5,10 +5,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Supplier extends Model
+class Barang extends Model
 {
     use SoftDeletes;
-    protected $table = 'supplier';
+    protected $table = 'barang';
 
-    protected $fillable = ['id', 'nama', 'alamat', 'telepon'];
+    protected $fillable = ['id', 'nama', 'ukuran', 'isi'];
 }

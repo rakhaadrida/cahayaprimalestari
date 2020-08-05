@@ -13,7 +13,7 @@
 
   <!-- Nav Item - Dashboard -->
   <li class="nav-item active">
-    <a class="nav-link" href="index.html">
+    <a class="nav-link" href="{{ route('dashboard') }}">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span></a>
   </li>
@@ -35,10 +35,10 @@
     <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('supplier.index') }}">Supplier</a>
-        <a class="collapse-item" href="buttons.html">Customer</a>
-        <a class="collapse-item" href="cards.html">Barang</a>
-        <a class="collapse-item" href="cards.html">Harga</a>
-        <a class="collapse-item" href="cards.html">Gudang</a>
+        <a class="collapse-item" href="cards.html">Customer</a>
+        <a class="collapse-item" href="{{ route('barang.index') }}">Barang</a>
+        <a class="collapse-item" href="{{ route('harga.index') }}">Harga</a>
+        <a class="collapse-item" href="{{ route('gudang.index') }}">Gudang</a>
       </div>
     </div>
   </li>
