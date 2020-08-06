@@ -35,7 +35,7 @@
     <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('supplier.index') }}">Supplier</a>
-        <a class="collapse-item" href="cards.html">Customer</a>
+        <a class="collapse-item" href="{{ route('customer.index') }}">Customer</a>
         <a class="collapse-item" href="{{ route('barang.index') }}">Barang</a>
         <a class="collapse-item" href="{{ route('harga.index') }}">Harga</a>
         <a class="collapse-item" href="{{ route('gudang.index') }}">Gudang</a>
