@@ -19,7 +19,16 @@ class HargaController extends Controller
 
     public function create()
     {
-        return view('pages.harga.create');
+        $lastcode = Harga::max('id');
+        // $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastcode++;
+        $newcode = 'HRG'.sprintf("%02s", $lastcode);
+
+        $data = [
+            'newcode' => $newcode
+        ];
+        
+        return view('pages.harga.create', $data);
     }
 
     public function store(Request $request)

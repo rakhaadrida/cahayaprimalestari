@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@extends('pages.customer.show')
 
 @push('addon-style')
   <link href="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -41,7 +42,10 @@
                 <td>{{ $item->telepon }}</td>
                 <td>{{ $item->tempo }}</td>
                 <td align="center">
-                  <a href="{{ route('customer.show', $item->id) }}" class="btn btn-success">
+                  {{-- <button data-path="{{ route('customer.show', $item->id) }}" class="btn btn-success" data-toggle="modal" data-target="#DetailCustomer">
+                    <i class="fas fa-fw fa-eye"></i>
+                  </button> --}}
+                  <a href="#DetailCustomer{{ $item->id }}" class="btn btn-success" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>

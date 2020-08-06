@@ -19,7 +19,16 @@ class BarangController extends Controller
 
     public function create()
     {
-        return view('pages.barang.create');
+        $lastcode = Barang::max('id');
+        //$lastnumber = (int) substr($lastcode, 3, 2);
+        $lastcode++;
+        $newcode = 'BRG'.sprintf("%02s", $lastcode);
+
+        $data = [
+            'newcode' => $newcode
+        ];
+        
+        return view('pages.barang.create', $data);
     }
 
     public function store(Request $request)

@@ -20,7 +20,16 @@ class SupplierController extends Controller
 
     public function create()
     {
-        return view('pages.supplier.create');
+        $lastcode = Supplier::max('id');
+        // $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastcode++;
+        $newcode = 'SUP'.sprintf("%02s", $lastcode);
+
+        $data = [
+            'newcode' => $newcode
+        ];
+
+        return view('pages.supplier.create', $data);
     }
 
     public function store(Request $request)

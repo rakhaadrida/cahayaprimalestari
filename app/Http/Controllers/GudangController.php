@@ -19,7 +19,16 @@ class GudangController extends Controller
 
     public function create()
     {
-        return view('pages.gudang.create');
+        $lastcode = Gudang::max('id');
+        // $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastcode++;
+        $newcode = 'GDG'.sprintf("%02s", $lastcode);
+
+        $data = [
+            'newcode' => $newcode
+        ];
+        
+        return view('pages.gudang.create', $data);
     }
 
     public function store(Request $request)

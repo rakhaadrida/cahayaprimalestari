@@ -1,12 +1,10 @@
-@extends('layouts.admin')
-
-@section('content')
+@foreach($items as $item)
 <div class="modal fade" id="DetailCustomer{{ $item->id }}" tabindex="-1" role="dialog"  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title" style="font-size: 20px"><i class="fa fa-user fa-fw"></i><b>  Detail Customer {{ $item->nama }}</b></h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title"><i class="fa fa-user fa-fw"></i><b>Data Customer {{ $item->nama }}</b></h4>
       </div>
 
       @if ($errors->any())
@@ -70,4 +68,4 @@
     </div>
   </div>
 </div>
-@endsection
+@endforeach

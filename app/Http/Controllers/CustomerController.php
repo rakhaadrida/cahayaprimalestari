@@ -19,7 +19,16 @@ class CustomerController extends Controller
 
     public function create()
     {
-        return view('pages.customer.create');
+        $lastcode = Customer::max('id');
+        //$lastnumber = (int) substr($lastcode, 3, 2);
+        $lastcode++;
+        $newcode = 'CUS'.sprintf("%02s", $lastcode);
+
+        $data = [
+            'newcode' => $newcode
+        ];
+
+        return view('pages.customer.create', $data);
     }
 
     public function store(Request $request)
@@ -32,12 +41,12 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $item = Customer::findOrFail($id);
-        $data = [
-            'item' => $item
-        ];
+        // $item = Customer::findOrFail($id);
+        // $data = [
+        //     'item' => $item
+        // ];
 
-        return view('pages.customer.show', $data);
+        // return view('pages.customer.show', $data);
     }
 
     public function edit($id)
