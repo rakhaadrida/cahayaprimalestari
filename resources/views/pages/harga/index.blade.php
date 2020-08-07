@@ -9,8 +9,8 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Data Harga</h1>
+  <div class="d-sm-flex align-items-center justify-content-between mb-2">
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Harga</h1>
       <a href="{{ route('harga.create') }}" class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50"></i>  Tambah Harga
       </a>

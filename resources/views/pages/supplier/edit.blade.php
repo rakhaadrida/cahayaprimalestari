@@ -5,8 +5,8 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Data Supplier {{ $item->nama }}</h1>
+  <div class="d-sm-flex align-items-center justify-content-between mb-2">
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Supplier {{ $item->nama }}</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -27,24 +27,31 @@
               @method('PUT')
               @csrf
               <div class="form-group">
-                <label for="kode">Kode</label>
-                <input type="text" class="form-control" name="kode" value="{{ $item->id }}" readonly>
+                <label for="kode" class="text-bold">Kode</label>
+                <input type="text" class="form-control col-form-label-sm" name="kode" value="{{ $item->id }}" readonly>
               </div>
               <div class="form-group">
-                <label for="nama">Nama</label>
-                <input type="text" class="form-control" name="nama" value="{{ $item->nama }}">
+                <label for="nama" class="text-bold">Nama</label>
+                <input type="text" class="form-control col-form-label-sm" name="nama" value="{{ $item->nama }}">
               </div>
               <div class="form-group">
-                <label for="alamat">Alamat</label>
-                <textarea name="alamat" class="form-control" rows="3">
+                <label for="alamat" class="text-bold">Alamat</label>
+                <textarea name="alamat" class="form-control col-form-label-sm" rows="3">
                   {{ $item->alamat }}
                 </textarea>   
               </div>
               <div class="form-group">
-                <label for="telepon">Telepon</label>
-                <input type="text" class="form-control" name="telepon" value="{{ $item->telepon }}">
+                <label for="telepon" class="text-bold">Telepon</label>
+                <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}">
               </div>
-              <button type="submit" class="btn btn-primary btn-block">Update</button>
+              <div class="form-row justify-content-center">
+                <div class="col-2">
+                  <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
+                </div>
+                <div class="col-2">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>

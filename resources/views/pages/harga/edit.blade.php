@@ -5,8 +5,8 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Data Harga {{ $item->nama }}</h1>
+  <div class="d-sm-flex align-items-center justify-content-between mb-2">
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Harga {{ $item->nama }}</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -27,14 +27,21 @@
               @method('PUT')
               @csrf
               <div class="form-group">
-                <label for="kode">Kode</label>
+                <label for="kode" class="text-bold">Kode</label>
                 <input type="text" class="form-control" name="kode" value="{{ $item->id }}" readonly>
               </div>
               <div class="form-group">
-                <label for="nama">Nama</label>
+                <label for="nama" class="text-bold">Nama</label>
                 <input type="text" class="form-control" name="nama" value="{{ $item->nama }}">
               </div>
-              <button type="submit" class="btn btn-primary btn-block">Update</button>
+              <div class="form-row">
+                <div class="col">
+                  <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
+                </div>
+                <div class="col">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>

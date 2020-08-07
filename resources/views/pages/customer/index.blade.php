@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@extends('pages.customer.show')
+{{-- @extends('pages.customer.show') --}}
 
 @push('addon-style')
   <link href="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -10,8 +10,8 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Data Customer</h1>
+  <div class="d-sm-flex align-items-center justify-content-between mb-2">
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Customer</h1>
       <a href="{{ route('customer.create') }}" class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50"></i>  Tambah Customer
       </a>
@@ -42,9 +42,6 @@
                 <td>{{ $item->telepon }}</td>
                 <td>{{ $item->tempo }}</td>
                 <td align="center">
-                  {{-- <button data-path="{{ route('customer.show', $item->id) }}" class="btn btn-success" data-toggle="modal" data-target="#DetailCustomer">
-                    <i class="fas fa-fw fa-eye"></i>
-                  </button> --}}
                   <a href="#DetailCustomer{{ $item->id }}" class="btn btn-success" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
