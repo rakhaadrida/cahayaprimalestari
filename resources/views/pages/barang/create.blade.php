@@ -25,31 +25,65 @@
           <div class="card-body">
             <form action="{{ route('barang.store') }}" method="POST">
               @csrf
-              <div class="form-group">
-                <label for="kode" class="text-bold">Kode </label>
-                <input type="text" class="form-control" name="kode" placeholder="Kode Barang" 
+              <div class="form-group row">
+                <label for="kode" class="col-1 col-form-label text-bold">Kode </label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="kode" 
                   value="{{ $newcode }}" readonly>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="nama" class="text-bold">Nama</label>
-                <input type="text" class="form-control" name="nama" placeholder="Nama Barang" 
-                  value="{{ old('nama') }}">
+              <div class="form-group row">
+                <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-4">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Barang" value="{{ old('nama') }}">
+                </div>
               </div>
-              <div class="form-group">
-                <label for="ukuran" class="text-bold">Ukuran</label>
-                <input type="text" class="form-control" name="ukuran" placeholder="Ukuran Barang" 
-                  value="{{ old('ukuran') }}">
+              <hr>
+              <div class="form-group row">
+                <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran Pack" value="{{ old('ukuran') }}">
+                </div>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran Satuan" value="{{ old('ukuran') }}">
+                </div>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran Kapasitas" value="{{ old('ukuran') }}">
+                </div>
               </div>
-              <div class="form-group">
-                <label for="isi" class="text-bold">Isi</label>
-                <input type="text" class="form-control" name="isi" placeholder="Isi Barang" 
+              <div class="form-group row">
+                <label for="" class="col-1"></label>
+                <div class="form-group col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Volume per Satuan" value="{{ old('ukuran') }}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="isi" class="col-1 col-form-label text-bold">Isi</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="isi" placeholder="Isi Per Pack" 
                   value="{{ old('isi') }}">
+                </div>
               </div>
-              <div class="form-row">
-                <div class="col">
+              <div class="form-group row">
+                <label for="isi" class="col-1 text-bold">Daya Muat</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="kapasitas" placeholder="Kubik Per Pack" value="{{ old('isi') }}">
+                </div>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="kapasitas" placeholder="Tonase Per Pack" value="{{ old('isi') }}">
+                </div>
+              </div>
+              <hr>
+              <div class="form-row justify-content-center">
+                <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
-                <div class="col">
+                <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>

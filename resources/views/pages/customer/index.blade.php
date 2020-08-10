@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-{{-- @extends('pages.customer.show') --}}
+@extends('pages.customer.show')
 
 @push('addon-style')
   <link href="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">

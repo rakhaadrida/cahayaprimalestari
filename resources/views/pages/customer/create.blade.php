@@ -25,52 +25,75 @@
           <div class="card-body">
             <form action="{{ route('customer.store') }}" method="POST">
               @csrf
-              <div class="form-group">
-                <label for="kode" class="text-bold">Kode </label>
-                <input type="text" class="form-control" name="kode" placeholder="Kode Customer" 
+              <div class="form-group row">
+                <label for="kode" class="col-1 col-form-label text-bold">Kode </label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="kode"
                   value="{{ $newcode }}" readonly>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="nama" class="text-bold">Nama</label>
-                <input type="text" class="form-control" name="nama" placeholder="Nama Customer" 
-                  value="{{ old('nama') }}">
+              <div class="form-group row">
+                <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Customer" value="{{ old('nama') }}">
+                </div>
               </div>
-              <div class="form-group">
-                <label for="alamat" class="text-bold">Alamat</label>
-                <textarea name="alamat" class="form-control" rows="3">
-                  {{ old('alamat') }}
-                </textarea>
+              <hr>
+              <div class="form-group row">
+                <label for="alamat" class="col-1 col-form-label text-bold">Alamat</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-7">
+                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2">
+                    {{ old('alamat') }}
+                  </textarea>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="telepon" class="text-bold">Telepon</label>
-                <input type="text" class="form-control" name="telepon" placeholder="Nomor Telepon Customer" 
-                  value="{{ old('telepon') }}">
+              <div class="form-group row">
+                <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}">
+                </div>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="contact_person" placeholder="Contact Person" 
+                  value="{{ old('contact_person') }}">
+                </div>
               </div>
-              <div class="form-group">
+              <hr>
+              {{-- <div class="form-group">
                 <label for="contact_person" class="text-bold">Contact Person</label>
                 <input type="text" class="form-control" name="contact_person" placeholder="Contact Person" 
                   value="{{ old('contact_person') }}">
-              </div>
-              <div class="form-group">
-                <label for="tempo" class="text-bold">Tempo</label>
-                <input type="text" class="form-control" name="tempo" placeholder="Tempo" 
+              </div> --}}
+              <div class="form-group row">
+                <label for="tempo" class="col-1 col-form-label text-bold">Tempo</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="tempo" placeholder="Tempo" 
                   value="{{ old('tempo') }}">
+                </div>
               </div>
-              <div class="form-group">
-                <label for="limit" class="text-bold">Limit</label>
-                <input type="text" class="form-control" name="limit" placeholder="Limit" 
-                  value="{{ old('limit') }}">
+              <div class="form-group row">
+                <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="limit" placeholder="Limit" value="{{ old('limit') }}">
+                </div>
               </div>
-              <div class="form-group">
-                <label for="sales_cover" class="text-bold">Sales Cover</label>
-                <input type="text" class="form-control" name="sales_cover" placeholder="Sales Cover" 
-                  value="{{ old('sales_cover') }}">
+              <div class="form-group row">
+                <label for="sales_cover" class="col-1 text-bold">Sales Cover</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="sales_cover" placeholder="Sales Cover" value="{{ old('sales_cover') }}">
+                </div>
               </div>
-              <div class="form-row">
-                <div class="col">
+              <div class="form-row justify-content-center">
+                <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
-                <div class="col">
+                <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>

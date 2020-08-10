@@ -26,20 +26,32 @@
             <form action="{{ route('gudang.update', $item->id )}}" method="POST">
               @method('PUT')
               @csrf
-              <div class="form-group">
-                <label for="kode" class="text-bold">Kode</label>
-                <input type="text" class="form-control" name="kode" value="{{ $item->id }}" readonly>
+              <div class="form-group row">
+                <label for="kode" class="col-1 col-form-label text-bold">Kode</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="kode" 
+                  value="{{ $item->id }}" readonly>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="nama" class="text-bold">Nama</label>
-                <input type="text" class="form-control" name="nama" value="{{ $item->nama }}">
+              <div class="form-group row">
+                <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" 
+                  value="{{ $item->nama }}">
+                </div>
               </div>
-              <div class="form-group">
-                <label for="alamat" class="text-bold">Alamat</label>
-                <textarea name="alamat" class="form-control" rows="3">
-                  {{ $item->alamat }}
-                </textarea>
+              <div class="form-group row">
+                <label for="alamat" class="col-1 col-form-label text-bold">Alamat</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2">
+                    {{ $item->alamat }}
+                  </textarea>
+                </div>
               </div>
+              <hr>
               <div class="form-row">
                 <div class="col">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>

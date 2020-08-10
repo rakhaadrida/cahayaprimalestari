@@ -38,60 +38,64 @@
                 </div>
               </div>   --}}
               <div class="form-group row">
-                <label for="kode" class="col-1 col-form-label text-bold">Kode :</label>
+                <label for="kode" class="col-1 col-form-label text-bold ">Kode</label>
+                <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="kode" placeholder="Kode Supplier" 
                   value="{{ $newcode }}" readonly>
                 </div>
-                <label for="nama" class="col-form-label text-bold ml-5">Nama :</label>
+              </div>
+              <div class="form-group row">
+                <label for="nama" class="col-1 col-form-label text-bold ">Nama</label>
+                <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
                   <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Supplier" 
                   value="{{ old('nama') }}">
                 </div>
               </div>
               <hr>  
-              <div class="row">
-                <div class="form-group col-7">
-                  <label for="alamat" class="text-bold">Alamat</label>
-                  <input type="text" class="form-control col-form-label-sm" name="alamat" placeholder="Alamat" 
+              <div class="form-group row">
+                <label for="alamat" class="col-1 col-form-label text-bold ">Alamat</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-8">
+                  <input type="text" class="form-control col-form-label-sm" name="alamat" placeholder="Nama Jalan, Pertokoan, Nomor Toko" 
                     value="{{ old('alamat') }}">
                 </div>
-                <div class="form-group col-3">
-                  <label for="kecamatan" class="text-bold">Kecamatan</label>
-                  <input type="text" class="form-control col-form-label-sm" name="kecamatan" placeholder="Kecamatan" 
+              </div>
+              <div class="form-group row">
+                <label for="" class="col-1"></label>
+                <div class="form-group col-2">
+                  <input type="text" class="form-control col-form-label-sm ml-1" name="kecamatan" placeholder="Kecamatan" 
                     value="{{ old('kecamatan') }}">
                 </div>
-              </div> 
-              <div class="row">
-                <div class="form-group col-3">
-                  <label for="kota" class="text-bold">Kota</label>
+                <div class="form-group col-2">
                   <input type="text" class="form-control col-form-label-sm" name="kota" placeholder="Kota" 
                     value="{{ old('kota') }}">
                 </div>
-                <div class="form-group col-3">
-                  <label for="propinsi" class="text-bold">Propinsi</label>
+                <div class="form-group col-2">
                   <input type="text" class="form-control col-form-label-sm" name="propinsi" placeholder="Propinsi" 
                     value="{{ old('propinsi') }}">
                 </div>
                 <div class="form-group col-2">
-                  <label for="kode-pos" class="text-bold">Kode Pos</label>
                   <input type="text" class="form-control col-form-label-sm" name="kode-pos" placeholder="Kode Pos" 
                     value="{{ old('kode-pos') }}">
                 </div>
-              </div> 
-              <div class="row">
-                <div class="form-group col-3">
-                  <label for="telepon" class="text-bold">Telepon</label>
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="Nomor Telepon Supplier" 
+              </div>
+              <div class="form-group row">
+                <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" 
                     value="{{ old('telepon') }}">
                 </div>
               </div>
-              <hr>  
+              <hr>
+              {{-- <hr>  
               <div class="form-group col-3">
                 <label for="telepon" class="text-bold">Telepon</label>
                 <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="Nomor Telepon Supplier" 
                   value="{{ old('telepon') }}">
-              </div>
+              </div> --}}
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>

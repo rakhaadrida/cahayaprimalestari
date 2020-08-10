@@ -25,27 +25,36 @@
           <div class="card-body">
             <form action="{{ route('gudang.store') }}" method="POST">
               @csrf
-              <div class="form-group">
-                <label for="kode" class="text-bold">Kode </label>
-                <input type="text" class="form-control" name="kode" placeholder="Kode Gudang" 
+              <div class="form-group row">
+                <label for="kode" class="col-1 col-form-label text-bold">Kode </label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="kode" 
                   value="{{ $newcode }}" readonly>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="nama" class="text-bold">Nama</label>
-                <input type="text" class="form-control" name="nama" placeholder="Nama Gudang" 
-                  value="{{ old('nama') }}">
+              <div class="form-group row">
+                <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Gudang" value="{{ old('nama') }}">
+                </div>
               </div>
-              <div class="form-group">
-                <label for="alamat" class="text-bold">Alamat</label>
-                <textarea name="alamat" class="form-control" rows="3">
-                  {{ old('alamat') }}
-                </textarea>
+              <div class="form-group row">
+                <label for="alamat" class="col-1 col-form-label text-bold">Alamat</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2">
+                    {{ old('alamat') }}
+                  </textarea>
+                </div>
               </div>
-              <div class="form-row">
-                <div class="col">
+              <hr>
+              <div class="form-row justify-content-center">
+                <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
-                <div class="col">
+                <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
