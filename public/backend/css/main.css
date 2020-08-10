@@ -4,4 +4,9 @@
 
 .menu-title {
     font-weight: bold;
+    font-size: 22px;
+}
+
+.add-line {
+    font-family: "Nunito", sans-serif;
 }

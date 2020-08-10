@@ -11,4 +11,8 @@ class Barang extends Model
     protected $table = 'barang';
 
     protected $fillable = ['id', 'nama', 'ukuran', 'isi'];
+
+    public function supplier() {
+        return $this->belongsToMany('App\Supplier');
+    }
 }

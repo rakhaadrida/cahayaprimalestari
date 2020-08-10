@@ -17,3 +17,4 @@ Route::resource('customer', 'CustomerController');
 Route::resource('barang', 'BarangController');
 Route::resource('gudang', 'GudangController');
 Route::resource('harga', 'HargaController');
+Route::resource('po', 'PurchaseOrderController');

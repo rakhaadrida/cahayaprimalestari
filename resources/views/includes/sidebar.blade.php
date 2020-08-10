@@ -51,7 +51,7 @@
     </a>
     <div id="collapsePembelian" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="utilities-color.html">Purchase Order</a>
+        <a class="collapse-item" href="{{ route('po.index') }}">Purchase Order</a>
         <a class="collapse-item" href="utilities-border.html">Penerimaan Barang</a>
       </div>
     </div>
