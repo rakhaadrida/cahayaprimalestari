@@ -15,4 +15,8 @@ class Barang extends Model
     public function supplier() {
         return $this->belongsToMany('App\Supplier');
     }
+
+    public function harga() {
+        return $this->belongsToMany('App\Harga');
+    }
 }

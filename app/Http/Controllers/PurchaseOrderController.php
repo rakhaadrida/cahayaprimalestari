@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\PurchaseOrder;
 use App\Supplier;
 use App\Barang;
+use Carbon\Carbon;
 
 class PurchaseOrderController extends Controller
 {
@@ -18,14 +19,24 @@ class PurchaseOrderController extends Controller
 
         $supplier = Supplier::All();
         $barang = Barang::All();
+        $brg = Barang::select('nama')->get();
+        foreach($brg as $b) {
+            $namaBarang[] = $b->nama;
+        }
+        $tanggal = Carbon::now()->toDateString();
+        $tanggal = Carbon::parse($tanggal)->format('d-m-Y');
 
         $data = [
             'newcode' => $newcode,
             'supplier' => $supplier,
-            'barang' => $barang
+            'barang' => $barang,
+            'namaBarang' => $namaBarang,
+            'brg' => $brg,
+            'tanggal' => $tanggal
         ];
         
-        return view('pages.purchaseOrder', $data);
+        // return view('pages.purchaseOrder', $data);
+        return view('pages.poAlter', $data);
     }
 
     public function create()

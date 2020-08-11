@@ -26,6 +26,7 @@
               <th>Nama</th>
               <th>Ukuran</th>
               <th>Isi</th>
+              <th>Harga</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -37,6 +38,11 @@
                 <td>{{ $item->nama }}</td>
                 <td>{{ $item->ukuran }}</td>
                 <td>{{ $item->isi }}</td>
+                <td align="center">
+                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-success">
+                    <i class="fas fa-fw fa-money-bill-alt"></i>
+                  </a>
+                </td>
                 <td align="center">
                   <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-info">
                     <i class="fas fa-fw fa-edit"></i>

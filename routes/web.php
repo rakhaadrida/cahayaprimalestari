@@ -12,9 +12,13 @@
 */
 
 Route::get('/', 'DashboardController@index')->name('dashboard');
+
 Route::resource('supplier', 'SupplierController');
 Route::resource('customer', 'CustomerController');
 Route::resource('barang', 'BarangController');
 Route::resource('gudang', 'GudangController');
 Route::resource('harga', 'HargaController');
 Route::resource('po', 'PurchaseOrderController');
+
+Route::get('/barang/harga/{id}', 'BarangController@harga')->name('hargaBarang');
+Route::post('/barang/storeHarga', 'BarangController@storeHarga')->name('storeHarga');

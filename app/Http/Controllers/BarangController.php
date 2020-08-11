@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Barang;
+use App\Harga;
+use App\HargaBarang;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -39,9 +41,46 @@ class BarangController extends Controller
         return redirect()->route('barang.index');
     }
 
-    public function show(Barang $barang)
+    public function show($id)
     {
-        //
+        
+    }
+
+    public function harga($id) 
+    {
+        $item = Barang::findOrFail($id);
+        $harga = Harga::All();
+
+        $data = [
+            'item' => $item,
+            'harga' => $harga
+        ];
+
+        return view('pages.barang.harga', $data);
+    }
+
+    public function storeHarga(Request $request)
+    {
+        $kode = $request->kode;
+        $harga = Harga::select('id')->get();
+
+        for($i=1; $i<=$harga->count(); $i++) {
+            HargaBarang::create([
+                'id_barang' => $kode,
+                'id_harga' => $harga[$i-1]->id,
+                'harga' => $request->$i,
+            ]);
+        }
+
+        // foreach($harga->id as $h) {
+        //     HargaBarang::create([
+        //         'id_barang' => $kode,
+        //         'id_harga' => $h,
+        //         'harga' => $request->$h,
+        //     ]);
+        // }
+
+        return redirect()->route('barang.index');
     }
 
     public function edit($id)

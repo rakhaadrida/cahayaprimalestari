@@ -57,13 +57,33 @@
                 </div>
               </div> --}}
               <hr>
-              <span class="add-table-line float-left mb-2 mr-2">
-                <a href="#!" class="text-secondary">
-                  <i class="fas fa-plus" aria-hidden="true"> 
-                    <span class="add-line ml-2"> Tambah Baris </span>  
-                  </i>
-                </a>
-              </span>
+              <div class="form-row">
+                <div class="form-group col-sm-3">
+                  <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
+                  <input type="text" name="namaBarang" id="barang" placeholder="Nama Barang" class="form-control form-control-sm">
+                </div>
+                <div class="form-group col-sm-1">
+                  <label for="kode" class="col-form-label text-bold ">Pack</label>
+                  <input type="text" name="pack" placeholder="Qty(Pack)" class="form-control form-control-sm">
+                </div>
+                <div class="form-group col-sm-1">
+                  <label for="kode" class="col-form-label text-bold ">Pcs</label>
+                  <input type="text" name="pcs" placeholder="Qty (Pcs)" class="form-control form-control-sm">
+                </div>
+                <div class="form-group col-sm-2">
+                  <label for="kode" class="col-form-label text-bold ">Harga</label>
+                  <input type="text" name="harga" placeholder="Harga Satuan" class="form-control form-control-sm">
+                </div>
+                <div class="form-group col-sm-2">
+                  <label for="kode" class="col-form-label text-bold ">Jumlah</label>
+                  <input type="text" name="jumlah" placeholder="Jumlah Harga" class="form-control form-control-sm">
+                </div>
+                <div class="form-group col-auto">
+                  <label for="" class="col-form-label text-bold " ></label>
+                  <button type="submit" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
+                </div>
+              </div>
+              <hr>
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold">
                   <td>No</td>
@@ -77,26 +97,11 @@
                   @for($i=1; $i<=2; $i++)
                     <tr>
                       <td align="center">{{ $i }}</td>
-                      <td >
-                        <input type="text" name="namaBarang" id="barang" placeholder="Nama Barang" class="" onclick="displayHarga(event)">
-                        {{-- <select name="namaBarang" class="form-control form-control-sm" onchange="displayHarga(event)">
-                          @foreach($barang as $b)
-                            <option value="{{ $b->id }}">{{ $b->nama }}</option>
-                          @endforeach
-                        </select> --}}
-                      </td>
-                      <td> 
-                        <input type="text" name="pack" class="form-control form-control-sm">
-                      </td>
-                      <td>
-                        <input type="text" name="qty" class="form-control form-control-sm">
-                      </td>
-                      <td>
-                        <input type="text" id="harga" name="harga" class="form-control form-control-sm">
-                      </td>
-                      <td>
-                        <input type="text" name="jumlah" class="form-control form-control-sm">
-                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                     </tr>
                   @endfor
                 </tbody>

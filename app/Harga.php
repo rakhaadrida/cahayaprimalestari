@@ -11,4 +11,8 @@ class Harga extends Model
     protected $table = 'harga';
 
     protected $fillable = ['id', 'nama'];
+
+    public function barang() {
+        return $this->belongsToMany('App\Barang');
+    }
 }
