@@ -23,7 +23,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="{{ route('po.store') }}" method="POST">
+            <form action="" method="POST">
               @csrf
               <div class="form-group row">
                 <label for="kode" class="col-2 col-form-label text-bold ">Nomor PO</label>
@@ -43,7 +43,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
                   <select name="namaSupplier" class="form-control col-form-label-sm">
-                    @foreach($supplier as $s) 
+                    @foreach($items as $s) 
                       <option value="{{ $s->id }}">{{ $s->nama }}</option>
                     @endforeach
                   </select>
@@ -60,7 +60,7 @@
               <div class="form-row">
                 <div class="form-group col-sm-3">
                   <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
-                  <input type="text" name="namaBarang" id="barang" placeholder="Nama Barang" class="form-control form-control-sm">
+                  <input type="text" name="namaBarang" id="barang" placeholder="Nama Barang" class="form-control form-control-sm namaBarang">
                 </div>
                 <div class="form-group col-sm-1">
                   <label for="kode" class="col-form-label text-bold ">Pack</label>
@@ -72,11 +72,11 @@
                 </div>
                 <div class="form-group col-sm-2">
                   <label for="kode" class="col-form-label text-bold ">Harga</label>
-                  <input type="text" name="harga" placeholder="Harga Satuan" class="form-control form-control-sm">
+                  <input type="text" name="harga" id="harga" placeholder="Harga Satuan" class="form-control form-control-sm text-bold" readonly>
                 </div>
                 <div class="form-group col-sm-2">
                   <label for="kode" class="col-form-label text-bold ">Jumlah</label>
-                  <input type="text" name="jumlah" placeholder="Jumlah Harga" class="form-control form-control-sm">
+                  <input type="text" name="jumlah" id="jumlah" placeholder="Jumlah Harga" class="form-control form-control-sm text-bold" readonly>
                 </div>
                 <div class="form-group col-auto">
                   <label for="" class="col-form-label text-bold " ></label>
@@ -94,7 +94,7 @@
                   <td>Jumlah</td>
                 </thead>
                 <tbody>
-                  @for($i=1; $i<=2; $i++)
+                  @for($i=1; $i<=1; $i++)
                     <tr>
                       <td align="center">{{ $i }}</td>
                       <td></td>
@@ -128,39 +128,37 @@
 
 @push('addon-script')
 <script>
-const $tableID = $('#table');
-const newTr = `
-  <tr class="hide">
-    <td align="center">{{ $i }}</td>
-    <td>
-      <select name="namaBarang" class="form-control form-control-sm">
-        @foreach($barang as $b)
-          <option value="{{ $b->id }}">{{ $b->nama }}</option>
-        @endforeach
-      </select>
-    </td>
-    <td contenteditable="true"></td>
-    <td contenteditable="true"></td>
-    <td><input type="hidden" name="harga" value="" /></td>
-    <td><input type="hidden" name="jumlah" value="" /></td>
-  </tr>`;
+const namaBarang = document.getElementById('barang');
+const harga = document.getElementById('harga');
+const jumlah = document.getElementById('jumlah');
 
-$('.add-table-line').on('click', 'i', () => {
+// Call Fungsi Harga Setelah Nama Barang Dipilih
+namaBarang.addEventListener('change', displayHarga);
 
-  const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-
-  if ($tableID.find('tbody tr').length === 0) {
-
-    $('tbody').append(newTr);
-  }
-
-  $tableID.find('table').append($clone);
-});
-
+// Tampil Harga Otomatis
 function displayHarga(e) {
-  const harga = document.getElementById('harga');
-  harga.value = '12000';
+  var idBarang;
+  @foreach($barang as $br)
+    if('{{ $br->nama }}' == e.target.value) {
+      idBarang = '{{ $br->id }}';
+    }
+  @endforeach
+  @foreach($harga as $hb)
+    if(('{{ $hb->id_barang }}' == idBarang) && ('{{ $hb->id_harga }}' == 1)) {
+      var hargaBeli = '{{ $hb->harga }}';
+    }
+  @endforeach
+
+  harga.value = hargaBeli;
+  jumlah.value = hargaBeli;
 }
+
+var barang = [];
+@foreach($barang as $b)
+  barang.push('{{ $b->nama }}');
+@endforeach
+
+autocomplete(document.getElementById("barang"), barang);
 
 function autocomplete(inp, arr) {
   var currentFocus;
@@ -256,12 +254,5 @@ function autocomplete(inp, arr) {
       closeAllLists(e.target);
   });
 }
-
-var namaOrang = ["Rakha", "Adrida", "Bagaspati"];
-var barang = {!! json_encode($namaBarang) !!};
-
-// console.log(barang);
-
-autocomplete(document.getElementById("barang"), barang);
 </script>
 @endpush

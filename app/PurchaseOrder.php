@@ -9,4 +9,12 @@ class PurchaseOrder extends Model
 {
     use SoftDeletes;
     protected $table = 'po';
+
+    public function supplier() {
+        return $this->belongsTo('App\Supplier');
+    }
+
+    public function barang() {
+        return $this->belongsToMany('App\Barang')->using('App\DetilPO');
+    }
 }

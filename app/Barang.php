@@ -12,8 +12,8 @@ class Barang extends Model
 
     protected $fillable = ['id', 'nama', 'ukuran', 'isi'];
 
-    public function supplier() {
-        return $this->belongsToMany('App\Supplier');
+    public function po() {
+        return $this->belongsToMany('App\PurchaseOrder')->using('App\DetilPO');
     }
 
     public function harga() {

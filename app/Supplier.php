@@ -12,7 +12,7 @@ class Supplier extends Model
 
     protected $fillable = ['id', 'nama', 'alamat', 'telepon'];
 
-    public function barang() {
-        return $this->belongsToMany('App\Barang');
+    public function po() {
+        return $this->hasMany('App\PurchaseOrder');
     }
 }
