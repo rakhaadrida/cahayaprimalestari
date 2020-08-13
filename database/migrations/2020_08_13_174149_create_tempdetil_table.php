@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBarangTable extends Migration
+class CreateTempdetilTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateBarangTable extends Migration
      */
     public function up()
     {
-        Schema::create('barang', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('nama');
-            $table->integer('ukuran');
-            $table->integer('isi');
-            $table->softDeletes();
+        Schema::create('temp_detil', function (Blueprint $table) {
+            $table->string('id_po');
+            $table->string('id_barang');
+            $table->string('id_harga');
+            $table->integer('qty');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateBarangTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('barang');
+        Schema::dropIfExists('temp_detil');
     }
 }

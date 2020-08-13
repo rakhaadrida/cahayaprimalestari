@@ -17,6 +17,10 @@ class Barang extends Model
     }
 
     public function harga() {
-        return $this->belongsToMany('App\Harga');
+        return $this->belongsToMany('App\Harga')->using('App\HargaBarang');
+    }
+
+    public function detilpo() {
+        return $this->hasMany('App\DetilPO', 'id_barang', 'id');
     }
 }

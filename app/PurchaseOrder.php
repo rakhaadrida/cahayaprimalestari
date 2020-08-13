@@ -11,7 +11,7 @@ class PurchaseOrder extends Model
     protected $table = 'po';
 
     public function supplier() {
-        return $this->belongsTo('App\Supplier');
+        return $this->belongsTo('App\Supplier', 'id_supplier');
     }
 
     public function barang() {

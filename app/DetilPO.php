@@ -3,21 +3,24 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\CompositePrimaryKey;
 
 class DetilPO extends Model
 {
-    use SoftDeletes;
     use CompositePrimaryKey;
 
-    protected $table = "detilpo";
-    protected $primaryKey = ['id_po', 'id_barang', 'id_harga'];
+    protected $table = "temp_detil";
+    protected $primaryKey = ['id_po', 'id_barang'];
     protected $keyType = "string";
+    protected $fillable = ['id_po', 'id_barang', 'harga', 'qty'];
 
-    public $incrementing = "false";
+    public $incrementing = false;
 
-    // public function po() {
-    //     return $this->belongsTo('App\PurchaseOrder');
-    // }
+    public function po() {
+        return $this->belongsTo('App\PurchaseOrder', 'id_po');
+    }
+
+    public function barang() {
+        return $this->belongsTo('App\Barang', 'id_barang', 'id');
+    }
 }

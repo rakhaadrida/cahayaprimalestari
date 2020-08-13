@@ -13,6 +13,6 @@ class Supplier extends Model
     protected $fillable = ['id', 'nama', 'alamat', 'telepon'];
 
     public function po() {
-        return $this->hasMany('App\PurchaseOrder');
+        return $this->hasMany('App\PurchaseOrder', 'id_supplier', 'id');
     }
 }

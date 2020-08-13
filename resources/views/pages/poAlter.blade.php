@@ -23,7 +23,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="POST">
+            <form action="{{ route('po-create', $newcode) }}" method="POST">
               @csrf
               <div class="form-group row">
                 <label for="kode" class="col-2 col-form-label text-bold ">Nomor PO</label>
@@ -43,7 +43,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
                   <select name="namaSupplier" class="form-control col-form-label-sm">
-                    @foreach($items as $s) 
+                    @foreach($supplier as $s) 
                       <option value="{{ $s->id }}">{{ $s->nama }}</option>
                     @endforeach
                   </select>
@@ -60,19 +60,21 @@
               <div class="form-row">
                 <div class="form-group col-sm-3">
                   <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
-                  <input type="text" name="namaBarang" id="barang" placeholder="Nama Barang" class="form-control form-control-sm namaBarang">
+                  <input type="text" name="namaBarang" id="namaBarang" placeholder="Nama Barang" class="form-control form-control-sm namaBarang">
+                  <input type="hidden" name="kodeBarang" id="idBarang" />
                 </div>
-                <div class="form-group col-sm-1">
+                {{-- <div class="form-group col-sm-1">
                   <label for="kode" class="col-form-label text-bold ">Pack</label>
                   <input type="text" name="pack" placeholder="Qty(Pack)" class="form-control form-control-sm">
-                </div>
+                </div> --}}
                 <div class="form-group col-sm-1">
                   <label for="kode" class="col-form-label text-bold ">Pcs</label>
-                  <input type="text" name="pcs" placeholder="Qty (Pcs)" class="form-control form-control-sm">
+                  <input type="text" name="pcs" id="qty" placeholder="Qty (Pcs)" class="form-control form-control-sm">
                 </div>
                 <div class="form-group col-sm-2">
                   <label for="kode" class="col-form-label text-bold ">Harga</label>
                   <input type="text" name="harga" id="harga" placeholder="Harga Satuan" class="form-control form-control-sm text-bold" readonly>
+                  <input type="hidden" name="kodeHarga" id="idHarga" />
                 </div>
                 <div class="form-group col-sm-2">
                   <label for="kode" class="col-form-label text-bold ">Jumlah</label>
@@ -83,39 +85,47 @@
                   <button type="submit" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
                 </div>
               </div>
-              <hr>
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
-                <thead class="text-center text-bold">
-                  <td>No</td>
-                  <td>Nama Barang</td>
-                  <td>Pack</td>
-                  <td>Qty (Pcs)</td>
-                  <td>Harga</td>
-                  <td>Jumlah</td>
-                </thead>
-                <tbody>
-                  @for($i=1; $i<=1; $i++)
-                    <tr>
-                      <td align="center">{{ $i }}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  @endfor
-                </tbody>
-              </table>
-              <hr>
-              <div class="form-row justify-content-center">
-                <div class="col-2">
-                  <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
-                </div>
-                <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
-                </div>
-              </div>
             </form>
+            <hr>
+            <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+              <thead class="text-center text-bold">
+                <td>No</td>
+                <td>Nama Barang</td>
+                {{-- <td>Pack</td> --}}
+                <td>Qty (Pcs)</td>
+                <td>Harga</td>
+                <td>Jumlah</td>
+              </thead>
+              <tbody>
+                @if($itemsRow != 0)
+                  @php $i = 1; @endphp
+                  @foreach($items as $item)
+                    <tr class="text-bold">
+                      <td align="center">{{ $i }}</td>
+                      <td>{{ $item->barang->nama }}</td>
+                      {{-- <td></td> --}}
+                      <td align="right">{{ $item->qty }}</td>
+                      <td align="right">{{ $item->harga }}</td>
+                      <td align="right">{{ $item->qty * $item->harga }}</td>
+                    </tr>
+                    @php $i++; @endphp
+                  @endforeach
+                @else
+                  <tr>
+                    <td colspan=6 class="text-center">Belum ada Detail PO</td>
+                  </tr>
+                @endif 
+              </tbody>
+            </table>
+            <hr>
+            <div class="form-row justify-content-center">
+              <div class="col-2">
+                <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
+              </div>
+              <div class="col-2">
+                <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -127,13 +137,29 @@
 @endsection
 
 @push('addon-script')
-<script>
-const namaBarang = document.getElementById('barang');
+<script type="text/javascript">
+const namaBrg = document.getElementById('namaBarang');
+const kodeBarang = document.getElementById('idBarang');
 const harga = document.getElementById('harga');
+const kodeHarga = document.getElementById('idHarga');
 const jumlah = document.getElementById('jumlah');
+const qty = document.getElementById('qty');
+const tableID = document.getElementById('tablePO');
+// const tambahBaris = document.querySelector('add-table-line');
+// var baris = 0;
+// const newTr = `
+//   <tr class="hide">
+//     <td align="center">${baris++}</td>
+//     <td>${namaBrg.value}</td>
+//     <td>${qty.value}</td>
+//     <td>${harga.value}</td>
+//     <td>${jumlah.value}</td>
+//   </tr>`;
 
 // Call Fungsi Harga Setelah Nama Barang Dipilih
-namaBarang.addEventListener('change', displayHarga);
+namaBrg.addEventListener('change', displayHarga);
+qty.addEventListener('change', displayJumlah);
+// tambahBaris.addEventListener('click', displayBaris, false);
 
 // Tampil Harga Otomatis
 function displayHarga(e) {
@@ -146,11 +172,27 @@ function displayHarga(e) {
   @foreach($harga as $hb)
     if(('{{ $hb->id_barang }}' == idBarang) && ('{{ $hb->id_harga }}' == 1)) {
       var hargaBeli = '{{ $hb->harga }}';
+      var idHarga = '{{ $hb->id_harga }}';
     }
   @endforeach
-
+  
+  kodeBarang.value = idBarang;
+  kodeHarga.value = idHarga;
   harga.value = hargaBeli;
   jumlah.value = hargaBeli;
+}
+
+function displayJumlah(e) {
+  jumlah.value = e.target.value * harga.value;
+} 
+
+function displayBaris(e) {
+  const clone = tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
+  if(tableID.find('tbody tr').length === 0) {
+    $('tbody').append(newTr);
+  }
+
+  tableID.append(clone);
 }
 
 var barang = [];
@@ -158,7 +200,7 @@ var barang = [];
   barang.push('{{ $b->nama }}');
 @endforeach
 
-autocomplete(document.getElementById("barang"), barang);
+autocomplete(namaBrg, barang);
 
 function autocomplete(inp, arr) {
   var currentFocus;
