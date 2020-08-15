@@ -23,30 +23,71 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="{{ route('po-create', $newcode) }}" method="POST">
+            <form action="" method="">
               @csrf
-              <div class="form-group row">
-                <label for="kode" class="col-2 col-form-label text-bold ">Nomor PO</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
-                </div>
-                {{-- <div class="col-1"></div> --}}
-                <label for="nama" class="col-2 col-form-label text-bold ">Tanggal PO</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" readonly>
-                </div>
-              </div> 
-              <div class="form-group row">
-                <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-4">
-                  <select name="namaSupplier" class="form-control col-form-label-sm">
-                    @foreach($supplier as $s) 
-                      <option value="{{ $s->id }}">{{ $s->nama }}</option>
-                    @endforeach
-                  </select>
+              <div class="container">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group row">
+                      <label for="kode" class="col-2 col-form-label text-bold ">Nomor PO</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-2">
+                        <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
+                      </div>
+                      {{-- <div class="col-1"></div> --}}
+                      <label for="nama" class="col-auto col-form-label text-bold ">Tanggal PO</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-2">
+                        <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" readonly>
+                      </div>
+                    </div> 
+                    <div class="form-group row">
+                      <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-4">
+                        <select name="namaSupplier" class="form-control col-form-label-sm">
+                          @foreach($supplier as $s) 
+                            <option value="{{ $s->id }}">{{ $s->nama }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col" style="margin-left: -320px">
+                    <div class="form-group row subtotal-po">
+                      <label for="subtotal" class="col-5 col-form-label text-bold ">Sub Total</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        @php $subtotal = 0; @endphp
+                        @foreach($items as $item)
+                          @php 
+                            $subtotal += $item->qty * $item->harga;
+                          @endphp
+                        @endforeach
+                        @php $ppn = $subtotal * 10 / 100; @endphp
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="subtotal" value="{{ $subtotal }}">
+                      </div>
+                    </div>
+                    <div class="form-group row total-po">
+                      <label for="ppn" class="col-5 col-form-label text-bold ">PPN</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="ppn" 
+                        value="{{ $ppn }}">
+                      </div>
+                    </div>
+                    <div class="form-group row total-po">
+                      <label for="grandtotal" class="col-5 col-form-label text-bold ">Grand Total</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" class="form-control col-form-label-sm text-bold grand-total" name="grandtotal" 
+                        value="{{ $subtotal + $ppn  }}" readonly>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               {{-- <div class="form-group row">
@@ -82,50 +123,65 @@
                 </div>
                 <div class="form-group col-auto">
                   <label for="" class="col-form-label text-bold " ></label>
-                  <button type="submit" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
+                  <button type="submit" formaction="{{ route('po-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
+                </div>
+              </div>          
+              <hr>
+              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+                <thead class="text-center text-bold">
+                  <td>No</td>
+                  <td>Nama Barang</td>
+                  {{-- <td>Pack</td> --}}
+                  <td>Qty (Pcs)</td>
+                  <td>Harga</td>
+                  <td>Jumlah</td>
+                  <td>Ubah</td>
+                  <td>Hapus</td>
+                </thead>
+                <tbody>
+                  @if($itemsRow != 0)
+                    @php $i = 1; @endphp
+                    @foreach($items as $item)
+                      <tr class="text-bold">
+                        <td align="center">{{ $i }}</td>
+                        <td class="editable">{{ $item->barang->nama }}</td>
+                        {{-- <td></td> --}}
+                        <td align="right" class="editable">{{ $item->qty }}</td>
+                        <td align="right" class="editable">{{ $item->harga }}</td>
+                        <td align="right" class="editable">{{ $item->qty * $item->harga }}</td>
+                        <td align="center">
+                          <a href="" id="editButton{{$i}}" onclick="return displayEditable({{$i}})">
+                            <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
+                          </a>
+                          <a href="" id="updateButton{{$i}}" class="ic-update">
+                            <i class="fas fa-fw fa-save fa-lg mt-1"></i>
+                          </a>
+                        </td>
+                        <td align="center">
+                          <a href="{{ route('po-remove', ['po' => $item->id_po, 'barang' => $item->id_barang]) }}">
+                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      @php $i++; @endphp
+                    @endforeach
+                  @else
+                    <tr>
+                      <td colspan=7 class="text-center">Belum ada Detail PO</td>
+                    </tr>
+                  @endif 
+                </tbody>
+              </table>
+              <hr>
+              <div class="form-row justify-content-center">
+                <div class="col-2">
+                  <button type="submit" formaction="{{ route('po-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                </div>
+                <div class="col-2">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
             </form>
-            <hr>
-            <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
-              <thead class="text-center text-bold">
-                <td>No</td>
-                <td>Nama Barang</td>
-                {{-- <td>Pack</td> --}}
-                <td>Qty (Pcs)</td>
-                <td>Harga</td>
-                <td>Jumlah</td>
-              </thead>
-              <tbody>
-                @if($itemsRow != 0)
-                  @php $i = 1; @endphp
-                  @foreach($items as $item)
-                    <tr class="text-bold">
-                      <td align="center">{{ $i }}</td>
-                      <td>{{ $item->barang->nama }}</td>
-                      {{-- <td></td> --}}
-                      <td align="right">{{ $item->qty }}</td>
-                      <td align="right">{{ $item->harga }}</td>
-                      <td align="right">{{ $item->qty * $item->harga }}</td>
-                    </tr>
-                    @php $i++; @endphp
-                  @endforeach
-                @else
-                  <tr>
-                    <td colspan=6 class="text-center">Belum ada Detail PO</td>
-                  </tr>
-                @endif 
-              </tbody>
-            </table>
-            <hr>
-            <div class="form-row justify-content-center">
-              <div class="col-2">
-                <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
-              </div>
-              <div class="col-2">
-                <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -144,22 +200,10 @@ const harga = document.getElementById('harga');
 const kodeHarga = document.getElementById('idHarga');
 const jumlah = document.getElementById('jumlah');
 const qty = document.getElementById('qty');
-const tableID = document.getElementById('tablePO');
-// const tambahBaris = document.querySelector('add-table-line');
-// var baris = 0;
-// const newTr = `
-//   <tr class="hide">
-//     <td align="center">${baris++}</td>
-//     <td>${namaBrg.value}</td>
-//     <td>${qty.value}</td>
-//     <td>${harga.value}</td>
-//     <td>${jumlah.value}</td>
-//   </tr>`;
 
 // Call Fungsi Harga Setelah Nama Barang Dipilih
 namaBrg.addEventListener('change', displayHarga);
 qty.addEventListener('change', displayJumlah);
-// tambahBaris.addEventListener('click', displayBaris, false);
 
 // Tampil Harga Otomatis
 function displayHarga(e) {
@@ -186,13 +230,17 @@ function displayJumlah(e) {
   jumlah.value = e.target.value * harga.value;
 } 
 
-function displayBaris(e) {
-  const clone = tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
-  if(tableID.find('tbody tr').length === 0) {
-    $('tbody').append(newTr);
-  }
+function displayEditable(no) {
+  document.getElementById("editButton"+no).style.display = "none";
+  document.getElementById("updateButton"+no).style.display = "block";
+  let row = document.querySelectorAll(".editable");
 
-  tableID.append(clone);
+  row.forEach(function(e) {
+    e.contentEditable = true;
+    e.style.backgroundColor = "white";
+  })
+
+  return false;
 }
 
 var barang = [];

@@ -5,11 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompositePrimaryKey;
 
-class DetilPO extends Model
+class TempDetil extends Model
 {
     use CompositePrimaryKey;
 
-    protected $table = "detilpo";
+    protected $table = "temp_detil";
     protected $primaryKey = ['id_po', 'id_barang'];
     protected $keyType = "string";
     protected $fillable = ['id_po', 'id_barang', 'harga', 'qty'];
