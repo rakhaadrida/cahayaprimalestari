@@ -12,7 +12,7 @@ class TempDetil extends Model
     protected $table = "temp_detil";
     protected $primaryKey = ['id_po', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_po', 'id_barang', 'harga', 'qty'];
+    protected $fillable = ['id_po', 'id_barang', 'harga', 'qty', 'id_supplier'];
 
     public $incrementing = false;
 
@@ -22,5 +22,9 @@ class TempDetil extends Model
 
     public function barang() {
         return $this->belongsTo('App\Barang', 'id_barang', 'id');
+    }
+
+    public function supplier() {
+        return $this->belongsTo('App\Supplier', 'id_supplier', 'id');
     }
 }

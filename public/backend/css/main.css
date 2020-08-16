@@ -11,6 +11,10 @@
     font-family: "Nunito", sans-serif;
 }
 
+.supplier-row {
+    margin-top: -55px;
+}
+
 .subtotal-po {
     margin-top: -10px;
 }

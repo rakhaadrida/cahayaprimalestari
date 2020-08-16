@@ -24,9 +24,8 @@ class PurchaseController extends Controller
         $lastnumber++;
         $newcode = 'PO'.sprintf('%02s', $lastnumber);
 
-        $items = TempDetil::with('barang')->where('id_po', $newcode)->get();
+        $items = TempDetil::with(['barang', 'supplier'])->where('id_po', $newcode)->get();
         $itemsRow = TempDetil::where('id_po', $newcode)->count();
-        // $items = PurchaseOrder::with(['supplier', 'barang'])->where('id', $newcode)->first();
 
         // date now
         $tanggal = Carbon::now()->toDateString();
@@ -50,7 +49,8 @@ class PurchaseController extends Controller
             'id_po' => $id,
             'id_barang' => $request->kodeBarang,
             'harga' => $request->harga,
-            'qty' => $request->pcs
+            'qty' => $request->pcs,
+            'id_supplier' => $request->kodeSupplier
         ]);
 
         return redirect()->route('po');
@@ -78,6 +78,18 @@ class PurchaseController extends Controller
             ]);
 
             $deleteTemp = TempDetil::where('id_po', $id)->where('id_barang', $td->id_barang)->delete();
+        }
+
+        return redirect()->route('po');
+    }
+
+    public function update(Request $request) {
+        $items = $request->all();
+
+        foreach($items as $item) {
+            $updateTemp =TempDetil::find($item['barang']);
+            $updateTemp->{'qty'} = $item['qty'];
+            $updateTemp->save();
         }
 
         return redirect()->route('po');

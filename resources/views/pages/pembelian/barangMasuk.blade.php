@@ -6,7 +6,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Purchase Order</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Penerimaan Barang</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -30,114 +30,30 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group row">
-                      <label for="kode" class="col-2 col-form-label text-bold ">Nomor PO</label>
+                      <label for="kode" class="col-2 col-form-label text-bold">Nomor PO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
+                        <input type="text" class="form-control col-form-label-sm text-bold" name="kode">
                       </div>
                       {{-- <div class="col-1"></div> --}}
-                      <label for="nama" class="col-auto col-form-label text-bold ">Tanggal PO</label>
+                      <label for="nama" class="col-auto col-form-label text-bold">Tanggal Terima</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
                         <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" readonly>
                       </div>
                     </div>   
                   </div>
-                  <div class="col" style="margin-left: -320px">
-                    <div class="form-group row subtotal-po">
-                      <label for="subtotal" class="col-5 col-form-label text-bold ">Sub Total</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-5">
-                        @php $subtotal = 0; @endphp
-                        @foreach($items as $item)
-                          @php 
-                            $subtotal += $item->qty * $item->harga;
-                          @endphp
-                        @endforeach
-                        @php $ppn = $subtotal * 10 / 100; @endphp
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="subtotal" value="{{ $subtotal }}">
-                      </div>
-                    </div>
-                    <div class="form-group row total-po">
-                      <label for="ppn" class="col-5 col-form-label text-bold ">PPN</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="ppn" 
-                        value="{{ $ppn }}">
-                      </div>
-                    </div>
-                    <div class="form-group row total-po">
-                      <label for="grandtotal" class="col-5 col-form-label text-bold ">Grand Total</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-5">
-                        <input type="text" class="form-control col-form-label-sm text-bold grand-total" name="grandtotal" 
-                        value="{{ $subtotal + $ppn  }}" readonly>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <div class="form-group row supplier-row">
-                  <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
+                  <label for="alamat" class="col-2 col-form-label text-bold">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4">
-                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder="Nama Supplier" class="form-control form-control-sm"
-                      @if($itemsRow != 0) 
-                        value="{{ $items[0]->supplier->nama }}" readonly
-                      @endif
-                    />
-                    <input type="hidden" name="kodeSupplier" id="idSupplier" 
-                      @if($itemsRow != 0) 
-                        value="{{ $items[0]->id_supplier }}"
-                      @endif
-                    />
+                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder="Nama Supplier" class="form-control form-control-sm">
                   </div>
                 </div>
               </div>
+              <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-
-              {{-- <div class="form-group row">
-                <label for="keterangan" class="col-1 col-form-label text-bold">Keterangan</label>
-                <div class="form-group col-2">
-                  <input type="text" class="form-control col-form-label-sm ml-1" name="keterangan" placeholder="Keterangan" 
-                    value="{{ old('keterangan') }}">
-                </div>
-              </div> --}}
-              <hr>
-
-              <!-- Inputan Detil PO -->
-              <div class="form-row">
-                <div class="form-group col-sm-3">
-                  <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
-                  <input type="text" name="namaBarang" id="namaBarang" placeholder="Nama Barang" class="form-control form-control-sm">
-                  <input type="hidden" name="kodeBarang" id="idBarang" />
-                </div>
-                {{-- <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Pack</label>
-                  <input type="text" name="pack" placeholder="Qty(Pack)" class="form-control form-control-sm">
-                </div> --}}
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Pcs</label>
-                  <input type="text" name="pcs" id="qty" placeholder="Qty (Pcs)" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Harga</label>
-                  <input type="text" name="harga" id="harga" placeholder="Harga Satuan" class="form-control form-control-sm text-bold" readonly>
-                  <input type="hidden" name="kodeHarga" id="idHarga" />
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Jumlah</label>
-                  <input type="text" name="jumlah" id="jumlah" placeholder="Jumlah Harga" class="form-control form-control-sm text-bold" readonly>
-                </div>
-                <div class="form-group col-auto">
-                  <label for="" class="col-form-label text-bold " ></label>
-                  <button type="submit" formaction="{{ route('po-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
-                </div>
-              </div>          
-              <hr>
-              <!-- End Inputan Detil PO -->
               
               <!-- Tabel Data Detil PO -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
