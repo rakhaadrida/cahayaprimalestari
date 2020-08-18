@@ -70,11 +70,19 @@
                         <td align="center">{{ $i }}</td>
                         <td>{{ $item->barang->nama }}</td>
                         <td align="center">{{ $item->qty }}</td>
-                        <td>
-                          <input type="text" name="qtyDikirim" class="form-control form-control-sm input-table">
+                        <td align="center">
+                          @if($item->qty_terima != null) 
+                            {{ $item->qty_terima }} 
+                          @else
+                            <input type="text" name="qtyDikirim[]" class="form-control form-control-sm input-table">
+                          @endif
                         </td>
                         <td>
-                          <input type="text" name="keterangan" class="form-control form-control-sm input-table">
+                          @if($item->keterangan != null)
+                            {{ $item->keterangan }}
+                          @else
+                            <input type="text" name="keterangan[]" class="form-control form-control-sm input-table">
+                          @endif
                         </td>
                       </tr>
                       @php $i++; @endphp
@@ -92,7 +100,7 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" formaction="{{ route('bm-create', $itemPo->id) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>

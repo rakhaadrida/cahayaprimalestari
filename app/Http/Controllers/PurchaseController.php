@@ -63,7 +63,7 @@ class PurchaseController extends Controller
         PurchaseOrder::create([
             'id' => $id,
             'tgl_po' => $tanggal,
-            'id_supplier' => $request->namaSupplier,
+            'id_supplier' => $request->kodeSupplier,
             'total' => $request->grandtotal,
             'status' => 'PENDING'
         ]);

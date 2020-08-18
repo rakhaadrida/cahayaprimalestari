@@ -37,4 +37,30 @@ class BarangMasukController extends Controller
 
         return view('pages.pembelian.detilMasuk', $data);
     }
+
+    public function create(Request $request, $id) {
+        $itemPo = PurchaseOrder::find($id);
+        $items = DetilPO::where('id_po', $id)->get();
+        $itemsRow = DetilPO::where('id_po', $id)->count();
+
+        $i = 0;
+        $sama = 0;
+        foreach($items as $item) {
+            $item->qty_terima = $request->qtyDikirim[$i];
+            $item->keterangan = $request->keterangan[$i];
+            $item->save();
+
+            if($item->qty == $request->qtyDikirim[$i]) {
+                $sama++;
+            }
+            $i++;
+        }
+
+        if($sama == $itemsRow) {
+            $itemPo->status = 'LENGKAP';
+            $itemPo->save();
+        }
+
+        return redirect()->route('barangMasuk');
+    }
 }
