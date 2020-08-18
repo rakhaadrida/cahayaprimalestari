@@ -30,7 +30,7 @@
                 <label for="kode" class="col-2 col-form-label text-bold">Nomor PO</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" id="kodePO">
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" id="kodePO" value="{{ $itemPo->id }}">
                 </div>
                 <div class="col-1" style="margin-left: -10px">
                   <button type="submit" formaction="{{ route('bm-process') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-block text-bold">Cari</button>
@@ -40,14 +40,14 @@
                 <label for="nama" class="col-2 col-form-label text-bold">Tanggal Terima</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" readonly>
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" readonly>
                 </div>
               </div> 
               <div class="form-group row input-header">
                 <label for="alamat" class="col-2 col-form-label text-bold">Nama Supplier</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-3">
-                  <input type="text" name="namaSupplier" id="namaSupplier" class="form-control form-control-sm" readonly>
+                  <input type="text" name="namaSupplier" id="namaSupplier" class="form-control form-control-sm text-bold" value="{{ $itemPo->supplier->nama }}" readonly>
                 </div>
               </div>
               <hr>
@@ -63,14 +63,42 @@
                   <td>Keterangan</td>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td colspan=5 class="text-center text-bold h4 p-2"><i>Silahkan Input Nomor PO</i></td>
-                  </tr>
+                  @if($items != null)
+                    @php $i = 1; @endphp
+                    @foreach($items as $item)
+                      <tr class="text-bold">
+                        <td align="center">{{ $i }}</td>
+                        <td>{{ $item->barang->nama }}</td>
+                        <td align="center">{{ $item->qty }}</td>
+                        <td>
+                          <input type="text" name="qtyDikirim" class="form-control form-control-sm input-table">
+                        </td>
+                        <td>
+                          <input type="text" name="keterangan" class="form-control form-control-sm input-table">
+                        </td>
+                      </tr>
+                      @php $i++; @endphp
+                    @endforeach
+                  @else
+                    <tr>
+                      <td colspan=5 class="text-center">Nomor PO Belum Pernah Disimpan</td>
+                    </tr>
+                  @endif 
                 </tbody>
               </table>
               <hr>
               <!-- End Tabel Data Detil PO -->
 
+              <!-- Button Submit dan Reset -->
+              <div class="form-row justify-content-center">
+                <div class="col-2">
+                  <button type="submit" formaction="" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                </div>
+                <div class="col-2">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                </div>
+              </div>
+              <!-- End Button Submit dan Reset -->
             </form>
           </div>
         </div>

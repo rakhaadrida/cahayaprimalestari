@@ -32,3 +32,7 @@ Route::post('/po/create/{id}', 'PurchaseController@create')->name('po-create');
 Route::post('/po/process/{id}', 'PurchaseController@process')->name('po-process');
 Route::post('/po/update', 'PurchaseController@update')->name('po-update');
 Route::get('/po/remove/{po}/{barang}', 'PurchaseController@remove')->name('po-remove');
+
+// Barang Masuk
+Route::get('/barangmasuk', 'BarangMasukController@index')->name('barangMasuk');
+Route::post('/barangmasuk/process', 'BarangMasukController@process')->name('bm-process');
