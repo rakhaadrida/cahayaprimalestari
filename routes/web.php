@@ -40,3 +40,5 @@ Route::post('/barangmasuk/create/{id}', 'BarangMasukController@create')->name('b
 
 // Sales Order
 Route::get('/so', 'SalesController@index')->name('so');
+Route::post('/so/create/{id}', 'SalesController@create')->name('so-create');
+Route::post('/so/process/{id}', 'SalesController@process')->name('so-process');

@@ -61,10 +61,16 @@
                       <span class="col-form-label text-bold">hari</span>
                     </div>
                     <div class="form-group row total-po">
-                      <label for="grandtotal" class="col-6 col-form-label text-bold">Diskon Faktur</label>
+                      <label for="diskonFaktur" class="col-6 col-form-label text-bold">Diskon Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="diskon">
+                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="diskonFaktur" id="diskonFaktur"
+                          @if($itemsRow != 0) 
+                            value="{{ $items[0]->diskon_faktur }}"
+                          @else 
+                            value="0"
+                          @endif
+                        />
                       </div>
                       <span class="col-form-label text-bold">%</span>
                     </div>
@@ -90,12 +96,12 @@
                   <div class="col-3">
                     <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1"
                       @if($itemsRow != 0) 
-                        value="{{ $items[0]->supplier->nama }}" readonly
+                        value="{{ $items[0]->customer->nama }}" readonly
                       @endif
                     />
                     <input type="hidden" name="kodeCustomer" id="idCustomer" 
                       @if($itemsRow != 0) 
-                        value="{{ $items[0]->id_supplier }}"
+                        value="{{ $items[0]->id_customer }}"
                       @endif
                     />
                   </div>
@@ -150,6 +156,10 @@
                   <label for="kode" class="col-form-label text-bold ">Pcs</label>
                   <input type="text" name="pcs" id="qty" placeholder="Qty (Pcs)" class="form-control form-control-sm">
                 </div>
+                <div class="form-group col-sm-1">
+                  <label for="kode" class="col-form-label text-bold ">Diskon</label>
+                  <input type="text" name="diskon" id="diskon" placeholder="Diskon" class="form-control form-control-sm">
+                </div>
                 <div class="form-group col-sm-2">
                   <label for="kode" class="col-form-label text-bold ">Harga</label>
                   <input type="text" name="harga" id="harga" placeholder="Harga Satuan" class="form-control form-control-sm text-bold" readonly>
@@ -161,7 +171,7 @@
                 </div>
                 <div class="form-group col-auto">
                   <label for="" class="col-form-label text-bold " ></label>
-                  <button type="submit" formaction="" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
+                  <button type="submit" formaction="{{ route('so-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
                 </div>
               </div>          
               <hr>
@@ -169,20 +179,21 @@
               
               <!-- Tabel Data Detil PO -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
-                <thead class="text-center text-bold">
+                <thead class="text-center text-bold text-dark">
                   <td>No</td>
                   <td>Nama Barang</td>
                   {{-- <td>Pack</td> --}}
                   <td>Qty (Pcs)</td>
                   <td>Harga</td>
-                  <td>Diskon</td>
-                  <td>Jumlah</td>
+                  <td>Diskon(%)</td>
+                  <td>Diskon(Rp)</td>
+                  <td>Jumlah Harga</td>
                   <td>Ubah</td>
                   <td>Hapus</td>
                 </thead>
                 <tbody>
                   @if($itemsRow != 0)
-                    @php $i = 1; @endphp
+                    @php $i = 1; $subtotal = 0; @endphp
                     @foreach($items as $item)
                       <tr class="text-bold">
                         <td align="center">{{ $i }}</td>
@@ -194,7 +205,18 @@
                           {{ $item->qty }}
                         </td>
                         <td align="right" class="autoharga">{{ $item->harga }}</td>
-                        <td align="right" class="autototal">{{ $item->qty * $item->harga }}</td>
+                        <td align="right" class="autodiskon">{{ $item->diskon }} %</td>
+                        @php 
+                          $total = $item->qty * $item->harga;
+                          $besarDiskon = $item->diskon * $total / 100;
+                          $total -= $besarDiskon;
+                          $subtotal += $total;
+                        @endphp
+                        <td align="right" class="autodiskon">{{ $besarDiskon }}</td>
+                        <td align="right" class="autototal">
+                          {{ $total }}
+                          <input type="hidden" id="totalBarang" value="{{ $total }}">
+                        </td>
                         <td align="center">
                           <a href="" id="editButton{{$i}}" 
                           onclick="return displayEditable({{$i}})">
@@ -206,7 +228,7 @@
                           </a>
                         </td>
                         <td align="center">
-                          <a href="{{ route('po-remove', ['po' => $item->id_po, 'barang' => $item->id_barang]) }}">
+                          <a href="">
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                           </a>
                         </td>
@@ -215,18 +237,81 @@
                     @endforeach
                   @else
                     <tr>
-                      <td colspan=8 class="text-center">Belum ada Detail SO</td>
+                      <td colspan=9 class="text-center">Belum ada Detail SO</td>
                     </tr>
                   @endif 
                 </tbody>
               </table>
+              <div class="form-group row justify-content-end subtotal-so">
+                <label for="subTotal" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger" 
+                  @if($itemsRow != 0) 
+                    value="{{ $subtotal }}"
+                  @endif
+                  />
+                </div>
+              </div>
+              @if($itemsRow != 0) 
+                @php
+                  $diskonFaktur = ($items[0]->diskon_faktur * $subtotal) / 100;
+                  $totalNotPPN = $subtotal - $diskonFaktur;
+                  $ppn = $totalNotPPN * 10 / 100;
+                  $grandtotal = $totalNotPPN + $ppn;
+                @endphp
+              @endif
+              <div class="form-group row justify-content-end total-so">
+                <label for="diskonFaktur" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" name="angkaDF" id="angkaDF" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger"
+                  @if($itemsRow != 0) 
+                    value="{{ $diskonFaktur }}"
+                  @endif
+                  />
+                </div>
+              </div>
+              <div class="form-group row justify-content-end total-so">
+                <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger"
+                  @if($itemsRow != 0) 
+                    value="{{ $totalNotPPN }}"
+                  @endif
+                  />
+                </div>
+              </div>
+              <div class="form-group row justify-content-end total-so">
+                <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger" 
+                  @if($itemsRow != 0) 
+                    value="{{ $ppn }}"
+                  @endif
+                  />
+                </div>
+              </div>
+              <div class="form-group row justify-content-end total-so">
+                <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg" 
+                  @if($itemsRow != 0) 
+                    value="{{ $grandtotal }}"
+                  @endif
+                  />
+                </div>
+              </div>
               <hr>
               <!-- End Tabel Data Detil PO -->
 
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" formaction="{{ route('so-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
@@ -253,11 +338,20 @@ const harga = document.getElementById('harga');
 const kodeHarga = document.getElementById('idHarga');
 const jumlah = document.getElementById('jumlah');
 const qty = document.getElementById('qty');
+const diskon = document.getElementById('diskon');
+const diskonFaktur = document.getElementById('diskonFaktur');
+const angkaDF = document.getElementById('angkaDF');
+const subTotal = document.getElementById('subtotal');
+const totalNotPpn = document.getElementById('totalNotPPN');
+const ppn = document.getElementById('ppn');
+const grandtotal = document.getElementById('grandtotal');
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('change', displayCust);
 namaBrg.addEventListener('change', displayHarga);
 qty.addEventListener('change', displayJumlah);
+diskon.addEventListener('change', displayTotal);
+diskonFaktur.addEventListener('change', displayDiskon);
 
 /** Tampil Id Supplier **/
 function displayCust(e) {
@@ -295,6 +389,19 @@ function displayHarga(e) {
 /** Tampil Jumlah Harga Otomatis **/
 function displayJumlah(e) {
   jumlah.value = e.target.value * harga.value;
+} 
+
+function displayTotal(e) {
+  let totalHarga = qty.value * harga.value;
+  let besarDiskon = (e.target.value * totalHarga) / 100;
+  jumlah.value = totalHarga - besarDiskon;
+} 
+
+function displayDiskon(e) {
+  angkaDF.value = (e.target.value * subTotal.value) / 100;
+  totalNotPpn.value = subTotal.value - angkaDF.value;
+  ppn.value = totalNotPpn.value * 10 / 100;
+  grandtotal.value = +totalNotPpn.value + +ppn.value;
 } 
 
 /** Tampil Table Column Editable **/

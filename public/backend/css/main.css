@@ -31,6 +31,14 @@
     margin-bottom: -20px;
 }
 
+.subtotal-so {
+    margin-top: -15px;
+}
+
+.total-so {
+    margin-top: -30px;
+}
+
 .subtotal-po {
     margin-top: -5px;
 }
