@@ -11,12 +11,28 @@
     font-family: "Nunito", sans-serif;
 }
 
+.so-container {
+    margin-left: -20px;
+}
+
 .supplier-row {
     margin-top: -55px;
 }
 
+.customer-row {
+    margin-top: -115px;
+}
+
+.sales-row {
+    margin-top: -18px;
+}
+
+.pkp-check {
+    margin-bottom: -20px;
+}
+
 .subtotal-po {
-    margin-top: -10px;
+    margin-top: -5px;
 }
 
 .total-po {

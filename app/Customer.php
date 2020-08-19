@@ -13,4 +13,7 @@ class Customer extends Model
     protected $fillable = ['id', 'nama', 'alamat', 'telepon', 'contact_person',
                             'tempo', 'limit', 'sales_cover'];
     
+    public function so() {
+        return $this->hasMany('App\SalesOrder', 'id_customer', 'id');
+    }
 }

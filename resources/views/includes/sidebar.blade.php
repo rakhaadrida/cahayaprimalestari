@@ -65,7 +65,7 @@
     </a>
     <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="utilities-color.html">Sales Order</a>
+        <a class="collapse-item" href="{{ route('so') }}">Sales Order</a>
         <a class="collapse-item" href="utilities-border.html">Surat Jalan</a>
       </div>
     </div>
