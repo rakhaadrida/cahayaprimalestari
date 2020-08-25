@@ -36,7 +36,7 @@
                 <td>{{ $item->nama }}</td>
                 <td>{{ $item->alamat }}</td>
                 <td align="center">
-                  <a href="{{ route('gudang.edit', $item->id) }}" class="btn btn-info">
+                  <a href="{{ route('gudang.edit', $item->id) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-fw fa-edit"></i>
                   </a>
                 </td>
@@ -44,7 +44,7 @@
                   <form action="{{ route('gudang.destroy', $item->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('delete')
-                    <button class="btn btn-danger">
+                    <button class="btn btn-sm btn-danger">
                       <i class="fas fa-fw fa-trash"></i>
                     </button>  
                   </form>

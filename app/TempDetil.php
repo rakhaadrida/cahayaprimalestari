@@ -17,7 +17,7 @@ class TempDetil extends Model
     public $incrementing = false;
 
     public function po() {
-        return $this->belongsTo('App\PurchaseOrder', 'id_po');
+        return $this->belongsTo('App\PurchaseOrder', 'id_po', 'id');
     }
 
     public function barang() {

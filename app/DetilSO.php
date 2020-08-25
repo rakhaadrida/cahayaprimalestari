@@ -17,7 +17,7 @@ class DetilSO extends Model
     public $incrementing = false;
 
     public function so() {
-        return $this->belongsTo('App\SalesOrder', 'id_so');
+        return $this->belongsTo('App\SalesOrder', 'id_so', 'id');
     }
 
     public function barang() {

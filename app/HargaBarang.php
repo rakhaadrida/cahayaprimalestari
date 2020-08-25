@@ -16,4 +16,12 @@ class HargaBarang extends Model
     protected $primaryKey = ['id_barang', 'id_harga'];
     protected $keyType = 'string';
     public $incrementing = false;
+
+    public function hargaBarang() {
+        return $this->belongsTo('App\Harga', 'id_harga', 'id');
+    }
+
+    public function barang() {
+        return $this->belongsTo('App\Barang', 'id_barang', 'id');
+    }
 }

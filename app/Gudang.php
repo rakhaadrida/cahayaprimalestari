@@ -11,4 +11,8 @@ class Gudang extends Model
     protected $table = 'gudang';
 
     protected $fillable = ['id', 'nama', 'alamat'];
+
+    public function stokBarang() {
+        return $this->hasMany('App\StokBarang', 'id_gudang', 'id');
+    }
 }

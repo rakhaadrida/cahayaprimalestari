@@ -46,9 +46,7 @@
                 <label for="alamat" class="col-1 col-form-label text-bold">Alamat</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-7">
-                  <textarea name="alamat" class="form-control col-form-label-sm" rows="3">
-                    {{ $item->alamat }}
-                  </textarea>  
+                  <textarea name="alamat" class="form-control col-form-label-sm" rows="3">{{$item->alamat}}</textarea>  
                 </div> 
               </div>
               <div class="form-group row">

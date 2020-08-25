@@ -16,8 +16,12 @@ class Barang extends Model
         return $this->belongsToMany('App\PurchaseOrder')->using('App\DetilPO');
     }
 
-    public function harga() {
-        return $this->belongsToMany('App\Harga')->using('App\HargaBarang');
+    public function hargaBarang() {
+        return $this->hasMany('App\HargaBarang', 'id_barang', 'id');
+    }
+
+    public function stokBarang() {
+        return $this->hasMany('App\StokBarang', 'id_barang', 'id');
     }
 
     public function detilpo() {

@@ -15,7 +15,7 @@ class PurchaseOrder extends Model
     public $incrementing = false;
 
     public function supplier() {
-        return $this->belongsTo('App\Supplier', 'id_supplier');
+        return $this->belongsTo('App\Supplier', 'id_supplier', 'id');
     }
 
     public function barang() {

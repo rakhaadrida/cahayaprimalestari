@@ -16,6 +16,6 @@ class SalesOrder extends Model
     public $incrementing = false;
 
     public function customer() {
-        return $this->belongsTo('App\Customer', 'customer');
+        return $this->belongsTo('App\Customer', 'id_customer', 'id');
     }
 }

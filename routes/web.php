@@ -26,6 +26,10 @@ Route::resource('harga', 'HargaController');
 Route::get('/barang/harga/{id}', 'BarangController@harga')->name('hargaBarang');
 Route::post('/barang/storeHarga', 'BarangController@storeHarga')->name('storeHarga');
 
+// Stok Barang
+Route::get('/barang/stok/{id}', 'BarangController@stok')->name('stokBarang');
+Route::post('/barang/storeStok', 'BarangController@storeStok')->name('storeStok');
+
 // Purchase Order
 Route::get('/po', 'PurchaseController@index')->name('po');
 Route::post('/po/create/{id}', 'PurchaseController@create')->name('po-create');

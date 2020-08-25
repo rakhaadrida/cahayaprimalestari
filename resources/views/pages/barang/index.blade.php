@@ -24,27 +24,37 @@
             <tr align="center">
               <th>No</th>
               <th>Nama</th>
-              <th>Ukuran</th>
-              <th>Isi</th>
+              @foreach($gudang as $g)
+                <th>{{ $g->nama }}</th>
+              @endforeach
               <th>Harga</th>
+              <th>Stok</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
           </thead>
           <tbody>
+            @php $i=0; @endphp
             @forelse ($items as $item)
               <tr>
                 <td align="center">{{ $item->id }}</td>
                 <td>{{ $item->nama }}</td>
-                <td>{{ $item->ukuran }}</td>
-                <td>{{ $item->isi }}</td>
+                @foreach($gudang as $g)
+                  <td align="center" style="width: 45px">{{ $stok[$i]->stok }}</td>
+                  @php $i++; @endphp
+                @endforeach
                 <td align="center">
-                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-success">
+                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-success">
                     <i class="fas fa-fw fa-money-bill-alt"></i>
                   </a>
                 </td>
                 <td align="center">
-                  <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-info">
+                  <a href="{{ route('stokBarang', $item->id) }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-fw fa-warehouse"></i>
+                  </a>
+                </td>
+                <td align="center">
+                  <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-fw fa-edit"></i>
                   </a>
                 </td>
@@ -52,7 +62,7 @@
                   <form action="{{ route('barang.destroy', $item->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('delete')
-                    <button class="btn btn-danger">
+                    <button class="btn btn-sm btn-danger">
                       <i class="fas fa-fw fa-trash"></i>
                     </button>  
                   </form>

@@ -36,9 +36,7 @@
               </div>
               <div class="form-group">
                 <label for="alamat" class="text-bold">Alamat</label>
-                <textarea name="alamat" class="form-control col-form-label-sm" rows="3">
-                  {{ $item->alamat }}
-                </textarea>   
+                <textarea name="alamat" class="form-control col-form-label-sm" rows="3">{{$item->alamat}}</textarea>   
               </div>
               <div class="form-group">
                 <label for="telepon" class="text-bold">Telepon</label>

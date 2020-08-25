@@ -6,7 +6,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Harga {{ $barang->nama }}</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Stok {{ $barang->nama }}</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -23,7 +23,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="{{ route('storeHarga')}}" method="POST">
+            <form action="{{ route('storeStok')}}" method="POST">
               @csrf
               <div class="form-group row">
                 <label for="kode" class="col-2 col-form-label text-bold">Kode Barang</label>
@@ -43,17 +43,17 @@
               </div>
               <hr>
               @php $i=0; @endphp
-              @foreach($harga as $h)
+              @foreach($gudang as $g)
                 <div class="form-group row">
                   <label for="harga" class="col-2 col-form-label text-bold">
-                    {{ $h->nama }}</label>
+                    {{ $g->nama }}</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" class="form-control col-form-label-sm" 
-                    name="harga[]"
+                    name="stok[]"
                       @foreach($items as $item)
-                        @if($item->id_harga == $h->id)
-                          value="{{ $item->harga }}" 
+                        @if($item->id_gudang == $g->id)
+                          value="{{ $item->stok }}" 
                           @break
                         @endif
                       @endforeach

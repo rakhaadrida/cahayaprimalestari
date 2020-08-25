@@ -15,4 +15,8 @@ class Harga extends Model
     public function barang() {
         return $this->belongsToMany('App\Barang')->using('App\HargaBarang');
     }
+
+    public function hargaBarang() {
+        return $this->hasMany('App\HargaBarang', 'id_harga', 'id');
+    }
 }

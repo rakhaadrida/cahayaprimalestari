@@ -87,7 +87,7 @@ class PurchaseController extends Controller
         $items = $request->all();
 
         foreach($items as $item) {
-            $updateTemp =TempDetil::find($item['barang']);
+            $updateTemp = TempDetil::find($item['barang']);
             $updateTemp->{'qty'} = $item['qty'];
             $updateTemp->save();
         }
