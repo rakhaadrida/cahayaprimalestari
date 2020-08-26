@@ -18,4 +18,8 @@ class SalesOrder extends Model
     public function customer() {
         return $this->belongsTo('App\Customer', 'id_customer', 'id');
     }
+
+    public function detilso() {
+        return $this->hasMany('App\DetilSO', 'id_so', 'id');
+    }
 }

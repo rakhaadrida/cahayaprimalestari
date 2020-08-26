@@ -25,18 +25,6 @@
           <div class="card-body">
             <form action="{{ route('supplier.store') }}" method="POST">
               @csrf
-              {{-- <div class="row">
-                <div class="form-group col-2">
-                  <label for="kode" class="text-bold">Kode </label>
-                  <input type="text" class="form-control col-form-label-sm" name="kode" placeholder="Kode Supplier" 
-                    value="{{ $newcode }}" readonly>
-                </div>
-                <div class="form-group col-6">
-                  <label for="nama" class="text-bold">Nama</label>
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Supplier" 
-                    value="{{ old('nama') }}">
-                </div>
-              </div>   --}}
               <div class="form-group row">
                 <label for="kode" class="col-1 col-form-label text-bold ">Kode</label>
                 <span class="col-form-label text-bold">:</span>

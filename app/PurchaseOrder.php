@@ -18,7 +18,7 @@ class PurchaseOrder extends Model
         return $this->belongsTo('App\Supplier', 'id_supplier', 'id');
     }
 
-    public function barang() {
-        return $this->belongsToMany('App\Barang')->using('App\DetilPO');
+    public function detilpo() {
+        return $this->hasMany('App\DetilPO', 'id_po', 'id');
     }
 }

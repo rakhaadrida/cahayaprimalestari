@@ -141,7 +141,7 @@
               
               <!-- Tabel Data Detil PO -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
-                <thead class="text-center text-bold">
+                <thead class="text-center text-bold text-dark">
                   <td>No</td>
                   <td>Nama Barang</td>
                   {{-- <td>Pack</td> --}}

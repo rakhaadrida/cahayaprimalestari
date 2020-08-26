@@ -34,9 +34,13 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
-        Supplier::create($data);
+        Supplier::create([
+            'id' => $request->kode,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'telepon' => $request->telepon
+        ]);
+        
         return redirect()->route('supplier.index');
     }
 

@@ -1,3 +1,4 @@
+@extends('pages.barang.show')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -27,6 +28,7 @@
               @foreach($gudang as $g)
                 <th>{{ $g->nama }}</th>
               @endforeach
+              <th>Detail</th>
               <th>Harga</th>
               <th>Stok</th>
               <th>Edit</th>
@@ -34,31 +36,44 @@
             </tr>
           </thead>
           <tbody>
-            @php $i=0; @endphp
-            @forelse ($items as $item)
+            @php $i=0; $j=1; @endphp
+            @forelse($items as $item)
               <tr>
-                <td align="center">{{ $item->id }}</td>
+                <td align="center" style="width: 10px">{{ $j }}</td>
                 <td>{{ $item->nama }}</td>
                 @foreach($gudang as $g)
-                  <td align="center" style="width: 45px">{{ $stok[$i]->stok }}</td>
-                  @php $i++; @endphp
+                  @if(($stok->count() > 0) && ($i < $stok->count()))
+                    @if(($stok[$i]->id_gudang == $g->id) && ($stok[$i]->id_barang == $item->id))
+                      <td align="center" style="width: 45px">{{ $stok[$i]->stok }}</td>
+                      @php $i++; @endphp
+                    @else
+                      <td></td>  
+                    @endif
+                  @else
+                    <td></td>
+                  @endif
                 @endforeach
-                <td align="center">
-                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-success">
+                <td align="center" style="width: 15px">
+                  <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
+                    <i class="fas fa-fw fa-eye"></i>
+                  </a>
+                </td>
+                <td align="center" style="width: 15px">
+                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-warning">
                     <i class="fas fa-fw fa-money-bill-alt"></i>
                   </a>
                 </td>
-                <td align="center">
+                <td align="center" style="width: 15px">
                   <a href="{{ route('stokBarang', $item->id) }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-fw fa-warehouse"></i>
                   </a>
                 </td>
-                <td align="center">
+                <td align="center" style="width: 15px">
                   <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-fw fa-edit"></i>
                   </a>
                 </td>
-                <td align="center">
+                <td align="center" style="width: 20px">
                   <form action="{{ route('barang.destroy', $item->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('delete')
@@ -68,6 +83,7 @@
                   </form>
                 </td>
               </tr>
+              @php $j++; @endphp
             @empty
               <tr>
                 <td colspan="8" class="text-center">Tidak Ada Data</td>

@@ -9,9 +9,10 @@ class Customer extends Model
 {
     use SoftDeletes;
     protected $table = 'customer';
-
+    protected $keyType = "string";
     protected $fillable = ['id', 'nama', 'alamat', 'telepon', 'contact_person',
                             'tempo', 'limit', 'sales_cover'];
+    public $incrementing = false;
     
     public function so() {
         return $this->hasMany('App\SalesOrder', 'id_customer', 'id');

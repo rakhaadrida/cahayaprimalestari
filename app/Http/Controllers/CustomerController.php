@@ -33,8 +33,16 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        Customer::create($data);
+        Customer::create([
+            'id' => $request->kode,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'telepon' => $request->telepon,
+            'contact_person' => $request->contact_person,
+            'tempo' => $request->tempo,
+            'limit' => $request->limit,
+            'sales_cover' => $request->sales_cover
+        ]);
 
         return redirect()->route('customer.index');
     }

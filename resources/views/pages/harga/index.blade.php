@@ -29,9 +29,10 @@
             </tr>
           </thead>
           <tbody>
+            @php $i=1; @endphp
             @forelse ($items as $item)
               <tr>
-                <td align="center">{{ $item->id }}</td>
+                <td align="center">{{ $i }}</td>
                 <td>{{ $item->nama }}</td>
                 <td align="center">
                   <a href="{{ route('harga.edit', $item->id) }}" class="btn btn-sm btn-info">
@@ -48,6 +49,7 @@
                   </form>
                 </td>
               </tr>
+              @php $i++; @endphp
             @empty
               <tr>
                 <td colspan="8" class="text-center">Tidak Ada Data</td>

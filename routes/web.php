@@ -22,6 +22,9 @@ Route::resource('gudang', 'GudangController');
 Route::resource('harga', 'HargaController');
 // Route::resource('po', 'PurchaseOrderController');
 
+// Detail Barang
+Route::get('barang/detail/{id}', 'BarangController@detail')->name('detailBarang');
+
 // Harga Barang
 Route::get('/barang/harga/{id}', 'BarangController@harga')->name('hargaBarang');
 Route::post('/barang/storeHarga', 'BarangController@storeHarga')->name('storeHarga');

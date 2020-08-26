@@ -9,8 +9,9 @@ class Supplier extends Model
 {
     use SoftDeletes;
     protected $table = 'supplier';
-
+    protected $keyType = "string";
     protected $fillable = ['id', 'nama', 'alamat', 'telepon'];
+    public $incrementing = false;
 
     public function po() {
         return $this->hasMany('App\PurchaseOrder', 'id_supplier', 'id');

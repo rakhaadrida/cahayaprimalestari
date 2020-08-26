@@ -33,8 +33,10 @@ class HargaController extends Controller
 
     public function store(Request $request)
     {
-        $item = $request->all();
-        Harga::create($item);
+        Harga::create([
+            'id' => $request->kode,
+            'nama' => $request->nama
+        ]);
 
         return redirect()->route('harga.index');
     }

@@ -16,11 +16,15 @@ class BarangController extends Controller
         $items = Barang::All();
         $gudang = Gudang::All();
         $stok = stokBarang::All();
+        $harga = Harga::All();
+        $hargaBarang = HargaBarang::All();
         // $items = Barang::with(['hargaBarang', 'stokBarang'])->get();
         $data =  [
             'items' => $items,
             'gudang' => $gudang,
-            'stok' => $stok
+            'stok' => $stok,
+            'harga' => $harga,
+            'hargaBarang' => $hargaBarang
         ];
 
         return view('pages.barang.index', $data);
@@ -29,9 +33,9 @@ class BarangController extends Controller
     public function create()
     {
         $lastcode = Barang::max('id');
-        //$lastnumber = (int) substr($lastcode, 3, 2);
-        $lastcode++;
-        $newcode = 'BRG'.sprintf("%02s", $lastcode);
+        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastnumber++;
+        $newcode = 'BRG'.sprintf("%02s", $lastnumber);
 
         $data = [
             'newcode' => $newcode
@@ -40,10 +44,13 @@ class BarangController extends Controller
         return view('pages.barang.create', $data);
     }
 
-    public function store(Request $request)
-    {
-        $item = $request->all();
-        Barang::create($item);
+    public function store(Request $request) {
+        Barang::create([
+            'id' => $request->kode,
+            'nama' => $request->nama,
+            'ukuran' => $request->ukuran,
+            'isi' => $request->isi
+        ]);
 
         return redirect()->route('barang.index');
     }
@@ -169,8 +176,7 @@ class BarangController extends Controller
         $updateStok->save();
     }
 
-    public function edit($id)
-    {
+    public function edit($id) {
         $item = Barang::findOrFail($id);
         $data = [
             'item' => $item
@@ -179,8 +185,7 @@ class BarangController extends Controller
         return view('pages.barang.edit', $data);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $data = $request->all();
         
         $item = Barang::findOrFail($id);
@@ -189,8 +194,7 @@ class BarangController extends Controller
         return redirect()->route('barang.index');
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $item = Barang::findOrFail($id);
         $item->delete();
 

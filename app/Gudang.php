@@ -9,8 +9,9 @@ class Gudang extends Model
 {
     use SoftDeletes;
     protected $table = 'gudang';
-
+    protected $keyType = "string";
     protected $fillable = ['id', 'nama', 'alamat'];
+    public $incrementing = false;
 
     public function stokBarang() {
         return $this->hasMany('App\StokBarang', 'id_gudang', 'id');

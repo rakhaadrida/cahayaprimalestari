@@ -29,7 +29,7 @@ class PurchaseController extends Controller
 
         // date now
         $tanggal = Carbon::now()->toDateString();
-        $tanggal = Carbon::parse($tanggal)->format('d-m-Y');
+        $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
         $data = [
             'items' => $items,
@@ -42,6 +42,11 @@ class PurchaseController extends Controller
         ];
 
         return view('pages.poAlter', $data);
+    }
+
+    public function formatTanggal($tanggal, $format) {
+        $formatTanggal = Carbon::parse($tanggal)->format($format);
+        return $formatTanggal;
     }
 
     public function create(Request $request, $id) {
@@ -58,7 +63,7 @@ class PurchaseController extends Controller
 
     public function process (Request $request, $id) {
         $tanggal = $request->tanggal;
-        $tanggal = Carbon::parse($tanggal)->format('Y-m-d');
+        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         
         PurchaseOrder::create([
             'id' => $id,

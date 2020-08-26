@@ -9,12 +9,9 @@ class Harga extends Model
 {
     use SoftDeletes;
     protected $table = 'harga';
-
+    protected $keyType = "string";
     protected $fillable = ['id', 'nama'];
-
-    public function barang() {
-        return $this->belongsToMany('App\Barang')->using('App\HargaBarang');
-    }
+    public $incrementing = false;
 
     public function hargaBarang() {
         return $this->hasMany('App\HargaBarang', 'id_harga', 'id');

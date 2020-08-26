@@ -24,7 +24,7 @@ class SalesController extends Controller
         $newcode = 'SO'.sprintf('%02s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
-        $tanggal = Carbon::parse($tanggal)->format('d-m-Y');
+        $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
         $items = TempDetilSO::with(['barang', 'customer'])
                             ->where('id_so', $newcode)->latest()->get();
@@ -43,6 +43,11 @@ class SalesController extends Controller
         return view('pages.penjualan.so', $data);
     }
 
+    public function formatTanggal($tanggal, $format) {
+        $formatTanggal = Carbon::parse($tanggal)->format($format);
+        return $formatTanggal;
+    }
+
     public function create(Request $request, $id) {
         TempDetilSO::create([
             'id_so' => $id,
@@ -58,7 +63,7 @@ class SalesController extends Controller
 
     public function process(Request $request, $id) {
         $tanggal = $request->tanggal;
-        $tanggal = Carbon::parse($tanggal)->format('Y-m-d');
+        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         
         SalesOrder::create([
             'id' => $id,

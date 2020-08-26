@@ -31,9 +31,10 @@
             </tr>
           </thead>
           <tbody>
+            @php $i=1; @endphp
             @forelse ($items as $item)
               <tr>
-                <td align="center">{{ $item->id }}</td>
+                <td align="center">{{ $i }}</td>
                 <td>{{ $item->nama }}</td>
                 <td>{{ $item->alamat }}</td>
                 <td>{{ $item->telepon }}</td>
@@ -52,6 +53,7 @@
                   </form>
                 </td>
               </tr>
+              @php $i++; @endphp
             @empty
               <tr>
                 <td colspan="8" class="text-center">Tidak Ada Data</td>

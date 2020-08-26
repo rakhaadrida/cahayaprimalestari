@@ -9,12 +9,9 @@ class Barang extends Model
 {
     use SoftDeletes;
     protected $table = 'barang';
-
+    protected $keyType = "string";
     protected $fillable = ['id', 'nama', 'ukuran', 'isi'];
-
-    public function po() {
-        return $this->belongsToMany('App\PurchaseOrder')->using('App\DetilPO');
-    }
+    public $incrementing = false;
 
     public function hargaBarang() {
         return $this->hasMany('App\HargaBarang', 'id_barang', 'id');
@@ -26,5 +23,9 @@ class Barang extends Model
 
     public function detilpo() {
         return $this->hasMany('App\DetilPO', 'id_barang', 'id');
+    }
+
+    public function detilso() {
+        return $this->hasMany('App\DetilSO', 'id_barang', 'id');
     }
 }
