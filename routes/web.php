@@ -16,6 +16,7 @@ Route::get('/', 'DashboardController@index')->name('dashboard');
 
 //CRUD Master
 Route::resource('supplier', 'SupplierController');
+Route::resource('sales', 'SalesController');
 Route::resource('customer', 'CustomerController');
 Route::resource('barang', 'BarangController');
 Route::resource('gudang', 'GudangController');
@@ -46,6 +47,6 @@ Route::post('/barangmasuk/process', 'BarangMasukController@process')->name('bm-p
 Route::post('/barangmasuk/create/{id}', 'BarangMasukController@create')->name('bm-create');
 
 // Sales Order
-Route::get('/so', 'SalesController@index')->name('so');
-Route::post('/so/create/{id}', 'SalesController@create')->name('so-create');
-Route::post('/so/process/{id}', 'SalesController@process')->name('so-process');
+Route::get('/so', 'SalesOrderController@index')->name('so');
+Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create');
+Route::post('/so/process/{id}', 'SalesOrderController@process')->name('so-process');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Customer;
+use App\Sales;
 
 class CustomerController extends Controller
 {
@@ -19,13 +20,15 @@ class CustomerController extends Controller
 
     public function create()
     {
+        $sales = Sales::All();
         $lastcode = Customer::max('id');
-        //$lastnumber = (int) substr($lastcode, 3, 2);
-        $lastcode++;
+        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastnumber++;
         $newcode = 'CUS'.sprintf("%02s", $lastcode);
 
         $data = [
-            'newcode' => $newcode
+            'newcode' => $newcode,
+            'sales' => $sales
         ];
 
         return view('pages.customer.create', $data);

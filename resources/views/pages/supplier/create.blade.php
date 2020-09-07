@@ -46,27 +46,8 @@
                 <label for="alamat" class="col-1 col-form-label text-bold ">Alamat</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-8">
-                  <input type="text" class="form-control col-form-label-sm" name="alamat" placeholder="Nama Jalan, Pertokoan, Nomor Toko" 
-                    value="{{ old('alamat') }}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="" class="col-1"></label>
-                <div class="form-group col-2">
-                  <input type="text" class="form-control col-form-label-sm ml-1" name="kecamatan" placeholder="Kecamatan" 
-                    value="{{ old('kecamatan') }}">
-                </div>
-                <div class="form-group col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kota" placeholder="Kota" 
-                    value="{{ old('kota') }}">
-                </div>
-                <div class="form-group col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="propinsi" placeholder="Propinsi" 
-                    value="{{ old('propinsi') }}">
-                </div>
-                <div class="form-group col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode-pos" placeholder="Kode Pos" 
-                    value="{{ old('kode-pos') }}">
+                  <textarea class="form-control col-form-label-sm" name="alamat" 
+                  value="{{ old('alamat') }}"></textarea>
                 </div>
               </div>
               <div class="form-group row">

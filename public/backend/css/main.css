@@ -7,9 +7,11 @@
     font-size: 22px;
 }
 
-/* .modal-barang {
-    width: 900px;
-} */
+.modal-barang {
+    width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
 
 .add-line {
     font-family: "Nunito", sans-serif;
