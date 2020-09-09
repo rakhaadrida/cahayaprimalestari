@@ -16,4 +16,8 @@ class Supplier extends Model
     public function po() {
         return $this->hasMany('App\PurchaseOrder', 'id_supplier', 'id');
     }
+
+    public function bm() {
+        return $this->hasMany('App\BarangMasuk', 'id_supplier', 'id');
+    }
 }

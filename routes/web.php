@@ -43,8 +43,10 @@ Route::get('/po/remove/{po}/{barang}', 'PurchaseController@remove')->name('po-re
 
 // Barang Masuk
 Route::get('/barangmasuk', 'BarangMasukController@index')->name('barangMasuk');
-Route::post('/barangmasuk/process', 'BarangMasukController@process')->name('bm-process');
 Route::post('/barangmasuk/create/{id}', 'BarangMasukController@create')->name('bm-create');
+Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name('bm-process');
+Route::get('/barangmasuk/remove/{bm}/{barang}', 'BarangMasukController@remove')
+        ->name('bm-remove');
 
 // Sales Order
 Route::get('/so', 'SalesOrderController@index')->name('so');

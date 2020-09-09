@@ -5,14 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompositePrimaryKey;
 
-class TempDetil extends Model
+class DetilBM extends Model
 {
     use CompositePrimaryKey;
-
-    protected $table = "temp_detil";
+    protected $table = "detilbm";
     protected $primaryKey = ['id_bm', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_bm', 'id_barang', 'harga', 'qty', 'keterangan', 'id_supplier'];
+    protected $fillable = ['id_bm', 'id_barang', 'harga', 'qty', 'keterangan'];
 
     public $incrementing = false;
 
@@ -22,9 +21,5 @@ class TempDetil extends Model
 
     public function barang() {
         return $this->belongsTo('App\Barang', 'id_barang', 'id');
-    }
-
-    public function supplier() {
-        return $this->belongsTo('App\Supplier', 'id_supplier', 'id');
     }
 }

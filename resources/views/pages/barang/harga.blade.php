@@ -44,7 +44,46 @@
               <hr>
               @php $i=0; @endphp
               @foreach($harga as $h)
-                <div class="form-group row">
+                <div class="form-row">
+                  <div class="form-group col-2">
+                    <label for="harga" class="col-form-label text-bold">
+                    {{ $h->nama }}</label>
+                    <input type="text" class="form-control col-form-label-sm harga" id="harga"
+                    name="harga[]"
+                      @foreach($items as $item)
+                        @if($item->id_harga == $h->id)
+                          value="{{ $item->harga }}" 
+                          @break
+                        @endif
+                      @endforeach
+                    />
+                  </div>
+                  <div class="form-group col-2 ml-2">
+                    <label for="ppn" class="col-form-label text-bold">PPN</label>
+                    <input type="text" class="form-control col-form-label-sm ppn" id="ppn" 
+                    name="ppn[]"
+                      @foreach($items as $item)
+                        @if($item->id_harga == $h->id)
+                          value="{{ $item->ppn }}" 
+                          @break
+                        @endif
+                      @endforeach
+                    />
+                  </div>
+                  <div class="form-group col-2 ml-2">
+                    <label for="hargaPPN" class="col-form-label text-bold">Harga PPN</label>
+                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN"
+                    name="hargaPPN[]" readonly
+                      @foreach($items as $item)
+                        @if($item->id_harga == $h->id)
+                          value="{{ $item->harga_ppn }}" 
+                          @break
+                        @endif
+                      @endforeach
+                    />
+                  </div>
+                </div>
+                {{-- <div class="form-group row">
                   <label for="harga" class="col-2 col-form-label text-bold">
                     {{ $h->nama }}</label>
                   <span class="col-form-label text-bold">:</span>
@@ -59,7 +98,7 @@
                       @endforeach
                     />
                   </div>
-                </div>
+                </div> --}}
                 @php $i++; @endphp
               @endforeach
               <hr>
@@ -81,3 +120,17 @@
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+  const harga = document.querySelectorAll(".harga");
+  const ppn = document.querySelectorAll(".ppn");
+  const hargaPPN = document.querySelectorAll(".hargaPPN");
+
+  for(let i = 0; i < harga.length; i++) {
+    ppn[i].addEventListener('change', function(e) {
+      hargaPPN[i].value = +e.target.value + +harga[i].value;
+    })
+  }
+</script>
+@endpush

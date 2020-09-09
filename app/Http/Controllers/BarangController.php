@@ -85,11 +85,12 @@ class BarangController extends Controller
         $j = 0;
         for($i=0; $i<$harga->count(); $i++) {
             if($itemsRow == $harga->count()) {
-                $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i]);
+                $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
             }
             else if(($itemsRow > 0) && ($j < $itemsRow)) {
                 if($items[$j]->id_harga == $harga[$i]->id) {
-                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i]);
+                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], 
+                    $request->ppn[$i], $request->hargaPPN[$i]);
                     $j++;
                 }
                 else {
@@ -112,9 +113,11 @@ class BarangController extends Controller
         ]);
     }
 
-    public function updateHarga($kode, $id, $harga) {
+    public function updateHarga($kode, $id, $harga, $ppn, $hargaPPN) {
         $updateHarga = HargaBarang::where('id_barang', $kode)->where('id_harga', $id)->first();
         $updateHarga->{'harga'} = $harga;
+        $updateHarga->{'ppn'} = $ppn;
+        $updateHarga->{'harga_ppn'} = $hargaPPN;
         $updateHarga->save();
     }
 
