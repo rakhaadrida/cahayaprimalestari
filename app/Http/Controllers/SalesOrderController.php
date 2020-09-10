@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\SalesOrder;
 use App\Customer;
 use App\Barang;
+use App\StokBarang;
 use App\DetilSO;
 use App\TempDetilSO;
 use App\HargaBarang;
@@ -14,7 +15,7 @@ use Carbon\Carbon;
 class SalesOrderController extends Controller
 {
     public function index() {
-        $customer = Customer::All();
+        $customer = Customer::with(['sales'])->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
@@ -55,7 +56,10 @@ class SalesOrderController extends Controller
             'harga' => $request->harga,
             'qty' => $request->pcs,
             'diskon' => $request->diskon,
-            'id_customer' => $request->kodeCustomer
+            'id_customer' => $request->kodeCustomer,
+            'tgl_kirim' => $request->tanggalKirim,
+            'tempo' => $request->tempo,
+            'pkp' => $request->pkp
         ]);
 
         return redirect()->route('so');
@@ -70,7 +74,8 @@ class SalesOrderController extends Controller
             'tgl_so' => $tanggal,
             'tgl_kirim' => $request->tanggalKirim,
             'total' => $request->grandtotal,
-            'diskon' => $request->diskonFaktur,
+            'tempo' => $request->tempo,
+            'pkp' => $request->pkp,
             'status' => 'PENDING',
             'id_customer' => $request->kodeCustomer
         ]);
@@ -84,6 +89,11 @@ class SalesOrderController extends Controller
                 'qty' => $td->qty,
                 'diskon' => $td->diskon
             ]);
+
+            $updateStok = StokBarang::where('id_barang', $td->id_barang)
+                            ->where('id_gudang', '1')->first();
+            $updateStok->{'stok'} = $updateStok->{'stok'} - $td->qty;
+            $updateStok->save();
 
             $deleteTemp = TempDetilSO::where('id_so', $id)->where('id_barang', $td->id_barang)->delete();
         }

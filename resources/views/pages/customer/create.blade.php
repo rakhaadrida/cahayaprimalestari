@@ -81,7 +81,7 @@
                 <label for="sales_cover" class="col-1 text-bold">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="sales_cover" id="sales" placeholder="Sales Cover" value="{{ old('sales_cover') }}">
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="id_sales" id="sales" placeholder="Sales Cover" value="{{ old('sales_cover') }}">
                 </div>
               </div>
               <div class="form-row justify-content-center">

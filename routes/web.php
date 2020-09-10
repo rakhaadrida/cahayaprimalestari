@@ -48,6 +48,9 @@ Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name(
 Route::get('/barangmasuk/remove/{bm}/{barang}', 'BarangMasukController@remove')
         ->name('bm-remove');
 
+// Transfer Barang
+Route::get('/transfer', 'TransferBarangController@index')->name('tb');
+
 // Sales Order
 Route::get('/so', 'SalesOrderController@index')->name('so');
 Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create');

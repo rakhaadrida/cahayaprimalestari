@@ -35,7 +35,6 @@
                       <div class="col-2">
                         <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly>
                       </div>
-                      {{-- <div class="col-1"></div> --}}
                       <label for="tanggal" class="col-auto col-form-label text-bold ">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
@@ -52,7 +51,7 @@
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
-                    <div class="form-group row total-po">
+                    {{-- <div class="form-group row total-po">
                       <label for="waktuTagih" class="col-6 col-form-label text-bold">Waktu Penagihan</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3">
@@ -73,7 +72,7 @@
                         />
                       </div>
                       <span class="col-form-label text-bold">%</span>
-                    </div>
+                    </div> --}}
                     <div class="form-group row total-po">
                       <label for="pkp" class="col-6 col-form-label text-bold">PKP</label>
                       <span class="col-form-label text-bold">:</span>
@@ -110,10 +109,10 @@
                   <label for="alamat" class="col-2 col-form-label text-bold">Nama Sales</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1"
-                      {{-- @if($itemsRow != 0) 
-                        value="{{ $items[0]->supplier->nama }}" readonly
-                      @endif --}}
+                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly
+                      @if($itemsRow != 0) 
+                        value="{{ $items[0]->customer->sales->nama }}"
+                      @endif
                     />
                     <input type="hidden" name="kodeSales" id="idSales" 
                       {{-- @if($itemsRow != 0) 
@@ -143,15 +142,14 @@
 
               <!-- Inputan Detil PO -->
               <div class="form-row">
+                <div class="form-group col-sm-1">
+                  <label for="kode" class="col-form-label text-bold ">Kode</label>
+                  <input type="text" name="kodeBarang" id="kodeBarang" placeholder="Kd Brg" class="form-control form-control-sm">
+                </div>
                 <div class="form-group col-sm-3">
                   <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
                   <input type="text" name="namaBarang" id="namaBarang" placeholder="Nama Barang" class="form-control form-control-sm">
-                  <input type="hidden" name="kodeBarang" id="idBarang" />
                 </div>
-                {{-- <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Pack</label>
-                  <input type="text" name="pack" placeholder="Qty(Pack)" class="form-control form-control-sm">
-                </div> --}}
                 <div class="form-group col-sm-1">
                   <label for="kode" class="col-form-label text-bold ">Pcs</label>
                   <input type="text" name="pcs" id="qty" placeholder="Qty (Pcs)" class="form-control form-control-sm">
@@ -180,16 +178,17 @@
               <!-- Tabel Data Detil PO -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                 <thead class="text-center text-bold text-dark">
-                  <td>No</td>
+                  <td style="width: 30px">No</td>
+                  <td style="width: 80px">Kode</td>
                   <td>Nama Barang</td>
-                  {{-- <td>Pack</td> --}}
-                  <td>Qty (Pcs)</td>
+                  <td style="width: 50px">Qty</td>
                   <td>Harga</td>
-                  <td>Diskon(%)</td>
-                  <td>Diskon(Rp)</td>
-                  <td>Jumlah Harga</td>
-                  <td>Ubah</td>
-                  <td>Hapus</td>
+                  <td>Jumlah</td>
+                  <td style="width: 80px">Diskon(%)</td>
+                  <td style="width: 110px">Diskon(Rp)</td>
+                  <td style="width: 120px">Netto (Rp)</td>
+                  <td style="width: 50px">Ubah</td>
+                  <td style="width: 50px">Hapus</td>
                 </thead>
                 <tbody>
                   @if($itemsRow != 0)
@@ -197,14 +196,13 @@
                     @foreach($items as $item)
                       <tr class="text-bold">
                         <td align="center">{{ $i }}</td>
-                        <td class="editable{{$i}}" id="editableBarang{{$i}}">
-                          {{ $item->barang->nama }}
-                        </td>
-                        {{-- <td></td> --}}
+                        <td align="center">{{ $item->barang->id }} </td>
+                        <td>{{ $item->barang->nama }}</td>
                         <td align="right" class="editable{{$i}}" id="editableQty{{$i}}">
                           {{ $item->qty }}
                         </td>
                         <td align="right" class="autoharga">{{ $item->harga }}</td>
+                        <td align="right" class="autoharga">{{ $item->harga * $item->qty }}</td>
                         <td align="right" class="autodiskon">{{ $item->diskon }} %</td>
                         @php 
                           $total = $item->qty * $item->harga;
@@ -237,12 +235,12 @@
                     @endforeach
                   @else
                     <tr>
-                      <td colspan=9 class="text-center">Belum ada Detail SO</td>
+                      <td colspan=10 class="text-center">Belum ada Detail SO</td>
                     </tr>
                   @endif 
                 </tbody>
               </table>
-              <div class="form-group row justify-content-end subtotal-so">
+              {{-- <div class="form-group row justify-content-end subtotal-so">
                 <label for="subTotal" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
@@ -252,7 +250,7 @@
                   @endif
                   />
                 </div>
-              </div>
+              </div> --}}
               @if($itemsRow != 0) 
                 @php
                   $diskonFaktur = ($items[0]->diskon_faktur * $subtotal) / 100;
@@ -261,7 +259,7 @@
                   $grandtotal = $totalNotPPN + $ppn;
                 @endphp
               @endif
-              <div class="form-group row justify-content-end total-so">
+              {{-- <div class="form-group row justify-content-end total-so">
                 <label for="diskonFaktur" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
@@ -271,9 +269,9 @@
                   @endif
                   />
                 </div>
-              </div>
-              <div class="form-group row justify-content-end total-so">
-                <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+              </div> --}}
+              <div class="form-group row justify-content-end subtotal-so">
+                <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Sub Total</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger"
@@ -331,15 +329,16 @@
 @push('addon-script')
 <script type="text/javascript">
 const namaCust = document.getElementById('namaCustomer');
+const namaSales = document.getElementById('namaSales');
 const kodeCust = document.getElementById('idCustomer');
 const namaBrg = document.getElementById('namaBarang');
-const kodeBarang = document.getElementById('idBarang');
+const kodeBrg = document.getElementById('kodeBarang');
 const harga = document.getElementById('harga');
 const kodeHarga = document.getElementById('idHarga');
 const jumlah = document.getElementById('jumlah');
 const qty = document.getElementById('qty');
 const diskon = document.getElementById('diskon');
-const diskonFaktur = document.getElementById('diskonFaktur');
+// const diskonFaktur = document.getElementById('diskonFaktur');
 const angkaDF = document.getElementById('angkaDF');
 const subTotal = document.getElementById('subtotal');
 const totalNotPpn = document.getElementById('totalNotPPN');
@@ -349,41 +348,36 @@ const grandtotal = document.getElementById('grandtotal');
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('change', displayCust);
 namaBrg.addEventListener('change', displayHarga);
+kodeBrg.addEventListener('change', displayHarga);
 qty.addEventListener('change', displayJumlah);
 diskon.addEventListener('change', displayTotal);
-diskonFaktur.addEventListener('change', displayDiskon);
+// diskonFaktur.addEventListener('change', displayDiskon);
 
 /** Tampil Id Supplier **/
 function displayCust(e) {
-  var idCust;
   @foreach($customer as $c)
     if('{{ $c->nama }}' == e.target.value) {
-      idCust = '{{ $c->id }}';
+      kodeCust.value = '{{ $c->id }}';
+      namaSales.value = '{{ $c->sales->nama }}';
     }
   @endforeach
-  
-  kodeCust.value = idCust;
 }
 
 /** Tampil Harga Otomatis **/
 function displayHarga(e) {
-  var idBarang;
   @foreach($barang as $br)
-    if('{{ $br->nama }}' == e.target.value) {
-      idBarang = '{{ $br->id }}';
+    if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+      kodeBrg.value = '{{ $br->id }}';
+      namaBrg.value = '{{ $br->nama }}';
     }
   @endforeach
   @foreach($harga as $hb)
-    if(('{{ $hb->id_barang }}' == idBarang) && ('{{ $hb->id_harga }}' == 3)) {
-      var hargaBeli = '{{ $hb->harga }}';
-      var idHarga = '{{ $hb->id_harga }}';
+    if(('{{ $hb->id_barang }}' == kodeBrg.value) && ('{{ $hb->id_harga }}' == 1)) {
+      harga.value = '{{ $hb->harga_ppn }}';
+      kodeHarga.value = '{{ $hb->id_harga }}';
+      jumlah.value = harga.value;
     }
-  @endforeach
-  
-  kodeBarang.value = idBarang;
-  kodeHarga.value = idHarga;
-  harga.value = hargaBeli;
-  jumlah.value = hargaBeli;
+  @endforeach  
 }
 
 /** Tampil Jumlah Harga Otomatis **/
@@ -397,12 +391,12 @@ function displayTotal(e) {
   jumlah.value = totalHarga - besarDiskon;
 } 
 
-function displayDiskon(e) {
-  angkaDF.value = (e.target.value * subTotal.value) / 100;
-  totalNotPpn.value = subTotal.value - angkaDF.value;
-  ppn.value = totalNotPpn.value * 10 / 100;
-  grandtotal.value = +totalNotPpn.value + +ppn.value;
-} 
+// function displayDiskon(e) {
+//   angkaDF.value = (e.target.value * subTotal.value) / 100;
+//   totalNotPpn.value = subTotal.value - angkaDF.value;
+//   ppn.value = totalNotPpn.value * 10 / 100;
+//   grandtotal.value = +totalNotPpn.value + +ppn.value;
+// } 
 
 /** Tampil Table Column Editable **/
 function displayEditable(no) {
@@ -438,9 +432,11 @@ function displayEditable(no) {
 
 /** Autocomplete Input Text **/
 $(function() {
-  var barang = [];
+  var barangKode = [];
+  var barangNama = [];
   @foreach($barang as $b)
-    barang.push('{{ $b->nama }}');
+    barangKode.push('{{ $b->id }}');
+    barangNama.push('{{ $b->nama }}');
   @endforeach
 
   var customer = [];
@@ -456,7 +452,36 @@ $(function() {
     return split(term).pop();
   }
 
-  /*-- Autocomplete Input Barang --*/
+  /*-- Autocomplete Input Kode Barang --*/
+  $(kodeBrg).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(barangKode, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  /*-- Autocomplete Input Nama Barang --*/
   $(namaBrg).on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();
@@ -466,7 +491,7 @@ $(function() {
     minLength: 0,
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
-      response($.ui.autocomplete.filter(barang, extractLast(request.term)));
+      response($.ui.autocomplete.filter(barangNama, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus
@@ -486,7 +511,7 @@ $(function() {
   });
 
   /*-- Autocomplete Input Customer --*/
-  $(namaCustomer).on("keydown", function(event) {
+  $(namaCust).on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();
     }

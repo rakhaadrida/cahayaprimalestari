@@ -60,14 +60,14 @@
                 </div>
               </div>
               <hr>
-              <div class="form-group row">
+              {{-- <div class="form-group row">
                 <label for="tempo" class="col-1 col-form-label text-bold">Tempo</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="tempo" 
                   value="{{ $item->tempo }}">
                 </div>
-              </div>
+              </div> --}}
               <div class="form-group row">
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
                 <span class="col-form-label text-bold">:</span>
@@ -80,7 +80,8 @@
                 <label for="sales_cover" class="col-1 text-bold">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="sales_cover" value="{{ $item->sales_cover }}">
+                  <input type="hidden" name="id_sales" id="kodeSales">
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="sales" id="sales" value="{{ $item->id_sales }}">
                 </div>
               </div>
               <div class="form-row justify-content-center">
@@ -101,3 +102,94 @@
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+const namaSales = document.getElementById("sales");
+const kodeSales = document.getElementById("kodeSales");
+
+namaSales.addEventListener('change', displayId);
+
+function displayId(e) {
+  @foreach($sales as $s)
+    if('{{ $s->nama }}' == e.target.value) {
+      kodeSales.value = '{{ $s->id }}';
+    }
+  @endforeach
+}
+
+/** Autocomplete Input Text **/
+$(function() {
+  var sales = [];
+  @foreach($sales as $s)
+    sales.push('{{ $s->nama }}');
+  @endforeach
+
+  function split(val) {
+    return val.split(/,\s*/);
+  }
+
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
+  /*-- Autocomplete Input Barang --*/
+  $(namaSales).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(sales, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  /*-- Autocomplete Input Supplier --*/
+  $(namaSupplier).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(supplier, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+});
+</script>
+@endpush

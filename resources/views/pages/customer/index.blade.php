@@ -27,7 +27,7 @@
               <th>Nama</th>
               <th>Alamat</th>
               <th>Telepon</th>
-              <th>Tempo</th>
+              <th>Sales</th>
               <th>Detail</th>
               <th>Edit</th>
               <th>Delete</th>
@@ -41,7 +41,7 @@
                 <td>{{ $item->nama }}</td>
                 <td>{{ $item->alamat }}</td>
                 <td>{{ $item->telepon }}</td>
-                <td>{{ $item->tempo }}</td>
+                <td>{{ $item->sales->nama }}</td>
                 <td align="center">
                   <a href="#DetailCustomer{{ $item->id }}" class="btn btn-success" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>

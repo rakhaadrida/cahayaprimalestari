@@ -10,7 +10,8 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $items = Customer::All();
+        $items = Customer::with(['sales'])->get();
+
         $data = [
             'items' => $items
         ];
@@ -21,10 +22,10 @@ class CustomerController extends Controller
     public function create()
     {
         $sales = Sales::All();
-        $lastcode = Customer::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastcode = Customer::withTrashed()->max('id');
+        $lastnumber = (int) substr($lastcode, 3, 3);
         $lastnumber++;
-        $newcode = 'CUS'.sprintf("%02s", $lastcode);
+        $newcode = 'CUS'.sprintf("%03s", $lastnumber);
 
         $data = [
             'newcode' => $newcode,
@@ -44,7 +45,7 @@ class CustomerController extends Controller
             'contact_person' => $request->contact_person,
             'tempo' => $request->tempo,
             'limit' => $request->limit,
-            'sales_cover' => $request->sales_cover
+            'id_sales' => $request->sales_cover
         ]);
 
         return redirect()->route('customer.index');
@@ -63,8 +64,11 @@ class CustomerController extends Controller
     public function edit($id)
     {
         $item = Customer::findOrFail($id);
+        $sales = Sales::All();
+
         $data = [
-            'item' => $item
+            'item' => $item,
+            'sales' => $sales
         ];
 
         return view('pages.customer.edit', $data);

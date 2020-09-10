@@ -10,8 +10,8 @@ class Customer extends Model
     use SoftDeletes;
     protected $table = 'customer';
     protected $keyType = "string";
-    protected $fillable = ['id', 'nama', 'alamat', 'telepon', 'contact_person',
-                            'tempo', 'limit', 'sales_cover'];
+    protected $fillable = ['id', 'nama', 'alamat', 'telepon', 'contact_person', 
+                            'limit', 'id_sales'];
     public $incrementing = false;
     
     public function sales() {

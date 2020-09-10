@@ -9,6 +9,7 @@ use App\HargaBarang;
 use App\BarangMasuk;
 use App\DetilBM;
 use App\TempDetil;
+use App\StokBarang;
 use Carbon\Carbon;
 
 class BarangMasukController extends Controller
@@ -82,6 +83,11 @@ class BarangMasukController extends Controller
                 'qty' => $td->qty,
                 'keterangan' => $td->keterangan
             ]);
+
+            $updateStok = StokBarang::where('id_barang', $td->id_barang)
+                            ->where('id_gudang', '1')->first();
+            $updateStok->{'stok'} = $updateStok->{'stok'} + $td->qty;
+            $updateStok->save();
 
             $deleteTemp = TempDetil::where('id_bm', $id)->where('id_barang', $td->id_barang)->delete();
         }

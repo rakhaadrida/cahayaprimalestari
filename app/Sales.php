@@ -14,6 +14,6 @@ class Sales extends Model
     public $incrementing = false;
 
     public function customer() {
-        return $this->hasOne('App\Customer', 'id_sales', 'id');
+        return $this->hasMany('App\Customer', 'id_sales', 'id');
     }
 }

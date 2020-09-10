@@ -30,13 +30,13 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group row">
-                      <label for="kode" class="col-2 col-form-label text-bold ">Nomor PO</label>
+                      <label for="kode" class="col-2 col-form-label text-bold ">Nomor BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
                         <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
                       </div>
                       {{-- <div class="col-1"></div> --}}
-                      <label for="nama" class="col-auto col-form-label text-bold ">Tanggal PO</label>
+                      <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
                         <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" >
