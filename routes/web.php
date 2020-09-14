@@ -50,8 +50,17 @@ Route::get('/barangmasuk/remove/{bm}/{barang}', 'BarangMasukController@remove')
 
 // Transfer Barang
 Route::get('/transfer', 'TransferBarangController@index')->name('tb');
+Route::post('/transfer/create/{id}', 'TransferBarangController@create')->name('tb-create');
+Route::post('/transfer/process/{id}', 'TransferBarangController@process')->name('tb-process');
+Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}', 'TransferBarangController@remove')
+        ->name('tb-remove');
 
 // Sales Order
 Route::get('/so', 'SalesOrderController@index')->name('so');
 Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create');
 Route::post('/so/process/{id}', 'SalesOrderController@process')->name('so-process');
+Route::get('/so/remove/{id}/{barang}', 'SalesOrderController@remove')->name('so-remove');
+
+// Surat Jalan
+Route::get('/suratjalan', 'SuratJalanController@index')->name('sj');
+Route::post('/suratjalan/show', 'SuratJalanController@show')->name('sj-show');

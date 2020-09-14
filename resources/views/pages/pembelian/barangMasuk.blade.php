@@ -32,23 +32,31 @@
                     <div class="form-group row">
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor BM</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-2">
-                        <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
+                      <div class="col-2 mt-1">
+                        <input type="text" class="form-control form-control-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-2">
-                        <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" >
+                      <div class="col-2 mt-1">
+                        <input type="text" class="form-control form-control-sm text-bold" name="tanggal" value="{{ $tanggal }}" >
                       </div>
                     </div>   
                   </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row subtotal-so">
+                  <label for="alamat" class="col-2 col-form-label text-bold ">Nama Gudang</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-2 mt-1">
+                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" value="Johar Baru" readonly
+                    />
+                  </div>
+                </div>
+                <div class="form-group row subtotal-so">
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
-                  <div class="col-4">
-                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder=" Masukkan Nama Supplier" class="form-control col-form-label-sm text-bold" 
+                  <div class="col-4 mt-1">
+                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder=" Masukkan Nama Supplier" class="form-control form-control-sm text-bold" 
                       @if($itemsRow != 0) 
                         value="{{ $items[0]->supplier->nama }}" readonly
                       @endif

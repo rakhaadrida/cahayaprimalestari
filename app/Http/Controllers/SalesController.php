@@ -17,7 +17,7 @@ class SalesController extends Controller
     }
 
     public function create() {
-        $lastcode = Sales::max('id');
+        $lastcode = Sales::withTrashed()->max('id');
         $lastnumber = (int) substr($lastcode, 3, 2);
         $lastnumber++;
         $newcode = 'SLS'.sprintf("%02s", $lastnumber);

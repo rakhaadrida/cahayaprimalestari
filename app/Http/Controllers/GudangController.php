@@ -19,10 +19,10 @@ class GudangController extends Controller
 
     public function create()
     {
-        $lastcode = Gudang::max('id');
-        // $lastnumber = (int) substr($lastcode, 3, 2);
-        $lastcode++;
-        $newcode = 'GDG'.sprintf("%02s", $lastcode);
+        $lastcode = Gudang::withTrashed()->max('id');
+        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastnumber++;
+        $newcode = 'GDG'.sprintf("%02s", $lastnumber);
 
         $data = [
             'newcode' => $newcode

@@ -19,10 +19,10 @@ class HargaController extends Controller
 
     public function create()
     {
-        $lastcode = Harga::max('id');
-        // $lastnumber = (int) substr($lastcode, 3, 2);
-        $lastcode++;
-        $newcode = 'HRG'.sprintf("%02s", $lastcode);
+        $lastcode = Harga::withTrashed()->max('id');
+        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastnumber++;
+        $newcode = 'HRG'.sprintf("%02s", $lastnumber);
 
         $data = [
             'newcode' => $newcode

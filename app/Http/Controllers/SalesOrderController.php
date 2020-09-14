@@ -91,12 +91,18 @@ class SalesOrderController extends Controller
             ]);
 
             $updateStok = StokBarang::where('id_barang', $td->id_barang)
-                            ->where('id_gudang', '1')->first();
-            $updateStok->{'stok'} = $updateStok->{'stok'} - $td->qty;
+                            ->where('id_gudang', 'GDG01')->first();
+            $updateStok->{'stok'} -= $td->qty;
             $updateStok->save();
 
             $deleteTemp = TempDetilSO::where('id_so', $id)->where('id_barang', $td->id_barang)->delete();
         }
+
+        return redirect()->route('so');
+    }
+
+    public function remove($id, $barang) {
+        $tempDetil = TempDetilSO::where('id_so', $id)->where('id_barang', $barang)->delete();
 
         return redirect()->route('so');
     }

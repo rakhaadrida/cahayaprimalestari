@@ -58,6 +58,18 @@
     font-size: 16px;
 }
 
+.sj-first-line {
+    margin-top: -5px;
+}
+
+.sj-after-first {
+    margin-top: -20px;
+}
+
+.sj-left-input {
+    margin-top: -75px;
+}
+
 .ic-remove {
     color: orangered
 }

@@ -32,10 +32,10 @@ class BarangController extends Controller
 
     public function create()
     {
-        $lastcode = Barang::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastcode = Barang::withTrashed()->max('id');
+        $lastnumber = (int) substr($lastcode, 3, 3);
         $lastnumber++;
-        $newcode = 'BRG'.sprintf("%02s", $lastnumber);
+        $newcode = 'BRG'.sprintf("%03s", $lastnumber);
 
         $data = [
             'newcode' => $newcode
@@ -83,7 +83,7 @@ class BarangController extends Controller
         $harga = Harga::All();
 
         $j = 0;
-        for($i=0; $i<$harga->count(); $i++) {
+        for($i=0; $i < $harga->count(); $i++) {
             if($itemsRow == $harga->count()) {
                 $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
             }
@@ -94,22 +94,24 @@ class BarangController extends Controller
                     $j++;
                 }
                 else {
-                    $this->createHarga($kode, $harga[$i]->id, $request->harga[$i]);
+                    $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
                 }
             }
             else {
-                $this->createHarga($kode, $harga[$i]->id, $request->harga[$i]);
+                $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
             }
         }
 
         return redirect()->route('barang.index');
     }
 
-    public function createHarga($kode, $id, $harga) {
+    public function createHarga($kode, $id, $harga, $ppn, $hargaPPN) {
         HargaBarang::create([
             'id_barang' => $kode,
             'id_harga' => $id,
-            'harga' => $harga
+            'harga' => $harga,
+            'ppn' => $ppn,
+            'harga_ppn' => $hargaPPN
         ]);
     }
 

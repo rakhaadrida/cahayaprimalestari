@@ -63,7 +63,7 @@ class CustomerController extends Controller
 
     public function edit($id)
     {
-        $item = Customer::findOrFail($id);
+        $item = Customer::with(['sales'])->findOrFail($id);
         $sales = Sales::All();
 
         $data = [

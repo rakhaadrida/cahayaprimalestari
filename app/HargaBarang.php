@@ -12,7 +12,7 @@ class HargaBarang extends Model
     use CompositePrimaryKey;
 
     protected $table = "hargabarang";
-    protected $fillable = ['id_barang', 'id_harga', 'harga'];
+    protected $fillable = ['id_barang', 'id_harga', 'harga', 'ppn', 'harga_ppn'];
     protected $primaryKey = ['id_barang', 'id_harga'];
     protected $keyType = 'string';
     public $incrementing = false;

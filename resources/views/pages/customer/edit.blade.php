@@ -81,7 +81,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="hidden" name="id_sales" id="kodeSales">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="sales" id="sales" value="{{ $item->id_sales }}">
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="sales" id="sales" value="{{ $item->sales->nama }}">
                 </div>
               </div>
               <div class="form-row justify-content-center">

@@ -47,7 +47,11 @@
                       <label for="tempo" class="col-6 col-form-label text-bold">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo">
+                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo"
+                          @if($itemsRow != 0) 
+                            value="{{ $items[$itemsRow - 1]->tempo }}"
+                          @endif
+                        >
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
@@ -78,11 +82,23 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3 pkp-check">
                         <div class="form-check mt-2">
-                          <input class="form-check-input" type="radio" name="pkp"  value="1">
+                          <input class="form-check-input" type="radio" name="pkp"  value="1"
+                            @if($itemsRow != 0) 
+                              @if($items[$itemsRow - 1]->pkp == 1)
+                                checked
+                              @endif
+                            @endif
+                          >
                           <label class="form-check-label text-bold" for="pkp1">Ya</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="pkp"  value="0">
+                          <input class="form-check-input" type="radio" name="pkp"  value="0"
+                            @if($itemsRow != 0) 
+                              @if($items[$itemsRow - 1]->pkp == 0)
+                                checked
+                              @endif
+                            @endif
+                          >
                           <label class="form-check-label text-bold" for="pkp2">Tidak</label>
                         </div>
                       </div>
@@ -125,7 +141,11 @@
                   <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" name="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control form-control-sm mt-1"/>
+                    <input type="date" name="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control form-control-sm mt-1"
+                      @if($itemsRow != 0) 
+                        value="{{ $items[$itemsRow - 1]->tgl_kirim }}"
+                      @endif
+                    />
                   </div>
                 </div>
               </div>
@@ -226,7 +246,7 @@
                           </a>
                         </td>
                         <td align="center">
-                          <a href="">
+                          <a href="{{ route('so-remove', ['id' => $item->id_so, 'barang' => $item->id_barang]) }}">
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                           </a>
                         </td>
@@ -372,7 +392,7 @@ function displayHarga(e) {
     }
   @endforeach
   @foreach($harga as $hb)
-    if(('{{ $hb->id_barang }}' == kodeBrg.value) && ('{{ $hb->id_harga }}' == 1)) {
+    if(('{{ $hb->id_barang }}' == kodeBrg.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
       harga.value = '{{ $hb->harga_ppn }}';
       kodeHarga.value = '{{ $hb->id_harga }}';
       jumlah.value = harga.value;
