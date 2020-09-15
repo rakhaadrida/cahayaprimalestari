@@ -91,6 +91,10 @@
     height: 25px;
 }
 
+.hide {
+    display: none;
+}
+
 .autocomplete-items {
     position: absolute;
     border: 1px solid #d4d4d4;

@@ -8,7 +8,7 @@ use App\Supplier;
 use App\Barang;
 use App\HargaBarang;
 use App\DetilPO;
-use App\TempDetil;
+use App\TempDetilPO;
 use Carbon\Carbon;
 
 class PurchaseController extends Controller
@@ -20,12 +20,12 @@ class PurchaseController extends Controller
 
         // autonumber
         $lastcode = PurchaseOrder::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
-        $newcode = 'PO'.sprintf('%02s', $lastnumber);
+        $newcode = 'PO'.sprintf('%04s', $lastnumber);
 
-        $items = TempDetil::with(['barang', 'supplier'])->where('id_po', $newcode)->get();
-        $itemsRow = TempDetil::where('id_po', $newcode)->count();
+        $items = TempDetilPO::with(['barang', 'supplier'])->where('id_po', $newcode)->get();
+        $itemsRow = TempDetilPO::where('id_po', $newcode)->count();
 
         // date now
         $tanggal = Carbon::now()->toDateString();
@@ -50,7 +50,7 @@ class PurchaseController extends Controller
     }
 
     public function create(Request $request, $id) {
-        TempDetil::create([
+        TempDetilPO::create([
             'id_po' => $id,
             'id_barang' => $request->kodeBarang,
             'harga' => $request->harga,
@@ -73,7 +73,7 @@ class PurchaseController extends Controller
             'status' => 'PENDING'
         ]);
 
-        $tempDetil = TempDetil::where('id_po', $id)->get();
+        $tempDetil = TempDetilPO::where('id_po', $id)->get();
         foreach($tempDetil as $td) {
             DetilPO::create([
                 'id_po' => $td->id_po,
@@ -82,7 +82,7 @@ class PurchaseController extends Controller
                 'qty' => $td->qty
             ]);
 
-            $deleteTemp = TempDetil::where('id_po', $id)->where('id_barang', $td->id_barang)->delete();
+            $deleteTemp = TempDetilPO::where('id_po', $id)->where('id_barang', $td->id_barang)->delete();
         }
 
         return redirect()->route('po');
@@ -92,7 +92,7 @@ class PurchaseController extends Controller
         $items = $request->all();
 
         foreach($items as $item) {
-            $updateTemp = TempDetil::find($item['barang']);
+            $updateTemp = TempDetilPO::find($item['barang']);
             $updateTemp->{'qty'} = $item['qty'];
             $updateTemp->save();
         }
@@ -101,7 +101,7 @@ class PurchaseController extends Controller
     }
 
     public function remove($po, $barang) {
-        $tempDetil = TempDetil::where('id_po', $po)->where('id_barang', $barang)->delete();
+        $tempDetil = TempDetilPO::where('id_po', $po)->where('id_barang', $barang)->delete();
 
         return redirect()->route('po');
     }

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\SalesOrder;
 use App\DetilSO;
-
+use App\SuratJalan;
+use App\DetilSJ;
+use App\StokBarang;
 use Carbon\Carbon;
 
 class SuratJalanController extends Controller
@@ -44,5 +46,42 @@ class SuratJalanController extends Controller
         ];
 
         return view('pages.penjualan.detilSJ', $data);
+    }
+
+    public function process(Request $request, $id) {
+        $tanggal = $request->tanggal;
+        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+
+        SuratJalan::create([
+            'id_so' => $id,
+            'tgl_sj' => $tanggal,
+            'keterangan' => $request->keterangan
+        ]);
+
+        $i = 0;
+        $tempDetil = DetilSO::where('id_so', $id)->get();
+        foreach($tempDetil as $td) {
+            if($request->qtyRevisi[$i] != null) {
+                DetilSJ::create([
+                    'id_so' => $id,
+                    'id_barang' => $td->id_barang,
+                    'qtyRevisi' => $request->qtyRevisi[$i],
+                    'keterangan' => $request->detailKet[$i],
+                ]);
+            }
+
+            $updateStok = StokBarang::where('id_barang', $td->id_barang)
+                            ->where('id_gudang', 'GDG01')->first();
+            if($td->qty > $request->qtyRevisi[$i]) {
+                $updateStok->{'stok'} += ($td->qty - $request->qtyRevisi[$i]);
+            }
+            else {
+                $updateStok->{'stok'} -= ($request->qtyRevisi[$i] - $td->qty);
+            }
+            $updateStok->save();
+            $i++;
+        }
+
+        return redirect()->route('sj');
     }
 }

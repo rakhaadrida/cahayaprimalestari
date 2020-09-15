@@ -105,15 +105,15 @@
               <!-- Tabel Data Detil BM-->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                 <thead class="text-center text-bold">
-                  <td>No</td>
+                  <td style="width: 40px">No</td>
                   <td style="width: 100px">Kode Barang</td>
                   <td>Nama Barang</td>
-                  <td style="width: 160px">Harga</td>
+                  <td style="width: 90px">Harga</td>
                   <td style="width: 80px">Qty (Pcs)</td>
-                  <td>Jumlah Harga</td>
-                  <td>Keterangan</td>
-                  <td>Edit</td>
-                  <td>Delete</td>
+                  <td style="width: 110px">Jumlah Harga</td>
+                  <td style="width: 250px">Keterangan</td>
+                  <td style="width: 50px">Edit</td>
+                  <td style="width: 50px">Delete</td>
                 </thead>
                 <tbody>
                   @if($itemsRow != 0)
@@ -128,7 +128,9 @@
                           {{ $item->qty }}
                         </td>
                         <td align="right" class="autototal">{{ $item->qty * $item->harga }}</td>
-                        <td align="center">{{ $item->keterangan }}</td>
+                        <td align="center" class="editable{{$i}}" id="editableQty{{$i}}">
+                          {{ $item->keterangan }}
+                        </td>
                         <td align="center">
                           <a href="" id="editButton{{$i}}" 
                           onclick="return displayEditable({{$i}})">
@@ -206,10 +208,25 @@ function displayAll(e) {
     }
   @endforeach
   @foreach($harga as $hb)
-    if(('{{ $hb->id_barang }}' == kodeBrg.value) && ('{{ $hb->id_harga }}' == 1)) {
+    if(('{{ $hb->id_barang }}' == kodeBrg.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
       harga.value = '{{ $hb->harga }}';
     }
   @endforeach
+}
+
+/** Tampil Table Column Editable **/
+function displayEditable(no) {
+  document.getElementById("editButton"+no).style.display = "none";
+  document.getElementById("updateButton"+no).style.display = "block";
+  let row = document.querySelectorAll(".editable"+no);
+
+  row.forEach(function(e) {
+    e.contentEditable = true;
+    e.style.backgroundColor = "lightgrey";
+    e.style.color = "black";
+  })
+
+  return false;
 }
 
 /** Autocomplete Input Text **/

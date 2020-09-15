@@ -8,7 +8,7 @@ use App\Barang;
 use App\HargaBarang;
 use App\BarangMasuk;
 use App\DetilBM;
-use App\TempDetil;
+use App\TempDetilBM;
 use App\StokBarang;
 use Carbon\Carbon;
 
@@ -25,8 +25,8 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcode = 'BM'.sprintf('%04s', $lastnumber);
 
-        $items = TempDetil::with(['barang', 'supplier'])->where('id_bm', $newcode)->get();
-        $itemsRow = TempDetil::where('id_bm', $newcode)->count();
+        $items = TempDetilBM::with(['barang', 'supplier'])->where('id_bm', $newcode)->get();
+        $itemsRow = TempDetilBM::where('id_bm', $newcode)->count();
 
         // date now
         $tanggal = Carbon::now()->toDateString();
@@ -51,7 +51,7 @@ class BarangMasukController extends Controller
     }
 
     public function create(Request $request, $id) {
-        TempDetil::create([
+        TempDetilBM::create([
             'id_bm' => $id,
             'id_barang' => $request->kodeBarang,
             'harga' => $request->harga,
@@ -74,7 +74,7 @@ class BarangMasukController extends Controller
             'status' => 'COMPLETE'
         ]);
 
-        $tempDetil = TempDetil::where('id_bm', $id)->get();
+        $tempDetil = TempDetilBM::where('id_bm', $id)->get();
         foreach($tempDetil as $td) {
             DetilBM::create([
                 'id_bm' => $td->id_bm,
@@ -85,11 +85,11 @@ class BarangMasukController extends Controller
             ]);
 
             $updateStok = StokBarang::where('id_barang', $td->id_barang)
-                            ->where('id_gudang', '1')->first();
+                            ->where('id_gudang', 'GDG01')->first();
             $updateStok->{'stok'} = $updateStok->{'stok'} + $td->qty;
             $updateStok->save();
 
-            $deleteTemp = TempDetil::where('id_bm', $id)->where('id_barang', $td->id_barang)->delete();
+            $deleteTemp = TempDetilBM::where('id_bm', $id)->where('id_barang', $td->id_barang)->delete();
         }
 
         return redirect()->route('barangMasuk');
@@ -99,7 +99,7 @@ class BarangMasukController extends Controller
         $items = $request->all();
 
         foreach($items as $item) {
-            $updateTemp = TempDetil::find($item['barang']);
+            $updateTemp = TempDetilBM::find($item['barang']);
             $updateTemp->{'qty'} = $item['qty'];
             $updateTemp->save();
         }
@@ -108,7 +108,7 @@ class BarangMasukController extends Controller
     }
 
     public function remove($bm, $barang) {
-        $tempDetil = TempDetil::where('id_bm', $bm)->where('id_barang', $barang)->delete();
+        $tempDetil = TempDetilBM::where('id_bm', $bm)->where('id_barang', $barang)->delete();
 
         return redirect()->route('barangMasuk');
     }

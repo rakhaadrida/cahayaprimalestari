@@ -20,9 +20,9 @@ class SalesOrderController extends Controller
         $harga = HargaBarang::All();
 
         $lastcode = SalesOrder::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 2);
+        $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
-        $newcode = 'SO'.sprintf('%02s', $lastnumber);
+        $newcode = 'INV'.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');

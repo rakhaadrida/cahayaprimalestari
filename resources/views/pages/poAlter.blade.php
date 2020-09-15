@@ -49,14 +49,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
                       <div class="col-5">
-                        @php $subtotal = 0; @endphp
-                        @foreach($items as $item)
-                          @php 
-                            $subtotal += $item->qty * $item->harga;
-                          @endphp
-                        @endforeach
-                        @php $ppn = $subtotal * 10 / 100; @endphp
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="subtotal" value="{{ $subtotal }}">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="subtotal" id="subtotal">
                       </div>
                     </div>
                     <div class="form-group row total-po">
@@ -64,8 +57,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
                       <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="ppn" 
-                        value="{{ $ppn }}">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="ppn" id="ppn">
                       </div>
                     </div>
                     <div class="form-group row total-po">
@@ -73,8 +65,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
                       <div class="col-5">
-                        <input type="text" class="form-control col-form-label-sm text-bold grand-total" name="grandtotal" 
-                        value="{{ $subtotal + $ppn  }}" readonly>
+                        <input type="text" class="form-control col-form-label-sm text-bold grand-total" name="grandtotal" id="grandtotal" readonly>
                       </div>
                     </div>
                   </div>
@@ -108,16 +99,12 @@
               <hr>
 
               <!-- Inputan Detil PO -->
-              <div class="form-row">
+              {{-- <div class="form-row">
                 <div class="form-group col-sm-3">
                   <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
                   <input type="text" name="namaBarang" id="namaBarang" placeholder="Nama Barang" class="form-control form-control-sm">
                   <input type="hidden" name="kodeBarang" id="idBarang" />
                 </div>
-                {{-- <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Pack</label>
-                  <input type="text" name="pack" placeholder="Qty(Pack)" class="form-control form-control-sm">
-                </div> --}}
                 <div class="form-group col-sm-1">
                   <label for="kode" class="col-form-label text-bold ">Pcs</label>
                   <input type="text" name="pcs" id="qty" placeholder="Qty (Pcs)" class="form-control form-control-sm">
@@ -135,62 +122,107 @@
                   <label for="" class="col-form-label text-bold " ></label>
                   <button type="submit" formaction="{{ route('po-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
                 </div>
-              </div>          
-              <hr>
+              </div>           
+              <hr> --}}
               <!-- End Inputan Detil PO -->
               
               <!-- Tabel Data Detil PO -->
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
-                <thead class="text-center text-bold text-dark">
-                  <td>No</td>
-                  <td>Nama Barang</td>
-                  {{-- <td>Pack</td> --}}
-                  <td>Qty (Pcs)</td>
-                  <td>Harga</td>
-                  <td>Jumlah</td>
-                  <td>Ubah</td>
-                  <td>Hapus</td>
-                </thead>
-                <tbody>
-                  @if($itemsRow != 0)
-                    @php $i = 1; @endphp
-                    @foreach($items as $item)
+                <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
+                  Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
+                </span>
+                <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+                  <thead class="text-center text-bold text-dark">
+                    <td style="width: 40px">No</td>
+                    <td style="width: 380px">Nama Barang</td>
+                    <td style="width: 80px">Qty (Pcs)</td>
+                    <td>Harga</td>
+                    <td>Jumlah</td>
+                    {{-- <td>Ubah</td> --}}
+                    <td style="width: 50px">Hapus</td> 
+                  </thead>
+                  <tbody>
+                    @for($i=1; $i<=5; $i++)
                       <tr class="text-bold">
                         <td align="center">{{ $i }}</td>
-                        <td class="editable{{$i}}" id="editableBarang{{$i}}">
-                          {{ $item->barang->nama }}
+                        <td >
+                          <input type="text" name="namaBarang[]" id="namaBarang" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold namaBarang">
+                          <input type="hidden" name="kodeBarang[]" class="kodeBarang">
                         </td>
-                        {{-- <td></td> --}}
-                        <td align="right" class="editable{{$i}}" id="editableQty{{$i}}">
-                          {{ $item->qty }}
+                        <td> 
+                          <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qty" placeholder="Qty PO">
                         </td>
-                        <td align="right" class="autoharga">{{ $item->harga }}</td>
-                        <td align="right" class="autototal">{{ $item->qty * $item->harga }}</td>
-                        <td align="center">
-                          <a href="" id="editButton{{$i}}" 
-                          onclick="return displayEditable({{$i}})">
-                            <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
-                          </a>
-                          <a href="" id="updateButton{{$i}}" class="ic-update" 
-                          onclick="return processEditable({{$i}})">
-                            <i class="fas fa-fw fa-save fa-lg mt-1"></i>
-                          </a>
+                        <td>
+                          <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right harga" placeholder="Harga Satuan" readonly >
+                        </td>
+                        <td>
+                          <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlah" placeholder="Total Harga" readonly>
                         </td>
                         <td align="center">
-                          <a href="{{ route('po-remove', ['po' => $item->id_po, 'barang' => $item->id_barang]) }}">
+                          <a href="#" class="icRemove">
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                           </a>
                         </td>
                       </tr>
-                      @php $i++; @endphp
-                    @endforeach
-                  @else
-                    <tr>
-                      <td colspan=7 class="text-center">Belum ada Detail PO</td>
-                    </tr>
-                  @endif 
-                </tbody>
-              </table>
+                    @endfor
+                    {{-- <tr class="hide text-bold">
+                      <td align="center">{{ $i }}</td>
+                      <td>
+                        <input type="text" name="namaBarang[]" id="namaBarang" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold namaBarang">
+                        <input type="hidden" name="kodeBarang[]" class="kodeBarang">
+                      </td>
+                      <td> 
+                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qty" placeholder="Qty PO">
+                      </td>
+                      <td>
+                        <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right harga" placeholder="Harga Satuan" readonly >
+                      </td>
+                      <td>
+                        <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlah" placeholder="Total Harga" readonly>
+                      </td>
+                      <td align="center">
+                        <a href="#" class="icRemove">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
+                      </td>
+                    </tr> --}}
+                    {{-- @if($itemsRow != 0)
+                      @php $i = 1; @endphp
+                      @foreach($items as $item)
+                        <tr class="text-bold">
+                          <td align="center">{{ $i }}</td>
+                          <td class="editable{{$i}}" id="editableBarang{{$i}}">
+                            {{ $item->barang->nama }}
+                          </td>
+                          <td align="right" class="editable{{$i}}" id="editableQty{{$i}}">
+                            {{ $item->qty }}
+                          </td>
+                          <td align="right" class="autoharga">{{ $item->harga }}</td>
+                          <td align="right" class="autototal">{{ $item->qty * $item->harga }}</td>
+                          <td align="center">
+                            <a href="" id="editButton{{$i}}" 
+                            onclick="return displayEditable({{$i}})">
+                              <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
+                            </a>
+                            <a href="" id="updateButton{{$i}}" class="ic-update" 
+                            onclick="return processEditable({{$i}})">
+                              <i class="fas fa-fw fa-save fa-lg mt-1"></i>
+                            </a>
+                          </td>
+                          <td align="center">
+                            <a href="{{ route('po-remove', ['po' => $item->id_po, 'barang' => $item->id_barang]) }}">
+                              <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                            </a>
+                          </td>
+                        </tr>
+                        @php $i++; @endphp
+                      @endforeach
+                    @else 
+                      <tr>
+                        <td colspan=7 class="text-center text-bold h4 p-2"><i>Belum ada Detail PO</i></td>
+                      </tr>
+                    @endif  --}}
+                  </tbody>
+                </table>
               <hr>
               <!-- End Tabel Data Detil PO -->
 
@@ -218,17 +250,25 @@
 <script type="text/javascript">
 const namaSup = document.getElementById('namaSupplier');
 const kodeSup = document.getElementById('idSupplier');
-const namaBrg = document.getElementById('namaBarang');
-const kodeBarang = document.getElementById('idBarang');
-const harga = document.getElementById('harga');
-const kodeHarga = document.getElementById('idHarga');
-const jumlah = document.getElementById('jumlah');
-const qty = document.getElementById('qty');
+const kodeBarang = document.querySelectorAll('.kodeBarang');
+const brgNama = document.querySelectorAll(".namaBarang");
+const qty = document.querySelectorAll(".qty");
+const harga = document.querySelectorAll(".harga");
+const jumlah = document.querySelectorAll(".jumlah");
+const subtotal = document.getElementById('subtotal');
+const ppn = document.getElementById('ppn');
+const grandtotal = document.getElementById('grandtotal');
+const hapusBaris = document.querySelectorAll(".icRemove");
+const newRow = document.getElementsByClassName('table-add')[0];
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaSup.addEventListener('change', displaySupp);
-namaBrg.addEventListener('change', displayHarga);
-qty.addEventListener('change', displayJumlah);
+newRow.addEventListener("click", displayRow);
+
+function displayRow(e) {
+  const clone = $(tablePO).find('tbody tr').last().clone(true).removeClass('hide');
+  $(tablePO).append(clone);
+}
 
 /** Tampil Id Supplier **/
 function displaySupp(e) {
@@ -242,31 +282,45 @@ function displaySupp(e) {
   kodeSup.value = idSupp;
 }
 
-/** Tampil Harga Otomatis **/
-function displayHarga(e) {
-  var idBarang;
-  @foreach($barang as $br)
-    if('{{ $br->nama }}' == e.target.value) {
-      idBarang = '{{ $br->id }}';
-    }
-  @endforeach
-  @foreach($harga as $hb)
-    if(('{{ $hb->id_barang }}' == idBarang) && ('{{ $hb->id_harga }}' == 1)) {
-      var hargaBeli = '{{ $hb->harga }}';
-      var idHarga = '{{ $hb->id_harga }}';
-    }
-  @endforeach
-  
-  kodeBarang.value = idBarang;
-  kodeHarga.value = idHarga;
-  harga.value = hargaBeli;
-  jumlah.value = hargaBeli;
+/** Tampil Harga Barang **/
+for(let i = 0; i < brgNama.length; i++) {
+  brgNama[i].addEventListener("change", function (e) {
+    @foreach($barang as $br)
+      if('{{ $br->nama }}' == e.target.value) {
+        kodeBarang[i].value = '{{ $br->id }}';
+      }
+    @endforeach
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        harga[i].value = '{{ $hb->harga }}';
+        jumlah[i].value = '{{ $hb->harga }}';
+      }
+    @endforeach
+  });
 }
 
 /** Tampil Jumlah Harga Otomatis **/
-function displayJumlah(e) {
-  jumlah.value = e.target.value * harga.value;
+for(let i = 0; i < qty.length; i++) {
+  qty[i].addEventListener("change", function (e) {
+    jumlah[i].value = e.target.value * harga[i].value;
+    subtotal.value = +subtotal.value + +jumlah[i].value;
+  });
 } 
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    subtotal.value = +subtotal.value - +jumlah[i].value;
+    jumlah[i].value = jumlah[i+1].value;
+    harga[i].value = harga[i+1].value;
+    qty[i].value = qty[i+1].value;
+    brgNama[i].value = brgNama[i+1].value;
+    jumlah[i+1].value = "";
+    harga[i+1].value = "";
+    qty[i+1].value = "";
+    brgNama[i+1].value = "";
+  });
+}
 
 /** Tampil Table Column Editable **/
 function displayEditable(no) {
@@ -282,23 +336,6 @@ function displayEditable(no) {
 
   return false;
 }
-
-/* function processEditable(no) {
-  let editableBarang = document.getElementById("editableBarang"+no);
-  let editableQty = document.getElementById("editableQty"+no);
-  const itemsEdit = [];
-
-  itemsEdit.push({
-    barang: editableBarang.value;
-    qty: editableQty.value;
-  })  
-  
-  $.ajax({
-    url: '/po/update',
-    type: 'post',
-    data: itemsEdit
-  });
-} */
 
 /** Autocomplete Input Text **/
 $(function() {
@@ -321,33 +358,35 @@ $(function() {
   }
 
   /*-- Autocomplete Input Barang --*/
-  $(namaBrg).on("keydown", function(event) {
-    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-      event.preventDefault();
-    }
-  })
-  .autocomplete({
-    minLength: 0,
-    source: function(request, response) {
-      // delegate back to autocomplete, but extract the last term
-      response($.ui.autocomplete.filter(barang, extractLast(request.term)));
-    },
-    focus: function() {
-      // prevent value inserted on focus
-      return false;
-    },
-    select: function(event, ui) {
-      var terms = split(this.value);
-      // remove the current input
-      terms.pop();
-      // add the selected item
-      terms.push(ui.item.value);
-      // add placeholder to get the comma-and-space at the end
-      terms.push("");
-      this.value = terms.join("");
-      return false;
-    }
-  });
+  for(let i = 0; i < brgNama.length; i++) {
+    $(brgNama[i]).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        // delegate back to autocomplete, but extract the last term
+        response($.ui.autocomplete.filter(barang, extractLast(request.term)));
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push(ui.item.value);
+        // add placeholder to get the comma-and-space at the end
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+  }
 
   /*-- Autocomplete Input Supplier --*/
   $(namaSupplier).on("keydown", function(event) {
@@ -379,106 +418,5 @@ $(function() {
   });
 });
 
-/*
-autocomplete(namaBrg, barang);
-*/
-
-// function autocomplete(inp, arr) {
-//   var currentFocus;
-//   /*execute a function when someone writes in the text field:*/
-//   inp.addEventListener("input", function(e) {
-//       var a, b, i, val = this.value;
-//       console.log(val);
-//       /*close any already open lists of autocompleted values*/
-//       closeAllLists();
-//       if (!val) { return false;}
-//       currentFocus = -1;
-//       /*create a DIV element that will contain the items (values):*/
-//       a = document.createElement("DIV");
-//       a.setAttribute("id", this.id + "autocomplete-list");
-//       a.setAttribute("class", "autocomplete-items");
-//       /*append the DIV element as a child of the autocomplete container:*/
-//       this.parentNode.appendChild(a);
-//       /*for each item in the array...*/
-//       for (i = 0; i < arr.length; i++) {
-//         console.log(arr[i].indexOf(val));
-//         /*check if the item starts with the same letters as the text field value:*/
-//         if (arr[i].toUpperCase().indexOf(val) == val.toUpperCase()) {
-//         // if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-//           /*create a DIV element for each matching element:*/
-//           b = document.createElement("DIV");
-//           /*make the matching letters bold:*/
-//           b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-//           b.innerHTML += arr[i].substr(val.length);
-//           /*insert a input field that will hold the current array item's value:*/
-//           b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-//           /*execute a function when someone clicks on the item value (DIV element):*/
-//           b.addEventListener("click", function(e) {
-//               /*insert the value for the autocomplete text field:*/
-//               inp.value = this.getElementsByTagName("input")[0].value;
-//               /*close the list of autocompleted values,
-//               (or any other open lists of autocompleted values:*/
-//               closeAllLists();
-//           });
-//           a.appendChild(b);
-//         }
-//       }
-//   });
-//   /*execute a function presses a key on the keyboard:*/
-//   inp.addEventListener("keydown", function(e) {
-//       var x = document.getElementById(this.id + "autocomplete-list");
-//       if (x) x = x.getElementsByTagName("div");
-//       if (e.keyCode == 40) {
-//         /*If the arrow DOWN key is pressed,
-//         increase the currentFocus variable:*/
-//         currentFocus++;
-//         /*and and make the current item more visible:*/
-//         addActive(x);
-//       } else if (e.keyCode == 38) { //up
-//         /*If the arrow UP key is pressed,
-//         decrease the currentFocus variable:*/
-//         currentFocus--;
-//         /*and and make the current item more visible:*/
-//         addActive(x);
-//       } else if (e.keyCode == 13) {
-//         /*If the ENTER key is pressed, prevent the form from being submitted,*/
-//         e.preventDefault();
-//         if (currentFocus > -1) {
-//           /*and simulate a click on the "active" item:*/
-//           if (x) x[currentFocus].click();
-//         }
-//       }
-//   });
-//   function addActive(x) {
-//     /*a function to classify an item as "active":*/
-//     if (!x) return false;
-//     /*start by removing the "active" class on all items:*/
-//     removeActive(x);
-//     if (currentFocus >= x.length) currentFocus = 0;
-//     if (currentFocus < 0) currentFocus = (x.length - 1);
-//     /*add class "autocomplete-active":*/
-//     x[currentFocus].classList.add("autocomplete-active");
-//   }
-//   function removeActive(x) {
-//     /*a function to remove the "active" class from all autocomplete items:*/
-//     for (var i = 0; i < x.length; i++) {
-//       x[i].classList.remove("autocomplete-active");
-//     }
-//   }
-//   function closeAllLists(elmnt) {
-//     /*close all autocomplete lists in the document,
-//     except the one passed as an argument:*/
-//     var x = document.getElementsByClassName("autocomplete-items");
-//     for (var i = 0; i < x.length; i++) {
-//       if (elmnt != x[i] && elmnt != inp) {
-//         x[i].parentNode.removeChild(x[i]);
-//       }
-//     }
-//   }
-//   /*execute a function when someone clicks in the document:*/
-//   document.addEventListener("click", function (e) {
-//       closeAllLists(e.target);
-//   });
-// }
 </script>
 @endpush

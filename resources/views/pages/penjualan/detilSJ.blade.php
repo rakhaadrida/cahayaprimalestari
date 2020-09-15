@@ -78,7 +78,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold text-dark">Keterangan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
-                    <input type="text" name="namaSupplier" id="namaSupplier" class="form-control form-control-sm">
+                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm">
                   </div>
                 </div>
               </div>
@@ -107,10 +107,10 @@
                         <td>{{ $item->barang->nama }}</td>
                         <td align="right">{{ $item->qty }}</td>
                         <td align="right">
-                          <input type="text" class="form-control form-control-sm" name="qtyRevisi" placeholder="Qty Revisi">
+                          <input type="text" class="form-control form-control-sm" name="qtyRevisi[]" placeholder="Qty Revisi">
                         </td>
                         <td align="right">
-                          <input type="text" class="form-control form-control-sm" name="detailKet" placeholder="Keterangan Revisi">
+                          <input type="text" class="form-control form-control-sm" name="detailKet[]" placeholder="Keterangan Revisi">
                         </td>
                         <td align="center">
                           <a href="" id="editButton{{$i}}" 
@@ -139,6 +139,17 @@
               </table>
               <hr>
               <!-- End Tabel Data Detil PO -->
+
+              <!-- Button Submit dan Reset -->
+              <div class="form-row justify-content-center">
+                <div class="col-2">
+                  <button type="submit" formaction="{{ route('sj-process', $items[0]->id_so) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                </div>
+                <div class="col-2">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                </div>
+              </div>
+              <!-- End Button Submit dan Reset -->
 
             </form>
           </div>
