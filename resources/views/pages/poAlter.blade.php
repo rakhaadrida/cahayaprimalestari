@@ -164,7 +164,7 @@
                         </td>
                       </tr>
                     @endfor
-                    {{-- <tr class="hide text-bold">
+                    <tr class="hide text-bold">
                       <td align="center">{{ $i }}</td>
                       <td>
                         <input type="text" name="namaBarang[]" id="namaBarang" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold namaBarang">
@@ -184,7 +184,7 @@
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                         </a>
                       </td>
-                    </tr> --}}
+                    </tr>
                     {{-- @if($itemsRow != 0)
                       @php $i = 1; @endphp
                       @foreach($items as $item)

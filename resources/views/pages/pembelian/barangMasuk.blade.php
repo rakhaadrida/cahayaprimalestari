@@ -112,8 +112,8 @@
                   <td style="width: 80px">Qty (Pcs)</td>
                   <td style="width: 110px">Jumlah Harga</td>
                   <td style="width: 250px">Keterangan</td>
-                  <td style="width: 50px">Edit</td>
-                  <td style="width: 50px">Delete</td>
+                  <td style="width: 50px" id="editHead">Edit</td>
+                  <td style="width: 50px" id="deleteHead">Delete</td>
                 </thead>
                 <tbody>
                   @if($itemsRow != 0)
@@ -123,12 +123,12 @@
                         <td align="center">{{ $i }}</td>
                         <td align="center">{{ $item->barang->id }}</td>
                         <td>{{ $item->barang->nama }}</td>
-                        <td align="right" class="autoharga">{{ $item->harga }}</td>
-                        <td align="right" class="editable{{$i}}" id="editableQty{{$i}}">
+                        <td align="right">{{ $item->harga }}</td>
+                        <td align="right" class="editQty{{$i}}" id="editableQty{{$i}}">
                           {{ $item->qty }}
                         </td>
-                        <td align="right" class="autototal">{{ $item->qty * $item->harga }}</td>
-                        <td align="center" class="editable{{$i}}" id="editableQty{{$i}}">
+                        <td align="right">{{ $item->qty * $item->harga }}</td>
+                        <td align="center" class="editKet{{$i}}" id="editableKet{{$i}}">
                           {{ $item->keterangan }}
                         </td>
                         <td align="center">
@@ -136,14 +136,18 @@
                           onclick="return displayEditable({{$i}})">
                             <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
                           </a>
-                          <a href="" id="updateButton{{$i}}" class="ic-update" 
-                          onclick="return processEditable({{$i}})">
+                          <button type="submit" formaction="{{ route('bm-update', ['bm' => $item->id_bm, 'barang' => $item->id_barang, 'id' => $i]) }}" formmethod="POST"
+                          id="updateButton{{$i}}" class=" btn btn-md ic-update">
                             <i class="fas fa-fw fa-save fa-lg mt-1"></i>
-                          </a>
+                          </button>
                         </td>
                         <td align="center">
-                          <a href="{{ route('bm-remove', ['bm' => $item->id_bm, 'barang' => $item->id_barang]) }}">
+                          <a href="{{ route('bm-remove', ['bm' => $item->id_bm, 'barang' => $item->id_barang]) }}" id="removeButton{{$i}}">
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                          </a>
+                          <a href="" id="cancelButton{{$i}}" class="ic-cancel" 
+                          onclick="return cancelEditable({{$i}})">
+                            <i class="fas fa-fw fa-history fa-lg mt-1"></i>
                           </a>
                         </td>
                       </tr>
@@ -162,10 +166,12 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('bm-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" onclick="return checkEditable()" 
+                   id="submitBM"
+                  class="btn btn-success btn-block text-bold">Submit</>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset </button>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
@@ -218,15 +224,76 @@ function displayAll(e) {
 function displayEditable(no) {
   document.getElementById("editButton"+no).style.display = "none";
   document.getElementById("updateButton"+no).style.display = "block";
-  let row = document.querySelectorAll(".editable"+no);
+  document.getElementById("removeButton"+no).style.display = "none";
+  document.getElementById("cancelButton"+no).style.display = "block";
+  let rowQty = document.querySelectorAll(".editQty"+no);
+  let rowKet = document.querySelectorAll(".editKet"+no);
+  document.getElementById("editHead").innerText = "Simpan"
+  document.getElementById("deleteHead").innerText = "Batal"
 
-  row.forEach(function(e) {
-    e.contentEditable = true;
-    e.style.backgroundColor = "lightgrey";
-    e.style.color = "black";
+  rowQty.forEach(function(e) {
+    const editQty = `
+      <input type="text" name="editQty[]" class="form-control form-control-sm text-bold" 
+      value="${e.innerText}">
+    `;
+    $(e).empty();
+    $(e).append(editQty);
+    // e.contentEditable = true;
+    // e.style.backgroundColor = "lightgrey";
+    // e.style.color = "black";
+  })
+
+  rowKet.forEach(function(e) {
+    const editKet = `
+      <input type="text" name="editKet[]" class="form-control form-control-sm text-bold" value="${e.innerText}">
+    `;
+    $(e).empty();
+    $(e).append(editKet);
   })
 
   return false;
+}
+
+/** Cancel Table Column Editable **/
+function cancelEditable(no) {
+  document.getElementById("updateButton"+no).style.display = "none";
+  document.getElementById("editButton"+no).style.display = "block";
+  document.getElementById("cancelButton"+no).style.display = "none";
+  document.getElementById("removeButton"+no).style.display = "block";
+  document.getElementById("editHead").innerText = "Edit";
+  document.getElementById("deleteHead").innerText = "Delete";
+  const tdQty = document.getElementById("editableQty"+no);
+  const tdKet = document.getElementById("editableKet"+no);
+  const inputQty = tdQty.getElementsByTagName('input')[0];
+  const inputKet = tdKet.getElementsByTagName('input')[0];
+  const isiQty = inputQty.value;
+  const isiKet = inputKet.value;
+  $(tdQty).empty();
+  $(tdKet).empty();
+  tdQty.innerText = isiQty;
+  tdKet.innerText = isiKet;
+
+  return false;
+}
+
+/** Check Editable Input Before Submit **/
+function checkEditable(e) {
+  var j = 0;
+  for(let i = 1; i <= '{{ $itemsRow }}'; i++) {
+    var getRow = document.getElementById("updateButton"+i);
+    if(getRow.style.display == "block") {
+      j = 1;
+    }
+  }
+
+  if(j == 1) {
+    alert(`Silahkan simpan perubahan terlebih dahulu`);
+    return false;
+  }
+  else {
+    document.getElementById("submitBM").formMethod = "POST";
+    document.getElementById("submitBM").formAction = '{{ route('bm-process', $newcode) }}';
+  }
 }
 
 /** Autocomplete Input Text **/

@@ -25,7 +25,8 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcode = 'BM'.sprintf('%04s', $lastnumber);
 
-        $items = TempDetilBM::with(['barang', 'supplier'])->where('id_bm', $newcode)->get();
+        $items = TempDetilBM::with(['barang', 'supplier'])->where('id_bm', $newcode)
+                    ->orderBy('created_at','asc')->get();
         $itemsRow = TempDetilBM::where('id_bm', $newcode)->count();
 
         // date now
@@ -95,16 +96,14 @@ class BarangMasukController extends Controller
         return redirect()->route('barangMasuk');
     }
 
-    public function update(Request $request) {
-        $items = $request->all();
+    public function update(Request $request, $bm, $barang, $id) {
+        $updateDetil = TempDetilBM::where('id_bm', $bm)->where('id_barang', $barang)->first();
 
-        foreach($items as $item) {
-            $updateTemp = TempDetilBM::find($item['barang']);
-            $updateTemp->{'qty'} = $item['qty'];
-            $updateTemp->save();
-        }
+        $updateDetil->{'qty'} = $request->editQty[$id-1];
+        $updateDetil->{'keterangan'} = $request->editKet[$id-1];
+        $updateDetil->save();
 
-        return redirect()->route('po');
+        return redirect()->route('barangMasuk');
     }
 
     public function remove($bm, $barang) {

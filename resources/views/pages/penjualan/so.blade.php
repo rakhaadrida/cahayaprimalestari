@@ -255,7 +255,7 @@
                     @endforeach
                   @else
                     <tr>
-                      <td colspan=10 class="text-center">Belum ada Detail SO</td>
+                      <td colspan=11 class="text-center text-bold h4 p-2"><i>Belum ada Detail SO</i></td>
                     </tr>
                   @endif 
                 </tbody>

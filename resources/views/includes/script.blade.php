@@ -1,7 +1,7 @@
 <script src="{{ url('backend/vendor/jquery/jquery.min.js') }}"></script>
 <script src="{{ url('backend/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <!-- Core plugin JavaScript-->
 <script src="{{ url('backend/vendor/jquery-easing/jquery.easing.min.js') }}"></script>

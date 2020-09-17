@@ -81,6 +81,12 @@
 .ic-update {
     display: none;
     color: green;
+    margin-top: -7px;
+}
+
+.ic-cancel {
+    display: none;
+    color: orangered;
 }
 
 .input-header {

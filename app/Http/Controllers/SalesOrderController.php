@@ -90,10 +90,19 @@ class SalesOrderController extends Controller
                 'diskon' => $td->diskon
             ]);
 
-            $updateStok = StokBarang::where('id_barang', $td->id_barang)
-                            ->where('id_gudang', 'GDG01')->first();
-            $updateStok->{'stok'} -= $td->qty;
-            $updateStok->save();
+            // $updateStok = StokBarang::where('id_barang', $td->id_barang)
+            //                 ->where('id_gudang', 'GDG01')->first();
+            $updateStok = StokBarang::where('id_barang', $td->id_barang)->get();
+            foreach($updateStok as $us) {
+                if($td->qty <= $us->stok) {
+                    $us->stok -= $td->qty;
+                }
+                else {
+                    $td->qty -= $us->stok;
+                    $us->stok -= $us->stok;
+                }
+                $us->save();
+            }
 
             $deleteTemp = TempDetilSO::where('id_so', $id)->where('id_barang', $td->id_barang)->delete();
         }
