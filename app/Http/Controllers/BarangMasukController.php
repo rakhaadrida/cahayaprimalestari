@@ -111,4 +111,10 @@ class BarangMasukController extends Controller
 
         return redirect()->route('barangMasuk');
     }
+
+    public function reset($bm) {
+         $tempDetil = TempDetilBM::where('id_bm', $bm)->delete();
+
+        return redirect()->route('barangMasuk');
+    }
 }

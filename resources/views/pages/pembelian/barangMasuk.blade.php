@@ -58,15 +58,21 @@
                   <div class="col-4 mt-1">
                     <input type="text" name="namaSupplier" id="namaSupplier" placeholder=" Masukkan Nama Supplier" class="form-control form-control-sm text-bold" 
                       @if($itemsRow != 0) 
-                        value="{{ $items[0]->supplier->nama }}" readonly
+                        value="{{ $items[$itemsRow - 1]->supplier->nama }}" readonly
                       @endif
                     />
                     <input type="hidden" name="kodeSupplier" id="kodeSupplier" 
                       @if($itemsRow != 0) 
-                        value="{{ $items[0]->id_supplier }}"
+                        value="{{ $items[$itemsRow - 1]->id_supplier }}"
                       @endif
                     />
                   </div>
+                  @if($itemsRow != 0)
+                    <div class="col-auto mt-1" style="margin-left: -15px">
+                      <button type="submit" onclick="return resetSupplier()" 
+                      id="resetSupp" class="btn btn-info btn-sm btn-block text-bold form-control form-control-sm">Reset</button>
+                    </div>
+                  @endif
                 </div>
               </div>
               <hr>
@@ -119,7 +125,7 @@
                   @if($itemsRow != 0)
                     @php $i = 1; @endphp
                     @foreach($items as $item)
-                      <tr class="text-bold">
+                      <tr class="text-bold barisBM">
                         <td align="center">{{ $i }}</td>
                         <td align="center">{{ $item->barang->id }}</td>
                         <td>{{ $item->barang->nama }}</td>
@@ -167,11 +173,12 @@
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" onclick="return checkEditable()" 
-                   id="submitBM"
-                  class="btn btn-success btn-block text-bold">Submit</>
+                  id="submitBM" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset </button>
+                  <button type="submit" formaction="{{ route('bm-reset', $newcode) }}" 
+                  formmethod="GET" class="btn btn-outline-danger btn-block text-bold">Reset All 
+                  </button> 
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
@@ -295,6 +302,24 @@ function checkEditable(e) {
     document.getElementById("submitBM").formAction = '{{ route('bm-process', $newcode) }}';
   }
 }
+
+/** Reset Inputan Nama Supplier **/
+function resetSupplier(e) {
+  supplier.removeAttribute("readonly");
+  supplier.value = "";
+  return false;
+}
+
+/** Reset Isi Table **/
+/* function resetTable(e) {
+  const tbody = document.getElementsByTagName('tbody')[0];
+  const baris = tbody.querySelectorAll(".barisBM");
+  baris.forEach(function(e) {
+    tbody.removeChild(baris);
+  });
+
+  return false;
+} */
 
 /** Autocomplete Input Text **/
 $(function() {

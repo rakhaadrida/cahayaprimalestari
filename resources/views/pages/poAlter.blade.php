@@ -130,7 +130,7 @@
                 <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
                   Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
                 </span>
-                <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+                <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
                   <thead class="text-center text-bold text-dark">
                     <td style="width: 40px">No</td>
                     <td style="width: 380px">Nama Barang</td>
@@ -140,7 +140,7 @@
                     {{-- <td>Ubah</td> --}}
                     <td style="width: 50px">Hapus</td> 
                   </thead>
-                  <tbody>
+                  <tbody id="tablePO">
                     @for($i=1; $i<=5; $i++)
                       <tr class="text-bold">
                         <td align="center">{{ $i }}</td>
@@ -164,7 +164,7 @@
                         </td>
                       </tr>
                     @endfor
-                    <tr class="hide text-bold">
+                    {{-- <tr class="hide text-bold">
                       <td align="center">{{ $i }}</td>
                       <td>
                         <input type="text" name="namaBarang[]" id="namaBarang" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold namaBarang">
@@ -184,7 +184,7 @@
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                         </a>
                       </td>
-                    </tr>
+                    </tr> --}}
                     {{-- @if($itemsRow != 0)
                       @php $i = 1; @endphp
                       @foreach($items as $item)
@@ -266,8 +266,133 @@ namaSup.addEventListener('change', displaySupp);
 newRow.addEventListener("click", displayRow);
 
 function displayRow(e) {
-  const clone = $(tablePO).find('tbody tr').last().clone(true).removeClass('hide');
-  $(tablePO).append(clone);
+  const lastRow = $(tablePO).find('tr:last td:first-child').text();
+  const newTr = `
+    <tr class="text-bold">
+      <td align="center">${+lastRow + 1}</td>
+      <td >
+        <input type="text" name="namaBarang[]" id="namaBrg" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
+        <input type="hidden" name="kodeBarang[]" class="kdBrgRow">
+      </td>
+      <td> 
+        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qtyRow" placeholder="Qty PO">
+      </td>
+      <td>
+        <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right hargaRow" placeholder="Harga Satuan" readonly >
+      </td>
+      <td>
+        <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" readonly>
+      </td>
+      <td align="center">
+        <a href="#" class="icRemoveRow">
+          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+        </a>
+      </td>
+    </tr>
+  `; 
+  // const clone = $(tablePO).find('tbody tr').last().clone(true).removeClass('hide');
+  // const clone = $(tablePO).find('tbody tr:last').clone(true).removeClass('hide');
+  // const lastRow = $(tablePO).find('tbody tr:last td:first-child').text();
+  // clone.find('td:first-child').text(+lastRow + 1);
+  // clone.find('td:nth-child(2) input').val('');
+  // clone.find('td:nth-child(3) input').val('');
+  // clone.find('td:nth-child(4) input').val('');
+  // clone.find('td:nth-child(5) input').val('');
+  $(tablePO).append(newTr);
+  const brgRow = document.querySelectorAll(".nmBrgRow");
+  const kodeRow = document.querySelectorAll(".kdBrgRow");
+  const qtyRow = document.querySelectorAll(".qtyRow");
+  const hargaRow = document.querySelectorAll(".hargaRow");
+  const jumlahRow = document.querySelectorAll(".jumlahRow");
+  const hapusRow = document.querySelectorAll(".icRemoveRow");
+
+  for(let i = 0; i < brgRow.length; i++) {
+    brgRow[i].addEventListener("change", function (e) {
+      @foreach($barang as $br)
+        if('{{ $br->nama }}' == e.target.value) {
+          kodeRow[i].value = '{{ $br->id }}';
+        }
+      @endforeach
+      @foreach($harga as $hb)
+        if(('{{ $hb->id_barang }}' == kodeRow[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+          hargaRow[i].value = '{{ $hb->harga }}';
+          jumlahRow[i].value = '{{ $hb->harga }}';
+        }
+      @endforeach
+    });
+  }
+
+  for(let i = 0; i < qtyRow.length; i++) {
+    qtyRow[i].addEventListener("change", function (e) {
+      jumlahRow[i].value = e.target.value * hargaRow[i].value;
+      subtotal.value = +subtotal.value + +jumlahRow[i].value;
+    });
+  }
+
+  for(let i = 0; i < hapusRow.length; i++) {
+    hapusRow[i].addEventListener("click", function (e) {
+      subtotal.value = +subtotal.value - +jumlahRow[i].value;
+      jumlahRow[i].value = jumlahRow[i+1].value;
+      hargaRow[i].value = hargaRow[i+1].value;
+      qtyRow[i].value = qtyRow[i+1].value;
+      brgRow[i].value = brgRow[i+1].value;
+      jumlahRow[i+1].value = "";
+      hargaRow[i+1].value = "";
+      qtyRow[i+1].value = "";
+      brgRow[i+1].value = "";
+    });
+  }
+  console.log(hapusRow);
+
+  $(function() {
+    var barang = [];
+    @foreach($barang as $b)
+      barang.push('{{ $b->nama }}');
+    @endforeach
+
+    var supplier = [];
+    @foreach($supplier as $s)
+      supplier.push('{{ $s->nama }}');
+    @endforeach
+      
+    function split(val) {
+      return val.split(/,\s*/);
+    }
+
+    function extractLast(term) {
+      return split(term).pop();
+    }
+    
+    for(let i = 0; i < brgRow.length; i++) {
+      $(brgRow[i]).on("keydown", function(event) {
+        if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function(request, response) {
+          // delegate back to autocomplete, but extract the last term
+          response($.ui.autocomplete.filter(barang, extractLast(request.term)));
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function(event, ui) {
+          var terms = split(this.value);
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push(ui.item.value);
+          // add placeholder to get the comma-and-space at the end
+          terms.push("");
+          this.value = terms.join("");
+          return false;
+        }
+      });
+    }
+  });
 }
 
 /** Tampil Id Supplier **/

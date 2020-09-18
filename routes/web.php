@@ -49,6 +49,7 @@ Route::post('/barangmasuk/update/{bm}/{barang}/{id}', 'BarangMasukController@upd
         ->name('bm-update');
 Route::get('/barangmasuk/remove/{bm}/{barang}', 'BarangMasukController@remove')
         ->name('bm-remove');
+Route::get('/barangmasuk/reset/{bm}', 'BarangMasukController@reset')->name('bm-reset');
 
 // Transfer Barang
 Route::get('/transfer', 'TransferBarangController@index')->name('tb');
