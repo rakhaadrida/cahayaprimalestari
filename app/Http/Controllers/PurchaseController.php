@@ -49,22 +49,11 @@ class PurchaseController extends Controller
         return $formatTanggal;
     }
 
-    public function create(Request $request, $id) {
-        TempDetilPO::create([
-            'id_po' => $id,
-            'id_barang' => $request->kodeBarang,
-            'harga' => $request->harga,
-            'qty' => $request->pcs,
-            'id_supplier' => $request->kodeSupplier
-        ]);
-
-        return redirect()->route('po');
-    }
-
     public function process (Request $request, $id) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
-        
+        $jumlah = $request->jumBaris;
+
         PurchaseOrder::create([
             'id' => $id,
             'tgl_po' => $tanggal,
@@ -73,16 +62,15 @@ class PurchaseController extends Controller
             'status' => 'PENDING'
         ]);
 
-        $tempDetil = TempDetilPO::where('id_po', $id)->get();
-        foreach($tempDetil as $td) {
-            DetilPO::create([
-                'id_po' => $td->id_po,
-                'id_barang' => $td->id_barang,
-                'harga' => $td->harga,
-                'qty' => $td->qty
-            ]);
-
-            $deleteTemp = TempDetilPO::where('id_po', $id)->where('id_barang', $td->id_barang)->delete();
+        for($i = 0; $i < $jumlah; $i++) {
+            if($request->kodeBarang[$i] != "") {
+                DetilPO::create([
+                    'id_po' => $id,
+                    'id_barang' => $request->kodeBarang[$i],
+                    'harga' => $request->harga[$i],
+                    'qty' => $request->qty[$i]
+                ]);
+            }
         }
 
         return redirect()->route('po');

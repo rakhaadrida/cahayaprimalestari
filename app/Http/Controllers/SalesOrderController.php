@@ -115,4 +115,40 @@ class SalesOrderController extends Controller
 
         return redirect()->route('so');
     }
+
+    public function change() {
+        $so = SalesOrder::All();
+        $customer = Customer::All();
+
+        $data = [
+            'so' => $so,
+            'customer' => $customer
+        ];
+
+        return view('pages.penjualan.ubahFaktur', $data);
+    }
+
+    public function show(Request $request) {
+        $items = SalesOrder::with('customer')->where('id', $request->kode)
+                ->orWhere('id_customer', $request->kodeCustomer)
+                ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
+                ->first();
+        $itemsDetail = DetilSO::with(['so', 'barang'])->where('id_so', $items->id)->get();
+        $itemsRow = SalesOrder::where('id', $request->kode)
+                    ->orWhere('id_customer', $request->kodeCustomer)
+                    ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
+                    ->count();
+        $customer = Customer::All();
+        $so = SalesOrder::All();
+        
+        $data = [
+            'items' => $items,
+            'itemsDetail' => $itemsDetail,
+            'itemsRow' => $itemsRow,
+            'customer' => $customer,
+            'so' => $so
+        ];
+
+        return view('pages.penjualan.detilFaktur', $data);
+    }
 }

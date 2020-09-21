@@ -48,24 +48,25 @@
                       <label for="subtotal" class="col-5 col-form-label text-bold ">Sub Total</label>
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="subtotal" id="subtotal">
+                      <div class="col-4">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right" name="subtotal" id="subtotal">
                       </div>
                     </div>
                     <div class="form-group row total-po">
                       <label for="ppn" class="col-5 col-form-label text-bold ">PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="ppn" id="ppn">
+                      <div class="col-4">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right" name="ppn" id="ppn">
                       </div>
                     </div>
                     <div class="form-group row total-po">
                       <label for="grandtotal" class="col-5 col-form-label text-bold ">Grand Total</label>
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-5">
-                        <input type="text" class="form-control col-form-label-sm text-bold grand-total" name="grandtotal" id="grandtotal" readonly>
+                      <div class="col-4">
+                        <input type="text" readonly class="form-control-plaintext text-bold text-right text-danger" name="grandtotal" id="grandtotal">
+                        <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                       </div>
                     </div>
                   </div>
@@ -133,29 +134,31 @@
                 <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
                   <thead class="text-center text-bold text-dark">
                     <td style="width: 40px">No</td>
+                    <td style="width: 100px">Kode Barang</td>
                     <td style="width: 380px">Nama Barang</td>
                     <td style="width: 80px">Qty (Pcs)</td>
                     <td>Harga</td>
                     <td>Jumlah</td>
-                    {{-- <td>Ubah</td> --}}
                     <td style="width: 50px">Hapus</td> 
                   </thead>
                   <tbody id="tablePO">
                     @for($i=1; $i<=5; $i++)
-                      <tr class="text-bold">
+                      <tr class="text-bold" id="{{ $i }}">
                         <td align="center">{{ $i }}</td>
-                        <td >
-                          <input type="text" name="namaBarang[]" id="namaBarang" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold namaBarang">
-                          <input type="hidden" name="kodeBarang[]" class="kodeBarang">
+                        <td>
+                          <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold kodeBarang">
+                        </td>
+                        <td>
+                          <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold namaBarang">
                         </td>
                         <td> 
-                          <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qty" placeholder="Qty PO">
+                          <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qty">
                         </td>
                         <td>
-                          <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right harga" placeholder="Harga Satuan" readonly >
+                          <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right harga" readonly >
                         </td>
                         <td>
-                          <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlah" placeholder="Total Harga" readonly>
+                          <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlah" readonly>
                         </td>
                         <td align="center">
                           <a href="#" class="icRemove">
@@ -164,27 +167,6 @@
                         </td>
                       </tr>
                     @endfor
-                    {{-- <tr class="hide text-bold">
-                      <td align="center">{{ $i }}</td>
-                      <td>
-                        <input type="text" name="namaBarang[]" id="namaBarang" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold namaBarang">
-                        <input type="hidden" name="kodeBarang[]" class="kodeBarang">
-                      </td>
-                      <td> 
-                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qty" placeholder="Qty PO">
-                      </td>
-                      <td>
-                        <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right harga" placeholder="Harga Satuan" readonly >
-                      </td>
-                      <td>
-                        <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlah" placeholder="Total Harga" readonly>
-                      </td>
-                      <td align="center">
-                        <a href="#" class="icRemove">
-                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
-                        </a>
-                      </td>
-                    </tr> --}}
                     {{-- @if($itemsRow != 0)
                       @php $i = 1; @endphp
                       @foreach($items as $item)
@@ -260,139 +242,173 @@ const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
+var jumBaris = document.getElementById('jumBaris');
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaSup.addEventListener('change', displaySupp);
 newRow.addEventListener("click", displayRow);
 
+/** Add New Table Line **/
 function displayRow(e) {
-  const lastRow = $(tablePO).find('tr:last td:first-child').text();
+  const lastRow = $(tablePO).find('tr:last').attr("id");
+  const lastNo = $(tablePO).find('tr:last td:first-child').text();
+  var newNum = +lastRow + 1;
+  var newNo = +lastNo + 1;
   const newTr = `
-    <tr class="text-bold">
-      <td align="center">${+lastRow + 1}</td>
-      <td >
-        <input type="text" name="namaBarang[]" id="namaBrg" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
-        <input type="hidden" name="kodeBarang[]" class="kdBrgRow">
+    <tr class="text-bold" id="${newNum}">
+      <td align="center">${newNo}</td>
+      <td>
+        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
+      </td>
+      <td>
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qtyRow" placeholder="Qty PO">
+        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" placeholder="Qty PO">
       </td>
       <td>
-        <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right hargaRow" placeholder="Harga Satuan" readonly >
+        <input type="text" name="harga[]" id="hargaRow${newNum}" class="form-control form-control-sm text-bold text-right hargaRow" placeholder="Harga Satuan" readonly >
       </td>
       <td>
-        <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" readonly>
+        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" class="form-control form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" readonly>
       </td>
       <td align="center">
-        <a href="#" class="icRemoveRow">
+        <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
         </a>
       </td>
     </tr>
   `; 
-  // const clone = $(tablePO).find('tbody tr').last().clone(true).removeClass('hide');
-  // const clone = $(tablePO).find('tbody tr:last').clone(true).removeClass('hide');
-  // const lastRow = $(tablePO).find('tbody tr:last td:first-child').text();
-  // clone.find('td:first-child').text(+lastRow + 1);
-  // clone.find('td:nth-child(2) input').val('');
-  // clone.find('td:nth-child(3) input').val('');
-  // clone.find('td:nth-child(4) input').val('');
-  // clone.find('td:nth-child(5) input').val('');
+
   $(tablePO).append(newTr);
-  const brgRow = document.querySelectorAll(".nmBrgRow");
-  const kodeRow = document.querySelectorAll(".kdBrgRow");
-  const qtyRow = document.querySelectorAll(".qtyRow");
-  const hargaRow = document.querySelectorAll(".hargaRow");
-  const jumlahRow = document.querySelectorAll(".jumlahRow");
-  const hapusRow = document.querySelectorAll(".icRemoveRow");
+  jumBaris.value = newNum;
+  const newRow = document.getElementById(newNum);
+  const brgRow = document.getElementById("nmBrgRow"+newNum);
+  const kodeRow = document.getElementById("kdBrgRow"+newNum);
+  const qtyRow = document.getElementById("qtyRow"+newNum);
+  const hargaRow = document.getElementById("hargaRow"+newNum);
+  const jumlahRow = document.getElementById("jumlahRow"+newNum);
+  const hapusRow = document.getElementById("icRemoveRow"+newNum);
 
-  for(let i = 0; i < brgRow.length; i++) {
-    brgRow[i].addEventListener("change", function (e) {
-      @foreach($barang as $br)
-        if('{{ $br->nama }}' == e.target.value) {
-          kodeRow[i].value = '{{ $br->id }}';
-        }
-      @endforeach
-      @foreach($harga as $hb)
-        if(('{{ $hb->id_barang }}' == kodeRow[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-          hargaRow[i].value = '{{ $hb->harga }}';
-          jumlahRow[i].value = '{{ $hb->harga }}';
-        }
-      @endforeach
-    });
-  }
-
-  for(let i = 0; i < qtyRow.length; i++) {
-    qtyRow[i].addEventListener("change", function (e) {
-      jumlahRow[i].value = e.target.value * hargaRow[i].value;
-      subtotal.value = +subtotal.value + +jumlahRow[i].value;
-    });
-  }
-
-  for(let i = 0; i < hapusRow.length; i++) {
-    hapusRow[i].addEventListener("click", function (e) {
-      subtotal.value = +subtotal.value - +jumlahRow[i].value;
-      jumlahRow[i].value = jumlahRow[i+1].value;
-      hargaRow[i].value = hargaRow[i+1].value;
-      qtyRow[i].value = qtyRow[i+1].value;
-      brgRow[i].value = brgRow[i+1].value;
-      jumlahRow[i+1].value = "";
-      hargaRow[i+1].value = "";
-      qtyRow[i+1].value = "";
-      brgRow[i+1].value = "";
-    });
-  }
-  console.log(hapusRow);
-
-  $(function() {
-    var barang = [];
-    @foreach($barang as $b)
-      barang.push('{{ $b->nama }}');
+  /** Tampil Harga **/
+  brgRow.addEventListener("change", function (e) {
+    @foreach($barang as $br)
+      if('{{ $br->nama }}' == e.target.value) {
+        kodeRow.value = '{{ $br->id }}';
+      }
     @endforeach
+    displayHargaRow(kodeRow.value);
+  });
 
-    var supplier = [];
-    @foreach($supplier as $s)
-      supplier.push('{{ $s->nama }}');
+  kodeRow.addEventListener("change", function (e) {
+    @foreach($barang as $br)
+      if('{{ $br->id }}' == e.target.value) {
+        brgRow.value = '{{ $br->nama }}';
+      }
+    @endforeach
+    displayHargaRow(e.target.value);
+  });
+
+  function displayHargaRow(kode) {
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        hargaRow.value = '{{ $hb->harga }}';
+        jumlahRow.value = '{{ $hb->harga }}';
+      }
+    @endforeach
+  }
+
+  /** Tampil Jumlah **/
+  qtyRow.addEventListener("change", function (e) {
+    jumlahRow.value = e.target.value * hargaRow.value;
+    subtotal.value = +subtotal.value + +jumlahRow.value;
+    total_ppn(subtotal.value);
+  });
+  
+  /** Delete Table Row **/
+  hapusRow.addEventListener("click", function (e) {
+    if(qtyRow.value != "") {
+      subtotal.value = +subtotal.value - +jumlahRow.value;
+      total_ppn(subtotal.value);
+    }
+    
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $(tablePO).find('tr:last').attr("id");
+    if(curNum < lastNum) {
+      $(newRow).remove();
+      for(let i = curNum; i < lastNum; i++) {
+        $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+      }
+    }
+    else if(curNum == lastNum) {
+      $(newRow).remove();
+    }
+    jumBaris.value -= 1;
+  });
+
+  /** Autocomplete Nama  Barang **/
+  $(function() {
+    var idBarang = [];
+    var nmBarang = [];
+    @foreach($barang as $b)
+      idBarang.push('{{ $b->id }}');
+      nmBarang.push('{{ $b->nama }}');
     @endforeach
       
     function split(val) {
-      return val.split(/,\s*/);
+      return val.split(/,\s/);
     }
 
     function extractLast(term) {
       return split(term).pop();
     }
+
+    $(kodeRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(idBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
     
-    for(let i = 0; i < brgRow.length; i++) {
-      $(brgRow[i]).on("keydown", function(event) {
-        if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-          event.preventDefault();
-        }
-      })
-      .autocomplete({
-        minLength: 0,
-        source: function(request, response) {
-          // delegate back to autocomplete, but extract the last term
-          response($.ui.autocomplete.filter(barang, extractLast(request.term)));
-        },
-        focus: function() {
-          // prevent value inserted on focus
-          return false;
-        },
-        select: function(event, ui) {
-          var terms = split(this.value);
-          // remove the current input
-          terms.pop();
-          // add the selected item
-          terms.push(ui.item.value);
-          // add placeholder to get the comma-and-space at the end
-          terms.push("");
-          this.value = terms.join("");
-          return false;
-        }
-      });
-    }
-  });
+    $(brgRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(nmBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+  }); 
 }
 
 /** Tampil Id Supplier **/
@@ -415,13 +431,26 @@ for(let i = 0; i < brgNama.length; i++) {
         kodeBarang[i].value = '{{ $br->id }}';
       }
     @endforeach
+    displayHarga(kodeBarang[i].value);
+  });
+
+  kodeBarang[i].addEventListener("change", function (e) {
+    @foreach($barang as $br)
+      if('{{ $br->id }}' == e.target.value) {
+        brgNama[i].value = '{{ $br->nama }}';
+      }
+    @endforeach
+    displayHarga(e.target.value);
+  });
+
+  function displayHarga(kode) {
     @foreach($harga as $hb)
-      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+      if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
         harga[i].value = '{{ $hb->harga }}';
         jumlah[i].value = '{{ $hb->harga }}';
       }
     @endforeach
-  });
+  }
 }
 
 /** Tampil Jumlah Harga Otomatis **/
@@ -429,21 +458,34 @@ for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("change", function (e) {
     jumlah[i].value = e.target.value * harga[i].value;
     subtotal.value = +subtotal.value + +jumlah[i].value;
+    total_ppn(subtotal.value);
   });
 } 
+
+/** Hitung PPN Dan Total **/
+function total_ppn(sub) {
+  ppn.value = sub * 10 / 100;
+  grandtotal.value = +sub + +ppn.value;
+}
 
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
-    subtotal.value = +subtotal.value - +jumlah[i].value;
+    if(qty[i].value != "") {
+      subtotal.value = +subtotal.value - +jumlah[i].value;
+      total_ppn(subtotal.value);
+    }
+
     jumlah[i].value = jumlah[i+1].value;
     harga[i].value = harga[i+1].value;
     qty[i].value = qty[i+1].value;
     brgNama[i].value = brgNama[i+1].value;
+    kodeBarang[i].value = kodeBarang[i+1].value;
     jumlah[i+1].value = "";
     harga[i+1].value = "";
     qty[i+1].value = "";
     brgNama[i+1].value = "";
+    kodeBarang[i+1].value = "";
   });
 }
 
@@ -464,9 +506,11 @@ function displayEditable(no) {
 
 /** Autocomplete Input Text **/
 $(function() {
-  var barang = [];
+  var kodeBrg = [];
+  var namaBrg = [];
   @foreach($barang as $b)
-    barang.push('{{ $b->nama }}');
+    kodeBrg.push('{{ $b->id }}');
+    namaBrg.push('{{ $b->nama }}');
   @endforeach
 
   var supplier = [];
@@ -493,7 +537,37 @@ $(function() {
       minLength: 0,
       source: function(request, response) {
         // delegate back to autocomplete, but extract the last term
-        response($.ui.autocomplete.filter(barang, extractLast(request.term)));
+        response($.ui.autocomplete.filter(namaBrg, extractLast(request.term)));
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push(ui.item.value);
+        // add placeholder to get the comma-and-space at the end
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+  }
+
+  for(let i = 0; i < kodeBarang.length; i++) {
+    $(kodeBarang[i]).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        // delegate back to autocomplete, but extract the last term
+        response($.ui.autocomplete.filter(kodeBrg, extractLast(request.term)));
       },
       focus: function() {
         // prevent value inserted on focus
