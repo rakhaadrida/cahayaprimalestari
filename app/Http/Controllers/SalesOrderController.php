@@ -132,8 +132,10 @@ class SalesOrderController extends Controller
         $items = SalesOrder::with('customer')->where('id', $request->kode)
                 ->orWhere('id_customer', $request->kodeCustomer)
                 ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
-                ->first();
-        $itemsDetail = DetilSO::with(['so', 'barang'])->where('id_so', $items->id)->get();
+                ->orderBy('id', 'asc')->get();
+
+        // $itemsDetail = DetilSO::with(['so', 'barang'])->where('id_so', $items[0]->id)->get();
+        
         $itemsRow = SalesOrder::where('id', $request->kode)
                     ->orWhere('id_customer', $request->kodeCustomer)
                     ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
@@ -143,7 +145,7 @@ class SalesOrderController extends Controller
         
         $data = [
             'items' => $items,
-            'itemsDetail' => $itemsDetail,
+            // 'itemsDetail' => $itemsDetail,
             'itemsRow' => $itemsRow,
             'customer' => $customer,
             'so' => $so
