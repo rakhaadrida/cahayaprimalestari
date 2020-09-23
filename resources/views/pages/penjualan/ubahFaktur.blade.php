@@ -31,13 +31,13 @@
                   <label for="kode" class="col-2 col-form-label text-bold">Nomor SO</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" id="kode">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="namaCustomer" id="namaCustomer">
-                    <input type="hidden" name="kodeCustomer" id="kodeCustomer">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" id="namaCustomer">
+                    <input type="hidden" name="kode" id="kodeCustomer">
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
@@ -52,7 +52,7 @@
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" >
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('so-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('so-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>

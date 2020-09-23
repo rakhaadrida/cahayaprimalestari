@@ -11,6 +11,8 @@ use App\DetilSO;
 use App\TempDetilSO;
 use App\HargaBarang;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Redirect;
 
 class SalesOrderController extends Controller
 {
@@ -129,14 +131,14 @@ class SalesOrderController extends Controller
     }
 
     public function show(Request $request) {
-        $items = SalesOrder::with('customer')->where('id', $request->kode)
-                ->orWhere('id_customer', $request->kodeCustomer)
+        $items = SalesOrder::with('customer')->where('id', $request->id)
+                ->orWhere('id_customer', $request->kode)
                 ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
                 ->orderBy('id', 'asc')->get();
 
         // $itemsDetail = DetilSO::with(['so', 'barang'])->where('id_so', $items[0]->id)->get();
         
-        $itemsRow = SalesOrder::where('id', $request->kode)
+        $itemsRow = SalesOrder::where('id', $request->id)
                     ->orWhere('id_customer', $request->kodeCustomer)
                     ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
                     ->count();
@@ -152,5 +154,29 @@ class SalesOrderController extends Controller
         ];
 
         return view('pages.penjualan.detilFaktur', $data);
+    }
+
+    public function status(Request $request, $id) {
+        $item = SalesOrder::where('id', $id)->first();
+        $item->{'status'} = $request->statusUbah;
+        $item->{'keterangan'} = $request->keterangan;
+        $item->save();
+
+        // return redirect()->route('so-show');
+        session()->put('url.intended', URL::previous());
+        return Redirect::intended('/');  
+    }
+
+    public function update($id) {
+        $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
+        $tanggal = Carbon::now()->toDateString();
+        $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
+
+        $data = [
+            'items' => $items,
+            'tanggal' => $tanggal
+        ];
+
+        return view('pages.penjualan.updateFaktur', $data);
     }
 }

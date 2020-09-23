@@ -31,13 +31,13 @@
                   <label for="kode" class="col-2 col-form-label text-bold">Nomor SO</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" id="kode" >
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" >
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="namaCustomer" id="namaCustomer" >
-                    <input type="hidden" name="kodeCustomer" id="kodeCustomer">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" >
+                    <input type="hidden" name="kode" id="kodeCustomer">
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
@@ -52,7 +52,7 @@
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" >
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('so-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('so-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -65,7 +65,7 @@
                   <div class="carousel-item @if($item->id == $items[$itemsRow-1]->id) active
                     @endif "
                   />
-                    <div class="container so-container">
+                    <div class="container so-update-container">
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group row">
@@ -239,7 +239,7 @@
                         />
                       </div>
                     </div>
-                    <div class="form-group row justify-content-end total-so">
+                    <div class="form-group row justify-content-end grandtotal-so">
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
@@ -261,7 +261,7 @@
                         {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
                       </div>
                       <div class="col-2">
-                        <button type="reset" class="btn btn-info btn-block text-bold">Ubah Isi Faktur</button>
+                        <button type="submit" formaction="{{ route('so-update', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi Faktur</button>
                       </div>
                     </div>
                     <!-- End Button Submit dan Reset -->
@@ -276,13 +276,11 @@
                           <h4 class="modal-title">Ubah Status Faktur {{$item->id}}</h4>
                         </div>
                         <div class="modal-body">
-                          <form>
                             <div class="form-group row">
                               <label for="kode" class="col-2 col-form-label text-bold">Status</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-2">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="BATAL">
-                                <input type="hidden" name="id_so" value="{{$item->id}}">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="statusUbah" value="BATAL">
                               </div>
                             </div>
                             <div class="form-group subtotal-so">
@@ -292,13 +290,12 @@
                             <hr>
                             <div class="form-row justify-content-center">
                               <div class="col-3">
-                                <button type="submit" class="btn btn-success btn-block text-bold">Simpan</button>
+                                <button type="submit" formaction="{{ route('so-status', $item->id) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Simpan</button>
                               </div>
                               <div class="col-3">
                                 <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
                               </div>
                             </div>
-                          </form>
                         </div>
                       </div>
                     </div>

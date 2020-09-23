@@ -64,7 +64,9 @@ Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create')
 Route::post('/so/process/{id}', 'SalesOrderController@process')->name('so-process');
 Route::get('/so/remove/{id}/{barang}', 'SalesOrderController@remove')->name('so-remove');
 Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
-Route::post('/so/change/show', 'SalesOrderController@show')->name('so-show');
+Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
+Route::post('/so/change/status/{id}', 'SalesOrderController@status')->name('so-status');
+Route::post('/so/change/update/{id}', 'SalesOrderController@update')->name('so-update');
 
 // Surat Jalan
 Route::get('/sj', 'SuratJalanController@index')->name('sj');

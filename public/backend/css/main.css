@@ -21,6 +21,12 @@
     margin-left: -20px;
 }
 
+.so-update-container {
+    margin-left: -20px;
+    margin-bottom: -10px;
+}
+
+
 .supplier-row {
     margin-top: -55px;
 }
@@ -50,6 +56,11 @@
     margin-top: -15px;
 }
 
+.grandtotal-so {
+    margin-top: -30px;
+    margin-bottom: -20px;
+}
+
 .total-so {
     margin-top: -30px;
 }
@@ -77,6 +88,14 @@
 
 .sj-left-input {
     margin-top: -75px;
+}
+
+.so-update-left {
+    margin-top: -85px;
+}
+
+.so-update-input {
+    margin-top: -20px;
 }
 
 .ic-remove {
