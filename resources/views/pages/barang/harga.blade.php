@@ -49,7 +49,7 @@
                     <label for="harga" class="col-form-label text-bold">
                     {{ $h->nama }}</label>
                     <input type="text" class="form-control col-form-label-sm harga" id="harga"
-                    name="harga[]"
+                    name="harga[]" required
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ $item->harga }}" 
@@ -61,7 +61,7 @@
                   <div class="form-group col-2 ml-2">
                     <label for="ppn" class="col-form-label text-bold">PPN</label>
                     <input type="text" class="form-control col-form-label-sm ppn" id="ppn" 
-                    name="ppn[]"
+                    name="ppn[]" required
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ $item->ppn }}" 
@@ -72,8 +72,7 @@
                   </div>
                   <div class="form-group col-2 ml-2">
                     <label for="hargaPPN" class="col-form-label text-bold">Harga PPN</label>
-                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN"
-                    name="hargaPPN[]" readonly
+                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ $item->harga_ppn }}" 

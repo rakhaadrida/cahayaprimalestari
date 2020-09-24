@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\CustomerRequest;
 use App\Customer;
 use App\Sales;
 
@@ -35,7 +36,7 @@ class CustomerController extends Controller
         return view('pages.customer.create', $data);
     }
 
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
         Customer::create([
             'id' => $request->kode,
@@ -45,7 +46,7 @@ class CustomerController extends Controller
             'contact_person' => $request->contact_person,
             'tempo' => $request->tempo,
             'limit' => $request->limit,
-            'id_sales' => $request->sales_cover
+            'id_sales' => $request->id_sales
         ]);
 
         return redirect()->route('customer.index');
@@ -74,7 +75,7 @@ class CustomerController extends Controller
         return view('pages.customer.edit', $data);
     }
 
-    public function update(Request $request, $id)
+    public function update(CustomerRequest $request, $id)
     {
         $data = $request->all();
         $item = Customer::findOrFail($id);

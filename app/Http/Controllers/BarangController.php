@@ -8,6 +8,7 @@ use App\Gudang;
 use App\HargaBarang;
 use App\StokBarang;
 use Illuminate\Http\Request;
+use App\Http\Requests\BarangRequest;
 
 class BarangController extends Controller
 {
@@ -44,7 +45,7 @@ class BarangController extends Controller
         return view('pages.barang.create', $data);
     }
 
-    public function store(Request $request) {
+    public function store(BarangRequest $request) {
         Barang::create([
             'id' => $request->kode,
             'nama' => $request->nama,
@@ -76,7 +77,7 @@ class BarangController extends Controller
         return view('pages.barang.harga', $data);
     }
 
-    public function storeHarga(Request $request) {
+    public function storeHarga(BarangRequest $request) {
         $kode = $request->kode;
         $items = HargaBarang::where('id_barang', $kode)->get();
         $itemsRow = HargaBarang::where('id_barang', $kode)->count();
@@ -139,7 +140,7 @@ class BarangController extends Controller
         return view('pages.barang.stok', $data);
     }
 
-    public function storeStok(Request $request) {
+    public function storeStok(BarangRequest $request) {
         $kode = $request->kode;
         $items = StokBarang::where('id_barang', $kode)->get();
         $itemsRow = StokBarang::where('id_barang', $kode)->count();
@@ -190,7 +191,7 @@ class BarangController extends Controller
         return view('pages.barang.edit', $data);
     }
 
-    public function update(Request $request, $id) {
+    public function update(BarangRequest $request, $id) {
         $data = $request->all();
         
         $item = Barang::findOrFail($id);

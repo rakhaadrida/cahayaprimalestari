@@ -39,7 +39,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
                   <input type="text" class="form-control col-form-label-sm" name="nama" 
-                  value="{{ $item->nama }}">
+                  value="{{ $item->nama }}" required>
                 </div>
               </div>
               <hr>

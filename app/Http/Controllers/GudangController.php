@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\GudangRequest;
 use App\Gudang;
 
 class GudangController extends Controller
@@ -31,7 +32,7 @@ class GudangController extends Controller
         return view('pages.gudang.create', $data);
     }
 
-    public function store(Request $request)
+    public function store(GudangRequest $request)
     {
         Gudang::create([
             'id' => $request->kode,
@@ -57,7 +58,7 @@ class GudangController extends Controller
         return view('pages.gudang.edit', $data);
     }
 
-    public function update(Request $request, $id)
+    public function update(GudangRequest $request, $id)
     {
         $data = $request->all();
         $item = Gudang::findOrFail($id);

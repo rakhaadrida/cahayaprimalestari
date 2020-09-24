@@ -131,7 +131,7 @@
                 <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
                   Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
                 </span>
-                <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
+                <table class="table table-sm table-bordered table-responsive-sm table-hover" >
                   <thead class="text-center text-bold text-dark">
                     <td style="width: 40px">No</td>
                     <td style="width: 100px">Kode Barang</td>
@@ -143,24 +143,24 @@
                   </thead>
                   <tbody id="tablePO">
                     @for($i=1; $i<=5; $i++)
-                      <tr class="text-bold" id="{{ $i }}">
-                        <td align="center">{{ $i }}</td>
+                      <tr class="text-bold text-dark" id="{{ $i }}">
+                        <td align="center" class="align-middle">{{ $i }}</td>
                         <td>
-                          <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold kodeBarang">
+                          <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang">
                         </td>
                         <td>
-                          <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold namaBarang">
+                          <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang">
                         </td>
                         <td> 
-                          <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold qty">
+                          <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty">
                         </td>
                         <td>
-                          <input type="text" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-right harga" readonly >
+                          <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" >
                         </td>
                         <td>
-                          <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-right jumlah" readonly>
+                          <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" >
                         </td>
-                        <td align="center">
+                        <td align="center" class="align-middle">
                           <a href="#" class="icRemove">
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                           </a>
@@ -446,8 +446,8 @@ for(let i = 0; i < brgNama.length; i++) {
   function displayHarga(kode) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-        harga[i].value = '{{ $hb->harga }}';
-        jumlah[i].value = '{{ $hb->harga }}';
+        harga[i].value = '{{ number_format($hb->harga, 0, '', '.') }}';
+        jumlah[i].value = '{{ number_format($hb->harga, 0, '', '.') }}';
       }
     @endforeach
   }

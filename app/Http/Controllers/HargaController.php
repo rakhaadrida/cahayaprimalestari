@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\RequestS\HargaRequest;
 use App\Harga;
 
 class HargaController extends Controller
@@ -31,7 +32,7 @@ class HargaController extends Controller
         return view('pages.harga.create', $data);
     }
 
-    public function store(Request $request)
+    public function store(HargaRequest $request)
     {
         Harga::create([
             'id' => $request->kode,
@@ -56,7 +57,7 @@ class HargaController extends Controller
         return view('pages.harga.edit', $data);
     }
 
-    public function update(Request $request, $id)
+    public function update(HargaRequest $request, $id)
     {
         $data = $request->all();
         $item = Harga::findOrFail($id);

@@ -36,7 +36,7 @@
                   <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" id="namaCustomer">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" id="namaCustomer" name="nama">
                     <input type="hidden" name="kode" id="kodeCustomer">
                   </div>
                 </div>   

@@ -29,16 +29,14 @@
                 <label for="kode" class="col-1 col-form-label text-bold ">Kode</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode" placeholder="Kode Supplier" 
-                  value="{{ $newcode }}" readonly>
+                  <input type="text" class="form-control col-form-label-sm" name="kode" placeholder="Kode Supplier" value="{{ $newcode }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="nama" class="col-1 col-form-label text-bold ">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Supplier" 
-                  value="{{ old('nama') }}">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Supplier" value="{{ old('nama') }}" required>
                 </div>
               </div>
               <hr>  
@@ -47,24 +45,17 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-8">
                   <textarea class="form-control col-form-label-sm" name="alamat" 
-                  value="{{ old('alamat') }}"></textarea>
+                  value="{{ old('alamat') }}" required></textarea>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" 
-                    value="{{ old('telepon') }}">
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" required>
                 </div>
               </div>
               <hr>
-              {{-- <hr>  
-              <div class="form-group col-3">
-                <label for="telepon" class="text-bold">Telepon</label>
-                <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="Nomor Telepon Supplier" 
-                  value="{{ old('telepon') }}">
-              </div> --}}
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>

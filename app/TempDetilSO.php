@@ -12,7 +12,7 @@ class TempDetilSO extends Model
     protected $table = "temp_detilso";
     protected $primaryKey = ['id_so', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_so', 'id_barang', 'harga', 'qty', 'diskon', 'id_customer', 'tgl_kirim', 'tempo', 'pkp'];
+    protected $fillable = ['id_so', 'id_barang', 'harga', 'qty', 'diskon', 'id_customer', 'tempo', 'status', 'keterangan'];
 
     public $incrementing = false;
 

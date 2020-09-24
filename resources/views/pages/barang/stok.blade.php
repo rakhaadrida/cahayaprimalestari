@@ -50,7 +50,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" class="form-control col-form-label-sm" 
-                    name="stok[]"
+                    name="stok[]" required
                       @foreach($items as $item)
                         @if($item->id_gudang == $g->id)
                           value="{{ $item->stok }}" 

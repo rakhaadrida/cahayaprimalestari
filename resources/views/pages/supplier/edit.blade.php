@@ -32,15 +32,15 @@
               </div>
               <div class="form-group">
                 <label for="nama" class="text-bold">Nama</label>
-                <input type="text" class="form-control col-form-label-sm" name="nama" value="{{ $item->nama }}">
+                <input type="text" class="form-control col-form-label-sm" name="nama" value="{{ $item->nama }}" required>
               </div>
               <div class="form-group">
                 <label for="alamat" class="text-bold">Alamat</label>
-                <textarea name="alamat" class="form-control col-form-label-sm">{{$item->alamat}}</textarea>   
+                <textarea name="alamat" class="form-control col-form-label-sm" required>{{$item->alamat}}</textarea>   
               </div>
               <div class="form-group">
                 <label for="telepon" class="text-bold">Telepon</label>
-                <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}">
+                <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" required>
               </div>
               <div class="form-row justify-content-center">
                 <div class="col-2">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\SupplierRequest;
 use App\Supplier;
 
 class SupplierController extends Controller
@@ -32,7 +33,7 @@ class SupplierController extends Controller
         return view('pages.supplier.create', $data);
     }
 
-    public function store(Request $request)
+    public function store(SupplierRequest $request)
     {
         Supplier::create([
             'id' => $request->kode,
@@ -60,7 +61,7 @@ class SupplierController extends Controller
         return view('pages.supplier.edit', $data);
     }
 
-    public function update(Request $request, $id)
+    public function update(SupplierRequest $request, $id)
     {
         $data = $request->all();
 

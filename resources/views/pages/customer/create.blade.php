@@ -37,7 +37,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Customer" value="{{ old('nama') }}">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Customer" value="{{ old('nama') }}" required>
                 </div>
               </div>
               <hr>
@@ -45,7 +45,7 @@
                 <label for="alamat" class="col-1 col-form-label text-bold">Alamat</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-7">
-                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2">
+                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2" required>
                     {{ old('alamat') }}
                   </textarea>
                 </div>
@@ -54,22 +54,14 @@
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}">
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" required>
                 </div>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="contact_person" placeholder="Contact Person" 
-                  value="{{ old('contact_person') }}">
+                  value="{{ old('contact_person') }}" required>
                 </div>
               </div>
               <hr>
-              {{-- <div class="form-group row">
-                <label for="tempo" class="col-1 col-form-label text-bold">Tempo</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="tempo" placeholder="Tempo" 
-                  value="{{ old('tempo') }}">
-                </div>
-              </div> --}}
               <div class="form-group row">
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
                 <span class="col-form-label text-bold">:</span>
@@ -81,7 +73,8 @@
                 <label for="sales_cover" class="col-1 text-bold">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="id_sales" id="sales" placeholder="Sales Cover" value="{{ old('sales_cover') }}">
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" placeholder="Sales Cover" value="{{ old('sales_cover') }}" required>
+                  <input type="hidden" name="id_sales" id="kodeSales">
                 </div>
               </div>
               <div class="form-row justify-content-center">
@@ -106,6 +99,17 @@
 @push('addon-script')
 <script type="text/javascript">
 const namaSales = document.getElementById("sales");
+const kodeSales = document.getElementById("kodeSales");
+
+namaSales.addEventListener("change", displayKode);
+
+function displayKode(e) {
+  @foreach($sales as $s)
+    if('{{ $s->nama }}' == e.target.value) {
+      kodeSales.value = '{{ $s->id }}';
+    }
+  @endforeach
+}
 
 /** Autocomplete Input Text **/
 $(function() {

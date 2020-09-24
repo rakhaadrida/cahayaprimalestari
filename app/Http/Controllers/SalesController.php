@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\SalesRequest;
 use App\Sales;
 
 class SalesController extends Controller
@@ -29,7 +30,7 @@ class SalesController extends Controller
         return view('pages.sales.create', $data);
     }
 
-    public function store(Request $request) {
+    public function store(SalesRequest $request) {
         Sales::create([
             'id' => $request->kode,
             'nama' => $request->nama
@@ -51,7 +52,7 @@ class SalesController extends Controller
         return view('pages.sales.edit', $data);
     }
 
-    public function update(Request $request, $id) {
+    public function update(SalesRequest $request, $id) {
         $data = $request->all();
         $item = Sales::findOrFail($id);
         $item->update($data);

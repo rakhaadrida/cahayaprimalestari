@@ -135,11 +135,9 @@ class SalesOrderController extends Controller
                 ->orWhere('id_customer', $request->kode)
                 ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
                 ->orderBy('id', 'asc')->get();
-
-        // $itemsDetail = DetilSO::with(['so', 'barang'])->where('id_so', $items[0]->id)->get();
         
         $itemsRow = SalesOrder::where('id', $request->id)
-                    ->orWhere('id_customer', $request->kodeCustomer)
+                    ->orWhere('id_customer', $request->kode)
                     ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
                     ->count();
         $customer = Customer::All();
@@ -147,10 +145,13 @@ class SalesOrderController extends Controller
         
         $data = [
             'items' => $items,
-            // 'itemsDetail' => $itemsDetail,
             'itemsRow' => $itemsRow,
             'customer' => $customer,
-            'so' => $so
+            'so' => $so,
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
         ];
 
         return view('pages.penjualan.detilFaktur', $data);
@@ -162,21 +163,64 @@ class SalesOrderController extends Controller
         $item->{'keterangan'} = $request->keterangan;
         $item->save();
 
-        // return redirect()->route('so-show');
         session()->put('url.intended', URL::previous());
         return Redirect::intended('/');  
     }
 
-    public function update($id) {
+    public function edit(Request $request, $id) {
         $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
+        $itemsRow = DetilSO::with(['so', 'barang'])->where('id_so', $id)->count();
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
 
         $data = [
             'items' => $items,
-            'tanggal' => $tanggal
+            'itemsRow' => $itemsRow,
+            'tanggal' => $tanggal,
+            'barang' => $barang,
+            'harga' => $harga,
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
         ];
 
         return view('pages.penjualan.updateFaktur', $data);
+    }
+
+    public function update(Request $request) {
+        $tanggal = $request->tanggal;
+        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+        $jumlah = $request->jumBaris;
+
+        $items = SalesOrder::where('id', $request->kode)->first();
+        $items->{'status'} = 'PENDING_UPDATE';
+        $items->save();
+
+        for($i = 0; $i < $jumlah; $i++) {
+            TempDetilSO::create([
+                'id_so' => $request->kode,
+                'id_barang' => $request->kodeBarang[$i],
+                'harga' => $request->harga[$i],
+                'qty' => $request->qty[$i],
+                'diskon' => $request->diskon[$i],
+                'id_customer' => $request->kodeCust,
+                'tempo' => 30,
+                'status' => 'PENDING_UPDATE',
+                'keterangan' => $request->keterangan
+            ]);
+        }
+
+        $data = [
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
+        ];
+
+        $url = Route('so-show', $data);
+        return redirect($url);
     }
 }

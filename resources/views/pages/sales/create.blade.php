@@ -37,7 +37,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Sales" value="{{ old('nama') }}">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Sales" value="{{ old('nama') }}" required>
                 </div>
               </div>
               <hr>

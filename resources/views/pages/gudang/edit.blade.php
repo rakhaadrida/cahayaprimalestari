@@ -39,22 +39,22 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
                   <input type="text" class="form-control col-form-label-sm" name="nama" 
-                  value="{{ $item->nama }}">
+                  value="{{ $item->nama }}" required>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="alamat" class="col-1 col-form-label text-bold">Alamat</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2">{{$item->alamat}}</textarea>
+                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2" required>{{$item->alamat}}</textarea>
                 </div>
               </div>
               <hr>
-              <div class="form-row">
-                <div class="col">
+              <div class="form-row justify-content-center">
+                <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
-                <div class="col">
+                <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
