@@ -67,6 +67,7 @@ class BarangMasukController extends Controller
     public function process (Request $request, $id) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+        $jumlah = $request->jumBaris;
         
         BarangMasuk::create([
             'id' => $id,
@@ -75,12 +76,25 @@ class BarangMasukController extends Controller
             'status' => 'COMPLETE'
         ]);
 
+        for($i = 0; $i < $jumlah; $i++) {
+            if($request->kodeBarang[$i] != "") {
+                DetilBM::create([
+                    'id_bm' => $request->id,
+                    'id_barang' => $request->kodeBarang[$i],
+                    'harga' => str_replace(".", "", $request->harga[$i]),
+                    'qty' => $request->qty[$i],
+                    'keterangan' => $request->keterangan[$i]
+                ]);
+            }
+        }
+
+        /*
         $tempDetil = TempDetilBM::where('id_bm', $id)->get();
         foreach($tempDetil as $td) {
             DetilBM::create([
                 'id_bm' => $td->id_bm,
                 'id_barang' => $td->id_barang,
-                'harga' => $td->harga,
+                'harga' => str_replace(".", "", $td->harga),
                 'qty' => $td->qty,
                 'keterangan' => $td->keterangan
             ]);
@@ -92,6 +106,7 @@ class BarangMasukController extends Controller
 
             $deleteTemp = TempDetilBM::where('id_bm', $id)->where('id_barang', $td->id_barang)->delete();
         }
+        */
 
         return redirect()->route('barangMasuk');
     }

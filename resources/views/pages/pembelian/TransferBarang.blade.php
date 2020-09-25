@@ -39,34 +39,15 @@
                     <div class="col-2">
                       <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" >
                     </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="kode" class="col-2 col-form-label text-bold ">Kode Barang</label>
-                    <span class="col-form-label text-bold">:</span>
-                    <div class="col-2">
-                      <input type="text" class="form-control col-form-label-sm text-bold" name="kodeBarang" id="kodeBarang"
-                        @if($itemsRow != 0) 
-                          value="{{ $items[$itemsRow-1]->barang->id }}"
-                        @endif
-                      >
-                    </div>
-                    <label for="nama" class="col-auto col-form-label text-bold ">Nama Barang</label>
-                    <span class="col-form-label text-bold">:</span>
-                    <div class="col-4">
-                      <input type="text" class="form-control col-form-label-sm text-bold" name="namaBarang" id="namaBarang"
-                        @if($itemsRow != 0) 
-                          value="{{ $items[$itemsRow-1]->barang->nama }}"
-                        @endif
-                      >
-                    </div>
-                  </div>   
+                    <input type="hidden" name="jumBaris" id="jumBaris" value="5">
+                  </div> 
                 </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier BM -->
               
               <!-- Inputan Detil BM -->
-              <div class="form-row">
+              {{-- <div class="form-row">
                 <div class="form-group col-sm-2">
                   <label for="kode" class="col-form-label text-bold ">Gudang Asal</label>
                   <input type="text" name="gudangAsal" id="gudangAsal" placeholder="Nama Gudang" class="form-control form-control-sm"
@@ -114,25 +95,64 @@
                   <button type="submit" formaction="{{ route('tb-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
                 </div>
               </div>          
-              <hr>
+              <hr> --}}
               <!-- End Inputan Detil BM -->
 
               <!-- Tabel Data Detil BM-->
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+              <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
+                Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
+              </span>
+              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold">
                   <td style="width: 40px">No</td>
                   <td style="width: 90px">Kode Barang</td>
                   <td>Nama Barang</td>
-                  <td style="width: 150px">Gudang Asal</td>
-                  <td style="width: 70px">Stok Asal</td>
-                  <td style="width: 150px">Gudang Tujuan</td>
-                  <td style="width: 70px">Stok Tujuan</td>
-                  <td style="width: 90px">Qty Transfer</td>
-                  <td style="width: 50px">Edit</td>
+                  <td style="width: 160px">Gudang Asal</td>
+                  <td style="width: 60px">Stok Asal</td>
+                  <td style="width: 160px">Gudang Tujuan</td>
+                  <td style="width: 60px">Stok Tujuan</td>
+                  <td style="width: 70px">Qty Transfer</td>
                   <td style="width: 50px">Delete</td>
                 </thead>
-                <tbody>
-                  @if($itemsRow != 0)
+                <tbody id="tablePO">
+                  @for($i=1; $i<=5; $i++)
+                    <tr class="text-bold text-dark" id="{{ $i }}">
+                      <td align="center" class="align-middle">{{ $i }}</td>
+                      <td>
+                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                        value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
+                      </td>
+                      <td>
+                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                        value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
+                      </td>
+                      <td> 
+                        <input type="text" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-bold text-dark gdgAsal" value="{{ old('gdgAsal[]') }}">
+                        <input type="hidden" name="kodeAsal[]" class="kodeAsal">
+                      </td>
+                      <td> 
+                        <input type="text" name="stokAsal[]" id="stokAsal" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokAsal" value="{{ old('stokAsal[]') }}">
+                      </td>
+                      <td> 
+                        <input type="text" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-bold text-dark gdgTujuan" value="{{ old('gdgTujuan[]') }}">
+                        <input type="hidden" name="kodeTujuan[]" class="kodeTujuan">
+                      </td>
+                      <td> 
+                        <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokTujuan" value="{{ old('stokTujuan[]') }}">
+                      </td>
+                      <td> 
+                        <input type="text" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-bold text-dark qtyTransfer" value="{{ old('qtyTransfer[]') }}">
+                      </td>
+                      <td align="center" class="align-middle">
+                        <a href="#" class="icRemove">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  @endfor
+
+                   <!-- Tabel Tampil Detil BM (Bukan Diinput di Tabel) -->
+                  {{-- @if($itemsRow != 0)
                     @php $i = 1; @endphp
                     @foreach($items as $item)
                       <tr class="text-bold">
@@ -166,7 +186,8 @@
                     <tr>
                       <td colspan=10 class="text-center text-bold h4 p-2"><i>Silahkan Input Detil Transfer Barang</i></td>
                     </tr>
-                  @endif
+                  @endif --}}
+
                 </tbody>
               </table>
               <hr>
@@ -193,53 +214,379 @@
 
 @push('addon-script')
 <script type="text/javascript">
-const kodeBrg = document.getElementById("kodeBarang");
-const namaBrg = document.getElementById("namaBarang");
-const gudangAsal = document.getElementById("gudangAsal");
-const kodeAsal = document.getElementById("kodeAsal");
-const gudangTujuan = document.getElementById("gudangTujuan");
-const kodeTujuan = document.getElementById("kodeTujuan");
-const qtyAsal = document.getElementById("qtyAsal");
-const qtyTujuan = document.getElementById("qtyTujuan");
+const kodeBarang = document.querySelectorAll('.kodeBarang');
+const brgNama = document.querySelectorAll(".namaBarang");
+const gdgAsal = document.querySelectorAll(".gdgAsal");
+const kodeAsal = document.querySelectorAll(".kodeAsal");
+const stokAsal = document.querySelectorAll(".stokAsal");
+const gdgTujuan = document.querySelectorAll(".gdgTujuan");
+const kodeTujuan = document.querySelectorAll(".kodeTujuan");
+const stokTujuan = document.querySelectorAll(".stokTujuan");
+const qtyTransfer = document.querySelectorAll(".qtyTransfer");
+const hapusBaris = document.querySelectorAll(".icRemove");
+const newRow = document.getElementsByClassName('table-add')[0];
+const jumBaris = document.getElementById('jumBaris');
 
-kodeBrg.addEventListener('change', displayAll);
-namaBrg.addEventListener('change', displayAll);
-gudangAsal.addEventListener('change', displayAsal);
-gudangTujuan.addEventListener('change', displayTujuan);
+newRow.addEventListener('click', displayRow);
 
-/** Tampil Data Barang **/
-function displayAll(e) {
-  @foreach($barang as $br)
-    if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-      kodeBrg.value = '{{ $br->id }}';
-      namaBrg.value = '{{ $br->nama }}';
+/** Add New Table Line **/
+function displayRow(e) {
+  const lastRow = $(tablePO).find('tr:last').attr("id");
+  const lastNo = $(tablePO).find('tr:last td:first-child').text();
+  var newNum = +lastRow + 1;
+  var newNo = +lastNo + 1;
+  const newTr = `
+    <tr class="text-bold" id="${newNum}">
+      <td align="center" class="align-middle">${newNo}</td>
+      <td>
+        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
+      </td>
+      <td>
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
+      </td>
+      <td> 
+        <input type="text" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-bold text-dark gdgAsalRow" >
+        <input type="hidden" name="kodeAsal[]" id="kodeAsal${newNum}" class="kodeAsalRow">
+      </td>
+      <td> 
+        <input type="text" name="stokAsal[]" id="stokAsal${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokAsalRow">
+      </td>
+      <td> 
+        <input type="text" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-bold text-dark gdgTujuanRow" >
+        <input type="hidden" name="kodeTujuan[]" id="kodeTujuan${newNum}" class="kodeTujuanRow">
+      </td>
+      <td> 
+        <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokTujuanRow">
+      </td>
+      <td> 
+        <input type="text" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-bold text-dark qtyTransferRow">
+      </td>
+      <td align="center" class="align-middle">
+        <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
+          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+        </a>
+      </td>
+    </tr>
+  `; 
+
+  $(tablePO).append(newTr);
+  jumBaris.value = newNum;
+  const newRow = document.getElementById(newNum);
+  const brgRow = document.getElementById("nmBrgRow"+newNum);
+  const kodeRow = document.getElementById("kdBrgRow"+newNum);
+  const gdgAsalRow = document.getElementById("gdgAsal"+newNum);
+  const kodeAsalRow = document.getElementById("kodeAsal"+newNum);
+  const stokAsalRow = document.getElementById("stokAsal"+newNum);
+  const gdgTujuanRow = document.getElementById("gdgTujuan"+newNum);
+  const kodeTujuanRow = document.getElementById("kodeTujuan"+newNum);
+  const stokTujuanRow = document.getElementById("stokTujuan"+newNum);
+  const qtyTransferRow = document.getElementById("qtyTransfer"+newNum);
+  const hapusRow = document.getElementById("icRemoveRow"+newNum);
+
+  /** Tampil Harga **/
+  brgRow.addEventListener("change", function (e) {   
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      gdgAsalRow.removeAttribute('required');
+      gdgTujuanRow.removeAttribute('required');
+    } 
+
+    @foreach($barang as $br)
+      if('{{ $br->nama }}' == e.target.value) {
+        kodeRow.value = '{{ $br->id }}';
+        gdgAsalRow.setAttribute('required', true);
+        gdgTujuanRow.setAttribute('required', true);
+      }
+    @endforeach
+  });
+
+  kodeRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      gdgAsalRow.removeAttribute('required');
+      gdgTujuanRow.removeAttribute('required');
     }
-  @endforeach
+
+    @foreach($barang as $br)
+      if('{{ $br->id }}' == e.target.value) {
+        brgRow.value = '{{ $br->nama }}';
+        gdgAsalRow.setAttribute('required', true);
+        gdgTujuanRow.setAttribute('required', true);
+      }
+    @endforeach
+  });
+
+  gdgAsalRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      kodeAsalRow.value = "";
+      stokAsalRow.value = "";
+    }
+
+    @foreach($gudang as $g)
+      if('{{ $g->nama }}' == e.target.value) {
+        kodeAsalRow.value = '{{ $g->id }}';
+      }
+    @endforeach
+    displayStokRow(kodeAsalRow.value, stokAsalRow);
+  });
+
+  gdgTujuanRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      kodeTujuanRow.value = "";
+      stokTujuanRow.value = "";
+    }
+
+    @foreach($gudang as $g)
+      if('{{ $g->nama }}' == e.target.value) {
+        kodeTujuanRow.value = '{{ $g->id }}';
+      }
+    @endforeach
+    displayStokRow(kodeTujuanRow.value, stokTujuanRow);
+  });
+
+  function displayStokRow(kode, stok) {
+    @foreach($stok as $s)
+      if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->id_gudang }}' == kode)) {
+        stok.value = '{{ $s->stok }}';
+      }
+    @endforeach
+  }
+  
+  /** Delete Table Row **/
+  hapusRow.addEventListener("click", function (e) {
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $(tablePO).find('tr:last').attr("id");
+    if(curNum < lastNum) {
+      $(newRow).remove();
+      for(let i = curNum; i < lastNum; i++) {
+        $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+      }
+    }
+    else if(curNum == lastNum) {
+      $(newRow).remove();
+    }
+    jumBaris.value -= 1;
+  });
+
+  /** Autocomplete Nama  Barang **/
+  $(function() {
+    var idBarang = [];
+    var nmBarang = [];
+    var nmGudang = [];
+    @foreach($barang as $b)
+      idBarang.push('{{ $b->id }}');
+      nmBarang.push('{{ $b->nama }}');
+    @endforeach
+    @foreach($gudang as $g)
+      nmGudang.push('{{ $g->nama }}');
+    @endforeach
+      
+    function split(val) {
+      return val.split(/,\s/);
+    }
+
+    function extractLast(term) {
+      return split(term).pop();
+    }
+
+    $(kodeRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(idBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+    
+    $(brgRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(nmBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+
+    $(gdgAsalRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        // delegate back to autocomplete, but extract the last term
+        response($.ui.autocomplete.filter(nmGudang, extractLast(request.term)));
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push(ui.item.value);
+        // add placeholder to get the comma-and-space at the end
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+
+    $(gdgTujuanRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        // delegate back to autocomplete, but extract the last term
+        response($.ui.autocomplete.filter(nmGudang, extractLast(request.term)));
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push(ui.item.value);
+        // add placeholder to get the comma-and-space at the end
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+  }); 
 }
 
-function displayAsal(e) {
-  @foreach($stok as $s)
-    if(('{{ $s->gudang->nama }}' == e.target.value) && ('{{ $s->id_barang }}' == kodeBrg.value)) {
-      qtyAsal.value = '{{ $s->stok }}';
-      kodeAsal.value = '{{ $s->id_gudang }}';
+/** Tampil Harga Barang **/
+for(let i = 0; i < brgNama.length; i++) {
+  brgNama[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      gdgAsal[i].removeAttribute('required');
+      gdgTujuan[i].removeAttribute('required');
     }
-  @endforeach
-  if('{{ $itemsRow != 0 }}') {
-    @foreach($items as $item)
-      if(('{{ $item->id_asal }}' == kodeAsal.value) && ('{{ $item->id_barang }}' == kodeBrg.value)) {
-        qtyAsal.value -= '{{ $item->qty }}';
+
+    @foreach($barang as $br)
+      if('{{ $br->nama }}' == e.target.value) {
+        kodeBarang[i].value = '{{ $br->id }}';
+        gdgAsal[i].setAttribute('required', true);
+        gdgTujuan[i].setAttribute('required', true);
+      }
+    @endforeach
+  });
+
+  kodeBarang[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      gdgAsal[i].removeAttribute('required');
+      gdgTujuan[i].removeAttribute('required');
+    }
+
+    @foreach($barang as $br)
+      if('{{ $br->id }}' == e.target.value) {
+        brgNama[i].value = '{{ $br->nama }}';
+        gdgAsal[i].setAttribute('required', true);
+        gdgTujuan[i].setAttribute('required', true);
+      }
+    @endforeach
+  });
+}
+
+/** Tampil Stok Gudang **/
+for(let i = 0; i < gdgAsal.length; i++) {
+  gdgAsal[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      kodeAsal[i].value = "";
+      stokAsal[i].value = "";
+    }
+
+    @foreach($gudang as $g)
+      if('{{ $g->nama }}' == e.target.value) {
+        kodeAsal[i].value = '{{ $g->id }}';
+      }
+    @endforeach
+    displayStok(kodeAsal[i].value, stokAsal[i]);
+  });
+
+  gdgTujuan[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      kodeTujuan[i].value = "";
+      stokTujuan[i].value = "";
+    }
+
+    @foreach($gudang as $g)
+      if('{{ $g->nama }}' == e.target.value) {
+        kodeTujuan[i].value = '{{ $g->id }}';
+      }
+    @endforeach
+    displayStok(kodeTujuan[i].value, stokTujuan[i]);
+  });
+
+  function displayStok(kode, stok) {
+    @foreach($stok as $s)
+      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == kode)) {
+        stok.value = '{{ $s->stok }}';
       }
     @endforeach
   }
 }
 
-function displayTujuan(e) {
-  @foreach($stok as $s)
-    if(('{{ $s->gudang->nama }}' == e.target.value) && ('{{ $s->id_barang }}' == kodeBrg.value)) {
-      qtyTujuan.value = '{{ $s->stok }}';
-      kodeTujuan.value = '{{ $s->id_gudang }}';
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    qtyTransfer[i].value = qtyTransfer[i+1].value;
+    stokTujuan[i].value = stokTujuan[i+1].value;
+    gdgTujuan[i].value = gdgTujuan[i+1].value;
+    stokAsal[i].value = stokAsal[i+1].value;
+    gdgAsal[i].value = gdgAsal[i+1].value;
+    brgNama[i].value = brgNama[i+1].value;
+    kodeBarang[i].value = kodeBarang[i+1].value;
+    if(kodeBarang[i+1].value == "") {
+      gdgAsal[i].removeAttribute('required');
+      gdgTujuan[i].removeAttribute('required');
     }
-  @endforeach
+    else {
+      gdgAsal[i+1].removeAttribute('required');
+      gdgTujuan[i+1].removeAttribute('required');
+    }
+    $(this).parents('tr').next().find('input').val('');
+  });
 }
 
 /** Autocomplete Input Text **/
@@ -322,7 +669,7 @@ $(function() {
   });
 
   /*-- Autocomplete Input Gudang Asal --*/
-  $(gudangAsal).on("keydown", function(event) {
+  $(gdgAsal).on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();
     }
@@ -351,7 +698,7 @@ $(function() {
   });
 
   /*-- Autocomplete Input Gudang Tujuan --*/
-  $(gudangTujuan).on("keydown", function(event) {
+  $(gdgTujuan).on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();
     }
@@ -379,27 +726,6 @@ $(function() {
     }
   });
 });
-
-/* Tampil Data tanpa Refresh
-$('#btn-cari').click(function(e) {
-  e.preventDefault();
-  $.ajax({
-    url: '/barangmasuk/process',
-    type: 'post',
-    data: {kode: kode.value},
-    dataType: 'json',
-    success: function(data) {
-      $.each(data, function() {
-        $.each(this, function(index, value) {
-          supplier.value = value.id;
-          console.log(value);
-        });
-        
-      });
-    },
-  })
-})
-*/
 
 </script>
 @endpush

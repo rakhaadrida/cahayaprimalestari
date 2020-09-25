@@ -109,27 +109,15 @@
                   <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1"
-                      @if($itemsRow != 0) 
-                        value="{{ $items[0]->customer->nama }}" readonly
-                      @endif
-                    />
-                    <input type="hidden" name="kodeCustomer" id="idCustomer" 
-                      @if($itemsRow != 0) 
-                        value="{{ $items[0]->id_customer }}"
-                      @endif
-                    />
+                    <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required />
+                    <input type="hidden" name="kodeCustomer" id="idCustomer">
                   </div>
                 </div>
                 <div class="form-group row sales-row">
                   <label for="alamat" class="col-2 col-form-label text-bold">Nama Sales</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly
-                      @if($itemsRow != 0) 
-                        value="{{ $items[0]->customer->sales->nama }}"
-                      @endif
-                    />
+                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly />
                     <input type="hidden" name="kodeSales" id="idSales" 
                       {{-- @if($itemsRow != 0) 
                         value="{{ $items[0]->id_supplier }}"
@@ -141,11 +129,8 @@
                   <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" name="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control form-control-sm mt-1"
-                      @if($itemsRow != 0) 
-                        value="{{ $items[$itemsRow - 1]->tgl_kirim }}"
-                      @endif
-                    />
+                    <input type="date" name="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control form-control-sm mt-1" required />
+                    <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div>
                 </div>
               </div>
@@ -161,7 +146,7 @@
               </div> --}}
 
               <!-- Inputan Detil PO -->
-              <div class="form-row">
+              {{-- <div class="form-row">
                 <div class="form-group col-sm-1">
                   <label for="kode" class="col-form-label text-bold ">Kode</label>
                   <input type="text" name="kodeBarang" id="kodeBarang" placeholder="Kd Brg" class="form-control form-control-sm">
@@ -192,26 +177,73 @@
                   <button type="submit" formaction="{{ route('so-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
                 </div>
               </div>          
-              <hr>
+              <hr> --}}
               <!-- End Inputan Detil PO -->
               
               <!-- Tabel Data Detil PO -->
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+              <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
+                Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
+              </span>
+              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
                 <thead class="text-center text-bold text-dark">
-                  <td style="width: 30px">No</td>
-                  <td style="width: 80px">Kode</td>
-                  <td>Nama Barang</td>
-                  <td style="width: 50px">Qty</td>
-                  <td>Harga</td>
-                  <td>Jumlah</td>
-                  <td style="width: 80px">Diskon(%)</td>
-                  <td style="width: 110px">Diskon(Rp)</td>
-                  <td style="width: 120px">Netto (Rp)</td>
-                  <td style="width: 50px">Ubah</td>
-                  <td style="width: 50px">Hapus</td>
+                  <tr>
+                    <td rowspan="2" style="width: 30px" class="align-middle">No</td>
+                    <td rowspan="2" style="width: 95px" class="align-middle">Kode Barang</td>
+                    <td rowspan="2" class="align-middle">Nama Barang</td>
+                    <td rowspan="2" style="width: 60px" class="align-middle">Qty</td>
+                    <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 120px" class="align-middle">Jumlah</td>
+                    <td colspan="2">Diskon</td>
+                    <td rowspan="2" style="width: 130px" class="align-middle">Netto (Rp)</td>
+                    <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
+                  </tr>
+                  <tr>
+                    <td>%</td>
+                    <td>Rupiah</td>
+                  </tr>
                 </thead>
-                <tbody>
-                  @if($itemsRow != 0)
+                <tbody id="tablePO">
+                  @for($i=1; $i<=5; $i++)
+                    <tr class="text-bold text-dark" id="{{ $i }}">
+                      <td align="center" class="align-middle">{{ $i }}</td>
+                      <td>
+                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                        value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
+                      </td>
+                      <td>
+                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                        value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
+                      </td>
+                      <td> 
+                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}">
+                      </td>
+                      <td>
+                        <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
+                      </td>
+                      <td>
+                        <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
+                      </td>
+                      <td style="width: 60px">
+                        <input type="text" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
+                        value="{{ old('diskon[]') }}" >
+                      </td>
+                      <td style="width: 120px">
+                        <input type="text" name="diskonRp[]" id="diskonRp" class="form-control form-control-sm text-bold text-right text-dark diskonRp" 
+                        value="{{ old('diskonRp[]') }}" >
+                      </td>
+                      <td>
+                        <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ old('netto[]') }}" >
+                      </td>
+                      <td align="center" class="align-middle">
+                        <a href="#" class="icRemove">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  @endfor
+
+                  <!-- Tabel Tampil Detil SO (Bukan Diinput di Tabel) -->
+                  {{-- @if($itemsRow != 0)
                     @php $i = 1; $subtotal = 0; @endphp
                     @foreach($items as $item)
                       <tr class="text-bold">
@@ -257,7 +289,8 @@
                     <tr>
                       <td colspan=11 class="text-center text-bold h4 p-2"><i>Belum ada Detail SO</i></td>
                     </tr>
-                  @endif 
+                  @endif  --}}
+
                 </tbody>
               </table>
               {{-- <div class="form-group row justify-content-end subtotal-so">
@@ -290,33 +323,35 @@
                   />
                 </div>
               </div> --}}
-              <div class="form-group row justify-content-end subtotal-so">
+              <div class="form-group row justify-content-end subtotal-so so-info-total">
                 <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Sub Total</label>
                 <span class="col-form-label text-bold">:</span>
+                <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger"
-                  @if($itemsRow != 0) 
+                  <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" />
+                  {{-- @if($itemsRow != 0) 
                     value="{{ $totalNotPPN }}"
-                  @endif
-                  />
+                  @endif --}}
                 </div>
               </div>
-              <div class="form-group row justify-content-end total-so">
+              <div class="form-group row justify-content-end total-so so-info-total">
                 <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                 <span class="col-form-label text-bold">:</span>
+                <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger" 
+                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
                   @if($itemsRow != 0) 
                     value="{{ $ppn }}"
                   @endif
                   />
                 </div>
               </div>
-              <div class="form-group row justify-content-end total-so">
+              <div class="form-group row justify-content-end total-so so-info-total">
                 <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                 <span class="col-form-label text-bold">:</span>
+                <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg" 
+                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-right" 
                   @if($itemsRow != 0) 
                     value="{{ $grandtotal }}"
                   @endif
@@ -351,27 +386,25 @@
 const namaCust = document.getElementById('namaCustomer');
 const namaSales = document.getElementById('namaSales');
 const kodeCust = document.getElementById('idCustomer');
-const namaBrg = document.getElementById('namaBarang');
-const kodeBrg = document.getElementById('kodeBarang');
-const harga = document.getElementById('harga');
-const kodeHarga = document.getElementById('idHarga');
-const jumlah = document.getElementById('jumlah');
-const qty = document.getElementById('qty');
-const diskon = document.getElementById('diskon');
-// const diskonFaktur = document.getElementById('diskonFaktur');
-const angkaDF = document.getElementById('angkaDF');
+const kodeBarang = document.querySelectorAll('.kodeBarang');
+const brgNama = document.querySelectorAll(".namaBarang");
+const qty = document.querySelectorAll(".qty");
+const harga = document.querySelectorAll(".harga");
+const jumlah = document.querySelectorAll(".jumlah");
+const diskon = document.querySelectorAll(".diskon");
+const diskonRp = document.querySelectorAll(".diskonRp");
+const netto = document.querySelectorAll(".netto");
+const hapusBaris = document.querySelectorAll(".icRemove");
 const subTotal = document.getElementById('subtotal');
-const totalNotPpn = document.getElementById('totalNotPPN');
 const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
+const newRow = document.getElementsByClassName('table-add')[0];
+const jumBaris = document.getElementById('jumBaris');
+var netPast;
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('change', displayCust);
-namaBrg.addEventListener('change', displayHarga);
-kodeBrg.addEventListener('change', displayHarga);
-qty.addEventListener('change', displayJumlah);
-diskon.addEventListener('change', displayTotal);
-// diskonFaktur.addEventListener('change', displayDiskon);
+newRow.addEventListener("click", displayRow);
 
 /** Tampil Id Supplier **/
 function displayCust(e) {
@@ -383,72 +416,331 @@ function displayCust(e) {
   @endforeach
 }
 
-/** Tampil Harga Otomatis **/
-function displayHarga(e) {
-  @foreach($barang as $br)
-    if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-      kodeBrg.value = '{{ $br->id }}';
-      namaBrg.value = '{{ $br->nama }}';
+/** Add New Table Line **/
+function displayRow(e) {
+  const lastRow = $(tablePO).find('tr:last').attr("id");
+  const lastNo = $(tablePO).find('tr:last td:first-child').text();
+  var newNum = +lastRow + 1;
+  var newNo = +lastNo + 1;
+  const newTr = `
+    <tr class="text-bold" id="${newNum}">
+      <td align="center" class="align-middle">${newNo}</td>
+      <td>
+        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
+      </td>
+      <td>
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
+      </td>
+      <td> 
+        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" placeholder="Qty PO">
+      </td>
+      <td>
+        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right hargaRow" placeholder="Harga Satuan" >
+      </td>
+      <td>
+        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" >
+      </td>
+      <td style="width: 60px">
+        <input type="text" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
+        value="{{ old('diskon[]') }}" >
+      </td>
+      <td style="width: 120px">
+        <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRpRow" 
+        value="{{ old('diskonRp[]') }}" >
+      </td>
+      <td>
+        <input type="text" name="netto[]" id="nettoRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right nettoRow" value="{{ old('netto[]') }}" >
+      </td>
+      <td align="center" class="align-middle">
+        <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
+          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+        </a>
+      </td>
+    </tr>
+  `; 
+
+  $(tablePO).append(newTr);
+  jumBaris.value = newNum;
+  const newRow = document.getElementById(newNum);
+  const brgRow = document.getElementById("nmBrgRow"+newNum);
+  const kodeRow = document.getElementById("kdBrgRow"+newNum);
+  const qtyRow = document.getElementById("qtyRow"+newNum);
+  const hargaRow = document.getElementById("hargaRow"+newNum);
+  const jumlahRow = document.getElementById("jumlahRow"+newNum);
+  const diskonRow = document.getElementById("diskonRow"+newNum);
+  const diskonRpRow = document.getElementById("diskonRpRow"+newNum);
+  const nettoRow = document.getElementById("nettoRow"+newNum);
+  const hapusRow = document.getElementById("icRemoveRow"+newNum);
+
+  /** Tampil Harga **/
+  brgRow.addEventListener("change", displayHargaRow); 
+  kodeRow.addEventListener("change", displayHargaRow);
+  
+  function displayHargaRow(e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(".", "") - +jumlahRow.value.replace(".", ""));
+      $(this).parents('tr').find('input').val('');
+      qtyRow.removeAttribute('required');
+    } 
+
+    @foreach($barang as $br)
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+        kodeRow.value = '{{ $br->id }}';
+        brgRow.value = '{{ $br->nama }}';
+      }
+    @endforeach
+
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kodeRow.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
+        qtyRow.setAttribute('required', true);
+      }
+    @endforeach
+  }   
+
+  /** Tampil Jumlah **/
+  qtyRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      jumlahRow.value = "";
+      nettoRow.value = "";
     }
-  @endforeach
-  @foreach($harga as $hb)
-    if(('{{ $hb->id_barang }}' == kodeBrg.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-      harga.value = '{{ $hb->harga_ppn }}';
-      kodeHarga.value = '{{ $hb->id_harga }}';
-      jumlah.value = harga.value;
+    else {
+      netPast = +nettoRow.value.replace(/\./g, "");
+      jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
+      if(diskonRow.value != "") {
+        diskonRpRow.value = addCommas(diskonRow.value * jumlahRow.value.replace(/\./g, "") / 100);
+      }
+
+      nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
+      checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
-  @endforeach  
+    total_ppn(subtotal.value.replace(/\./g, ""));
+  });
+
+  /** Tampil Diskon Rp **/
+  diskonRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      netPast = nettoRow.value.replace(/\./g, "");
+      nettoRow.value = addCommas(+nettoRow.value.replace(/\./g, "") + +diskonRpRow.value.replace(/\./g, ""))
+      checkSubtotal(netPast, nettoRow.value.replace(/\./g, ""));
+      diskonRpRow.value = "";
+    }
+    else {
+      netPast = +nettoRow.value.replace(/\./g, "")
+      diskonRpRow.value = addCommas(e.target.value * jumlahRow.value.replace(/\./g, "") / 100);
+      nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""))
+      checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
+  });
+  
+  /** Delete Table Row **/
+  hapusRow.addEventListener("click", function (e) {
+    if(qtyRow.value != "") {
+       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      total_ppn(subtotal.value.replace(/\./g, ""));
+    }
+    
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $(tablePO).find('tr:last').attr("id");
+    if(curNum < lastNum) {
+      $(newRow).remove();
+      for(let i = curNum; i < lastNum; i++) {
+        $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+      }
+    }
+    else if(curNum == lastNum) {
+      $(newRow).remove();
+    }
+    jumBaris.value -= 1;
+  });
+
+  /** Autocomplete Nama  Barang **/
+  $(function() {
+    var idBarang = [];
+    var nmBarang = [];
+    @foreach($barang as $b)
+      idBarang.push('{{ $b->id }}');
+      nmBarang.push('{{ $b->nama }}');
+    @endforeach
+      
+    function split(val) {
+      return val.split(/,\s/);
+    }
+
+    function extractLast(term) {
+      return split(term).pop();
+    }
+
+    $(kodeRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(idBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+    
+    $(brgRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(nmBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+  }); 
+}
+
+/** Tampil Harga Barang **/
+for(let i = 0; i < brgNama.length; i++) {
+  brgNama[i].addEventListener("change", displayHarga) ;
+  kodeBarang[i].addEventListener("change", displayHarga);
+
+  function displayHarga(e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      $(this).parents('tr').find('input').val('');
+      qty[i].removeAttribute('required');
+    }
+
+    @foreach($barang as $br)
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+        kodeBarang[i].value = '{{ $br->id }}';
+        brgNama[i].value = '{{ $br->nama }}';
+      }
+    @endforeach
+
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        harga[i].value = addCommas('{{ $hb->harga_ppn }}');
+        qty[i].setAttribute('required', true);
+      }
+    @endforeach
+  }
 }
 
 /** Tampil Jumlah Harga Otomatis **/
-function displayJumlah(e) {
-  jumlah.value = e.target.value * harga.value;
-} 
+for(let i = 0; i < qty.length; i++) {
+  qty[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      jumlah[i].value = "";
+      netto[i].value = "";
+    }
+    else {
+      netPast = +netto[i].value.replace(/\./g, "");
+      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+      if(diskon[i].value != "") {
+        diskonRp[i].value = addCommas(diskon[i].value * jumlah[i].value.replace(/\./g, "") / 100);
+      }
 
-function displayTotal(e) {
-  let totalHarga = qty.value * harga.value;
-  let besarDiskon = (e.target.value * totalHarga) / 100;
-  jumlah.value = totalHarga - besarDiskon;
-} 
+      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
+  });
+}  
 
-// function displayDiskon(e) {
-//   angkaDF.value = (e.target.value * subTotal.value) / 100;
-//   totalNotPpn.value = subTotal.value - angkaDF.value;
-//   ppn.value = totalNotPpn.value * 10 / 100;
-//   grandtotal.value = +totalNotPpn.value + +ppn.value;
-// } 
-
-/** Tampil Table Column Editable **/
-function displayEditable(no) {
-  document.getElementById("editButton"+no).style.display = "none";
-  document.getElementById("updateButton"+no).style.display = "block";
-  let row = document.querySelectorAll(".editable"+no);
-
-  row.forEach(function(e) {
-    e.contentEditable = true;
-    e.style.backgroundColor = "lightgrey";
-    e.style.color = "black";
-  })
-
-  return false;
+/** Tampil Diskon Rupiah Otomatis **/
+for(let i = 0; i < diskon.length; i++) {
+  diskon[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      netPast = netto[i].value.replace(/\./g, "");
+      netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
+      checkSubtotal(netPast, netto[i].value.replace(/\./g, ""));
+      diskonRp[i].value = "";
+    }
+    else {
+      netPast = +netto[i].value.replace(/\./g, "")
+      diskonRp[i].value = addCommas(e.target.value * jumlah[i].value.replace(/\./g, "") / 100);
+      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
+      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
+  });
 }
 
-/* function processEditable(no) {
-  let editableBarang = document.getElementById("editableBarang"+no);
-  let editableQty = document.getElementById("editableQty"+no);
-  const itemsEdit = [];
+/** Check Jumlah Netto onChange **/
+function checkSubtotal(Past, Now) {
+  if(Past > Now) {
+    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
+  } else {
+    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + (+Now - +Past));
+  }
+}
 
-  itemsEdit.push({
-    barang: editableBarang.value;
-    qty: editableQty.value;
-  })  
-  
-  $.ajax({
-    url: '/po/update',
-    type: 'post',
-    data: itemsEdit
+/** Hitung PPN Dan Total **/
+function total_ppn(sub) {
+  ppn.value = addCommas(sub * 10 / 100);
+  grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	}
+	return x1 + x2;
+}
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    if(qty[i].value != "") {
+       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      total_ppn(subtotal.value.replace(/\./g, ""));
+    }
+
+    netto[i].value = netto[i+1].value;
+    diskonRp[i].value = diskonRp[i+1].value;
+    diskon[i].value = diskon[i+1].value;
+    jumlah[i].value = jumlah[i+1].value;
+    harga[i].value = harga[i+1].value;
+    qty[i].value = qty[i+1].value;
+    brgNama[i].value = brgNama[i+1].value;
+    kodeBarang[i].value = kodeBarang[i+1].value;
+    if(kodeBarang[i+1].value == "")
+      qty[i].removeAttribute('required');
+    else
+      qty[i+1].removeAttribute('required');
+    $(this).parents('tr').next().find('input').val('');
   });
-} */
+}
 
 /** Autocomplete Input Text **/
 $(function() {
@@ -473,7 +765,7 @@ $(function() {
   }
 
   /*-- Autocomplete Input Kode Barang --*/
-  $(kodeBrg).on("keydown", function(event) {
+  $(kodeBarang).on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();
     }
@@ -502,7 +794,7 @@ $(function() {
   });
 
   /*-- Autocomplete Input Nama Barang --*/
-  $(namaBrg).on("keydown", function(event) {
+  $(brgNama).on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();
     }

@@ -58,7 +58,7 @@ class PurchaseController extends Controller
             'id' => $id,
             'tgl_po' => $tanggal,
             'id_supplier' => $request->kodeSupplier,
-            'total' => $request->grandtotal,
+            'total' => str_replace(".", "", $request->grandtotal),
             'status' => 'PENDING'
         ]);
 
@@ -67,7 +67,7 @@ class PurchaseController extends Controller
                 DetilPO::create([
                     'id_po' => $id,
                     'id_barang' => $request->kodeBarang[$i],
-                    'harga' => $request->harga[$i],
+                    'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $request->qty[$i]
                 ]);
             }

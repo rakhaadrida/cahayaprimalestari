@@ -56,7 +56,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
-                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder=" Masukkan Nama Supplier" class="form-control form-control-sm text-bold" 
+                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder=" Masukkan Nama Supplier" class="form-control form-control-sm text-bold" required
                       @if($itemsRow != 0) 
                         value="{{ $items[$itemsRow - 1]->supplier->nama }}" readonly
                       @endif
@@ -67,19 +67,23 @@
                       @endif
                     />
                   </div>
-                  @if($itemsRow != 0)
+                  <input type="hidden" name="jumBaris" id="jumBaris" value="5">
+
+                  <!-- Button Reset Supplier -->
+                  {{-- @if($itemsRow != 0)
                     <div class="col-auto mt-1" style="margin-left: -15px">
                       <button type="submit" onclick="return resetSupplier()" 
                       id="resetSupp" class="btn btn-info btn-sm btn-block text-bold form-control form-control-sm">Reset</button>
                     </div>
-                  @endif
+                  @endif --}}
+
                 </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier BM -->
               
               <!-- Inputan Detil BM -->
-              <div class="form-row">
+              {{-- <div class="form-row">
                 <div class="form-group col-sm-1">
                   <label for="kode" class="col-form-label text-bold ">Kode</label>
                   <input type="text" name="kodeBarang" id="kodeBarang" placeholder="Kd Brg" class="form-control form-control-sm text-bold">
@@ -105,24 +109,58 @@
                   <button type="submit" formaction="{{ route('bm-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
                 </div>
               </div>          
-              <hr>
+              <hr> --}}
               <!-- End Inputan Detil BM -->
 
               <!-- Tabel Data Detil BM-->
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+              <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
+                Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
+              </span>
+              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold">
                   <td style="width: 40px">No</td>
                   <td style="width: 100px">Kode Barang</td>
                   <td>Nama Barang</td>
-                  <td style="width: 90px">Harga</td>
                   <td style="width: 80px">Qty (Pcs)</td>
+                  <td style="width: 90px">Harga</td>
                   <td style="width: 110px">Jumlah Harga</td>
                   <td style="width: 250px">Keterangan</td>
-                  <td style="width: 50px" id="editHead">Edit</td>
                   <td style="width: 50px" id="deleteHead">Delete</td>
                 </thead>
-                <tbody>
-                  @if($itemsRow != 0)
+                <tbody id="tablePO">
+                  @for($i=1; $i<=5; $i++)
+                    <tr class="text-bold text-dark" id="{{ $i }}">
+                      <td align="center" class="align-middle">{{ $i }}</td>
+                      <td>
+                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                        value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
+                      </td>
+                      <td>
+                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                        value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
+                      </td>
+                      <td> 
+                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}">
+                      </td>
+                      <td>
+                        <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
+                      </td>
+                      <td>
+                        <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
+                      </td>
+                      <td>
+                        <input type="text" name="keterangan[]" id="keterangan" class="form-control form-control-sm text-bold text-dark keterangan" value="{{ old('keterangan[]') }}" >
+                      </td>
+                      <td align="center" class="align-middle">
+                        <a href="#" class="icRemove">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  @endfor
+
+                  <!-- Tabel Tampil Detil BM (Bukan Diinput di Tabel) -->
+                  {{-- @if($itemsRow != 0)
                     @php $i = 1; @endphp
                     @foreach($items as $item)
                       <tr class="text-bold barisBM">
@@ -163,7 +201,8 @@
                     <tr>
                       <td colspan=9 class="text-center text-bold h4 p-2"><i>Silahkan Input Detil Barang Masuk</i></td>
                     </tr>
-                  @endif
+                  @endif --}}
+
                 </tbody>
               </table>
               <hr>
@@ -172,13 +211,12 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" onclick="return checkEditable()" 
-                  id="submitBM" class="btn btn-success btn-block text-bold">Submit</button>
+                  <button type="submit" formaction="{{ route('bm-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</button>
+                  {{-- id="submitBM" onclick="return checkEditable()" --}}
                 </div>
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('bm-reset', $newcode) }}" 
-                  formmethod="GET" class="btn btn-outline-danger btn-block text-bold">Reset All 
-                  </button> 
+                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
+                  {{-- formaction="{{ route('bm-reset', $newcode) }}" formmethod="GET" --}}
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
@@ -193,133 +231,286 @@
 
 @push('addon-script')
 <script type="text/javascript">
-const supplier = document.getElementById("namaSupplier");
-const kodeSupp = document.getElementById("kodeSupplier");
-const kodeBrg = document.getElementById("kodeBarang");
-const namaBrg = document.getElementById("namaBarang");
-const harga = document.getElementById("harga");
+const namaSup = document.getElementById('namaSupplier');
+const kodeSup = document.getElementById('kodeSupplier');
+const kodeBarang = document.querySelectorAll('.kodeBarang');
+const brgNama = document.querySelectorAll(".namaBarang");
+const qty = document.querySelectorAll(".qty");
+const harga = document.querySelectorAll(".harga");
+const jumlah = document.querySelectorAll(".jumlah");
+const keterangan = document.querySelectorAll(".keterangan");
+const hapusBaris = document.querySelectorAll(".icRemove");
+const newRow = document.getElementsByClassName('table-add')[0];
+const jumBaris = document.getElementById('jumBaris');
 
-supplier.addEventListener('change', displaySupp);
-kodeBrg.addEventListener('change', displayAll);
-namaBrg.addEventListener('change', displayAll);
+namaSup.addEventListener('change', displaySupp);
+newRow.addEventListener('click', displayRow);
+
+/** Add New Table Line **/
+function displayRow(e) {
+  const lastRow = $(tablePO).find('tr:last').attr("id");
+  const lastNo = $(tablePO).find('tr:last td:first-child').text();
+  var newNum = +lastRow + 1;
+  var newNo = +lastNo + 1;
+  const newTr = `
+    <tr class="text-bold" id="${newNum}">
+      <td align="center" class="align-middle">${newNo}</td>
+      <td>
+        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
+      </td>
+      <td>
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
+      </td>
+      <td> 
+        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" placeholder="Qty PO">
+      </td>
+      <td>
+        <input type="text" name="harga[]" id="hargaRow${newNum}" class="form-control form-control-sm text-bold text-right hargaRow" placeholder="Harga Satuan" readonly >
+      </td>
+      <td>
+        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" class="form-control form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" readonly>
+      </td>
+      <td>
+        <input type="text" name="keterangan[]" id="keteranganRow${newNum}" class="form-control form-control-sm text-bold keteranganRow" placeholder="Keterangan">
+      </td>
+      <td align="center" class="align-middle">
+        <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
+          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+        </a>
+      </td>
+    </tr>
+  `; 
+
+  $(tablePO).append(newTr);
+  jumBaris.value = newNum;
+  const newRow = document.getElementById(newNum);
+  const brgRow = document.getElementById("nmBrgRow"+newNum);
+  const kodeRow = document.getElementById("kdBrgRow"+newNum);
+  const qtyRow = document.getElementById("qtyRow"+newNum);
+  const hargaRow = document.getElementById("hargaRow"+newNum);
+  const jumlahRow = document.getElementById("jumlahRow"+newNum);
+  const keteranganRow = document.getElementById("keteranganRow"+newNum);
+  const hapusRow = document.getElementById("icRemoveRow"+newNum);
+
+  /** Tampil Harga **/
+  brgRow.addEventListener("change", function (e) {   
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      qtyRow.removeAttribute('required');
+    } 
+
+    @foreach($barang as $br)
+      if('{{ $br->nama }}' == e.target.value) {
+        kodeRow.value = '{{ $br->id }}';
+      }
+    @endforeach
+    displayHargaRow(kodeRow.value);
+  });
+
+  kodeRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      qtyRow.removeAttribute('required');
+    }
+
+    @foreach($barang as $br)
+      if('{{ $br->id }}' == e.target.value) {
+        brgRow.value = '{{ $br->nama }}';
+      }
+    @endforeach
+    displayHargaRow(e.target.value);
+  });
+
+  function displayHargaRow(kode) {
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        hargaRow.value = addCommas('{{ $hb->harga }}');
+        qtyRow.setAttribute('required', true);
+      }
+    @endforeach
+  }
+
+  /** Tampil Jumlah **/
+  qtyRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      jumlahRow.value = "";
+    }
+    else {
+      jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
+    }
+  });
+  
+  /** Delete Table Row **/
+  hapusRow.addEventListener("click", function (e) {
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $(tablePO).find('tr:last').attr("id");
+    if(curNum < lastNum) {
+      $(newRow).remove();
+      for(let i = curNum; i < lastNum; i++) {
+        $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+      }
+    }
+    else if(curNum == lastNum) {
+      $(newRow).remove();
+    }
+    jumBaris.value -= 1;
+  });
+
+  /** Autocomplete Nama  Barang **/
+  $(function() {
+    var idBarang = [];
+    var nmBarang = [];
+    @foreach($barang as $b)
+      idBarang.push('{{ $b->id }}');
+      nmBarang.push('{{ $b->nama }}');
+    @endforeach
+      
+    function split(val) {
+      return val.split(/,\s/);
+    }
+
+    function extractLast(term) {
+      return split(term).pop();
+    }
+
+    $(kodeRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(idBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+    
+    $(brgRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        response($.ui.autocomplete.filter(nmBarang, extractLast(request.term)));
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        terms.pop();
+        terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+  }); 
+}
 
 /** Tampil Id Supp **/
 function displaySupp(e) {
   @foreach($supplier as $s)
     if('{{ $s->nama }}' == e.target.value) {
-      kodeSupp.value = '{{ $s->id }}';
+      kodeSup.value = '{{ $s->id }}';
     }
   @endforeach
 }
 
-/** Tampil Data Barang **/
-function displayAll(e) {
-  @foreach($barang as $br)
-    if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-      kodeBrg.value = '{{ $br->id }}';
-      namaBrg.value = '{{ $br->nama }}';
+/** Tampil Harga Barang **/
+for(let i = 0; i < brgNama.length; i++) {
+  brgNama[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      qty[i].removeAttribute('required');
     }
-  @endforeach
-  @foreach($harga as $hb)
-    if(('{{ $hb->id_barang }}' == kodeBrg.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-      harga.value = '{{ $hb->harga }}';
-    }
-  @endforeach
-}
 
-/** Tampil Table Column Editable **/
-function displayEditable(no) {
-  document.getElementById("editButton"+no).style.display = "none";
-  document.getElementById("updateButton"+no).style.display = "block";
-  document.getElementById("removeButton"+no).style.display = "none";
-  document.getElementById("cancelButton"+no).style.display = "block";
-  let rowQty = document.querySelectorAll(".editQty"+no);
-  let rowKet = document.querySelectorAll(".editKet"+no);
-  document.getElementById("editHead").innerText = "Simpan"
-  document.getElementById("deleteHead").innerText = "Batal"
-
-  rowQty.forEach(function(e) {
-    const editQty = `
-      <input type="text" name="editQty[]" class="form-control form-control-sm text-bold" 
-      value="${e.innerText}">
-    `;
-    $(e).empty();
-    $(e).append(editQty);
-    // e.contentEditable = true;
-    // e.style.backgroundColor = "lightgrey";
-    // e.style.color = "black";
-  })
-
-  rowKet.forEach(function(e) {
-    const editKet = `
-      <input type="text" name="editKet[]" class="form-control form-control-sm text-bold" value="${e.innerText}">
-    `;
-    $(e).empty();
-    $(e).append(editKet);
-  })
-
-  return false;
-}
-
-/** Cancel Table Column Editable **/
-function cancelEditable(no) {
-  document.getElementById("updateButton"+no).style.display = "none";
-  document.getElementById("editButton"+no).style.display = "block";
-  document.getElementById("cancelButton"+no).style.display = "none";
-  document.getElementById("removeButton"+no).style.display = "block";
-  document.getElementById("editHead").innerText = "Edit";
-  document.getElementById("deleteHead").innerText = "Delete";
-  const tdQty = document.getElementById("editableQty"+no);
-  const tdKet = document.getElementById("editableKet"+no);
-  const inputQty = tdQty.getElementsByTagName('input')[0];
-  const inputKet = tdKet.getElementsByTagName('input')[0];
-  const isiQty = inputQty.value;
-  const isiKet = inputKet.value;
-  $(tdQty).empty();
-  $(tdKet).empty();
-  tdQty.innerText = isiQty;
-  tdKet.innerText = isiKet;
-
-  return false;
-}
-
-/** Check Editable Input Before Submit **/
-function checkEditable(e) {
-  var j = 0;
-  for(let i = 1; i <= '{{ $itemsRow }}'; i++) {
-    var getRow = document.getElementById("updateButton"+i);
-    if(getRow.style.display == "block") {
-      j = 1;
-    }
-  }
-
-  if(j == 1) {
-    alert(`Silahkan simpan perubahan terlebih dahulu`);
-    return false;
-  }
-  else {
-    document.getElementById("submitBM").formMethod = "POST";
-    document.getElementById("submitBM").formAction = '{{ route('bm-process', $newcode) }}';
-  }
-}
-
-/** Reset Inputan Nama Supplier **/
-function resetSupplier(e) {
-  supplier.removeAttribute("readonly");
-  supplier.value = "";
-  return false;
-}
-
-/** Reset Isi Table **/
-/* function resetTable(e) {
-  const tbody = document.getElementsByTagName('tbody')[0];
-  const baris = tbody.querySelectorAll(".barisBM");
-  baris.forEach(function(e) {
-    tbody.removeChild(baris);
+    @foreach($barang as $br)
+      if('{{ $br->nama }}' == e.target.value) {
+        kodeBarang[i].value = '{{ $br->id }}';
+      }
+    @endforeach
+    displayHarga(kodeBarang[i].value);
   });
 
-  return false;
-} */
+  kodeBarang[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      $(this).parents('tr').find('input').val('');
+      qty[i].removeAttribute('required');
+    }
+
+    @foreach($barang as $br)
+      if('{{ $br->id }}' == e.target.value) {
+        brgNama[i].value = '{{ $br->nama }}';
+      }
+    @endforeach
+    displayHarga(e.target.value);
+  });
+
+  function displayHarga(kode) {
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        harga[i].value = addCommas('{{ $hb->harga }}');
+        qty[i].setAttribute('required', true);
+      }
+    @endforeach
+  }
+}
+
+/** Tampil Jumlah Harga Otomatis **/
+for(let i = 0; i < qty.length; i++) {
+  qty[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      jumlah[i].value = "";
+    }
+    else {
+      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+    }
+  });
+} 
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	}
+	return x1 + x2;
+}
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    keterangan[i].value = keterangan[i+1].value;
+    jumlah[i].value = jumlah[i+1].value;
+    harga[i].value = harga[i+1].value;
+    qty[i].value = qty[i+1].value;
+    brgNama[i].value = brgNama[i+1].value;
+    kodeBarang[i].value = kodeBarang[i+1].value;
+    if(kodeBarang[i+1].value == "")
+      qty[i].removeAttribute('required');
+    else
+      qty[i+1].removeAttribute('required');
+    $(this).parents('tr').next().find('input').val('');
+  });
+}
 
 /** Autocomplete Input Text **/
 $(function() {
@@ -430,27 +621,6 @@ $(function() {
     }
   });
 });
-
-/* Tampil Data tanpa Refresh
-$('#btn-cari').click(function(e) {
-  e.preventDefault();
-  $.ajax({
-    url: '/barangmasuk/process',
-    type: 'post',
-    data: {kode: kode.value},
-    dataType: 'json',
-    success: function(data) {
-      $.each(data, function() {
-        $.each(this, function(index, value) {
-          supplier.value = value.id;
-          console.log(value);
-        });
-        
-      });
-    },
-  })
-})
-*/
 
 </script>
 @endpush

@@ -64,33 +64,35 @@ class TransferBarangController extends Controller
     public function process(Request $request, $id) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+        $jumlah = $request->jumBaris;
         
         TransferBarang::create([
             'id' => $id,
             'tgl_tb' => $tanggal
         ]);
 
-        $tempDetil = TempDetilTB::where('id_tb', $id)->get();
-        foreach($tempDetil as $td) {
-            DetilTB::create([
-                'id_tb' => $td->id_tb,
-                'id_barang' => $td->id_barang,
-                'id_asal' => $td->id_asal,
-                'id_tujuan' => $td->id_tujuan,
-                'qty' => $td->qty
-            ]);
+        for($i = 0; $i < $jumlah; $i++) {
+            if($request->kodeBarang[$i] != "") {
+                DetilTB::create([
+                    'id_tb' => $request->id,
+                    'id_barang' => $request->kodeBarang[$i],
+                    'id_asal' => $request->kodeAsal[$i],
+                    'id_tujuan' => $request->kodeTujuan[$i],
+                    'qty' => $request->qtyTransfer[$i]
+                ]);
 
-            $updateStok = StokBarang::where('id_barang', $td->id_barang)
-                            ->where('id_gudang', $td->id_asal)->first();
-            $updateStok->{'stok'} -= $td->qty;
-            $updateStok->save();
+                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                                ->where('id_gudang', $request->kodeAsal[$i])->first();
+                $updateStok->{'stok'} -= $request->qtyTransfer[$i];
+                $updateStok->save();
 
-            $updateStok = StokBarang::where('id_barang', $td->id_barang)
-                            ->where('id_gudang', $td->id_tujuan)->first();
-            $updateStok->{'stok'} += $td->qty;
-            $updateStok->save();
+                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                                ->where('id_gudang', $request->kodeTujuan[$i])->first();
+                $updateStok->{'stok'} += $request->qtyTransfer[$i];
+                $updateStok->save();
 
-            $deleteTemp = TempDetilTB::where('id_tb', $id)->where('id_barang', $td->id_barang)->where('id_asal', $td->id_asal)->where('id_tujuan', $td->id_tujuan)->delete();
+                // $deleteTemp = TempDetilTB::where('id_tb', $id)->where('id_barang', $request->kodeBarang[$i])->where('id_asal', $request->kodeAsal[$i])->where('id_tujuan', $request->kodeTujuan[$i])->delete();
+            }
         }
 
         return redirect()->route('tb');

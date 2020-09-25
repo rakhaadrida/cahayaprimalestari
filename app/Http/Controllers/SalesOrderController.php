@@ -70,18 +70,46 @@ class SalesOrderController extends Controller
     public function process(Request $request, $id) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+        $jumlah = $request->jumBaris;
         
         SalesOrder::create([
             'id' => $id,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $request->tanggalKirim,
-            'total' => $request->grandtotal,
+            'total' => str_replace(".", "", $request->grandtotal),
             'tempo' => $request->tempo,
             'pkp' => $request->pkp,
             'status' => 'PENDING',
             'id_customer' => $request->kodeCustomer
         ]);
 
+        for($i = 0; $i < $jumlah; $i++) {
+            if($request->kodeBarang[$i] != "") {
+                DetilSO::create([
+                    'id_so' => $id,
+                    'id_barang' => $request->kodeBarang[$i],
+                    'harga' => str_replace(".", "", $request->harga[$i]),
+                    'qty' => $request->qty[$i],
+                    'diskon' => $request->diskon[$i]
+                ]);
+
+                $qty = $request->qty[$i];
+
+                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])->get();
+                foreach($updateStok as $us) {
+                    if($request->qty[$i] <= $us->stok) {
+                        $us->stok -= $request->qty[$i];
+                    }
+                    else {
+                        $qty -= $us->stok;
+                        $us->stok -= $us->stok;
+                    }
+                    $us->save();
+                }
+            }
+        }
+
+        /* 
         $tempDetil = TempDetilSO::where('id_so', $id)->get();
         foreach($tempDetil as $td) {
             DetilSO::create([
@@ -94,20 +122,9 @@ class SalesOrderController extends Controller
 
             // $updateStok = StokBarang::where('id_barang', $td->id_barang)
             //                 ->where('id_gudang', 'GDG01')->first();
-            $updateStok = StokBarang::where('id_barang', $td->id_barang)->get();
-            foreach($updateStok as $us) {
-                if($td->qty <= $us->stok) {
-                    $us->stok -= $td->qty;
-                }
-                else {
-                    $td->qty -= $us->stok;
-                    $us->stok -= $us->stok;
-                }
-                $us->save();
-            }
 
             $deleteTemp = TempDetilSO::where('id_so', $id)->where('id_barang', $td->id_barang)->delete();
-        }
+        } */
 
         return redirect()->route('so');
     }

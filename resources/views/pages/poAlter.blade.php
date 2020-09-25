@@ -35,7 +35,6 @@
                       <div class="col-2">
                         <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
                       </div>
-                      {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal PO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
@@ -48,7 +47,7 @@
                       <label for="subtotal" class="col-5 col-form-label text-bold ">Sub Total</label>
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-4">
+                      <div class="col-5">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right" name="subtotal" id="subtotal">
                       </div>
                     </div>
@@ -56,7 +55,7 @@
                       <label for="ppn" class="col-5 col-form-label text-bold ">PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-4">
+                      <div class="col-5">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right" name="ppn" id="ppn">
                       </div>
                     </div>
@@ -64,7 +63,7 @@
                       <label for="grandtotal" class="col-5 col-form-label text-bold ">Grand Total</label>
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
-                      <div class="col-4">
+                      <div class="col-5">
                         <input type="text" readonly class="form-control-plaintext text-bold text-right text-danger" name="grandtotal" id="grandtotal">
                         <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                       </div>
@@ -75,7 +74,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4">
-                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder="Nama Supplier" class="form-control form-control-sm"
+                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder="Nama Supplier" class="form-control form-control-sm" required
                       @if($itemsRow != 0) 
                         value="{{ $items[0]->supplier->nama }}" readonly
                       @endif
@@ -146,19 +145,21 @@
                       <tr class="text-bold text-dark" id="{{ $i }}">
                         <td align="center" class="align-middle">{{ $i }}</td>
                         <td>
-                          <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang">
+                          <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                          value="{{ old('kodeBarang[]') }}">
                         </td>
                         <td>
-                          <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang">
+                          <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                          value="{{ old('namaBarang[]') }}">
                         </td>
                         <td> 
-                          <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty">
+                          <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}">
                         </td>
                         <td>
-                          <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" >
+                          <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
                         </td>
                         <td>
-                          <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" >
+                          <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                         </td>
                         <td align="center" class="align-middle">
                           <a href="#" class="icRemove">
@@ -242,7 +243,7 @@ const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
-var jumBaris = document.getElementById('jumBaris');
+const jumBaris = document.getElementById('jumBaris');
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaSup.addEventListener('change', displaySupp);
@@ -256,7 +257,7 @@ function displayRow(e) {
   var newNo = +lastNo + 1;
   const newTr = `
     <tr class="text-bold" id="${newNum}">
-      <td align="center">${newNo}</td>
+      <td align="center" class="align-middle">${newNo}</td>
       <td>
         <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
       </td>
@@ -272,7 +273,7 @@ function displayRow(e) {
       <td>
         <input type="text" name="jumlah[]" id="jumlahRow${newNum}" class="form-control form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" readonly>
       </td>
-      <td align="center">
+      <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
         </a>
@@ -291,7 +292,13 @@ function displayRow(e) {
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
 
   /** Tampil Harga **/
-  brgRow.addEventListener("change", function (e) {
+  brgRow.addEventListener("change", function (e) {   
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(".", "") - +jumlahRow.value.replace(".", ""));
+      $(this).parents('tr').find('input').val('');
+      qtyRow.removeAttribute('required');
+    } 
+
     @foreach($barang as $br)
       if('{{ $br->nama }}' == e.target.value) {
         kodeRow.value = '{{ $br->id }}';
@@ -301,6 +308,12 @@ function displayRow(e) {
   });
 
   kodeRow.addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(".", "") - +jumlahRow.value.replace(".", ""));
+      $(this).parents('tr').find('input').val('');
+      qtyRow.removeAttribute('required');
+    }
+
     @foreach($barang as $br)
       if('{{ $br->id }}' == e.target.value) {
         brgRow.value = '{{ $br->nama }}';
@@ -312,17 +325,23 @@ function displayRow(e) {
   function displayHargaRow(kode) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-        hargaRow.value = '{{ $hb->harga }}';
-        jumlahRow.value = '{{ $hb->harga }}';
+        hargaRow.value = '{{ number_format($hb->harga, 0, '', '.') }}';
+        qtyRow.setAttribute('required', true);
       }
     @endforeach
   }
 
   /** Tampil Jumlah **/
   qtyRow.addEventListener("change", function (e) {
-    jumlahRow.value = e.target.value * hargaRow.value;
-    subtotal.value = +subtotal.value + +jumlahRow.value;
-    total_ppn(subtotal.value);
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
+      jumlahRow.value = "";
+    }
+    else {
+      jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + +jumlahRow.value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
   });
   
   /** Delete Table Row **/
@@ -426,6 +445,12 @@ function displaySupp(e) {
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      $(this).parents('tr').find('input').val('');
+      qty[i].removeAttribute('required');
+    }
+
     @foreach($barang as $br)
       if('{{ $br->nama }}' == e.target.value) {
         kodeBarang[i].value = '{{ $br->id }}';
@@ -435,6 +460,12 @@ for(let i = 0; i < brgNama.length; i++) {
   });
 
   kodeBarang[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      $(this).parents('tr').find('input').val('');
+      qty[i].removeAttribute('required');
+    }
+
     @foreach($barang as $br)
       if('{{ $br->id }}' == e.target.value) {
         brgNama[i].value = '{{ $br->nama }}';
@@ -447,7 +478,7 @@ for(let i = 0; i < brgNama.length; i++) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
         harga[i].value = '{{ number_format($hb->harga, 0, '', '.') }}';
-        jumlah[i].value = '{{ number_format($hb->harga, 0, '', '.') }}';
+        qty[i].setAttribute('required', true);
       }
     @endforeach
   }
@@ -456,24 +487,43 @@ for(let i = 0; i < brgNama.length; i++) {
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("change", function (e) {
-    jumlah[i].value = e.target.value * harga[i].value;
-    subtotal.value = +subtotal.value + +jumlah[i].value;
-    total_ppn(subtotal.value);
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      jumlah[i].value = "";
+    }
+    else {
+      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + +jumlah[i].value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
   });
 } 
 
 /** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  ppn.value = sub * 10 / 100;
-  grandtotal.value = +sub + +ppn.value;
+  ppn.value = addCommas(sub * 10 / 100);
+  grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	}
+	return x1 + x2;
 }
 
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
-      subtotal.value = +subtotal.value - +jumlah[i].value;
-      total_ppn(subtotal.value);
+       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      total_ppn(subtotal.value.replace(/\./g, ""));
     }
 
     jumlah[i].value = jumlah[i+1].value;
@@ -481,27 +531,12 @@ for(let i = 0; i < hapusBaris.length; i++) {
     qty[i].value = qty[i+1].value;
     brgNama[i].value = brgNama[i+1].value;
     kodeBarang[i].value = kodeBarang[i+1].value;
-    jumlah[i+1].value = "";
-    harga[i+1].value = "";
-    qty[i+1].value = "";
-    brgNama[i+1].value = "";
-    kodeBarang[i+1].value = "";
+    if(kodeBarang[i+1].value == "")
+      qty[i].removeAttribute('required');
+    else
+      qty[i+1].removeAttribute('required');
+    $(this).parents('tr').next().find('input').val('');
   });
-}
-
-/** Tampil Table Column Editable **/
-function displayEditable(no) {
-  document.getElementById("editButton"+no).style.display = "none";
-  document.getElementById("updateButton"+no).style.display = "block";
-  let row = document.querySelectorAll(".editable"+no);
-
-  row.forEach(function(e) {
-    e.contentEditable = true;
-    e.style.backgroundColor = "lightgrey";
-    e.style.color = "black";
-  })
-
-  return false;
 }
 
 /** Autocomplete Input Text **/
