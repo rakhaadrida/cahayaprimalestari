@@ -18,4 +18,8 @@ class DetilTB extends Model
     public function tb() {
         return $this->belongsTo('App\TransferBarang', 'id_tb', 'id');
     }
+
+    public function barang() {
+        return $this->belongsTo('App\Barang', 'id_barang', 'id');
+    }
 }

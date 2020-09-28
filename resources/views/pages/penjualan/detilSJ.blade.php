@@ -79,6 +79,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
                     <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm">
+                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                   </div>
                 </div>
               </div>
@@ -86,45 +87,52 @@
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
               
               <!-- Tabel Data Detil PO -->
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold text-dark">
-                  <td style="width: 50px">No</td>
+                  <td style="width: 50px" class="align-middle">No</td>
                   <td style="width: 100px">Kode Barang</td>
-                  <td style="width: 250px">Nama Barang</td>
-                  <td style="width: 90px">Qty SO</td>
-                  <td style="width: 100px">Qty Revisi</td>
-                  <td>Keterangan</td>
-                  <td style="width: 60px">Ubah</td>
-                  <td style="width: 60px">Hapus</td>
+                  <td style="width: 250px" class="align-middle">Nama Barang</td>
+                  <td style="width: 90px" class="align-middle">Qty SO</td>
+                  <td style="width: 100px" class="align-middle">Qty Revisi</td>
+                  <td class="align-middle">Keterangan</td>
+                  <td style="width: 60px" class="align-middle" id="editHead">Edit</td>
+                  <td style="width: 60px" class="align-middle" id="deleteHead">Hapus</td>
                 </thead>
-                <tbody>
+                <tbody id="tablePO">
                   @if($itemsRow != 0)
                     @php $i = 1; @endphp
                     @foreach($items as $item)
                       <tr class="text-bold">
-                        <td align="center">{{ $i }}</td>
-                        <td align="center">{{ $item->id_barang }} </td>
-                        <td>{{ $item->barang->nama }}</td>
-                        <td align="right">{{ $item->qty }}</td>
-                        <td align="right">
-                          <input type="text" class="form-control form-control-sm" name="qtyRevisi[]" placeholder="Qty Revisi">
+                        <td align="center" class="align-middle">{{ $i }}</td>
+                        <td>
+                          <input type="text" name="kodeBarang[]" readonly class="form-control-plaintext form-control-sm text-bold kodeBarang" value="{{ $item->id_barang }}">
                         </td>
-                        <td align="right">
-                          <input type="text" class="form-control form-control-sm" name="detailKet[]" placeholder="Keterangan Revisi">
+                        <td>
+                          <input type="text" name="namaBarang[]" readonly class="form-control-plaintext form-control-sm text-bold namaBarang" value="{{ $item->barang->nama }}">
+                        </td>
+                        <td> 
+                          <input type="text" name="qty[]" readonly class="form-control-plaintext form-control-sm text-bold text-right qty" value="{{ $item->qty }}">
+                        </td>
+                        <td align="right" class="qtyRevisi{{$i}}" id="editableQty{{$i}}">
+                        </td>
+                        <td align="center" class="keterangan{{$i}}" id="editableKet{{$i}}">
                         </td>
                         <td align="center">
                           <a href="" id="editButton{{$i}}" 
                           onclick="return displayEditable({{$i}})">
-                            <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
+                            <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1 align-middle"></i>
                           </a>
-                          <a href="" id="updateButton{{$i}}" class="ic-update" 
-                          onclick="return processEditable({{$i}})">
-                            <i class="fas fa-fw fa-save fa-lg mt-1"></i>
-                          </a>
+                          <button type="button" id="updateButton{{$i}}" class=" btn btn-md ic-update">
+                            <i class="fas fa-fw fa-save fa-lg align-middle mt-1"></i>
+                          </button>
                         </td>
-                        <td align="center">
-                          <a href="">
+                        <td align="center" class="align-middle">
+                          <a href="#" class="icRemove" id="removeButton{{$i}}">
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                          </a>
+                          <a href="" id="cancelButton{{$i}}" class="ic-cancel" 
+                          onclick="return cancelEditable({{$i}})">
+                            <i class="fas fa-fw fa-history fa-lg mt-1"></i>
                           </a>
                         </td>
                       </tr>
@@ -143,7 +151,8 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('sj-process', $items[0]->id_so) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" formaction="{{ route('sj-process', $items[0]->id_so) }}" formmethod="POST" class="btn btn-success btn-block text-bold"
+                    id="submitBM" onclick="return checkEditable()" >Submit</>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
@@ -163,7 +172,100 @@
 @push('addon-script')
 <script type="text/javascript">
 const kode = document.getElementById("kodeSO");
-const supplier = document.getElementById("namaSupplier");
+const kodeBarang = document.querySelectorAll('.kodeBarang');
+const brgNama = document.querySelectorAll(".namaBarang");
+const qty = document.querySelectorAll(".qty");
+const qtyRevisi = document.querySelectorAll(".qtyRevisi");
+const keterangan = document.querySelectorAll(".keterangan");
+const hapusBaris = document.querySelectorAll(".icRemove");
+const jumBaris = document.getElementById('jumBaris');
+
+function displayEditable(no) {
+  document.getElementById("editButton"+no).style.display = "none";
+  document.getElementById("updateButton"+no).style.display = "block";
+  document.getElementById("removeButton"+no).style.display = "none";
+  document.getElementById("cancelButton"+no).style.display = "block";
+  let rowQty = document.querySelectorAll(".qtyRevisi"+no);
+  let rowKet = document.querySelectorAll(".keterangan"+no);
+  document.getElementById("editHead").innerText = "Simpan"
+  document.getElementById("deleteHead").innerText = "Batal"
+
+  rowQty.forEach(function(e) {
+    const editQty = `
+      <input type="text" name="editQty[]" class="form-control form-control-sm text-bold" 
+      value="">
+    `;
+    $(e).empty();
+    $(e).append(editQty);
+  })
+
+  rowKet.forEach(function(e) {
+    const editKet = `
+      <input type="text" name="editKet[]" class="form-control form-control-sm text-bold" value="">
+    `;
+    $(e).empty();
+    $(e).append(editKet);
+  })
+
+  return false;
+}
+
+function cancelEditable(no) {
+  document.getElementById("updateButton"+no).style.display = "none";
+  document.getElementById("editButton"+no).style.display = "block";
+  document.getElementById("cancelButton"+no).style.display = "none";
+  document.getElementById("removeButton"+no).style.display = "block";
+  document.getElementById("editHead").innerText = "Edit";
+  document.getElementById("deleteHead").innerText = "Delete";
+  const tdQty = document.getElementById("editableQty"+no);
+  const tdKet = document.getElementById("editableKet"+no);
+  const inputQty = tdQty.getElementsByTagName('input')[0];
+  const inputKet = tdKet.getElementsByTagName('input')[0];
+  const isiQty = inputQty.value;
+  const isiKet = inputKet.value;
+  $(tdQty).empty();
+  $(tdKet).empty();
+  tdQty.innerText = isiQty;
+  tdKet.innerText = isiKet;
+
+  return false;
+}
+
+function checkEditable(e) {
+  var j = 0;
+  for(let i = 1; i <= '{{ $itemsRow }}'; i++) {
+    var getRow = document.getElementById("updateButton"+i);
+    if(getRow.style.display == "block") {
+      j = 1;
+    }
+  }
+
+  if(j == 1) {
+    alert(`Silahkan simpan perubahan terlebih dahulu`);
+    return false;
+  }
+  else {
+    document.getElementById("submitBM").formMethod = "POST";
+    document.getElementById("submitBM").formAction = '{{ route('bm-process', $items[0]->id_so) }}';
+  }
+}
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    for(let j = i; j < hapusBaris.length; j++) {
+      if(j == hapusBaris.length - 1) {
+        $(tablePO).find('tr:last').remove();  
+      }
+      else {
+        qty[j].value = qty[j+1].value;
+        brgNama[j].value = brgNama[j+1].value;
+        kodeBarang[j].value = kodeBarang[j+1].value;
+      }     
+    } 
+  });
+  jumBaris.value -= 1;
+}
 
 /** Autocomplete Input Kode PO **/
 $(function() {
@@ -209,27 +311,6 @@ $(function() {
     }
   });
 });
-
-/* Tampil Data tanpa Refresh
-$('#btn-cari').click(function(e) {
-  e.preventDefault();
-  $.ajax({
-    url: '/barangmasuk/process',
-    type: 'post',
-    data: {kode: kode.value},
-    dataType: 'json',
-    success: function(data) {
-      $.each(data, function() {
-        $.each(this, function(index, value) {
-          supplier.value = value.id;
-          console.log(value);
-        });
-        
-      });
-    },
-  })
-})
-*/
 
 </script>
 @endpush

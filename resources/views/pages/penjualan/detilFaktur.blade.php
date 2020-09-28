@@ -193,15 +193,19 @@
                               <td align="center">{{ $itemDet->id_barang }} </td>
                               <td>{{ $itemDet->barang->nama }}</td>
                               <td align="right">{{ $itemDet->qty }}</td>
-                              <td align="right">{{ $itemDet->harga }}</td>
-                              <td align="right">{{ $itemDet->qty * $itemDet->harga }}</td>
-                              <td align="right">{{ $itemDet->diskon }} %</td>
                               <td align="right">
-                                {{ (($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100 }}
+                                {{ number_format($itemDet->harga, 0, "", ".") }}
                               </td>
                               <td align="right">
-                                {{ ($itemDet->qty * $itemDet->harga) - 
-                                ((($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100) }}
+                                {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
+                              </td>
+                              <td align="right">{{ $itemDet->diskon }} %</td>
+                              <td align="right">
+                                {{ number_format((($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100, 0, "", ".") }}
+                              </td>
+                              <td align="right">
+                                {{ number_format(($itemDet->qty * $itemDet->harga) - 
+                                ((($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100), 0, "", ".") }}
                               </td>
                               @php $subtotal += ($itemDet->qty * $itemDet->harga) - 
                                 ((($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100); 
@@ -223,7 +227,7 @@
                       <div class="col-2 mr-1">
                         <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right"
                         @if($itemsRow != 0) 
-                          value="{{ $subtotal }}"
+                          value="{{ number_format($subtotal, 0, "", ".") }}"
                         @endif
                         />
                       </div>
@@ -234,7 +238,7 @@
                       <div class="col-2 mr-1">
                         <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
                         @if($itemsRow != 0) 
-                          value="{{ $subtotal * 10 / 100 }}"
+                          value="{{ number_format($subtotal * 10 / 100, 0, "", ".") }}"
                         @endif
                         />
                       </div>
@@ -245,7 +249,7 @@
                       <div class="col-2 mr-1">
                         <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" 
                         @if($itemsRow != 0) 
-                          value="{{ $subtotal + ($subtotal * 10 / 100) }}"
+                          value="{{number_format($subtotal + ($subtotal * 10 / 100),0,"",".")}}"
                         @endif
                         />
                       </div>

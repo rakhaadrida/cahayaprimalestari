@@ -92,15 +92,21 @@
               <!-- Tabel Data Detil PO -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
                 <thead class="text-center text-bold text-dark">
-                  <td style="width: 30px">No</td>
-                  <td style="width: 90px">Kode</td>
-                  <td style="width: 260px">Nama Barang</td>
-                  <td style="width: 60px">Qty</td>
-                  <td>Harga</td>
-                  <td>Jumlah</td>
-                  <td colspan="2">Diskon</td>
-                  <td style="width: 120px">Netto (Rp)</td>
-                  <td style="width: 40px">Hapus</td>
+                  <tr>
+                    <td rowspan="2" style="width: 30px" class="align-middle">No</td>
+                    <td rowspan="2" style="width: 95px" class="align-middle">Kode Barang</td>
+                    <td rowspan="2" class="align-middle">Nama Barang</td>
+                    <td rowspan="2" style="width: 60px" class="align-middle">Qty</td>
+                    <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 120px" class="align-middle">Jumlah</td>
+                    <td colspan="2">Diskon</td>
+                    <td rowspan="2" style="width: 130px" class="align-middle">Netto (Rp)</td>
+                    <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
+                  </tr>
+                  <tr>
+                    <td>%</td>
+                    <td>Rupiah</td>
+                  </tr>
                 </thead>
                 <tbody id="tablePO">
                   @php 
@@ -108,7 +114,7 @@
                   @endphp
                   @foreach($items as $item)
                     <tr class="text-bold" id="{{ $i }}">
-                      <td align="center" class="no">{{ $i }}</td>
+                      <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
                         <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold kodeBarang" value="{{ $item->id_barang }}">
                       </td>
@@ -119,21 +125,24 @@
                         <input type="text" name="qty[]" class="form-control form-control-sm text-bold qty" value="{{ $item->qty }}">
                       </td>
                       <td align="right">
-                        <input type="text" name="harga[]" class="form-control form-control-sm text-bold harga" value="{{ $item->harga }}" readonly>
+                        <input type="text" name="harga[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" readonly>
                       </td>
-                      <td align="right" class="total">{{ $item->qty * $item->harga }}</td>
-                      <td align="right" style="width: 90px">
+                      <td align="right">
+                        <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($item->qty * $item->harga, 0, "", ".") }}" >
+                      </td>
+                      <td align="right" style="width: 60px">
                         <input type="text" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" 
                         value="{{ $item->diskon }}" >
                       </td>
-                      <td align="right" style="width: 140px" class="diskonRp">
-                        {{ (($item->qty * $item->harga) * $item->diskon) / 100 }}
+                      <td align="right" style="width: 120px" >
+                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
+                        value="{{ number_format((($item->qty * $item->harga) * $item->diskon) / 100, 0, "", ".") }}" >
                       </td>
-                      <td align="right" class="netto">
-                        {{ ($item->qty * $item->harga) - 
-                        ((($item->qty * $item->harga) * $item->diskon) / 100) }}
+                      <td align="right">
+                        <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ number_format(($item->qty * $item->harga) - 
+                        ((($item->qty * $item->harga) * $item->diskon) / 100), 0, "", ".") }}" >
                       </td>
-                      <td align="center">
+                      <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                         </a>
@@ -166,26 +175,31 @@
                 </tbody>
               </table>
 
-              <div class="form-group row justify-content-end subtotal-so">
-                <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
+              <div class="form-group row justify-content-end subtotal-so so-info-total">
+                <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Sub Total</label>
                 <span class="col-form-label text-bold">:</span>
-                <div class="col-2 mr-1">
-                  <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ $subtotal }}" />
+                <span class="col-form-label text-bold ml-2">Rp</span>
+                <div class="col-2">
+                  <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" >
                 </div>
               </div>
-              <div class="form-group row justify-content-end total-so">
+              <div class="form-group row justify-content-end total-so so-info-total">
                 <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                 <span class="col-form-label text-bold">:</span>
-                <div class="col-2 mr-1">
-                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ $subtotal * 10 / 100 }}" />
+                <span class="col-form-label text-bold ml-2">Rp</span>
+                <div class="col-2">
+                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
+                  value="{{ number_format($subtotal * 10 / 100, 0, "", ".") }}" />
                 </div>
               </div>
-              <div class="form-group row justify-content-end grandtotal-so">
+              <div class="form-group row justify-content-end total-so so-info-total">
                 <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                 <span class="col-form-label text-bold">:</span>
-                <div class="col-2 mr-1">
-                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" 
-                  value="{{ $subtotal + ($subtotal * 10 / 100) }}" />
+                <span class="col-form-label text-bold ml-2">Rp</span>
+                <div class="col-2">
+                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-right" 
+                  value="{{ number_format($subtotal - ($subtotal * 10 / 100), 0, "", ".") }}"
+                  />
                 </div>
               </div>
               <hr>
@@ -213,12 +227,11 @@
 
 @push('addon-script')
 <script type="text/javascript">
-const no = document.querySelectorAll('.no');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
 const harga = document.querySelectorAll(".harga");
-const total = document.querySelectorAll(".total");
+const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
 const diskonRp = document.querySelectorAll(".diskonRp");
 const netto = document.querySelectorAll(".netto");
@@ -230,37 +243,27 @@ const jumBaris = document.getElementById('jumBaris');
 
 /** Tampil Nama dan Kode Barang Otomatis **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("change", function (e) {
-    @foreach($barang as $br)
-      if('{{ $br->nama }}' == e.target.value) {
-        kodeBarang[i].value = '{{ $br->id }}';
-      }
-    @endforeach
-    displayHarga(kodeBarang[i].value);
-  });
+  brgNama[i].addEventListener("change", displayHarga) ;
+  kodeBarang[i].addEventListener("change", displayHarga);
 
-  kodeBarang[i].addEventListener("change", function (e) {
+  function displayHarga(e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      $(this).parents('tr').find('input').val('');
+      qty[i].removeAttribute('required');
+    }
+
     @foreach($barang as $br)
-      if('{{ $br->id }}' == e.target.value) {
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+        kodeBarang[i].value = '{{ $br->id }}';
         brgNama[i].value = '{{ $br->nama }}';
       }
     @endforeach
-    displayHarga(e.target.value);
-  });
 
-  function displayHarga(kode) {
     @foreach($harga as $hb)
-      if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-        harga[i].value = '{{ $hb->harga }}';
-        var nettoAwal = netto[i].innerHTML;
-        total[i].innerHTML = '{{ $hb->harga }}' * +qty[i].value;
-        diskonRp[i].innerHTML = (+total[i].innerHTML * +diskon[i].value) / 100;
-        netto[i].innerHTML = +total[i].innerHTML - +diskonRp[i].innerHTML;
-        if(netto[i].innerHTML > +nettoAwal) 
-          subtotal.value = +subtotal.value + (+netto[i].innerHTML - +nettoAwal);
-        else
-          subtotal.value = +subtotal.value - (+nettoAwal - +netto[i].innerHTML);
-        total_ppn(subtotal.value);
+      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        harga[i].value = addCommas('{{ $hb->harga_ppn }}');
+        qty[i].setAttribute('required', true);
       }
     @endforeach
   }
@@ -269,42 +272,101 @@ for(let i = 0; i < brgNama.length; i++) {
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("change", function (e) {
-    total[i].innerHTML = e.target.value * harga[i].value;
-    var nettoAwal = netto[i].innerHTML;
-    diskonRp[i].innerHTML = (+total[i].innerHTML * +diskon[i].value) / 100;
-    netto[i].innerHTML = +total[i].innerHTML - +diskonRp[i].innerHTML;
-    if(netto[i].innerHTML > +nettoAwal) 
-      subtotal.value = +subtotal.value + (+netto[i].innerHTML - +nettoAwal);
-    else
-      subtotal.value = +subtotal.value - (+nettoAwal - +netto[i].innerHTML);
-    total_ppn(subtotal.value);
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      jumlah[i].value = "";
+      netto[i].value = "";
+    }
+    else {
+      netPast = +netto[i].value.replace(/\./g, "");
+      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+      if(diskon[i].value != "") {
+        diskonRp[i].value = addCommas(diskon[i].value * jumlah[i].value.replace(/\./g, "") / 100);
+      }
+
+      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
   });
+} 
+
+/** Tampil Diskon Rupiah Otomatis **/
+for(let i = 0; i < diskon.length; i++) {
+  diskon[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      netPast = netto[i].value.replace(/\./g, "");
+      netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
+      checkSubtotal(netPast, netto[i].value.replace(/\./g, ""));
+      diskonRp[i].value = "";
+    }
+    else {
+      netPast = +netto[i].value.replace(/\./g, "")
+      diskonRp[i].value = addCommas(e.target.value * jumlah[i].value.replace(/\./g, "") / 100);
+      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
+      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
+  });
+}
+
+/** Check Jumlah Netto onChange **/
+function checkSubtotal(Past, Now) {
+  if(Past > Now) {
+    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
+  } else {
+    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + (+Now - +Past));
+  }
 }
 
 /** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  ppn.value = sub * 10 / 100;
-  grandtotal.value = +sub + +ppn.value;
+  ppn.value = addCommas(sub * 10 / 100);
+  grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	}
+	return x1 + x2;
 }
 
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
-      subtotal.value = +subtotal.value - +netto[i].innerHTML;
-      total_ppn(subtotal.value);
+       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      total_ppn(subtotal.value.replace(/\./g, ""));
     }
-    const newRow = document.getElementById(i+1);
-    const curNum = $(this).closest('tr').find('td:first-child').text();
-    const lastNum = $(tablePO).find('tr:last').attr("id");
-    $(newRow).remove();
-    if(curNum < lastNum) {
-      for(let i = curNum; i < lastNum; i++) {
-        $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+
+    for(let j = i; j < hapusBaris.length; j++) {
+      if(j == hapusBaris.length - 1) {
+        $(tablePO).find('tr:last-child').remove();  
       }
-    }
-    jumBaris.value -= 1;
+      else {
+        netto[j].value = netto[j+1].value;
+        diskonRp[j].value = diskonRp[j+1].value;
+        diskon[j].value = diskon[j+1].value;
+        jumlah[j].value = jumlah[j+1].value;
+        harga[j].value = harga[j+1].value;
+        qty[j].value = qty[j+1].value;
+        brgNama[j].value = brgNama[j+1].value;
+        kodeBarang[j].value = kodeBarang[j+1].value;
+        if(kodeBarang[j+1].value == "")
+          qty[j].removeAttribute('required');
+        else
+          qty[j+1].removeAttribute('required');
+      }     
+    } 
   });
+  jumBaris.value -= 1;
 }
 
 /** Autocomplete Input Text **/

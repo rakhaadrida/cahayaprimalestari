@@ -220,7 +220,7 @@ class SalesOrderController extends Controller
             TempDetilSO::create([
                 'id_so' => $request->kode,
                 'id_barang' => $request->kodeBarang[$i],
-                'harga' => $request->harga[$i],
+                'harga' => str_replace(".", "", $request->harga[$i]),
                 'qty' => $request->qty[$i],
                 'diskon' => $request->diskon[$i],
                 'id_customer' => $request->kodeCust,

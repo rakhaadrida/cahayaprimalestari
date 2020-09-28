@@ -73,3 +73,10 @@ Route::post('/so/change/update', 'SalesOrderController@update')->name('so-update
 Route::get('/sj', 'SuratJalanController@index')->name('sj');
 Route::post('/sj/show', 'SuratJalanController@show')->name('sj-show');
 Route::post('/sj/process/{id}', 'SuratJalanController@process')->name('sj-process');
+
+// Kartu Stok
+Route::get('kartu', 'KartuStokController@index')->name('kartu');
+Route::post('kartu/show', 'KartuStokController@show')->name('ks-show');
+
+// Rekap Stok
+Route::get('rekap', 'RekapStokController@index')->name('rekap');

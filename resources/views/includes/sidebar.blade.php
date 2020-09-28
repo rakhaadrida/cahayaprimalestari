@@ -74,6 +74,20 @@
     </div>
   </li>
 
+  <!-- Nav Item - Laporan Menu -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseLaporan">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Laporan</span>
+    </a>
+    <div id="collapseLaporan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{ route('kartu') }}">Kartu Stok</a>
+        <a class="collapse-item" href="{{ route('rekap') }}">Rekap Stok</a>
+      </div>
+    </div>
+  </li>
+
   <!-- Divider -->
   <hr class="sidebar-divider">
 

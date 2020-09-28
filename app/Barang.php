@@ -29,6 +29,10 @@ class Barang extends Model
         return $this->hasMany('App\DetilBM', 'id_barang', 'id');
     }
 
+    public function detiltb() {
+        return $this->hasMany('App\DetilTB', 'id_barang', 'id');
+    }
+
     public function detilso() {
         return $this->hasMany('App\DetilSO', 'id_barang', 'id');
     }
