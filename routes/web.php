@@ -62,6 +62,7 @@ Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}', 'TransferBarangCont
 Route::get('/so', 'SalesOrderController@index')->name('so');
 Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create');
 Route::post('/so/process/{id}', 'SalesOrderController@process')->name('so-process');
+Route::get('/so/cetak/{id}', 'SalesOrderController@cetak')->name('so-cetak');
 Route::get('/so/remove/{id}/{barang}', 'SalesOrderController@remove')->name('so-remove');
 Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
 Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
@@ -80,3 +81,5 @@ Route::post('kartu/show', 'KartuStokController@show')->name('ks-show');
 
 // Rekap Stok
 Route::get('rekap', 'RekapStokController@index')->name('rekap');
+Route::post('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
+Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');

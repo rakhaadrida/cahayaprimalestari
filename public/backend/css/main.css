@@ -121,6 +121,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: -20px;
 }
 
+.table-cetak {
+    font-size: 12px;
+}
+
+.table-cetak-so {
+    border-right: none;
+}
+
+.subtitle-cetak-so-one {
+    margin-top: -5px;
+    font-size: 12px;
+}
+
+.subtitle-cetak-so-second {
+    margin-left: 7px;
+    font-size: 12px;
+}
+
+.customer-cetak-so {
+    margin-top: -100px;
+}
+
 .ic-remove {
     color: orangered;
 }

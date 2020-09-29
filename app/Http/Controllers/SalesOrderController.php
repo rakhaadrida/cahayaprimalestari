@@ -13,6 +13,7 @@ use App\HargaBarang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
+use PDF;
 
 class SalesOrderController extends Controller
 {
@@ -109,24 +110,19 @@ class SalesOrderController extends Controller
             }
         }
 
-        /* 
-        $tempDetil = TempDetilSO::where('id_so', $id)->get();
-        foreach($tempDetil as $td) {
-            DetilSO::create([
-                'id_so' => $td->id_so,
-                'id_barang' => $td->id_barang,
-                'harga' => $td->harga,
-                'qty' => $td->qty,
-                'diskon' => $td->diskon
-            ]);
+        // $this->cetak($id);
+        // return redirect()->route('so');
+        return redirect()->route('so-cetak', $id);
+    }
 
-            // $updateStok = StokBarang::where('id_barang', $td->id_barang)
-            //                 ->where('id_gudang', 'GDG01')->first();
+    public function cetak(Request $request, $id) {
+        $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
+        $data = [
+            'items' => $items
+        ];
 
-            $deleteTemp = TempDetilSO::where('id_so', $id)->where('id_barang', $td->id_barang)->delete();
-        } */
-
-        return redirect()->route('so');
+        $pdf = PDF::loadview('pages.penjualan.cetakSO', $data)->setPaper('A4', 'landscape');
+        return $pdf->stream('cetak-so.pdf');
     }
 
     public function remove($id, $barang) {
@@ -240,4 +236,21 @@ class SalesOrderController extends Controller
         $url = Route('so-show', $data);
         return redirect($url);
     }
+
+    /* 
+        $tempDetil = TempDetilSO::where('id_so', $id)->get();
+        foreach($tempDetil as $td) {
+            DetilSO::create([
+                'id_so' => $td->id_so,
+                'id_barang' => $td->id_barang,
+                'harga' => $td->harga,
+                'qty' => $td->qty,
+                'diskon' => $td->diskon
+            ]);
+
+            // $updateStok = StokBarang::where('id_barang', $td->id_barang)
+            //                 ->where('id_gudang', 'GDG01')->first();
+
+            $deleteTemp = TempDetilSO::where('id_so', $id)->where('id_barang', $td->id_barang)->delete();
+        } */
 }
