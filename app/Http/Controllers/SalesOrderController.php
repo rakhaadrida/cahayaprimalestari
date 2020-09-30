@@ -121,7 +121,8 @@ class SalesOrderController extends Controller
             'items' => $items
         ];
 
-        $pdf = PDF::loadview('pages.penjualan.cetakSO', $data)->setPaper('A4', 'landscape');
+        $paper = array(0,0,686,394);
+        $pdf = PDF::loadview('pages.penjualan.cetakSO', $data)->setPaper($paper);
         return $pdf->stream('cetak-so.pdf');
     }
 

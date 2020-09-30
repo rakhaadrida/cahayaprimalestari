@@ -122,11 +122,32 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .table-cetak {
-    font-size: 12px;
+    font-size: 11px;
+    height: 180px;
 }
 
-.table-cetak-so {
-    border-right: none;
+.table-info-cetak-so {
+    margin-top: 30px;
+    font-size: 11px;
+    border: dotted;
+    border-spacing: 0px;
+}
+
+.th-info-cetak-so {
+    line-height: 7px;
+}
+
+.tr-info-cetak-so {
+    line-height: 10px;
+}
+
+.th-detail-cetak-so {
+    line-height: 5px;
+    border: dotted;
+}
+
+.tr-detail-cetak-so {
+    line-height: 10px;
 }
 
 .subtitle-cetak-so-one {
@@ -139,8 +160,78 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 12px;
 }
 
+.logo-cpl {
+    border: dotted;
+}
+
+.header-cetak-so {
+    display: inline-block;
+    border: dotted;
+    border-bottom: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    margin-top: -30px;
+}
+
 .customer-cetak-so {
-    margin-top: -100px;
+    font-size: 12px;
+    width: 250px;
+    margin-top: -25px;
+}
+
+.nama-cetak-so {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.alamat-cetak-so {
+    margin-bottom: -10px;
+}
+
+.footer-cetak-so {
+    display: inline-block;
+    border: dotted;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-bottom: -50px;
+}
+
+.ttd-penerima {
+    margin-left: -10px;
+    font-size: 12px;
+}
+
+.info_bayar {
+    margin-left: 20px;
+    margin-top: -20px;
+    font-size: 13px;
+    line-height: 25px;
+}
+
+.ttd-gudang {
+    margin-left: 70px;
+    font-size: 12px;
+}
+
+.ttd-mengetahui {
+    font-size: 12px;
+    margin-top: -18px;
+}
+
+.total-faktur {
+    margin-top: -10px;
+    margin-left: 30px;
+    font-size: 12px;
+}
+
+.tabel-total-faktur {
+    line-height: 16px;
+}
+
+.angka-total {
+    font-size: 14px;
 }
 
 .ic-remove {
