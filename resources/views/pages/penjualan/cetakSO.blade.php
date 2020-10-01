@@ -64,7 +64,7 @@
       </tbody>
     </table>
     <!-- Tabel Data Detil BM-->
-    <table class="table table-sm table-responsive-sm table-hover table-cetak" style="margin-top: -10px">
+    <table class="table table-sm table-responsive-sm table-hover table-cetak">
       <thead class="text-center text-bold th-detail-cetak-so">
         <tr>
           <td style="width: 30px">No</td>
@@ -97,41 +97,41 @@
     </table>
     
     <div class="container-fluid footer-cetak-so">
-      <table>
+      <table class="table-footer">
         <thead>
           <tr>
-            <td>
-              <div class="ttd-penerima">
+            <td style="border-right: dotted; width: 87px"> 
+              <div class="ttd-penerima text-center">
                 <span>Penerima,</span>
                 <br><br><br><br>
-                <span class="form-ttd">(_________)</span>
+                <span class="form-ttd">(___________)</span>
               </div>
             </td>
-            <td>
+            <td style="border-right: dotted; width: 253px">
               <div class="info_bayar">
                 <span>Pembayaran Giro / Transfer</span>
                 <br>
                 <span>Rekening Bank BCA</span>
                 <br>
-                <span>a/n Irianti Irawan 0912227644</span>
+                <span>a/n Irianti Irawan 0911276444</span>
               </div>
             </td>
-            <td>
+            <td style="width: 85px">
               <div class="ttd-gudang">
-                <span>Gudang,</span>
-                <br><br><br>
-                <span class="form-ttd">(_________)</span>
+                <center><span>Gudang,</span></center>
+                <br><br>
+                <span class="form-ttd">(___________)</span>
               </div>
             </td>
-            <td>
+            <td style="border-right: dotted; width: 80px">
               <div class="ttd-mengetahui">
                 <span class="tgl-ttd">
                   {{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-m-Y')}}
                 </span>
                 <br>
-                <span>Mengetahui,</span>
-                <br><br><br>
-                <span class="form-ttd">(_________)</span>
+                <span>Mengetahui,</span> 
+                <br><br><br><br>
+                <span class="form-ttd">(__________)</span>
               </div>
             </td>
             <td>
@@ -139,9 +139,7 @@
                 <table class="tabel-total-faktur">
                   <tr>
                     <td style="width: 180px">Jumlah</td>
-                    <td class="text-right angka-total">
-                      {{ number_format($items[0]->so->total, 0, "", ".") }}
-                    </td>
+                    <td class="text-right angka-total">{{ number_format($items[0]->so->total, 0, "", ".") }}</td>
                   </tr>
                   <tr>
                     <td style="width: 180px">Disc Faktur</td>
@@ -149,9 +147,7 @@
                   </tr>
                   <tr>
                     <td style="width: 180px">Nilai Netto</td>
-                    <td class="text-right angka-total">
-                      {{ number_format($items[0]->so->total, 0, "", ".") }}
-                    </td>
+                    <td class="text-right angka-total">{{ number_format($items[0]->so->total, 0, "", ".") }}</td>
                   </tr>
                   <tr>
                     <td style="width: 180px">PPN</td>
@@ -162,10 +158,12 @@
                     <td></td>
                   </tr>
                   <tr>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
                     <td style="width: 180px">Nilai Tagihan</td>
-                    <td class="text-right angka-total">
-                      {{ number_format($items[0]->so->total, 0, "", ".") }}
-                    </td>
+                    <td class="text-right angka-total">{{ number_format($items[0]->so->total, 0, "", ".") }}</td>
                   </tr>
                   </tr>
                 </table>
