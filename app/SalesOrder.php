@@ -22,4 +22,8 @@ class SalesOrder extends Model
     public function detilso() {
         return $this->hasMany('App\DetilSO', 'id_so', 'id');
     }
+
+    public function tempdetilso() {
+        return $this->hasMany('App\TempDetilSO', 'id_so', 'id');
+    }
 }

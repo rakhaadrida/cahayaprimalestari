@@ -85,6 +85,12 @@ Route::middleware(['auth', 'admin'])
         Route::get('rekap', 'RekapStokController@index')->name('rekap');
         Route::post('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
         Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');
+
+        // Approval
+        Route::get('approval', 'ApprovalController@index')->name('approval');
+        Route::get('approval/{id}', 'ApprovalController@show')->name('app-show');
+        Route::post('approval/process/{id}', 'ApprovalController@process')->name('app-process');
+        Route::post('approval/batal/{id}', 'ApprovalController@batal')->name('app-batal');
 });
 
 

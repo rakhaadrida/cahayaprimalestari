@@ -18,9 +18,18 @@
       <span>Dashboard</span></a>
   </li>
 
+  @if(Auth::user()->roles == 'SUPER')
+  <li class="nav-item" style="margin-top: -10px">
+    <a class="nav-link" href="{{ route('approval') }}">
+      <i class="fas fa-fw fa-check"></i>
+      <span>Approval</span></a>
+  </li>
+  @endif
+
   <!-- Divider -->
   <hr class="sidebar-divider">
 
+  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN'))
   <!-- Heading Sales and Purchases -->
   <div class="sidebar-heading">
     Sales and Purchases
@@ -90,6 +99,7 @@
 
   <!-- Divider -->
   <hr class="sidebar-divider">
+  @endif
 
   @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'FINANCE'))
   <!-- Heading -->

@@ -78,7 +78,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
                     <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1">
-                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
+                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
@@ -364,9 +364,9 @@ for(let i = 0; i < hapusBaris.length; i++) {
         else
           qty[j+1].removeAttribute('required');
       }     
-    } 
+    }
+    jumBaris.value -= 1; 
   });
-  jumBaris.value -= 1;
 }
 
 /** Autocomplete Input Text **/

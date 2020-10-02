@@ -46,33 +46,42 @@
       <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-bell fa-fw"></i>
         <!-- Counter - Alerts -->
-        @php 
-          $items = \App\SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
-        @endphp
-        <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
+        @if(Auth::user()->roles == 'SUPER')
+          @php 
+            $items = \App\SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
+          @endphp
+          <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
+        @else
+          <span class="badge badge-danger badge-counter"></span>
+        @endif
       </a>
       <!-- Dropdown - Alerts -->
       <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
         <h6 class="dropdown-header">
           Notifikasi
         </h6>
-        @foreach($items as $item)
-          <a class="dropdown-item d-flex align-items-center" href="#">
-            <div class="mr-3">
-              <div class="icon-circle bg-primary" style="margin-left: -10px">
-                <i class="fas fa-file-alt text-white"></i>
+        @if(Auth::user()->roles == 'SUPER')
+          @foreach($items as $item)
+            <a class="dropdown-item d-flex align-items-center" href="{{ route('app-show', $item->id) }}">
+              <div class="mr-3">
+                <div class="icon-circle bg-primary" style="margin-left: -10px">
+                  <i class="fas fa-file-alt text-white"></i>
+                </div>
               </div>
-            </div>
-            <div>
-              <div class="small text-gray-500">
-                {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}
+              <div>
+                <div class="small text-gray-500">
+                  {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}
+                </div>
+                <span class="font-weight-bold">
+                  Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada faktur {{ $item->id }}
+                </span>
               </div>
-              <span class="font-weight-bold">
-                Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada faktur {{ $item->id }}
-              </span>
-            </div>
-          </a>
-        @endforeach
+            </a>
+          @endforeach
+          <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+        @else
+          <a class="dropdown-item text-center small text-gray-500" href="#">Tidak Ada Notifikasi</a>
+        @endif
         {{-- <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">
             <div class="icon-circle bg-primary" style="margin-left: -10px">
@@ -106,7 +115,6 @@
             Spending Alert: We've noticed unusually high spending for your account.
           </div>
         </a> --}}
-        <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
       </div>
     </li>
 
