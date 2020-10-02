@@ -63,6 +63,7 @@
         @endforeach
       </tbody>
     </table>
+    
     <!-- Tabel Data Detil BM-->
     <table class="table table-sm table-responsive-sm table-hover table-cetak">
       <thead class="text-center text-bold th-detail-cetak-so">

@@ -91,16 +91,17 @@
   <!-- Divider -->
   <hr class="sidebar-divider">
 
+  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'FINANCE'))
   <!-- Heading -->
   <div class="sidebar-heading">
-    Addons
+    Finance
   </div>
 
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
       <i class="fas fa-fw fa-folder"></i>
-      <span>Pages</span>
+      <span>Account Receivable</span>
     </a>
     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
@@ -120,18 +121,19 @@
   <li class="nav-item">
     <a class="nav-link" href="charts.html">
       <i class="fas fa-fw fa-chart-area"></i>
-      <span>Charts</span></a>
+      <span>Account Payable</span></a>
   </li>
 
   <!-- Nav Item - Tables -->
   <li class="nav-item">
     <a class="nav-link" href="tables.html">
       <i class="fas fa-fw fa-table"></i>
-      <span>Tables</span></a>
+      <span>Laporan</span></a>
   </li>
 
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
+  @endif
 
   <!-- Sidebar Toggler (Sidebar) -->
   <div class="text-center d-none d-md-inline">
