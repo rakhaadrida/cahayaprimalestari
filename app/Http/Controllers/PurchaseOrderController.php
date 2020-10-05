@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\PurchaseOrder;
-use App\Supplier;
-use App\Barang;
+use App\Models\PurchaseOrder;
+use App\Models\Supplier;
+use App\Models\Barang;
 use Carbon\Carbon;
 
 class PurchaseOrderController extends Controller

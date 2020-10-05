@@ -36,7 +36,7 @@
             <td>{{ $s->barang->nama }}</td>
             <td align="right" style="background-color: yellow">{{ $s->total }}</td>
             @php
-              $stokGd = \App\StokBarang::where('id_barang', $s->id_barang)->get();
+              $stokGd = \App\Models\StokBarang::where('id_barang', $s->id_barang)->get();
             @endphp
             @foreach($stokGd as $sg)
               <td align="right">{{ $sg->stok }}</td>

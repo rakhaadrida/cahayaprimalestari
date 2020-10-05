@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,6 +14,6 @@ class Sales extends Model
     public $incrementing = false;
 
     public function customer() {
-        return $this->hasMany('App\Customer', 'id_sales', 'id');
+        return $this->hasMany('App\Models\Customer', 'id_sales', 'id');
     }
 }

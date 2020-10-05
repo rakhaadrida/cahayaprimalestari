@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,6 +14,6 @@ class BarangMasuk extends Model
     public $incrementing = false;
 
     public function supplier() {
-        return $this->belongsTo('App\Supplier', 'id_supplier', 'id');
+        return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id');
     }
 }

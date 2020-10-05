@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\SalesOrder;
+use App\Models\SalesOrder;
 
 class DashboardController extends Controller
 {

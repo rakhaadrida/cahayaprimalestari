@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +12,6 @@ class TransferBarang extends Model
     public $incrementing = false;
 
     public function detiltb() {
-        return $this->hasMany('App\DetilTB', 'id_tb', 'id');
+        return $this->hasMany('App\Models\DetilTB', 'id_tb', 'id');
     }
 }

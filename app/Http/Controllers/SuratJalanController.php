@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\SalesOrder;
-use App\DetilSO;
-use App\SuratJalan;
-use App\DetilSJ;
-use App\StokBarang;
+use App\Models\SalesOrder;
+use App\Models\DetilSO;
+use App\Models\SuratJalan;
+use App\Models\DetilSJ;
+use App\Models\StokBarang;
 use Carbon\Carbon;
 
 class SuratJalanController extends Controller

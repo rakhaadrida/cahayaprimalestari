@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Gudang;
-use App\Barang;
-use App\StokBarang;
-use App\TransferBarang;
-use App\DetilTB;
-use App\TempDetilTB;
+use App\Models\Gudang;
+use App\Models\Barang;
+use App\Models\StokBarang;
+use App\Models\TransferBarang;
+use App\Models\DetilTB;
+use App\Models\TempDetilTB;
 use Carbon\Carbon;
 
 class TransferBarangController extends Controller

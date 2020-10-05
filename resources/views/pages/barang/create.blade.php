@@ -42,41 +42,28 @@
               </div>
               <hr>
               <div class="form-group row">
+                <label for="satuan" class="col-1 col-form-label text-bold">Satuan</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Pcs / Pack" required>
+                    <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Pack</label>
+                  </div>
+                  <div class="form-check form-check-inline ml-4">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Meter / Rol">
+                    <label class="form-check-label font-weight-normal" for="satuan2">Meter / Rol</label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran Pack" value="{{ old('ukuran') }}">
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran per Satuan" value="{{ old('ukuran') }}" id="ukuran" readonly>
                 </div>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran Satuan" value="{{ old('ukuran') }}">
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran Kapasitas" value="{{ old('ukuran') }}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="" class="col-1"></label>
-                <div class="form-group col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Volume per Satuan" value="{{ old('ukuran') }}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="isi" class="col-1 col-form-label text-bold">Isi</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="isi" placeholder="Isi Per Pack" 
-                  value="{{ old('isi') }}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="isi" class="col-1 text-bold">Daya Muat</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="kapasitas" placeholder="Kubik Per Pack" value="{{ old('isi') }}">
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="kapasitas" placeholder="Tonase Per Pack" value="{{ old('isi') }}">
-                </div>
+                <span class="col-form-label text-bold" id="labelUkuran"></span>
               </div>
               <hr>
               <div class="form-row justify-content-center">
@@ -98,3 +85,23 @@
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+const ukuran = document.getElementById('ukuran');
+const labelUkuran = document.getElementById('labelUkuran');
+const radios = document.querySelectorAll('input[type=radio][name="satuan"]');
+
+Array.prototype.forEach.call(radios, function(radio) {
+   radio.addEventListener('change', displayUkuran);
+});
+
+function displayUkuran(e) {
+  ukuran.removeAttribute('readonly');
+  ukuran.setAttribute('required', 'true');
+  ukuran.setAttribute('placeholder', '');
+  labelUkuran.textContent = e.target.value;
+}
+
+</script>
+@endpush

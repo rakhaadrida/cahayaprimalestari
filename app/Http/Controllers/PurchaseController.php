@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\PurchaseOrder;
-use App\Supplier;
-use App\Barang;
-use App\HargaBarang;
-use App\DetilPO;
-use App\TempDetilPO;
+use App\Models\PurchaseOrder;
+use App\Models\Supplier;
+use App\Models\Barang;
+use App\Models\HargaBarang;
+use App\Models\DetilPO;
+use App\Models\TempDetilPO;
 use Carbon\Carbon;
 
 class PurchaseController extends Controller

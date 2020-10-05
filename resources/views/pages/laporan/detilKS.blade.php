@@ -123,12 +123,12 @@
                         </tr>
                         @php 
                           $i = 1; $totalBM = 0; $totalSO = 0;
-                          $itemsBM = \App\DetilBM::with(['bm', 'barang'])
+                          $itemsBM = \App\Models\DetilBM::with(['bm', 'barang'])
                                       ->where('id_barang', $item->id)
                                       ->whereHas('bm', function($q) use($awal, $akhir) {
                                           $q->whereBetween('tanggal', [$awal, $akhir]);
                                       })->get();
-                          $itemsSO = \App\DetilSO::with(['so', 'barang'])
+                          $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
                                       ->where('id_barang', $item->id)
                                       ->whereHas('so', function($q) use($awal, $akhir) {
                                           $q->whereBetween('tgl_so', [$awal, $akhir]);

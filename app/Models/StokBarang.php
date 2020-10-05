@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,10 +19,10 @@ class StokBarang extends Model
     public $incrementing = false;
 
     public function barang() {
-        return $this->belongsTo('App\Barang', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
     }
 
     public function gudang() {
-        return $this->belongsTo('App\Gudang', 'id_gudang', 'id');
+        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id');
     }
 }

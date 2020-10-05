@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\PurchaseOrder;
-use App\DetilPO;
-use App\Barang;
-use App\Supplier;
+use App\Models\PurchaseOrder;
+use App\Models\DetilPO;
+use App\Models\Barang;
+use App\Models\Supplier;
 use Carbon\Carbon;
 
 class BMController extends Controller

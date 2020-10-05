@@ -48,7 +48,7 @@
         <!-- Counter - Alerts -->
         @if(Auth::user()->roles == 'SUPER')
           @php 
-            $items = \App\SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
+            $items = \App\Models\SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
           @endphp
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @else

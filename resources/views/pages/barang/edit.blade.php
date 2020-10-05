@@ -44,43 +44,28 @@
               </div>
               <hr>
               <div class="form-group row">
+                <label for="satuan" class="col-1 col-form-label text-bold">Satuan</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Pcs / Pack" @if($item->satuan == "Pcs / Pack") checked @endif required >
+                    <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Pack</label>
+                  </div>
+                  <div class="form-check form-check-inline ml-4">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Meter / Rol" @if($item->satuan == "Meter / Rol") checked @endif>
+                    <label class="form-check-label font-weight-normal" for="satuan2">Meter / Rol</label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}">
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}" id="ukuran">
                 </div>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}">
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="" class="col-1"></label>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="isi" class="col-1 col-form-label text-bold">Isi</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="isi" 
-                  value="{{ $item->isi }}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="isi" class="col-1 col-form-label text-bold">Daya Muat</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="isi" 
-                  value="{{ $item->isi }}">
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="isi" 
-                  value="{{ $item->isi }}">
-                </div>
+                <span class="col-form-label text-bold" id="labelUkuran">{{ $item->satuan }}</span>
               </div>
               <hr>
               <div class="form-row justify-content-center">

@@ -184,7 +184,7 @@
                         @if($itemsRow != 0)
                           @php 
                             $i = 1; $subtotal = 0;
-                            $itemsDetail = \App\DetilSO::with(['so', 'barang'])->where('id_so',
+                            $itemsDetail = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so',
                               $item->id)->get();
                           @endphp
                           @foreach($itemsDetail as $itemDet)

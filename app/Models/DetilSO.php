@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompositePrimaryKey;
@@ -17,10 +17,10 @@ class DetilSO extends Model
     public $incrementing = false;
 
     public function so() {
-        return $this->belongsTo('App\SalesOrder', 'id_so', 'id');
+        return $this->belongsTo('App\Models\SalesOrder', 'id_so', 'id');
     }
 
     public function barang() {
-        return $this->belongsTo('App\Barang', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
     }
 }

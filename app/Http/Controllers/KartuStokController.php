@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\SalesOrder;
-use App\PurchaseOrder;
-use App\BarangMasuk;
-use App\TransferBarang;
-use App\StokBarang;
-use App\Barang;
-use App\DetilBM;
-use App\DetilSO;
+use App\Models\SalesOrder;
+use App\Models\PurchaseOrder;
+use App\Models\BarangMasuk;
+use App\Models\TransferBarang;
+use App\Models\StokBarang;
+use App\Models\Barang;
+use App\Models\DetilBM;
+use App\Models\DetilSO;
 
 class KartuStokController extends Controller
 {

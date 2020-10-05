@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\SalesOrder;
-use App\Customer;
-use App\Barang;
-use App\StokBarang;
-use App\DetilSO;
-use App\TempDetilSO;
-use App\HargaBarang;
+use App\Models\SalesOrder;
+use App\Models\Customer;
+use App\Models\Barang;
+use App\Models\StokBarang;
+use App\Models\DetilSO;
+use App\Models\TempDetilSO;
+use App\Models\HargaBarang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;

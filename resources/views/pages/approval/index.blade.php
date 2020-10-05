@@ -38,7 +38,7 @@
                 <td>{{ $item->tgl_so }}</td>
                 <td>{{ $item->customer->nama }}</td>
                 <td>{{ $item->status }}</td>
-                @php $ket = \App\TempDetilSO::where('id_so', $item->id)->first(); @endphp
+                @php $ket = \App\Models\TempDetilSO::where('id_so', $item->id)->first(); @endphp
                 <td>{{ $ket['keterangan'] }}</td>
                 <td align="center">
                   <a href="{{ route('app-show', $item->id) }}" class="btn btn-success">

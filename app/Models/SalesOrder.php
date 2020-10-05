@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,14 +16,14 @@ class SalesOrder extends Model
     public $incrementing = false;
 
     public function customer() {
-        return $this->belongsTo('App\Customer', 'id_customer', 'id');
+        return $this->belongsTo('App\Models\Customer', 'id_customer', 'id');
     }
 
     public function detilso() {
-        return $this->hasMany('App\DetilSO', 'id_so', 'id');
+        return $this->hasMany('App\Models\DetilSO', 'id_so', 'id');
     }
 
     public function tempdetilso() {
-        return $this->hasMany('App\TempDetilSO', 'id_so', 'id');
+        return $this->hasMany('App\Models\TempDetilSO', 'id_so', 'id');
     }
 }

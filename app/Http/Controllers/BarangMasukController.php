@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Supplier;
-use App\Barang;
-use App\HargaBarang;
-use App\BarangMasuk;
-use App\DetilBM;
-use App\TempDetilBM;
-use App\StokBarang;
+use App\Models\Supplier;
+use App\Models\Barang;
+use App\Models\HargaBarang;
+use App\Models\BarangMasuk;
+use App\Models\DetilBM;
+use App\Models\TempDetilBM;
+use App\Models\StokBarang;
 use Carbon\Carbon;
 
 class BarangMasukController extends Controller

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\StokBarang;
-use App\Gudang;
-use App\Barang;
+use App\Models\StokBarang;
+use App\Models\Gudang;
+use App\Models\Barang;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;

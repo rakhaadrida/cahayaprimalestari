@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\RequestS\HargaRequest;
-use App\Harga;
+use App\Models\Harga;
 
 class HargaController extends Controller
 {

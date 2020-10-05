@@ -46,10 +46,9 @@
               @foreach($harga as $h)
                 <div class="form-row">
                   <div class="form-group col-2">
-                    <label for="harga" class="col-form-label text-bold">
-                    {{ $h->nama }}</label>
+                    <label for="harga" class="col-form-label text-bold">Price list</label>
                     <input type="text" class="form-control col-form-label-sm harga" id="harga"
-                    name="harga[]" required
+                    name="harga[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ $item->harga }}" 
@@ -61,7 +60,7 @@
                   <div class="form-group col-2 ml-2">
                     <label for="ppn" class="col-form-label text-bold">PPN</label>
                     <input type="text" class="form-control col-form-label-sm ppn" id="ppn" 
-                    name="ppn[]" required
+                    name="ppn[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ $item->ppn }}" 
@@ -71,8 +70,8 @@
                     />
                   </div>
                   <div class="form-group col-2 ml-2">
-                    <label for="hargaPPN" class="col-form-label text-bold">Harga PPN</label>
-                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" readonly
+                    <label for="hargaPPN" class="col-form-label text-bold">Harga Beli</label>
+                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" required
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ $item->harga_ppn }}" 
@@ -127,8 +126,9 @@
   const hargaPPN = document.querySelectorAll(".hargaPPN");
 
   for(let i = 0; i < harga.length; i++) {
-    ppn[i].addEventListener('change', function(e) {
-      hargaPPN[i].value = +e.target.value + +harga[i].value;
+    hargaPPN[i].addEventListener('change', function(e) {
+      ppn[i].value = +e.target.value * 1.1 / 100;
+      harga[i].value = +e.target.value - +ppn[i].value;
     })
   }
 </script>

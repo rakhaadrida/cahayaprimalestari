@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,10 +18,10 @@ class DetilSJ extends Model
     public $incrementing = false;
 
     public function sj() {
-        return $this->belongsTo('App\SuratJalan', 'id_so');
+        return $this->belongsTo('App\Models\SuratJalan', 'id_so');
     }
 
     public function barang() {
-        return $this->belongsTo('App\SuratJalan', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\SuratJalan', 'id_barang', 'id');
     }
 }

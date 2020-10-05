@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Barang;
-use App\Harga;
-use App\Gudang;
-use App\HargaBarang;
-use App\StokBarang;
+use App\Models\Barang;
+use App\Models\Harga;
+use App\Models\Gudang;
+use App\Models\HargaBarang;
+use App\Models\StokBarang;
 use Illuminate\Http\Request;
 use App\Http\Requests\BarangRequest;
 
@@ -49,8 +49,8 @@ class BarangController extends Controller
         Barang::create([
             'id' => $request->kode,
             'nama' => $request->nama,
-            'ukuran' => $request->ukuran,
-            'isi' => $request->isi
+            'satuan' => $request->satuan,
+            'ukuran' => $request->ukuran
         ]);
 
         return redirect()->route('barang.index');

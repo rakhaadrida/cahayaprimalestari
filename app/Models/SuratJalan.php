@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,10 +15,10 @@ class SuratJalan extends Model
     public $incrementing = false;
     
     public function detilsj() {
-        return $this->hasMany('App\DetilSJ', 'id_so');
+        return $this->hasMany('App\Models\DetilSJ', 'id_so');
     }
 
     public function so() {
-        return $this->belongsTo('App\SalesOrder', 'id_so');
+        return $this->belongsTo('App\Models\SalesOrder', 'id_so');
     }
 }

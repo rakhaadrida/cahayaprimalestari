@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\SalesOrder;
-use App\DetilSO;
-use App\TempDetilSO;
+use App\Models\SalesOrder;
+use App\Models\DetilSO;
+use App\Models\TempDetilSO;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 

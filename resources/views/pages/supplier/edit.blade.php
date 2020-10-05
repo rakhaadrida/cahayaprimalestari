@@ -26,21 +26,43 @@
             <form action="{{ route('supplier.update', $item->id )}}" method="POST">
               @method('PUT')
               @csrf
-              <div class="form-group">
-                <label for="kode" class="text-bold">Kode</label>
-                <input type="text" class="form-control col-form-label-sm" name="kode" value="{{ $item->id }}" readonly>
+              <div class="form-group row">
+                <label for="kode" class="col-1 col-form-label text-bold ">Kode</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="kode" 
+                  value="{{ $item->id }}" readonly>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="nama" class="text-bold">Nama</label>
-                <input type="text" class="form-control col-form-label-sm" name="nama" value="{{ $item->nama }}" required>
+              <div class="form-group row">
+                <label for="nama" class="col-1 col-form-label text-bold ">Nama</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <input type="text" class="form-control col-form-label-sm" name="nama" value="{{ $item->nama }}" required>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="alamat" class="text-bold">Alamat</label>
-                <textarea name="alamat" class="form-control col-form-label-sm" required>{{$item->alamat}}</textarea>   
+              <hr>  
+              <div class="form-group row">
+                <label for="alamat" class="col-1 col-form-label text-bold ">Alamat</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-8">
+                  <textarea class="form-control col-form-label-sm" name="alamat" 
+                  value="{{ $item->alamat }}" required></textarea>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="telepon" class="text-bold">Telepon</label>
-                <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" required>
+              <div class="form-group row">
+                <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" required>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="npwp" class="col-1 col-form-label text-bold">NPWP</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="npwp" value="{{ $item->npwp }}">
+                </div>
               </div>
               <div class="form-row justify-content-center">
                 <div class="col-2">

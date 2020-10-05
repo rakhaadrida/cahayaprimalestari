@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,10 +15,10 @@ class PurchaseOrder extends Model
     public $incrementing = false;
 
     public function supplier() {
-        return $this->belongsTo('App\Supplier', 'id_supplier', 'id');
+        return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id');
     }
 
     public function detilpo() {
-        return $this->hasMany('App\DetilPO', 'id_po', 'id');
+        return $this->hasMany('App\Models\DetilPO', 'id_po', 'id');
     }
 }

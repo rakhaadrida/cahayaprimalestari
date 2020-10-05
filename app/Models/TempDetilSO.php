@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompositePrimaryKey;
@@ -17,14 +17,14 @@ class TempDetilSO extends Model
     public $incrementing = false;
 
     public function so() {
-        return $this->belongsTo('App\SalesOrder', 'id_so');
+        return $this->belongsTo('App\Models\SalesOrder', 'id_so');
     }
 
     public function barang() {
-        return $this->belongsTo('App\Barang', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
     }
 
     public function customer() {
-        return $this->belongsTo('App\Customer', 'id_customer', 'id');
+        return $this->belongsTo('App\Models\Customer', 'id_customer', 'id');
     }
 }

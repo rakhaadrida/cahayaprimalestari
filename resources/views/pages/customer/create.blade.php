@@ -61,6 +61,13 @@
                   value="{{ old('contact_person') }}" required>
                 </div>
               </div>
+              <div class="form-group row">
+                <label for="npwp" class="col-1 col-form-label text-bold">NPWP</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}">
+                </div>
+              </div>
               <hr>
               <div class="form-group row">
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>

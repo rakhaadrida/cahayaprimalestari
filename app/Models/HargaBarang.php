@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,10 +18,10 @@ class HargaBarang extends Model
     public $incrementing = false;
 
     public function hargaBarang() {
-        return $this->belongsTo('App\Harga', 'id_harga', 'id');
+        return $this->belongsTo('App\Models\Harga', 'id_harga', 'id');
     }
 
     public function barang() {
-        return $this->belongsTo('App\Barang', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
     }
 }
