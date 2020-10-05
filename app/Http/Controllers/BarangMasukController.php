@@ -10,6 +10,7 @@ use App\Models\BarangMasuk;
 use App\Models\DetilBM;
 use App\Models\TempDetilBM;
 use App\Models\StokBarang;
+use App\Models\Gudang;
 use Carbon\Carbon;
 
 class BarangMasukController extends Controller
@@ -18,6 +19,7 @@ class BarangMasukController extends Controller
         $supplier = Supplier::All();
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $gudang = Gudang::All();
 
         // autonumber
         $lastcode = BarangMasuk::max('id');
@@ -40,7 +42,8 @@ class BarangMasukController extends Controller
             'newcode' => $newcode,
             'tanggal' => $tanggal,
             'barang' => $barang,
-            'harga' => $harga
+            'harga' => $harga,
+            'gudang' => $gudang
         ];
 
         return view('pages.pembelian.barangMasuk', $data);
@@ -83,7 +86,8 @@ class BarangMasukController extends Controller
                     'id_barang' => $request->kodeBarang[$i],
                     'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $request->qty[$i],
-                    'keterangan' => $request->keterangan[$i]
+                    'diskon' => $request->diskon[$i],
+                    'keterangan' => ""
                 ]);
             }
         }

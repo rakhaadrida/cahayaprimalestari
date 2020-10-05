@@ -681,7 +681,7 @@ for(let i = 0; i < diskon.length; i++) {
       diskonRp[i].value = "";
     }
     else {
-      netPast = +netto[i].value.replace(/\./g, "")
+      netPast = +netto[i].value.replace(/\./g, "");
       diskonRp[i].value = addCommas(e.target.value * jumlah[i].value.replace(/\./g, "") / 100);
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));

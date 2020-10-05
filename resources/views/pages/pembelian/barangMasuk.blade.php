@@ -43,13 +43,39 @@
                       </div>
                     </div>   
                   </div>
+                  <div class="col" style="margin-left: -320px">
+                    <div class="form-group row subtotal-po">
+                      <label for="subtotal" class="col-5 col-form-label text-bold ">Sub Total</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right" name="subtotal" id="subtotal">
+                      </div>
+                    </div>
+                    <div class="form-group row" style="margin-top: -25px">
+                      <label for="ppn" class="col-5 col-form-label text-bold ">PPN</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right" name="ppn" id="ppn">
+                      </div>
+                    </div>
+                    <div class="form-group row" style="margin-top: -25px">
+                      <label for="grandtotal" class="col-5 col-form-label text-bold ">Grand Total</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext text-bold text-right text-danger" name="grandtotal" id="grandtotal">
+                        <input type="hidden" name="jumBaris" id="jumBaris" value="5">
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-group row subtotal-so">
+                <div class="form-group row subtotal-so" style="margin-top: -68px">
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Gudang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" value="Johar Baru" readonly
-                    />
+                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold"/>
                   </div>
                 </div>
                 <div class="form-group row subtotal-so">
@@ -118,14 +144,25 @@
               </span>
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold">
-                  <td style="width: 40px">No</td>
-                  <td style="width: 100px">Kode Barang</td>
-                  <td>Nama Barang</td>
-                  <td style="width: 80px">Qty (Pcs)</td>
-                  <td style="width: 90px">Harga</td>
-                  <td style="width: 110px">Jumlah Harga</td>
-                  <td style="width: 250px">Keterangan</td>
-                  <td style="width: 50px" id="deleteHead">Delete</td>
+                  <tr>
+                    <td rowspan="2" style="width: 30px" class="align-middle">No</td>
+                    <td rowspan="2" style="width: 90px" class="align-middle">Kode Barang</td>
+                    <td rowspan="2" @if(Auth::user()->roles == 'ADMIN') style="width: 320px" @endif class="align-middle">Nama Barang</td>
+                    <td rowspan="2" style="width: 55px" class="align-middle">Qty</td>
+                    <td rowspan="2" style="width: 90px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 110px" class="align-middle">Jumlah</td>
+                    @if(Auth::user()->roles == 'SUPER')
+                      <td colspan="2">Diskon</td>
+                      <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
+                    @endif
+                    <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
+                  </tr>
+                  @if(Auth::user()->roles == 'SUPER')
+                    <tr>
+                      <td>%</td>
+                      <td>Rupiah</td>
+                    </tr>
+                  @endif
                 </thead>
                 <tbody id="tablePO">
                   @for($i=1; $i<=5; $i++)
@@ -140,7 +177,7 @@
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}">
+                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}">
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -148,9 +185,19 @@
                       <td>
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                       </td>
-                      <td>
-                        <input type="text" name="keterangan[]" id="keterangan" class="form-control form-control-sm text-bold text-dark keterangan" value="{{ old('keterangan[]') }}" >
-                      </td>
+                      @if(Auth::user()->roles == 'SUPER')
+                        <td style="width: 90px">
+                          <input type="text" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
+                          value="{{ old('diskon[]') }}" >
+                        </td>
+                        <td style="width: 100px">
+                          <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
+                          value="{{ old('diskonRp[]') }}" >
+                        </td>
+                        <td>
+                          <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ old('netto[]') }}" >
+                        </td>
+                      @endif
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
@@ -233,15 +280,22 @@
 <script type="text/javascript">
 const namaSup = document.getElementById('namaSupplier');
 const kodeSup = document.getElementById('kodeSupplier');
+const gudang = document.getElementById('namaGudang');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
 const harga = document.querySelectorAll(".harga");
 const jumlah = document.querySelectorAll(".jumlah");
-const keterangan = document.querySelectorAll(".keterangan");
+const diskon = document.querySelectorAll(".diskon");
+const diskonRp = document.querySelectorAll(".diskonRp");
+const netto = document.querySelectorAll(".netto");
+const subtotal = document.getElementById('subtotal');
+const ppn = document.getElementById('ppn');
+const grandtotal = document.getElementById('grandtotal');
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
+// const keterangan = document.querySelectorAll(".keterangan");
 
 namaSup.addEventListener('change', displaySupp);
 newRow.addEventListener('click', displayRow);
@@ -434,6 +488,7 @@ function displaySupp(e) {
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("change", function (e) {
     if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
     }
@@ -448,6 +503,7 @@ for(let i = 0; i < brgNama.length; i++) {
 
   kodeBarang[i].addEventListener("change", function (e) {
     if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
     }
@@ -474,13 +530,70 @@ for(let i = 0; i < brgNama.length; i++) {
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("change", function (e) {
     if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
+      netto[i].value = "";
     }
     else {
+      netPast = +netto[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+      if(diskon[i].value != "") {
+        var angkaDiskon = hitungDiskon(diskon[i].value);
+        diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
+      }
+
+      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
+    total_ppn(subtotal.value.replace(/\./g, ""));
   });
 } 
+
+/** Tampil Diskon Rupiah Otomatis **/
+for(let i = 0; i < diskon.length; i++) {
+  diskon[i].addEventListener("change", function (e) {
+    if(e.target.value == "") {
+      netPast = netto[i].value.replace(/\./g, "");
+      netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
+      checkSubtotal(netPast, netto[i].value.replace(/\./g, ""));
+      diskonRp[i].value = "";
+    }
+    else {
+      var angkaDiskon = hitungDiskon(e.target.value);
+      netPast = +netto[i].value.replace(/\./g, "");
+      diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
+      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
+      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
+  });
+}
+
+/** Hitung Diskon **/
+function hitungDiskon(angka) {
+  var totDiskon = 100;
+  var arrDiskon = angka.split('+');
+  for(let i = 0; i < arrDiskon.length; i++) {
+    totDiskon -= (arrDiskon[i] * totDiskon) / 100;
+  }
+  totDiskon = ((totDiskon - 100) * -1).toFixed(2);
+  return totDiskon;
+}
+
+/** Check Jumlah Netto onChange **/
+function checkSubtotal(Past, Now) {
+  if(Past > Now) {
+    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
+  } else {
+    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + (+Now - +Past));
+  }
+}
+
+/** Hitung PPN Dan Total **/
+function total_ppn(sub) {
+  ppn.value = addCommas(sub * 10 / 100);
+  grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
+}
 
 /** Add Thousand Separators **/
 function addCommas(nStr) {
@@ -524,6 +637,11 @@ $(function() {
   var supplier = [];
   @foreach($supplier as $s)
     supplier.push('{{ $s->nama }}');
+  @endforeach
+
+  var nmGudang = [];
+  @foreach($gudang as $g)
+    nmGudang.push('{{ $g->nama }}');
   @endforeach
     
   function split(val) {
@@ -603,6 +721,35 @@ $(function() {
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
       response($.ui.autocomplete.filter(supplier, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  /*-- Autocomplete Input Gudang --*/
+  $(gudang).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(nmGudang, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus

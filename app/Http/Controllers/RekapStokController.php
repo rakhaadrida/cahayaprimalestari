@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapStokExport;
+use Carbon\Carbon;
 
 class RekapStokController extends Controller
 {
@@ -29,9 +30,13 @@ class RekapStokController extends Controller
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
+        $waktu = Carbon::now();
+        $waktu = $waktu->format('d F Y, H:i:s');
+
         $data = [
             'gudang' => $gudang,
             'stok' => $stok,
+            'waktu' => $waktu
         ];
 
         $pdf = PDF::loadview('pages.laporan.cetakRekap', $data)->setPaper('A4', 'portrait');

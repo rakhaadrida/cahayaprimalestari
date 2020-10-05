@@ -8,9 +8,10 @@
   <body>
     <center>
       <h5 class="text-bold text-dark">Rekap Stok Barang</h5>
-      <h6 class="text-dark">
+      <h6 class="text-dark kode-cetak-stok">
         Dari Kode {{$stok[0]->id_barang}} s/d {{ $stok[$stok->count() - 1]->id_barang}}
       </h6>
+      <p class="waktu-cetak">Waktu Cetak : {{$waktu}}</p>
     </center>
     <br>
 

@@ -121,6 +121,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: -20px;
 }
 
+.waktu-cetak {
+    font-size: 12px;
+    margin-top: -8px;
+}
+
+.kode-cetak-stok {
+    margin-top: -8px;
+}
+
 .table-cetak {
     font-size: 11px;
     height: 200px;
