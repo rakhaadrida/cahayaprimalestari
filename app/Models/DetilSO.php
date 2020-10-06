@@ -10,9 +10,9 @@ class DetilSO extends Model
     use CompositePrimaryKey;
 
     protected $table = "detilso";
-    protected $primaryKey = ['id_so', 'id_barang'];
+    protected $primaryKey = ['id_so', 'id_barang', 'id_gudang'];
     protected $keyType = "string";
-    protected $fillable = ['id_so', 'id_barang', 'harga', 'qty', 'diskon'];
+    protected $fillable = ['id_so', 'id_barang', 'id_gudang', 'harga', 'qty', 'diskon'];
 
     public $incrementing = false;
 

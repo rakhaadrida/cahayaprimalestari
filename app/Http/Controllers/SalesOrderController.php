@@ -10,6 +10,7 @@ use App\Models\StokBarang;
 use App\Models\DetilSO;
 use App\Models\TempDetilSO;
 use App\Models\HargaBarang;
+use App\Models\Gudang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
@@ -17,10 +18,12 @@ use PDF;
 
 class SalesOrderController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
         $customer = Customer::with(['sales'])->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $stok = StokBarang::All();
+        $gudang = Gudang::All();
 
         $lastcode = SalesOrder::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
@@ -38,6 +41,8 @@ class SalesOrderController extends Controller
             'customer' => $customer,
             'barang' => $barang,
             'harga' => $harga,
+            'stok' => $stok,
+            'gudang' => $gudang,
             'newcode' => $newcode,
             'tanggal' => $tanggal,
             'itemsRow' => $itemsRow,

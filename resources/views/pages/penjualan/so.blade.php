@@ -188,13 +188,13 @@
                 <thead class="text-center text-bold text-dark">
                   <tr>
                     <td rowspan="2" style="width: 30px" class="align-middle">No</td>
-                    <td rowspan="2" style="width: 95px" class="align-middle">Kode Barang</td>
+                    <td rowspan="2" style="width: 90px" class="align-middle">Kode Barang</td>
                     <td rowspan="2" class="align-middle">Nama Barang</td>
-                    <td rowspan="2" style="width: 60px" class="align-middle">Qty</td>
-                    <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
-                    <td rowspan="2" style="width: 120px" class="align-middle">Jumlah</td>
+                    <td rowspan="2" style="width: 55px" class="align-middle">Qty</td>
+                    <td rowspan="2" style="width: 90px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 110px" class="align-middle">Jumlah</td>
                     <td colspan="2">Diskon</td>
-                    <td rowspan="2" style="width: 130px" class="align-middle">Netto (Rp)</td>
+                    <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
                     <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
                   </tr>
                   <tr>
@@ -215,7 +215,9 @@
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}">
+                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
+                        value="{{ old('qty[]') }}">
+                        <input type="text" name="kodeGudang[]" class="kodeGudang">
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -223,11 +225,11 @@
                       <td>
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                       </td>
-                      <td style="width: 60px">
+                      <td style="width: 90px">
                         <input type="text" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
                         value="{{ old('diskon[]') }}" >
                       </td>
-                      <td style="width: 120px">
+                      <td style="width: 100px">
                         <input type="text" name="diskonRp[]" id="diskonRp" class="form-control form-control-sm text-bold text-right text-dark diskonRp" 
                         value="{{ old('diskonRp[]') }}" >
                       </td>
@@ -240,6 +242,49 @@
                         </a>
                       </td>
                     </tr>
+                    </div>
+                    <div class="modal" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Pilih Gudang</h4>
+                          </div>
+                          <div class="modal-body">
+                            <p>Qty order melebihi stok pada gudang <strong>{{ $stok[0]->gudang->nama }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
+                            <div class="form-group row" style="margin-top: -10px">
+                              <label for="kode" class="col-4 col-form-label text-bold">Qty Order</label>
+                              <span class="col-auto col-form-label text-bold">:</span>
+                              <span class="col-form-label text-bold" id="qtyOrder"></span>
+                            </div>
+                            <div class="form-group row" style="margin-top: -30px">
+                              <label for="kode" class="col-4 col-form-label text-bold">Stok {{ $gudang[0]->nama }}</label>
+                              <span class="col-auto col-form-label text-bold">:</span>
+                              <span class="col-form-label text-bold" id="stokJohar"></span>
+                            </div>
+                            <div class="form-group row" style="margin-top: -20px">
+                              <label for="kode" class="col-4 col-form-label text-bold">Sisa Qty Order</label>
+                              <span class="col-auto col-form-label text-bold">:</span>
+                              <span class="col-form-label text-bold" id="sisaQty"></span>
+                            </div>
+                            <label for="pilih" style="margin-bottom: -5px">Pilih Gudang Tambahan</label>
+                            @foreach($gudang as $g)
+                              @if($g->id != "GDG01")
+                                <div class="row">
+                                  <label for="kode" class="col-7 col-form-label text-bold">{{ $g->nama }} <span class="col-form-label text-bold stokGudang"></span></label>
+                                  <input type="hidden" class="kodeGud" value="{{$g->id}}">
+                                  <div class="col-3">
+                                    <button class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih">Pilih</button>
+                                  </div>
+                                </div>
+                              @endif
+                            @endforeach
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   @endfor
 
                   <!-- Tabel Tampil Detil SO (Bukan Diinput di Tabel) -->
@@ -389,6 +434,7 @@ const kodeCust = document.getElementById('idCustomer');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
+const kodeGudang = document.querySelectorAll(".kodeGudang");
 const harga = document.querySelectorAll(".harga");
 const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
@@ -400,6 +446,12 @@ const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
+const teksJohar = document.getElementById('stokJohar');
+const qtyOrder = document.getElementById('qtyOrder');
+const sisaQty = document.getElementById('sisaQty');
+const stokGudang = document.querySelectorAll('.stokGudang');
+const kodeGud = document.querySelectorAll(".kodeGud");
+const btnPilih = document.querySelectorAll(".btnPilih");
 var netPast;
 
 /** Call Fungsi Setelah Inputan Terisi **/
@@ -652,10 +704,30 @@ for(let i = 0; i < brgNama.length; i++) {
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("change", function (e) {
+    var stokJohar = 0;
+    var stokLain = [];
+    @foreach($stok as $s)
+      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
+        stokJohar = '{{ $s->stok }}';
+      }
+      else if('{{ $s->id_barang }}' == kodeBarang[i].value){
+        stokLain.push('{{ $s->stok }}');
+      }
+    @endforeach
+
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
       netto[i].value = "";
+    }
+    else if(e.target.value > stokJohar) {
+      $('#'+i).modal("show");
+      teksJohar.textContent = stokJohar;
+      qtyOrder.textContent = e.target.value;
+      sisaQty.textContent = +e.target.value - +stokJohar;
+      for(let i = 0; i < stokGudang.length; i++) {
+        stokGudang[i].textContent = `(Stok : ${stokLain[i]})`;
+      }
     }
     else {
       netPast = +netto[i].value.replace(/\./g, "");
@@ -687,6 +759,16 @@ for(let i = 0; i < diskon.length; i++) {
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
+  });
+}
+
+/** Tampil Kode Gudang Tambahan **/
+for(let i = 0; i < btnPilih.length; i++) {
+  btnPilih[i].addEventListener("click", function (e) {
+    kodeGudang[i].value = kodeGud[i].value;
+    $('#'+i).modal("hide");
+
+    return false;
   });
 }
 
