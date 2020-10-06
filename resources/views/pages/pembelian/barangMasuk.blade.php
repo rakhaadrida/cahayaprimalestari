@@ -591,7 +591,7 @@ function checkSubtotal(Past, Now) {
 
 /** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  ppn.value = addCommas(sub * 10 / 100);
+  ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
 }
 

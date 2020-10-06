@@ -72,6 +72,11 @@ Route::middleware(['auth', 'admin'])
         Route::post('/so/change/edit/{id}', 'SalesOrderController@edit')->name('so-edit');
         Route::post('/so/change/update', 'SalesOrderController@update')->name('so-update');
 
+        // Transaksi Harian
+        Route::get('/transaksi', 'TransaksiController@index')->name('trans');
+        Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
+        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
+
         // Surat Jalan
         Route::get('/sj', 'SuratJalanController@index')->name('sj');
         Route::post('/sj/show', 'SuratJalanController@show')->name('sj-show');

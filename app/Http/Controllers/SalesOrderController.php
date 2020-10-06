@@ -83,41 +83,51 @@ class SalesOrderController extends Controller
             'tgl_so' => $tanggal,
             'tgl_kirim' => $request->tanggalKirim,
             'total' => str_replace(".", "", $request->grandtotal),
+            'kategori' => $request->kategori,
             'tempo' => $request->tempo,
             'pkp' => $request->pkp,
-            'status' => 'PENDING',
+            'status' => 'CETAK',
             'id_customer' => $request->kodeCustomer
         ]);
 
         for($i = 0; $i < $jumlah; $i++) {
             if($request->kodeBarang[$i] != "") {
-                DetilSO::create([
-                    'id_so' => $id,
-                    'id_barang' => $request->kodeBarang[$i],
-                    'harga' => str_replace(".", "", $request->harga[$i]),
-                    'qty' => $request->qty[$i],
-                    'diskon' => $request->diskon[$i]
-                ]);
+                $arrGudang = explode(",", $request->kodeGudang[$i]);
+                $arrStok = explode(",", $request->qtyGudang[$i]);
+                for($j = 0; $j < sizeof($arrGudang); $j++) {
+                    DetilSO::create([
+                        'id_so' => $id,
+                        'id_barang' => $request->kodeBarang[$i],
+                        'id_gudang' => $arrGudang[$j],
+                        'harga' => str_replace(".", "", $request->harga[$i]),
+                        'qty' => $arrStok[$j],
+                        'diskon' => $request->diskon[$i]
+                    ]);
 
-                $qty = $request->qty[$i];
+                    // $qty = $qtyGudang[$j];
 
-                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])->get();
-                foreach($updateStok as $us) {
-                    if($request->qty[$i] <= $us->stok) {
-                        $us->stok -= $request->qty[$i];
-                    }
-                    else {
-                        $qty -= $us->stok;
-                        $us->stok -= $us->stok;
-                    }
-                    $us->save();
+                    $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                                ->where('id_gudang', $arrGudang[$j])->first();
+                                var_dump($updateStok);
+                    $updateStok->{'stok'} -= $arrStok[$j];
+                    $updateStok->save();
+                    // foreach($updateStok as $us) {
+                    //     if($request->qty[$i] <= $us->stok) {
+                    //         $us->stok -= $request->qty[$i];
+                    //     }
+                    //     else {
+                    //         $qty -= $us->stok;
+                    //         $us->stok -= $us->stok;
+                    //     }
+                    //     $us->save();
+                    // }
                 }
             }
         }
 
         // $this->cetak($id);
         // return redirect()->route('so');
-        return redirect()->route('so-cetak', $id);
+        // return redirect()->route('so-cetak', $id);
     }
 
     public function cetak(Request $request, $id) {

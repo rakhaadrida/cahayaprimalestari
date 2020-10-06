@@ -35,18 +35,18 @@
                       <div class="col-2">
                         <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly>
                       </div>
-                      <label for="tanggal" class="col-auto col-form-label text-bold ">Tanggal SO</label>
+                      <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
                         <input type="text" class="form-control form-control-sm text-bold mt-1" name="tanggal" value="{{ $tanggal }}" readonly>
                       </div>
                     </div>   
                   </div>
-                  <div class="col" style="margin-left: -320px">
+                  <div class="col" style="margin-left: -350px; margin-right:-40px">
                     <div class="form-group row subtotal-po">
-                      <label for="tempo" class="col-6 col-form-label text-bold">Jatuh Tempo</label>
+                      <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-3">
+                      <div class="col-2">
                         <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo"
                           @if($itemsRow != 0) 
                             value="{{ $items[$itemsRow - 1]->tempo }}"
@@ -78,7 +78,7 @@
                       <span class="col-form-label text-bold">%</span>
                     </div> --}}
                     <div class="form-group row total-po">
-                      <label for="pkp" class="col-6 col-form-label text-bold">PKP</label>
+                      <label for="pkp" class="col-6 col-form-label text-bold text-right">PKP</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3 pkp-check">
                         <div class="form-check mt-2">
@@ -112,11 +112,16 @@
                     <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required />
                     <input type="hidden" name="kodeCustomer" id="idCustomer">
                   </div>
+                  <label for="customer" class="col-1 col-form-label text-bold">NPWP</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-2">
+                    <input type="text" name="npwp" id="npwp" class="form-control form-control-sm mt-1" readonly />
+                  </div>
                 </div>
                 <div class="form-group row sales-row">
                   <label for="alamat" class="col-2 col-form-label text-bold">Nama Sales</label>
                   <span class="col-form-label text-bold">:</span>
-                  <div class="col-3">
+                  <div class="col-2">
                     <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly />
                     <input type="hidden" name="kodeSales" id="idSales" 
                       {{-- @if($itemsRow != 0) 
@@ -124,8 +129,24 @@
                       @endif --}}
                     />
                   </div>
+                  <label for="kat" class="col-2 col-form-label text-bold text-right">Kategori</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-3">
+                    <div class="form-check mt-2">
+                      <input class="form-check-input" type="radio" name="kategori"  value="Cash" required>
+                      <label class="form-check-label text-bold" for="kat1">Cash</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="kategori"  value="Prime">
+                      <label class="form-check-label text-bold" for="kat2">Prime</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="kategori"  value="Extrana">
+                      <label class="form-check-label text-bold" for="kat3">Extrana</label>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-group row sales-row">
+                <div class="form-group row" style="margin-top: -60px">
                   <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
@@ -217,7 +238,8 @@
                       <td> 
                         <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
                         value="{{ old('qty[]') }}">
-                        <input type="text" name="kodeGudang[]" class="kodeGudang">
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang">
+                        <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -243,7 +265,7 @@
                       </td>
                     </tr>
                     </div>
-                    <div class="modal" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
+                    <div class="modal modalGudang" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -254,6 +276,7 @@
                           </div>
                           <div class="modal-body">
                             <p>Qty order melebihi stok pada gudang <strong>{{ $stok[0]->gudang->nama }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
+                            <input type="hidden" id="kodeModal{{$i-1}}" value="{{$i-1}}">
                             <div class="form-group row" style="margin-top: -10px">
                               <label for="kode" class="col-4 col-form-label text-bold">Qty Order</label>
                               <span class="col-auto col-form-label text-bold">:</span>
@@ -276,7 +299,7 @@
                                   <label for="kode" class="col-7 col-form-label text-bold">{{ $g->nama }} <span class="col-form-label text-bold stokGudang"></span></label>
                                   <input type="hidden" class="kodeGud" value="{{$g->id}}">
                                   <div class="col-3">
-                                    <button class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih">Pilih</button>
+                                    <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih">Pilih</button>
                                   </div>
                                 </div>
                               @endif
@@ -430,11 +453,13 @@
 <script type="text/javascript">
 const namaCust = document.getElementById('namaCustomer');
 const namaSales = document.getElementById('namaSales');
+const npwp = document.getElementById('npwp');
 const kodeCust = document.getElementById('idCustomer');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
+const qtyGudang = document.querySelectorAll(".qtyGudang");
 const harga = document.querySelectorAll(".harga");
 const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
@@ -452,6 +477,7 @@ const sisaQty = document.getElementById('sisaQty');
 const stokGudang = document.querySelectorAll('.stokGudang');
 const kodeGud = document.querySelectorAll(".kodeGud");
 const btnPilih = document.querySelectorAll(".btnPilih");
+const modalGudang = document.querySelectorAll(".modalGudang");
 var netPast;
 
 /** Call Fungsi Setelah Inputan Terisi **/
@@ -464,6 +490,7 @@ function displayCust(e) {
     if('{{ $c->nama }}' == e.target.value) {
       kodeCust.value = '{{ $c->id }}';
       namaSales.value = '{{ $c->sales->nama }}';
+      npwp.value = '{{ $c->npwp }}';
     }
   @endforeach
 }
@@ -699,6 +726,8 @@ for(let i = 0; i < brgNama.length; i++) {
       }
     @endforeach
   }
+
+  kodeGudang[i].value = 'GDG01';
 }
 
 /** Tampil Jumlah Harga Otomatis **/
@@ -720,16 +749,21 @@ for(let i = 0; i < qty.length; i++) {
       jumlah[i].value = "";
       netto[i].value = "";
     }
-    else if(e.target.value > stokJohar) {
-      $('#'+i).modal("show");
-      teksJohar.textContent = stokJohar;
-      qtyOrder.textContent = e.target.value;
-      sisaQty.textContent = +e.target.value - +stokJohar;
-      for(let i = 0; i < stokGudang.length; i++) {
-        stokGudang[i].textContent = `(Stok : ${stokLain[i]})`;
-      }
-    }
     else {
+      if(+e.target.value > stokJohar) {
+        $('#'+i).modal("show");
+        teksJohar.textContent = stokJohar;
+        qtyOrder.textContent = e.target.value;
+        sisaQty.textContent = +e.target.value - +stokJohar;
+        for(let i = 0; i < stokGudang.length; i++) {
+          stokGudang[i].textContent = `(Stok : ${stokLain[i]})`;
+        }
+        qtyGudang[i].value = stokJohar;
+      }
+      else {
+        qtyGudang[i].value = e.target.value;
+      }
+
       netPast = +netto[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
       if(diskon[i].value != "") {
@@ -739,7 +773,8 @@ for(let i = 0; i < qty.length; i++) {
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    total_ppn(subtotal.value.replace(/\./g, ""));
+    // total_ppn(subtotal.value.replace(/\./g, ""));
+    grandtotal.value = subtotal.value;
   });
 }  
 
@@ -753,23 +788,48 @@ for(let i = 0; i < diskon.length; i++) {
       diskonRp[i].value = "";
     }
     else {
+      var angkaDiskon = hitungDiskon(e.target.value);
       netPast = +netto[i].value.replace(/\./g, "");
-      diskonRp[i].value = addCommas(e.target.value * jumlah[i].value.replace(/\./g, "") / 100);
+      diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    total_ppn(subtotal.value.replace(/\./g, ""));
+    // total_ppn(subtotal.value.replace(/\./g, ""));
+    grandtotal.value = subtotal.value;
   });
 }
 
 /** Tampil Kode Gudang Tambahan **/
 for(let i = 0; i < btnPilih.length; i++) {
   btnPilih[i].addEventListener("click", function (e) {
-    kodeGudang[i].value = kodeGud[i].value;
-    $('#'+i).modal("hide");
-
-    return false;
+    for(let j = 0; j < modalGudang.length; j++) {
+      if(j == document.getElementById('kodeModal'+j).value) {
+        var k = j;
+        break;
+      }
+    }
+    var arrKode = kodeGudang[k].value.split(',');
+    if(arrKode.length > 1) {
+      arrKode[1] = kodeGud[i].value;
+      kodeGudang[k].value = arrKode[0].concat(`, ${arrKode[1]}`);
+    }
+    else {
+      kodeGudang[k].value = kodeGudang[k].value.concat(`,${kodeGud[i].value}`);
+    }
+    qtyGudang[k].value = qtyGudang[k].value.concat(`,${sisaQty.textContent}`);
+    $('#'+k).modal("hide");
   });
+}
+
+/** Hitung Diskon **/
+function hitungDiskon(angka) {
+  var totDiskon = 100;
+  var arrDiskon = angka.split('+');
+  for(let i = 0; i < arrDiskon.length; i++) {
+    totDiskon -= (arrDiskon[i] * totDiskon) / 100;
+  }
+  totDiskon = ((totDiskon - 100) * -1).toFixed(2);
+  return totDiskon;
 }
 
 /** Check Jumlah Netto onChange **/
@@ -783,7 +843,7 @@ function checkSubtotal(Past, Now) {
 
 /** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  ppn.value = addCommas(sub * 10 / 100);
+  ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
 }
 
