@@ -47,7 +47,7 @@
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo"
+                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo"
                           @if($itemsRow != 0) 
                             value="{{ $items[$itemsRow - 1]->tempo }}"
                           @endif
@@ -133,7 +133,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
                     <div class="form-check mt-2">
-                      <input class="form-check-input" type="radio" name="kategori"  value="Cash" required>
+                      <input class="form-check-input" type="radio" name="kategori"  value="Cash" id="kategori" required>
                       <label class="form-check-label text-bold" for="kat1">Cash</label>
                     </div>
                     <div class="form-check">
@@ -150,7 +150,7 @@
                   <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" name="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control form-control-sm mt-1" required />
+                    <input type="date" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control form-control-sm mt-1" required />
                     <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div>
                 </div>
@@ -432,13 +432,40 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('so-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" data-toggle="modal" data-target="#modalKonfirm" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
+
+              <!-- Modal Konfirmasi Cetak atau Input -->
+              <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title">Konfirmasi Faktur {{$newcode}}</h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Faktur <strong>{{$newcode}}</strong> telah tersimpan. Silahkan pilih cetak atau input faktur lagi.</p>
+                      <hr>
+                      <div class="form-row justify-content-center">
+                        <div class="col-3">
+                          <button type="submit" formaction="" formmethod="" class="btn btn-success btn-block text-bold">Cetak</button>
+                        </div>
+                        <div class="col-3">
+                          <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Input Lagi</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Modal Konfirmasi -->
             </form>
           </div>
         </div>
