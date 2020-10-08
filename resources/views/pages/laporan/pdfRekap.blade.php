@@ -2,8 +2,8 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <link href="{{ url('backend/css/sb-admin-2.css') }}" rel="stylesheet">
-    <link href="{{ url('backend/css/main.css') }}" rel="stylesheet">
+    <link href="backend/css/sb-admin-2.css" rel="stylesheet">
+    <link href="backend/css/main.css" rel="stylesheet">
   </head>
   <body>
     <center>
@@ -16,15 +16,15 @@
     <br>
 
     <!-- Tabel Data Detil BM-->
-    <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover table-cetak" style="border: none">
+    <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover table-cetak">
       <thead class="text-center text-dark text-bold">
         <tr>
-          <td style="width: 40px" class="align-middle">No</td>
-          <td style="width: 90px">Kode Barang</td>
-          <td style="width: 180px" class="align-middle">Nama Barang</td>
-          <td style="width: 110px" class="align-middle">Total Stok</td>
+          <td style="width: 30px" class="align-middle">No</td>
+          <td style="width: 70px">Kode Barang</td>
+          <td class="align-middle">Nama Barang</td>
+          <td style="width: 70px; background-color: yellow" class="align-middle">Total Stok</td>
           @foreach($gudang as $g)
-            <td style="width: 110px" class="align-middle">{{ $g->nama }}</td>
+            <td style="width: 70px" class="align-middle">{{ $g->nama }}</td>
           @endforeach
         </tr>
       </thead>

@@ -202,10 +202,10 @@
                       <span class="sr-only">Previous</span>
                     </a>
                   {{-- @if($item->id != $items[$itemsRow-1]->id) --}}
-                    <a class="carousel-control-next " href="#so-carousel" role="button" data-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Next</span>
-                    </a>
+                  <a class="carousel-control-next " href="#so-carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
                   {{-- @endif --}}
                 @endif
               </div>

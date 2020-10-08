@@ -11,7 +11,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Approval</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Histori Approval</h1>
   </div>
 
   <div class="row">
@@ -22,7 +22,7 @@
             <tr align="center">
               <th>No</th>
               <th>No. Transaksi</th>
-              <th>Tanggal</th>
+              <th>Tanggal Approval</th>
               <th>Customer</th>
               <th>Status</th>
               <th>Keterangan</th>
@@ -34,14 +34,13 @@
             @forelse ($items as $item)
               <tr>
                 <td align="center">{{ $i }}</td>
-                <td>{{ $item->id }}</td>
-                <td>{{ $item->tgl_so }}</td>
-                <td>{{ $item->customer->nama }}</td>
+                <td>{{ $item->id_so }}</td>
+                <td>{{ $item->tanggal }}</td>
+                <td>{{ $item->id_so }}</td>
                 <td>{{ $item->status }}</td>
-                @php $ket = \App\Models\NeedApproval::where('id_so', $item->id)->first(); @endphp
-                <td>{{ $ket['keterangan'] }}</td>
+                <td>{{ $item->keterangan }}</td>
                 <td align="center">
-                  <a href="{{ route('app-show', $item->id) }}" class="btn btn-success">
+                  <a href="{{ route('app-detail', $item->id_so) }}" class="btn btn-success">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
@@ -49,7 +48,7 @@
               @php $i++; @endphp
             @empty
               <tr>
-                <td colspan="7" class="text-center">Tidak Ada Data Approval</td>
+                <td colspan="7" class="text-center">Tidak Ada Histori Approval</td>
               </tr>
             @endforelse
           </tbody>

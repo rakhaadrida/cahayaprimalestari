@@ -91,14 +91,17 @@ Route::middleware(['auth', 'admin'])
 
         // Rekap Stok
         Route::get('rekap', 'RekapStokController@index')->name('rekap');
-        Route::post('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
+        Route::get('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
+        Route::post('rekap/pdf', 'RekapStokController@cetak_pdf')->name('rs-pdf');
         Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');
 
         // Approval
         Route::get('approval', 'ApprovalController@index')->name('approval');
-        Route::get('approval/{id}', 'ApprovalController@show')->name('app-show');
+        Route::get('approval/show/{id}', 'ApprovalController@show')->name('app-show');
         Route::post('approval/process/{id}', 'ApprovalController@process')->name('app-process');
         Route::post('approval/batal/{id}', 'ApprovalController@batal')->name('app-batal');
+        Route::get('approval/histori', 'ApprovalController@histori')->name('app-histori');
+        Route::get('approval/histori/{id}', 'ApprovalController@detail')->name('app-detail');
 });
 
 

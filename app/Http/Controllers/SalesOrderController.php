@@ -8,7 +8,7 @@ use App\Models\Customer;
 use App\Models\Barang;
 use App\Models\StokBarang;
 use App\Models\DetilSO;
-use App\Models\TempDetilSO;
+use App\Models\NeedApproval;
 use App\Models\HargaBarang;
 use App\Models\Gudang;
 use Carbon\Carbon;
@@ -58,7 +58,7 @@ class SalesOrderController extends Controller
     }
 
     public function create(Request $request, $id) {
-        TempDetilSO::create([
+        NeedApproval::create([
             'id_so' => $id,
             'id_barang' => $request->kodeBarang,
             'harga' => $request->harga,
@@ -229,14 +229,12 @@ class SalesOrderController extends Controller
         $items->save();
 
         for($i = 0; $i < $jumlah; $i++) {
-            TempDetilSO::create([
+            NeedApproval::create([
                 'id_so' => $request->kode,
                 'id_barang' => $request->kodeBarang[$i],
                 'harga' => str_replace(".", "", $request->harga[$i]),
                 'qty' => $request->qty[$i],
                 'diskon' => $request->diskon[$i],
-                'id_customer' => $request->kodeCust,
-                'tempo' => 30,
                 'status' => 'PENDING_UPDATE',
                 'keterangan' => $request->keterangan
             ]);

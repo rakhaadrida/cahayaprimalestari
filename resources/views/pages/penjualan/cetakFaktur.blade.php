@@ -35,11 +35,11 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Nomor Faktur</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kode">
+                    <input type="text" class="form-control form-control-sm mt-1" name="kodeAwal" id="kode" placeholder="Kode Awal">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAkhir" id="kode">
+                    <input type="text" class="form-control form-control-sm mt-1" name="kodeAkhir" id="kode" placeholder="Kode Akhir">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="" formmethod="" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cetak</button>

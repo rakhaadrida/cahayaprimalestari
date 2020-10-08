@@ -6,7 +6,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Detail Approval</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Detail Histori Approval</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -28,12 +28,12 @@
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($status as $item)
-                  <div class="carousel-item @if($item->id == $kode) active
+                  <div class="carousel-item @if($item->id_so == $kode) active
                     @endif "
                   />
                     @php 
-                      $items = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so', $item->id)->get();
-                      $itemsUpdate = \App\Models\NeedApproval::with(['barang'])->where('id_so', $item->id)->get();
+                      $items = \App\Models\DetilApproval::with(['so', 'barang', 'approval'])->where('id_so', $item->id_so)->get();
+                      $itemsUpdate = \App\Models\DetilSO::with(['barang'])->where('id_so', $item->id_so)->get();
                     @endphp
                     <div class="container so-update-container">
                       <div class="row">
@@ -79,10 +79,10 @@
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12">
                           <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
+                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal Approval</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $items[0]->so->status }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($items[0]->approval->tanggal)->format('d-m-Y') }}" >
                             </div>
                           </div>
                         </div>
@@ -99,10 +99,19 @@
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12">
                           <div class="form-group row customer-detail">
-                            <label for="keterangan" class="col-2 form-control-sm text-bold mt-1">Keterangan</label>
+                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-3">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $items[0]->so->status }}" >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col" style="margin-left: -450px">
+                          <div class="form-group row customer-detail">
+                            <label for="keterangan" class="col-4 form-control-sm text-bold mt-1">Keterangan</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-5">
-                              <input type="text" name="keterangan" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $itemsUpdate[0]->keterangan }}" >
+                              <input type="text" name="keterangan" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $items[0]->approval->keterangan }}" >
                             </div>
                           </div>
                         </div>
@@ -262,19 +271,9 @@
                         @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{number_format($subtotalUpdate + ($subtotalUpdate * 10 / 100),0,"",".")}}" />
                       </div>
                     </div>
-                    <hr>
+                    <br>
                     <!-- End Tabel Data Update SO -->
 
-                    <!-- Button Submit dan Reset -->
-                    <div class="form-row justify-content-center">
-                      <div class="col-2">
-                        <button type="submit" formaction="{{route('app-process', $items[0]->id_so)}}" formmethod="POST" class="btn btn-success btn-block text-bold">Approve</button>
-                      </div>
-                      <div class="col-2">
-                        <button type="submit" formaction="{{route('app-batal', $items[0]->id_so)}}" formmethod="POST" class="btn btn-danger btn-block text-bold">Batal Ubah</button>
-                      </div>
-                    </div>
-                    <!-- End Button Submit dan Reset -->
                   </div>
                   @endforeach
                 </div>

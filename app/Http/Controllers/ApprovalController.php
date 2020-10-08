@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\DetilSO;
-use App\Models\TempDetilSO;
+use App\Models\NeedApproval;
+use App\Models\Approval;
+use App\Models\DetilApproval;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
+use Carbon\Carbon;
 
 class ApprovalController extends Controller
 {
@@ -21,11 +24,14 @@ class ApprovalController extends Controller
     }
 
     public function show($id) {
-        $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
-        $itemsUpdate = TempDetilSO::with(['barang'])->where('id_so', $id)->get();
+        $status = SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
+        // $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
+        // $itemsUpdate = NeedApproval::with(['barang'])->where('id_so', $id)->get();
         $data = [
-            'items' => $items,
-            'itemsUpdate' => $itemsUpdate
+            'status' => $status,
+            // 'items' => $items,
+            // 'itemsUpdate' => $itemsUpdate,
+            'kode' => $id
         ];
 
         return view('pages.approval.show', $data);
@@ -42,21 +48,41 @@ class ApprovalController extends Controller
         }
         $item->save();
 
+        Approval::create([
+            'id_so' => $id,
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => $item->{'status'},
+            'keterangan' => $request->keterangan
+        ]);
+
+        $detil = DetilSO::where('id_so', $id)->get();
+        foreach($detil as $d) {
+            DetilApproval::create([
+                'id_so' => $d->id_so,
+                'id_barang' => $d->id_barang,
+                'harga' => $d->harga,
+                'qty' => $d->qty,
+                'diskon' => $d->diskon
+            ]);
+        }
+
         DetilSO::where('id_so', $id)->delete();
-        $items = TempDetilSO::where('id_so', $id)->get();
+        $items = NeedApproval::where('id_so', $id)->get();
 
         foreach($items as $item) {
             DetilSO::create([
                 'id_so' => $item->id_so,
                 'id_barang' => $item->id_barang,
-                'harga' => str_replace(".", "", $item->harga),
+                'id_gudang' => 'GDG01',
+                'harga' => $item->harga,
                 'qty' => $item->qty,
                 'diskon' => $item->diskon
             ]);
         }
-        
-        session()->put('url.intended', URL::previous());
-        return Redirect::intended('/');  
+
+        NeedApproval::where('id_so', $id)->delete();
+
+        return redirect()->route('approval');
     } 
 
     public function batal($id) {
@@ -66,5 +92,25 @@ class ApprovalController extends Controller
 
         session()->put('url.intended', URL::previous());
         return Redirect::intended('/');  
+    }
+
+    public function histori() {
+        $items = Approval::All();
+        // var_dump($items);
+        $data = [
+            'items' => $items
+        ];
+        return view('pages.approval.histori', $data);
+    }
+
+    public function detail($id) {
+        $status = Approval::whereIn('status', ['UPDATE', 'BATAL'])->get();
+
+        $data = [
+            'status' => $status,
+            'kode' => $id
+        ];
+        
+        return view('pages.approval.detail', $data);
     }
 }

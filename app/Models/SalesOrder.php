@@ -23,7 +23,11 @@ class SalesOrder extends Model
         return $this->hasMany('App\Models\DetilSO', 'id_so', 'id');
     }
 
-    public function tempdetilso() {
-        return $this->hasMany('App\Models\TempDetilSO', 'id_so', 'id');
+    public function need_approval() {
+        return $this->hasMany('App\Models\NeedApproval', 'id_so', 'id');
+    }
+
+    public function detil_approval() {
+        return $this->hasMany('App\Models\DetilApproval', 'id_so', 'id');
     }
 }

@@ -66,7 +66,7 @@
                   @forelse ($items as $item)
                     <tr>
                       <td align="center">{{ $i }}</td>
-                      <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-link text-bold">{{ $item->id }}</=></td>
+                      <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-link text-bold">{{ $item->id }}</button></td>
                       <td class="text-center">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')  }}</td>
                       <td>{{ $item->customer->nama }}</td>
                       <td class="text-right">{{ number_format($item->total, 0, "", ",") }}</td>

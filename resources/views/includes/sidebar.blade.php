@@ -20,9 +20,16 @@
 
   @if(Auth::user()->roles == 'SUPER')
   <li class="nav-item" style="margin-top: -10px">
-    <a class="nav-link" href="{{ route('approval') }}">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseApproval" aria-expanded="true" aria-controls="collapseApproval">
       <i class="fas fa-fw fa-check"></i>
-      <span>Approval</span></a>
+      <span>Approval</span>
+    </a>
+    <div id="collapseApproval" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{ route('approval') }}">Butuh Approval</a>
+        <a class="collapse-item" href="{{ route('app-histori') }}">Histori Approval</a>
+      </div>
+    </div>
   </li>
   @endif
 

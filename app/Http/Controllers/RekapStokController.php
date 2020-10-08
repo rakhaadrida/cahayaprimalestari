@@ -40,12 +40,24 @@ class RekapStokController extends Controller
             'waktu' => $waktu
         ];
 
-        $pdf = PDF::loadview('pages.laporan.cetakRekap', $data)->setPaper('A4', 'portrait');
-        echo "<script>";
-        echo "window.print($pdf)";
-        echo "</script>";
+        return view('pages.laporan.cetakRekap', $data);
+    }
 
-        // return $pdf->stream('rekap-stok.pdf');
+    public function cetak_pdf() {
+        $gudang = Gudang::All();
+        $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
+                        ->groupBy('id_barang')->get();
+        $waktu = Carbon::now();
+        $waktu = $waktu->format('d F Y, H:i:s');
+
+        $data = [
+            'gudang' => $gudang,
+            'stok' => $stok,
+            'waktu' => $waktu
+        ];
+
+        $pdf = PDF::loadview('pages.laporan.pdfRekap', $data)->setPaper('A4', 'portrait');
+        return $pdf->stream('rekap-stok.pdf');
     }
 
     public function cetak_excel() {

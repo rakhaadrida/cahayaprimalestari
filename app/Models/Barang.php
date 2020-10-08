@@ -36,4 +36,8 @@ class Barang extends Model
     public function detilso() {
         return $this->hasMany('App\Models\DetilSO', 'id_barang', 'id');
     }
+
+    public function detil_approval() {
+        return $this->hasMany('App\Models\DetilApproval', 'id_barang', 'id');
+    }
 }
