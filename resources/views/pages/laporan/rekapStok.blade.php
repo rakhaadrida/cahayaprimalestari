@@ -28,7 +28,7 @@
 
               <div class="row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('rs-cetak') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Print</>
+                  <button type="submit" formaction="{{ route('rs-cetak') }}" formmethod="POST" class="btn btn-primary btn-block text-bold">Print</>
                 </div>
                 <div class="col-2">
                   <button type="submit" formaction="{{ route('rs-cetak') }}" formmethod="POST" formtarget="_blank" class="btn btn-success btn-block text-bold">Download PDF</>

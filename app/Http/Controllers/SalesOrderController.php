@@ -73,7 +73,7 @@ class SalesOrderController extends Controller
         return redirect()->route('so');
     }
 
-    public function process(Request $request, $id) {
+    public function process(Request $request, $id, $status) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
@@ -86,7 +86,7 @@ class SalesOrderController extends Controller
             'kategori' => $request->kategori,
             'tempo' => $request->tempo,
             'pkp' => $request->pkp,
-            'status' => 'CETAK',
+            'status' => $status,
             'id_customer' => $request->kodeCustomer
         ]);
 
@@ -126,7 +126,7 @@ class SalesOrderController extends Controller
         }
 
         // $this->cetak($id);
-        // return redirect()->route('so');
+        return redirect()->route('so');
         // return redirect()->route('so-cetak', $id);
     }
 

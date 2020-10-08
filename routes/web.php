@@ -63,9 +63,9 @@ Route::middleware(['auth', 'admin'])
         // Sales Order
         Route::get('/so', 'SalesOrderController@index')->name('so');
         Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create');
-        Route::post('/so/process/{id}', 'SalesOrderController@process')->name('so-process');
+        Route::post('/so/process/{id}/{status}', 'SalesOrderController@process')->name('so-process');
         Route::get('/so/cetak/{id}', 'SalesOrderController@cetak')->name('so-cetak');
-        Route::get('/so/remove/{id}/{barang}', 'SalesOrderController@remove')->name('so-remove');
+        Route::get('/so/remove/{id}/{barang}','SalesOrderController@remove')->name('so-remove');
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
         Route::post('/so/change/status/{id}', 'SalesOrderController@status')->name('so-status');
@@ -76,6 +76,9 @@ Route::middleware(['auth', 'admin'])
         Route::get('/transaksi', 'TransaksiController@index')->name('trans');
         Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
+
+        // Cetak Faktur
+        Route::get('/cetak-faktur', 'CetakFakturController@index')->name('cetak-faktur');
 
         // Surat Jalan
         Route::get('/sj', 'SuratJalanController@index')->name('sj');

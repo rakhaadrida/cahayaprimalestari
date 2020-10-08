@@ -78,6 +78,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('so') }}">Sales Order</a>
         <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
+        <a class="collapse-item" href="{{ route('cetak-faktur') }}">Cetak Faktur</a>
         <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
         <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a>
       </div>

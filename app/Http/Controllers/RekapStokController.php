@@ -11,6 +11,7 @@ use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapStokExport;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\Response;
 
 class RekapStokController extends Controller
 {
@@ -40,7 +41,11 @@ class RekapStokController extends Controller
         ];
 
         $pdf = PDF::loadview('pages.laporan.cetakRekap', $data)->setPaper('A4', 'portrait');
-        return $pdf->stream('rekap-stok.pdf');
+        echo "<script>";
+        echo "window.print($pdf)";
+        echo "</script>";
+
+        // return $pdf->stream('rekap-stok.pdf');
     }
 
     public function cetak_excel() {

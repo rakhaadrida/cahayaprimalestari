@@ -432,7 +432,8 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" data-toggle="modal" data-target="#modalKonfirm" class="btn btn-success btn-block text-bold">Submit</button>
+                  <button type="submit" class="btn btn-success btn-block text-bold"
+                  onclick="return checkRequired()" id="submitSO" >Submit</button>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
@@ -451,14 +452,14 @@
                       <h4 class="modal-title">Konfirmasi Faktur {{$newcode}}</h4>
                     </div>
                     <div class="modal-body">
-                      <p>Faktur <strong>{{$newcode}}</strong> telah tersimpan. Silahkan pilih cetak atau input faktur lagi.</p>
+                      <p>Faktur <strong>{{$newcode}}</strong> akan disimpan. Silahkan pilih cetak atau input faktur lagi.</p>
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          <button type="submit" formaction="" formmethod="" class="btn btn-success btn-block text-bold">Cetak</button>
+                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Cetak</button>
                         </div>
                         <div class="col-3">
-                          <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Input Lagi</button>
+                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
                         </div>
                       </div>
                     </div>
@@ -481,6 +482,9 @@
 const namaCust = document.getElementById('namaCustomer');
 const namaSales = document.getElementById('namaSales');
 const npwp = document.getElementById('npwp');
+const tempo = document.getElementById('tempo');
+const tanggalKirim = document.getElementById('tanggalKirim');
+const kategori = document.getElementById('kategori');
 const kodeCust = document.getElementById('idCustomer');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
@@ -909,6 +913,18 @@ for(let i = 0; i < hapusBaris.length; i++) {
       qty[i+1].removeAttribute('required');
     $(this).parents('tr').next().find('input').val('');
   });
+}
+
+function checkRequired(e) {
+  if((namaCust.value == "") || (tempo.value == "") || (tanggalKirim.value == "") || 
+  (kategori.value == "") || (kodeBarang[0].value == "") || (qty[0].value == "")) {
+    e.stopPropagation();
+  }
+  else {
+    document.getElementById("submitSO").dataset.toggle = "modal";
+    document.getElementById("submitSO").dataset.target = "#modalKonfirm";
+    return false;
+  }
 }
 
 /** Autocomplete Input Text **/

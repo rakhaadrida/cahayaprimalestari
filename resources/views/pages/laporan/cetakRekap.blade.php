@@ -5,7 +5,7 @@
     <link href="backend/css/sb-admin-2.css" rel="stylesheet">
     <link href="backend/css/main.css" rel="stylesheet">
   </head>
-  <body>
+  <body onload="window.print()">
     <center>
       <h5 class="text-bold text-dark">Rekap Stok Barang</h5>
       <h6 class="text-dark kode-cetak-stok">
