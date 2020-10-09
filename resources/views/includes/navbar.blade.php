@@ -51,8 +51,12 @@
             $items = \App\Models\SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
           @endphp
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
-        @else
-          <span class="badge badge-danger badge-counter"></span>
+        @elseif(Auth::user()->roles == 'ADMIN')
+          @php 
+            $items = \App\Models\SalesOrder::has('approval')->where('status', 'UPDATE')
+                        ->get();
+          @endphp 
+          <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @endif
       </a>
       <!-- Dropdown - Alerts -->
@@ -60,21 +64,36 @@
         <h6 class="dropdown-header">
           Notifikasi
         </h6>
-        @if(Auth::user()->roles == 'SUPER')
+        @if($items->count() != 0)
           @foreach($items as $item)
-            <a class="dropdown-item d-flex align-items-center" href="{{ route('app-show', $item->id) }}">
+            <a class="dropdown-item d-flex align-items-center" 
+            @if(Auth::user()->roles == 'SUPER') 
+              href="{{ route('app-show', $item->id) }}"
+            @elseif(Auth::user()->roles == 'ADMIN')
+              href="{{ route('notif-show', $item->id) }}"
+            @endif
+            >
               <div class="mr-3">
                 <div class="icon-circle bg-primary" style="margin-left: -10px">
                   <i class="fas fa-file-alt text-white"></i>
                 </div>
               </div>
               <div>
-                <div class="small text-gray-500">
-                  {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}
-                </div>
-                <span class="font-weight-bold">
-                  Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada faktur {{ $item->id }}
-                </span>
+                @if(Auth::user()->roles == 'SUPER')
+                  <div class="small text-gray-500">
+                    {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}
+                  </div>
+                  <span class="font-weight-bold">
+                    Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada faktur {{ $item->id }}
+                  </span>
+                @elseif(Auth::user()->roles == 'ADMIN')
+                  <div class="small text-gray-500">
+                    {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-m-Y') }}
+                  </div>
+                  <span class="font-weight-bold">
+                    Perubahan @if($item->status == "UPDATE") detail @elseif($item->status == "BATAL") status @endif faktur {{ $item->id }} telah di approve. Silahkan cetak faktur.
+                  </span>
+                @endif
               </div>
             </a>
           @endforeach

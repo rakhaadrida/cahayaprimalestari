@@ -102,6 +102,10 @@ Route::middleware(['auth', 'admin'])
         Route::post('approval/batal/{id}', 'ApprovalController@batal')->name('app-batal');
         Route::get('approval/histori', 'ApprovalController@histori')->name('app-histori');
         Route::get('approval/histori/{id}', 'ApprovalController@detail')->name('app-detail');
+
+        // Notif
+        Route::get('notif', 'NotifController@index')->name('notif');
+        Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
 });
 
 

@@ -33,6 +33,15 @@
   </li>
   @endif
 
+  @if(Auth::user()->roles == 'ADMIN')
+    <li class="nav-item" style="margin-top: -10px">
+      <a class="nav-link" href="{{ route('notif') }}">
+        <i class="fas fa-fw fa-bell"></i>
+        <span>Notifikasi</span></a>
+    </li>
+  @endif
+
+
   <!-- Divider -->
   <hr class="sidebar-divider">
 
