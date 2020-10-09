@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\DetilSO;
 use App\Models\NeedApproval;
+use App\Models\NeedAppDetil;
 use App\Models\Approval;
 use App\Models\DetilApproval;
 use Illuminate\Support\Facades\URL;
@@ -48,11 +49,12 @@ class ApprovalController extends Controller
         }
         $item->save();
 
+        $needApp = NeedApproval::where('id_so', $id)->orderBy('id', 'desc')->get();
         Approval::create([
             'id_so' => $id,
             'tanggal' => Carbon::now()->toDateString(),
             'status' => $item->{'status'},
-            'keterangan' => $request->keterangan
+            'keterangan' => $needApp[0]->keterangan
         ]);
 
         $detil = DetilSO::where('id_so', $id)->get();
@@ -67,11 +69,11 @@ class ApprovalController extends Controller
         }
 
         DetilSO::where('id_so', $id)->delete();
-        $items = NeedApproval::where('id_so', $id)->get();
+        $items = NeedAppDetil::where('id_app', $needApp[0]->id)->get();
 
         foreach($items as $item) {
             DetilSO::create([
-                'id_so' => $item->id_so,
+                'id_so' => $id,
                 'id_barang' => $item->id_barang,
                 'id_gudang' => 'GDG01',
                 'harga' => $item->harga,
@@ -80,6 +82,9 @@ class ApprovalController extends Controller
             ]);
         }
 
+        foreach($needApp as $need) {
+            NeedAppDetil::where('id_app', $need->id)->delete();
+        }
         NeedApproval::where('id_so', $id)->delete();
 
         return redirect()->route('approval');

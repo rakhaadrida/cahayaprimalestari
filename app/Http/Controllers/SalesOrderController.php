@@ -9,6 +9,7 @@ use App\Models\Barang;
 use App\Models\StokBarang;
 use App\Models\DetilSO;
 use App\Models\NeedApproval;
+use App\Models\NeedAppDetil;
 use App\Models\HargaBarang;
 use App\Models\Gudang;
 use Carbon\Carbon;
@@ -224,19 +225,30 @@ class SalesOrderController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
 
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
         $items = SalesOrder::where('id', $request->kode)->first();
         $items->{'status'} = 'PENDING_UPDATE';
         $items->save();
 
-        for($i = 0; $i < $jumlah; $i++) {
-            NeedApproval::create([
+        NeedApproval::create([
+                'id' => $newcode,
+                'tanggal' => Carbon::now(),
+                'status' => 'PENDING_UPDATE',
+                'keterangan' => $request->keterangan,
                 'id_so' => $request->kode,
+            ]);
+
+        for($i = 0; $i < $jumlah; $i++) {
+            NeedAppDetil::create([
+                'id_app' => $newcode,
                 'id_barang' => $request->kodeBarang[$i],
                 'harga' => str_replace(".", "", $request->harga[$i]),
                 'qty' => $request->qty[$i],
                 'diskon' => $request->diskon[$i],
-                'status' => 'PENDING_UPDATE',
-                'keterangan' => $request->keterangan
             ]);
         }
 
