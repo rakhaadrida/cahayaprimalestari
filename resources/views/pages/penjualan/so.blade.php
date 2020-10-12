@@ -48,9 +48,9 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
                         <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo"
-                          @if($itemsRow != 0) 
+                          {{-- @if($itemsRow != 0) 
                             value="{{ $items[$itemsRow - 1]->tempo }}"
-                          @endif
+                          @endif --}}
                         >
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
@@ -83,21 +83,21 @@
                       <div class="col-3 pkp-check">
                         <div class="form-check mt-2">
                           <input class="form-check-input" type="radio" name="pkp"  value="1"
-                            @if($itemsRow != 0) 
+                            {{-- @if($itemsRow != 0) 
                               @if($items[$itemsRow - 1]->pkp == 1)
                                 checked
                               @endif
-                            @endif
+                            @endif --}}
                           >
                           <label class="form-check-label text-bold" for="pkp1">Ya</label>
                         </div>
                         <div class="form-check">
                           <input class="form-check-input" type="radio" name="pkp"  value="0"
-                            @if($itemsRow != 0) 
+                            {{-- @if($itemsRow != 0) 
                               @if($items[$itemsRow - 1]->pkp == 0)
                                 checked
                               @endif
-                            @endif
+                            @endif --}}
                           >
                           <label class="form-check-label text-bold" for="pkp2">Tidak</label>
                         </div>
@@ -372,14 +372,14 @@
                   />
                 </div>
               </div> --}}
-              @if($itemsRow != 0) 
+              {{-- @if($itemsRow != 0) 
                 @php
                   $diskonFaktur = ($items[0]->diskon_faktur * $subtotal) / 100;
                   $totalNotPPN = $subtotal - $diskonFaktur;
                   $ppn = $totalNotPPN * 10 / 100;
                   $grandtotal = $totalNotPPN + $ppn;
                 @endphp
-              @endif
+              @endif --}}
               {{-- <div class="form-group row justify-content-end total-so">
                 <label for="diskonFaktur" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
                 <span class="col-form-label text-bold">:</span>
@@ -408,9 +408,9 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
-                  @if($itemsRow != 0) 
+                  {{-- @if($itemsRow != 0) 
                     value="{{ $ppn }}"
-                  @endif
+                  @endif --}}
                   />
                 </div>
               </div>
@@ -420,9 +420,9 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-right" 
-                  @if($itemsRow != 0) 
+                  {{-- @if($itemsRow != 0) 
                     value="{{ $grandtotal }}"
-                  @endif
+                  @endif --}}
                   />
                 </div>
               </div>

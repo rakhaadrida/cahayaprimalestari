@@ -34,9 +34,9 @@ class SalesOrderController extends Controller
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
-        $items = TempDetilSO::with(['barang', 'customer'])
-                            ->where('id_so', $newcode)->latest()->get();
-        $itemsRow = TempDetilSO::where('id_so', $newcode)->count();
+        // $items = TempDetilSO::with(['barang', 'customer'])
+        //                     ->where('id_so', $newcode)->latest()->get();
+        // $itemsRow = TempDetilSO::where('id_so', $newcode)->count();
 
         $data = [
             'customer' => $customer,
@@ -45,9 +45,9 @@ class SalesOrderController extends Controller
             'stok' => $stok,
             'gudang' => $gudang,
             'newcode' => $newcode,
-            'tanggal' => $tanggal,
-            'itemsRow' => $itemsRow,
-            'items' => $items
+            'tanggal' => $tanggal
+            // 'itemsRow' => $itemsRow,
+            // 'items' => $items
         ];
 
         return view('pages.penjualan.so', $data);
@@ -58,7 +58,7 @@ class SalesOrderController extends Controller
         return $formatTanggal;
     }
 
-    public function create(Request $request, $id) {
+    /* public function create(Request $request, $id) {
         NeedApproval::create([
             'id_so' => $id,
             'id_barang' => $request->kodeBarang,
@@ -72,7 +72,7 @@ class SalesOrderController extends Controller
         ]);
 
         return redirect()->route('so');
-    }
+    } */
 
     public function process(Request $request, $id, $status) {
         $tanggal = $request->tanggal;
@@ -142,11 +142,11 @@ class SalesOrderController extends Controller
         return $pdf->stream('cetak-so.pdf');
     }
 
-    public function remove($id, $barang) {
+    /* public function remove($id, $barang) {
         $tempDetil = TempDetilSO::where('id_so', $id)->where('id_barang', $barang)->delete();
 
         return redirect()->route('so');
-    }
+    } */
 
     public function change() {
         $so = SalesOrder::All();

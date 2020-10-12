@@ -1,3 +1,19 @@
+.sidebar-menu-icon {
+    margin-top: -15px;
+}
+
+.sidebar-heading-title {
+    margin-top: -5px;
+}
+
+.sidebar-first-icon {
+    margin-top: -5px;
+}
+
+.sidebar-arrow-icon {
+    margin-top: -5px;
+}
+
 .text-bold {
     font-weight: bold;
 }

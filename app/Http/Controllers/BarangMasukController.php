@@ -8,7 +8,6 @@ use App\Models\Barang;
 use App\Models\HargaBarang;
 use App\Models\BarangMasuk;
 use App\Models\DetilBM;
-use App\Models\TempDetilBM;
 use App\Models\StokBarang;
 use App\Models\Gudang;
 use Carbon\Carbon;
@@ -27,17 +26,17 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcode = 'BM'.sprintf('%04s', $lastnumber);
 
-        $items = TempDetilBM::with(['barang', 'supplier'])->where('id_bm', $newcode)
-                    ->orderBy('created_at','asc')->get();
-        $itemsRow = TempDetilBM::where('id_bm', $newcode)->count();
+        // $items = TempDetilBM::with(['barang', 'supplier'])->where('id_bm', $newcode)
+        //             ->orderBy('created_at','asc')->get();
+        // $itemsRow = TempDetilBM::where('id_bm', $newcode)->count();
 
         // date now
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
         $data = [
-            'items' => $items,
-            'itemsRow' => $itemsRow,
+            // 'items' => $items,
+            // 'itemsRow' => $itemsRow,
             'supplier' => $supplier,
             'newcode' => $newcode,
             'tanggal' => $tanggal,
@@ -54,7 +53,7 @@ class BarangMasukController extends Controller
         return $formatTanggal;
     }
 
-    public function create(Request $request, $id) {
+    /* public function create(Request $request, $id) {
         TempDetilBM::create([
             'id_bm' => $id,
             'id_barang' => $request->kodeBarang,
@@ -65,7 +64,7 @@ class BarangMasukController extends Controller
         ]);
 
         return redirect()->route('barangMasuk');
-    }
+    } */
 
     public function process (Request $request, $id) {
         $tanggal = $request->tanggal;
@@ -115,7 +114,7 @@ class BarangMasukController extends Controller
         return redirect()->route('barangMasuk');
     }
 
-    public function update(Request $request, $bm, $barang, $id) {
+    /* public function update(Request $request, $bm, $barang, $id) {
         $updateDetil = TempDetilBM::where('id_bm', $bm)->where('id_barang', $barang)->first();
 
         $updateDetil->{'qty'} = $request->editQty[$id-1];
@@ -123,17 +122,17 @@ class BarangMasukController extends Controller
         $updateDetil->save();
 
         return redirect()->route('barangMasuk');
-    }
+    } 
 
     public function remove($bm, $barang) {
         $tempDetil = TempDetilBM::where('id_bm', $bm)->where('id_barang', $barang)->delete();
 
         return redirect()->route('barangMasuk');
-    }
+    } 
 
     public function reset($bm) {
          $tempDetil = TempDetilBM::where('id_bm', $bm)->delete();
 
         return redirect()->route('barangMasuk');
-    }
+    } */
 }

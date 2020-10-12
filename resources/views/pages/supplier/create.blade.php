@@ -52,14 +52,14 @@
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" onkeypress="return angkaSaja(event)" id="telepon" required>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="npwp" class="col-1 col-form-label text-bold">NPWP</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" onkeypress="return angkaSaja(event)">
                 </div>
               </div>
               <hr>
@@ -81,3 +81,44 @@
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+const telepon = document.getElementById("telepon");
+
+telepon.addEventListener("keyup", formatPhone);
+
+function angkaSaja(evt) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+  }
+  return true;
+}
+
+function formatPhone(e){
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if((kode == "021") || (kode == "022") || (kode == "061") || (kode == "024") || (kode == "031")) {
+    if(value.length > 3 && value.length <= 6) 
+      value = value.slice(0,3) + "-" + value.slice(3);
+    else if(value.length > 6 && value.length <= 9)
+      value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6);
+    else if(value.length > 9)
+      value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6,9) + "-" + value.slice(9);
+  }
+  else
+    if(value.length > 4 && value.length <= 8) 
+      value = value.slice(0,4) + "-" + value.slice(4);
+    else if(value.length > 8 && value.length <= 12)
+      value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8);
+    else if(value.length > 12)
+      value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8,12) + "-" + value.slice(12);
+  
+  telepon.value = value;
+}
+</script>
+@endpush

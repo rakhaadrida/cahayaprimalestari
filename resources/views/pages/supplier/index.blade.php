@@ -39,7 +39,7 @@
                 <td>{{ $item->alamat }}</td>
                 <td>{{ $item->telepon }}</td>
                 <td align="center">
-                  <a href="{{ route('supplier.edit', $item->id) }}" class="btn btn-info">
+                  <a href="{{ route('supplier.edit', $item->id) }}" class="btn btn-info btn-sm">
                     <i class="fas fa-fw fa-edit"></i>
                   </a>
                 </td>
@@ -47,7 +47,7 @@
                   <form action="{{ route('supplier.destroy', $item->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('delete')
-                    <button class="btn btn-danger">
+                    <button class="btn btn-danger btn-sm">
                       <i class="fas fa-fw fa-trash"></i>
                     </button>  
                   </form>

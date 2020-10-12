@@ -200,15 +200,23 @@
                                 {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
                               </td>
                               <td align="right">{{ $itemDet->diskon }} %</td>
+                              @php 
+                                $diskon = 100;
+                                $arrDiskon = explode("+", $itemDet->diskon);
+                                for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                                  $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                                } 
+                                $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                              @endphp
                               <td align="right">
-                                {{ number_format((($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100, 0, "", ".") }}
+                                {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
                               </td>
                               <td align="right">
                                 {{ number_format(($itemDet->qty * $itemDet->harga) - 
-                                ((($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100), 0, "", ".") }}
+                                ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
                               </td>
                               @php $subtotal += ($itemDet->qty * $itemDet->harga) - 
-                                ((($itemDet->qty * $itemDet->harga) * $itemDet->diskon) / 100); 
+                                ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
                               @endphp
                             </tr>
                             @php $i++; @endphp

@@ -134,13 +134,21 @@
                         <input type="text" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" 
                         value="{{ $item->diskon }}" >
                       </td>
+                      @php 
+                        $diskon = 100;
+                        $arrDiskon = explode("+", $item->diskon);
+                        for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                          $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                        } 
+                        $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                      @endphp
                       <td align="right" style="width: 120px" >
                         <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
-                        value="{{ number_format((($item->qty * $item->harga) * $item->diskon) / 100, 0, "", ".") }}" >
+                        value="{{ number_format((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}" >
                       </td>
                       <td align="right">
                         <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ number_format(($item->qty * $item->harga) - 
-                        ((($item->qty * $item->harga) * $item->diskon) / 100), 0, "", ".") }}" >
+                        ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}" >
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -148,7 +156,7 @@
                         </a>
                       </td>
                       @php $subtotal += ($item->qty * $item->harga) - 
-                        ((($item->qty * $item->harga) * $item->diskon) / 100); 
+                        ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100); 
                       @endphp
                     </tr>
                     {{-- <tr class="text-bold">

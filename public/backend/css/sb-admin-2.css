@@ -3445,7 +3445,7 @@ input[type="button"].btn-block {
 
 .dropdown-menu {
     position: absolute;
-    top: 100%;
+    top: 85%;
     left: 0;
     z-index: 1000;
     display: none;
@@ -11354,7 +11354,7 @@ a:focus {
 }
 
 .topbar {
-    height: 4.375rem;
+    height: 3.575rem;
 }
 
 .topbar #sidebarToggleTop {
@@ -11634,7 +11634,7 @@ a:focus {
 }
 
 .sidebar .sidebar-brand {
-    height: 4.375rem;
+    height: 3.575rem;
     text-decoration: none;
     font-size: 1rem;
     font-weight: 800;

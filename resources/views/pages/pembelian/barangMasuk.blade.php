@@ -83,14 +83,14 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
                     <input type="text" name="namaSupplier" id="namaSupplier" placeholder=" Masukkan Nama Supplier" class="form-control form-control-sm text-bold" required
-                      @if($itemsRow != 0) 
+                      {{-- @if($itemsRow != 0) 
                         value="{{ $items[$itemsRow - 1]->supplier->nama }}" readonly
-                      @endif
+                      @endif --}}
                     />
                     <input type="hidden" name="kodeSupplier" id="kodeSupplier" 
-                      @if($itemsRow != 0) 
+                      {{-- @if($itemsRow != 0) 
                         value="{{ $items[$itemsRow - 1]->id_supplier }}"
-                      @endif
+                      @endif --}}
                     />
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="5">

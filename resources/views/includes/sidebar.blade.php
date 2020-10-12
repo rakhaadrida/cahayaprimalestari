@@ -1,25 +1,24 @@
 <!-- Sidebar -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar toggled sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
-      <div class="sidebar-brand-icon rotate-n-15">
-      </div>
-      <div class="sidebar-brand-text mx-3">Cahaya Prima Lestari</div>
-    </a>
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
+    <div class="sidebar-brand-icon">CPL</div>
+    <div class="sidebar-brand-text mx-3">Cahaya Prima Lestari</div>
+  </a>
 
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
 
   <!-- Nav Item - Dashboard -->
-  <li class="nav-item active">
+  <li class="nav-item active sidebar-first-icon">
     <a class="nav-link" href="{{ route('dashboard') }}">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span></a>
   </li>
 
   @if(Auth::user()->roles == 'SUPER')
-  <li class="nav-item" style="margin-top: -10px">
+  <li class="nav-item sidebar-menu-icon" >
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseApproval" aria-expanded="true" aria-controls="collapseApproval">
       <i class="fas fa-fw fa-check"></i>
       <span>Approval</span>
@@ -34,7 +33,7 @@
   @endif
 
   @if(Auth::user()->roles == 'ADMIN')
-    <li class="nav-item" style="margin-top: -10px">
+    <li class="nav-item sidebar-menu-icon" >
       <a class="nav-link" href="{{ route('notif') }}">
         <i class="fas fa-fw fa-bell"></i>
         <span>Notifikasi</span></a>
@@ -47,12 +46,12 @@
 
   @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN'))
   <!-- Heading Sales and Purchases -->
-  <div class="sidebar-heading">
+  <div class="sidebar-heading sidebar-heading-title">
     Sales and Purchases
   </div>
 
   <!-- Nav Item - Master Menu -->
-  <li class="nav-item">
+  <li class="nav-item sidebar-first-icon">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
       <i class="fas fa-fw fa-folder"></i>
       <span>Master</span>
@@ -70,7 +69,7 @@
   </li>
 
   <!-- Nav Item - Pembelian Menu -->
-  <li class="nav-item">
+  <li class="nav-item sidebar-menu-icon">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePembelian" aria-expanded="true" aria-controls="collapsePembelian">
       <i class="fas fa-fw fa-shopping-cart"></i>
       <span>Pembelian</span>
@@ -85,7 +84,7 @@
   </li>
 
   <!-- Nav Item - Penjualan Menu -->
-  <li class="nav-item">
+  <li class="nav-item sidebar-menu-icon">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePenjualan" aria-expanded="true" aria-controls="collapsePenjualan">
       <i class="fas fa-fw fa-shipping-fast"></i>
       <span>Penjualan</span>
@@ -102,7 +101,7 @@
   </li>
 
   <!-- Nav Item - Laporan Menu -->
-  <li class="nav-item">
+  <li class="nav-item sidebar-menu-icon">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseLaporan">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Laporan</span>
@@ -121,12 +120,12 @@
 
   @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'FINANCE'))
   <!-- Heading -->
-  <div class="sidebar-heading">
+  <div class="sidebar-heading sidebar-heading-title">
     Finance
   </div>
 
-  <!-- Nav Item - Pages Collapse Menu -->
-  <li class="nav-item">
+  <!-- Nav Item - Account Receivable -->
+  <li class="nav-item sidebar-first-icon">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
       <i class="fas fa-fw fa-folder"></i>
       <span>Account Receivable</span>
@@ -145,15 +144,15 @@
     </div>
   </li>
 
-  <!-- Nav Item - Charts -->
-  <li class="nav-item">
+  <!-- Nav Item - Account Payable -->
+  <li class="nav-item sidebar-menu-icon">
     <a class="nav-link" href="charts.html">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Account Payable</span></a>
   </li>
 
-  <!-- Nav Item - Tables -->
-  <li class="nav-item">
+  <!-- Nav Item - Laporan Keuangan -->
+  <li class="nav-item sidebar-menu-icon">
     <a class="nav-link" href="tables.html">
       <i class="fas fa-fw fa-table"></i>
       <span>Laporan</span></a>
@@ -164,7 +163,7 @@
   @endif
 
   <!-- Sidebar Toggler (Sidebar) -->
-  <div class="text-center d-none d-md-inline">
+  <div class="text-center d-none d-md-inline sidebar-arrow-icon">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
 

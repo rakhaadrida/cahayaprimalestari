@@ -8,7 +8,6 @@ use App\Models\Barang;
 use App\Models\StokBarang;
 use App\Models\TransferBarang;
 use App\Models\DetilTB;
-use App\Models\TempDetilTB;
 use Carbon\Carbon;
 
 class TransferBarangController extends Controller
@@ -23,8 +22,8 @@ class TransferBarangController extends Controller
         $lastnumber++;
         $newcode = 'TB'.sprintf('%04s', $lastnumber);
 
-        $items = TempDetilTB::with(['barang', 'gudangAsal', 'gudangTujuan'])->where('id_tb', $newcode)->orderBy('created_at', 'asc')->get();
-        $itemsRow = TempDetilTB::where('id_tb', $newcode)->count();
+        // $items = TempDetilTB::with(['barang', 'gudangAsal', 'gudangTujuan'])->where('id_tb', $newcode)->orderBy('created_at', 'asc')->get();
+        // $itemsRow = TempDetilTB::where('id_tb', $newcode)->count();
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -34,9 +33,9 @@ class TransferBarangController extends Controller
             'gudang' => $gudang,
             'stok' => $stok,
             'newcode' => $newcode,
-            'tanggal' => $tanggal,
-            'items' => $items,
-            'itemsRow' => $itemsRow
+            'tanggal' => $tanggal
+            // 'items' => $items,
+            // 'itemsRow' => $itemsRow
         ];
 
         return view('pages.pembelian.transferBarang', $data);
@@ -47,7 +46,7 @@ class TransferBarangController extends Controller
         return $formatTanggal;
     }
 
-    public function create(Request $request, $id) {
+    /* public function create(Request $request, $id) {
         TempDetilTB::create([
             'id_tb' => $id,
             'id_barang' => $request->kodeBarang,
@@ -59,7 +58,7 @@ class TransferBarangController extends Controller
         ]);
 
         return redirect()->route('tb');
-    }
+    } */
 
     public function process(Request $request, $id) {
         $tanggal = $request->tanggal;
@@ -98,9 +97,9 @@ class TransferBarangController extends Controller
         return redirect()->route('tb');
     }
 
-    public function remove($id, $barang, $asal, $tujuan) {
+    /* public function remove($id, $barang, $asal, $tujuan) {
         $tempDetil = TempDetilTB::where('id_tb', $id)->where('id_barang', $barang)->where('id_asal', $asal)->where('id_tujuan', $tujuan)->delete();
 
         return redirect()->route('tb');
-    }
+    } */
 }

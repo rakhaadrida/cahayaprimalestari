@@ -148,15 +148,23 @@
                               {{number_format(($item->qty * $item->harga), 0, "", ".")}}
                             </td>
                             <td align="right">{{ $item->diskon }} %</td>
+                            @php 
+                              $diskon = 100;
+                              $arrDiskon = explode("+", $item->diskon);
+                              for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                                $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                              } 
+                              $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                            @endphp
                             <td align="right">
-                              {{ number_format((($item->qty * $item->harga) * $item->diskon) / 100, 0, "", ".") }}
+                              {{ number_format((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
                             </td>
                             <td align="right">
                               {{ number_format(($item->qty * $item->harga) - 
-                              ((($item->qty * $item->harga) * $item->diskon) / 100), 0, "", ".") }}
+                              ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
                             </td>
                             @php $subtotal += ($item->qty * $item->harga) - 
-                              ((($item->qty * $item->harga) * $item->diskon) / 100); 
+                              ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100); 
                             @endphp
                           </tr>
                           @php $i++; @endphp
@@ -231,17 +239,25 @@
                             @if($item->diskon != $items[$i-1]->diskon) class="bg-warning text-danger" @endif>
                               {{ $item->diskon }} %
                             </td>
+                            @php 
+                              $diskon = 100;
+                              $arrDiskon = explode("+", $item->diskon);
+                              for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                                $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                              } 
+                              $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                            @endphp
                             <td align="right"
                             @if($item->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
-                              {{ number_format((($item->qty * $item->harga) * $item->diskon) / 100, 0, "", ".") }}
+                              {{ number_format((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
                             </td>
                             <td align="right"
                             @if($item->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
                               {{ number_format(($item->qty * $item->harga) - 
-                              ((($item->qty * $item->harga) * $item->diskon) / 100), 0, "", ".") }}
+                              ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
                             </td>
                             @php $subtotalUpdate += ($item->qty * $item->harga) - 
-                              ((($item->qty * $item->harga) * $item->diskon) / 100); 
+                              ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100); 
                             @endphp
                           </tr>
                           @php $i++; @endphp

@@ -39,7 +39,8 @@ class SupplierController extends Controller
             'id' => $request->kode,
             'nama' => $request->nama,
             'alamat' => $request->alamat,
-            'telepon' => $request->telepon
+            'telepon' => $request->telepon,
+            'npwp' => $request->npwp
         ]);
         
         return redirect()->route('supplier.index');
