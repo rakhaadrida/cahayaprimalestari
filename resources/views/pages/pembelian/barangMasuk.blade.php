@@ -39,7 +39,7 @@
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" class="form-control form-control-sm text-bold" name="tanggal" value="{{ $tanggal }}" >
+                        <input type="text" class="form-control form-control-sm text-bold" name="tanggal" value="{{ $tanggal }}" required>
                       </div>
                     </div>   
                   </div>
@@ -75,14 +75,14 @@
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Gudang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold"/>
+                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" required>
                   </div>
                 </div>
                 <div class="form-group row subtotal-so">
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
-                    <input type="text" name="namaSupplier" id="namaSupplier" placeholder=" Masukkan Nama Supplier" class="form-control form-control-sm text-bold" required
+                    <input type="text" name="namaSupplier" id="namaSupplier"  class="form-control form-control-sm text-bold" required
                       {{-- @if($itemsRow != 0) 
                         value="{{ $items[$itemsRow - 1]->supplier->nama }}" readonly
                       @endif --}}
@@ -143,7 +143,7 @@
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
               </span>
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
-                <thead class="text-center text-bold">
+                <thead class="text-center text-bold text-dark">
                   <tr>
                     <td rowspan="2" style="width: 30px" class="align-middle">No</td>
                     <td rowspan="2" style="width: 90px" class="align-middle">Kode Barang</td>
@@ -177,7 +177,7 @@
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}">
+                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -295,6 +295,7 @@ const grandtotal = document.getElementById('grandtotal');
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
+var netPast;
 // const keterangan = document.querySelectorAll(".keterangan");
 
 namaSup.addEventListener('change', displaySupp);
@@ -307,25 +308,22 @@ function displayRow(e) {
   var newNum = +lastRow + 1;
   var newNo = +lastNo + 1;
   const newTr = `
-    <tr class="text-bold" id="${newNum}">
+    <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
         <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" placeholder="Qty PO">
+        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td>
-        <input type="text" name="harga[]" id="hargaRow${newNum}" class="form-control form-control-sm text-bold text-right hargaRow" placeholder="Harga Satuan" readonly >
+        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right hargaRow">
       </td>
       <td>
-        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" class="form-control form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" readonly>
-      </td>
-      <td>
-        <input type="text" name="keterangan[]" id="keteranganRow${newNum}" class="form-control form-control-sm text-bold keteranganRow" placeholder="Keterangan">
+        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right jumlahRow">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -343,7 +341,6 @@ function displayRow(e) {
   const qtyRow = document.getElementById("qtyRow"+newNum);
   const hargaRow = document.getElementById("hargaRow"+newNum);
   const jumlahRow = document.getElementById("jumlahRow"+newNum);
-  const keteranganRow = document.getElementById("keteranganRow"+newNum);
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
 
   /** Tampil Harga **/
@@ -383,6 +380,19 @@ function displayRow(e) {
       }
     @endforeach
   }
+
+  /** Inputan hanya bisa angka **/
+  qtyRow.addEventListener("keypress", function (e, evt) {
+    evt = (evt) ? evt : window.event;
+    var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
+    if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
+      $(qtyRow).tooltip('show');
+      
+      e.preventDefault();
+    }
+    
+    return true;
+  });
 
   /** Tampil Jumlah **/
   qtyRow.addEventListener("change", function (e) {
@@ -534,16 +544,28 @@ for(let i = 0; i < qty.length; i++) {
       jumlah[i].value = "";
       netto[i].value = "";
     }
-    else {
-      netPast = +netto[i].value.replace(/\./g, "");
-      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
-      if(diskon[i].value != "") {
-        var angkaDiskon = hitungDiskon(diskon[i].value);
-        diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
-      }
+    else {  
+      @if(Auth::user()->roles == 'SUPER')
+        netPast = +netto[i].value.replace(/\./g, "");
+      @elseif(Auth::user()->roles == 'ADMIN')
+        netPast = +jumlah[i].value.replace(/\./g, "");
+      @endif
 
-      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
-      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+
+      @if(Auth::user()->roles == 'SUPER')
+        if(diskon[i].value != "") {
+          var angkaDiskon = hitungDiskon(diskon[i].value);
+          diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
+        }
+      @endif
+
+      @if(Auth::user()->roles == 'SUPER')
+        netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+        checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+      @elseif(Auth::user()->roles == 'ADMIN')
+        checkSubtotal(netPast, +jumlah[i].value.replace(/\./g, ""));
+      @endif
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
   });
@@ -608,10 +630,29 @@ function addCommas(nStr) {
 	return x1 + x2;
 }
 
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= qty.length; i++) {
+      if(inputan == i)
+        $(qty[inputan-1]).tooltip('show');
+    }
+
+    return false;
+  }
+  return true;
+}
+
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
-    keterangan[i].value = keterangan[i+1].value;
+    if(qty[i].value != "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      total_ppn(subtotal.value.replace(/\./g, ""));
+    }
+
     jumlah[i].value = jumlah[i+1].value;
     harga[i].value = harga[i+1].value;
     qty[i].value = qty[i+1].value;

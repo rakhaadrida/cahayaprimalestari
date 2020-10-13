@@ -20,8 +20,8 @@
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+        <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="text-center text-bold text-dark">
             <tr align="center">
               <th>No</th>
               <th>Nama</th>
@@ -36,27 +36,27 @@
           <tbody>
             @php $i=1; @endphp
             @forelse ($items as $item)
-              <tr>
-                <td align="center">{{ $i }}</td>
-                <td>{{ $item->nama }}</td>
-                <td>{{ $item->alamat }}</td>
-                <td>{{ $item->telepon }}</td>
-                <td>{{ $item->sales->nama }}</td>
-                <td align="center">
-                  <a href="#DetailCustomer{{ $item->id }}" class="btn btn-success" data-toggle="modal">
+              <tr class="text-dark">
+                <td class="align-middle" align="center">{{ $i }}</td>
+                <td class="align-middle">{{ $item->nama }}</td>
+                <td class="align-middle">{{ $item->alamat }}</td>
+                <td class="align-middle">{{ $item->telepon }}</td>
+                <td class="align-middle">{{ $item->sales->nama }}</td>
+                <td class="align-middle" align="center">
+                  <a href="#DetailCustomer{{ $item->id }}" class="btn btn-success btn-sm" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
-                <td align="center">
-                  <a href="{{ route('customer.edit', $item->id) }}" class="btn btn-info">
+                <td class="align-middle" align="center">
+                  <a href="{{ route('customer.edit', $item->id) }}" class="btn btn-info btn-sm">
                     <i class="fas fa-fw fa-edit"></i>
                   </a>
                 </td>
-                <td align="center">
+                <td class="align-middle" align="center">
                   <form action="{{ route('customer.destroy', $item->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('delete')
-                    <button class="btn btn-danger">
+                    <button class="btn btn-danger btn-sm">
                       <i class="fas fa-fw fa-trash"></i>
                     </button>  
                   </form>

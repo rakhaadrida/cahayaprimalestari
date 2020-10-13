@@ -20,31 +20,31 @@
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+        <table class="table table-sm table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="text-bold text-dark">
             <tr align="center">
               <th>No</th>
               <th>Nama</th>
               @foreach($gudang as $g)
-                <th>{{ $g->nama }}</th>
+                <th style="width: 80px">{{ $g->nama }}</th>
               @endforeach
               <th>Detail</th>
               <th>Harga</th>
               <th>Stok</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th>Ubah</th>
+              <th>Hapus</th>
             </tr>
           </thead>
           <tbody>
             @php $i=0; $j=1; @endphp
             @forelse($items as $item)
-              <tr>
-                <td align="center" style="width: 10px">{{ $j }}</td>
-                <td>{{ $item->nama }}</td>
+              <tr class="text-dark">
+                <td class="align-middle" align="center" style="width: 10px">{{ $j }}</td>
+                <td class="align-middle">{{ $item->nama }}</td>
                 @foreach($gudang as $g)
                   @if(($stok->count() > 0) && ($i < $stok->count()))
                     @if(($stok[$i]->id_gudang == $g->id) && ($stok[$i]->id_barang == $item->id))
-                      <td align="center" style="width: 45px">{{ $stok[$i]->stok }}</td>
+                      <td class="align-middle" align="center" style="width: 45px">{{ $stok[$i]->stok }}</td>
                       @php $i++; @endphp
                     @else
                       <td></td>  

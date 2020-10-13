@@ -29,7 +29,7 @@
                 <label for="kode" class="col-2 col-form-label text-bold">Kode Barang</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
                   value="{{ $barang->id }}" readonly>
                 </div>
               </div>
@@ -37,7 +37,7 @@
                 <label for="nama" class="col-2 col-form-label text-bold">Nama Barang</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="nama" 
                   value="{{ $barang->nama }}" readonly>
                 </div>
               </div>
@@ -48,17 +48,20 @@
                   <label for="harga" class="col-2 col-form-label text-bold">
                     {{ $g->nama }}</label>
                   <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" class="form-control col-form-label-sm" 
+                  <div class="col-1">
+                    <input type="text" class="form-control col-form-label-sm text-right" 
                     name="stok[]" required
                       @foreach($items as $item)
                         @if($item->id_gudang == $g->id)
-                          value="{{ $item->stok }}" 
+                          value="{{ $item->stok }}" readonly
                           @break
                         @endif
                       @endforeach
                     />
                   </div>
+                  <span class="col-form-label text-bold">
+                    @if($barang->satuan == "Pcs / Pack") Pcs @elseif($barang->satuan == "Meter / Rol") Rol @endif
+                  </span>
                 </div>
                 @php $i++; @endphp
               @endforeach

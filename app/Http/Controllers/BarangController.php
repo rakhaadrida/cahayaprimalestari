@@ -50,7 +50,7 @@ class BarangController extends Controller
             'id' => $request->kode,
             'nama' => $request->nama,
             'satuan' => $request->satuan,
-            'ukuran' => $request->ukuran
+            'ukuran' => str_replace(".", "", $request->ukuran)
         ]);
 
         return redirect()->route('barang.index');
@@ -110,17 +110,17 @@ class BarangController extends Controller
         HargaBarang::create([
             'id_barang' => $kode,
             'id_harga' => $id,
-            'harga' => $harga,
-            'ppn' => $ppn,
-            'harga_ppn' => $hargaPPN
+            'harga' => str_replace(".", "", $harga),
+            'ppn' => str_replace(".", "", $ppn),
+            'harga_ppn' => str_replace(".", "", $hargaPPN)
         ]);
     }
 
     public function updateHarga($kode, $id, $harga, $ppn, $hargaPPN) {
         $updateHarga = HargaBarang::where('id_barang', $kode)->where('id_harga', $id)->first();
-        $updateHarga->{'harga'} = $harga;
-        $updateHarga->{'ppn'} = $ppn;
-        $updateHarga->{'harga_ppn'} = $hargaPPN;
+        $updateHarga->{'harga'} = str_replace(".", "", $harga);
+        $updateHarga->{'ppn'} = str_replace(".", "", $ppn);
+        $updateHarga->{'harga_ppn'} = str_replace(".", "", $hargaPPN);
         $updateHarga->save();
     }
 
@@ -192,10 +192,11 @@ class BarangController extends Controller
     }
 
     public function update(BarangRequest $request, $id) {
-        $data = $request->all();
-        
-        $item = Barang::findOrFail($id);
-        $item->update($data);
+        $item = Barang::where('id', $id)->first();
+        $item->{'nama'} = $request->nama;
+        $item->{'satuan'} = $request->satuan;
+        $item->{'ukuran'} = str_replace(".", "", $request->ukuran);
+        $item->save();
 
         return redirect()->route('barang.index');
     }

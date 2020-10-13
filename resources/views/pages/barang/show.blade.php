@@ -1,10 +1,16 @@
 @foreach($items as $item)
 <div class="modal fade" id="DetailBarang{{ $item->id }}" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content ">
       <div class="modal-header">
-        <h4 class="modal-title text-dark" style="font-size: 20px"><i class="fa fa-box fa-fw"></i><b>  Detail Barang {{ $item->nama }}</b></h4>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="row">
+          <div class="col-10">
+            <h6 class="modal-title" style="font-size: 18px"><i class="fa fa-user fa-fw"></i>  Detail Barang <b>{{ $item->nama }}</b></h6>
+          </div>
+          <div class="col-2">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+        </div>
       </div>
 
       @if ($errors->any())
@@ -26,38 +32,53 @@
               <div class="col-2">{{ $item->id }}</div>
             </div> --}}
             
-            <table class="table table-responsive" border="0">
+            <table class="table table-responsive table-md table-modal">
               <tbody>
-                <tr>
-                  <td width="150px" class="text-dark">Kode Barang</td>
+                <tr class="table-modal-first-row">
+                  <td width="150px" class="text-bold">Kode Barang</td>
                   <td>:</td>
-                  <td class="text-bold">{{ $item->id }}</td>
+                  <td width="280px">{{ $item->id }}</td>
                 </tr>
                 <tr>
-                  <td width="150px" class="text-dark">Nama Barang</td>
+                  <td width="150px" class="text-bold">Nama Barang</td>
                   <td>:</td>
-                  <td class="text-bold">{{ $item->nama }}</td>
+                  <td>{{ $item->nama }}</td>
                 </tr>
                 <tr>
-                  <td width="150px" class="text-dark">Ukuran</td>
+                  <td width="150px" class="text-bold">Satuan</td>
                   <td>:</td>
-                  <td class="text-bold">{{ $item->ukuran }}</td>
+                  <td>{{ $item->satuan }}</td>
                 </tr>
                 <tr>
-                  <td width="150px" class="text-dark">Isi</td>
+                  <td width="150px" class="text-bold">Ukuran</td>
                   <td>:</td>
-                  <td class="text-bold">{{ $item->isi }}</td>
+                  <td>{{ $item->ukuran }}  {{ $item->satuan }}</td>
                 </tr>
                 <tr>
-                  <td colspan="3" class="text-bold text-dark">Data Harga</td>
+                  <td colspan="3" class="text-bold text-center bg-success text-white">Data Harga</td>
                 </tr>
                 @foreach($harga as $h)
                   <tr>
-                    <td width="100px" class="text-dark">{{ $h->nama }}</td>
+                    <td width="100px" class="text-bold">{{ $h->nama }}</td>
                     <td>:</td>
                     @foreach($hargaBarang as $hb)
                       @if(($hb->id_harga == $h->id) && ($hb->id_barang == $item->id))
-                        <td class="text-bold">{{ $hb->harga }}</td>
+                        <td>{{ number_format($hb->harga_ppn, 0, "", ".") }}</td>
+                        @break
+                      @endif
+                    @endforeach
+                  </tr>
+                @endforeach
+                <tr>
+                  <td colspan="3" class="text-bold text-center bg-success text-white">Data Stok</td>
+                </tr>
+                @foreach($gudang as $g)
+                  <tr>
+                    <td width="100px" class="text-bold">{{ $g->nama }}</td>
+                    <td>:</td>
+                    @foreach($stok as $s)
+                      @if(($s->id_gudang == $g->id) && ($s->id_barang == $item->id))
+                        <td>{{ $s->stok }} <b> @if($item->satuan == "Pcs / Pack") Pcs @elseif($item->satuan == "Meter / Rol") Rol @endif </b></td>
                         @break
                       @endif
                     @endforeach

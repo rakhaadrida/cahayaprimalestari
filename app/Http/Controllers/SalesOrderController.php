@@ -190,7 +190,7 @@ class SalesOrderController extends Controller
     public function status(Request $request, $id) {
         $item = SalesOrder::where('id', $id)->first();
         $item->{'status'} = $request->statusUbah;
-        $item->{'keterangan'} = $request->keterangan;
+        $item->{'keterangan'} = $request->input("ket".$id);
         $item->save();
 
         session()->put('url.intended', URL::previous());

@@ -26,18 +26,18 @@
             <form action="{{ route('storeHarga')}}" method="POST">
               @csrf
               <div class="form-group row">
-                <label for="kode" class="col-2 col-form-label text-bold">Kode Barang</label>
-                <span class="col-form-label text-bold">:</span>
+                <label for="kode" class="col-auto col-form-label text-bold">Kode Barang</label>
+                <span class="col-form-label text-bold ml-1">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
                   value="{{ $barang->id }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
-                <label for="nama" class="col-2 col-form-label text-bold">Nama Barang</label>
+                <label for="nama" class="col-auto col-form-label text-bold">Nama Barang</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="nama" 
                   value="{{ $barang->nama }}" readonly>
                 </div>
               </div>
@@ -46,12 +46,12 @@
               @foreach($harga as $h)
                 <div class="form-row">
                   <div class="form-group col-2">
-                    <label for="harga" class="col-form-label text-bold">Price list</label>
+                    <label for="harga" class="col-form-label text-bold">Price List</label>
                     <input type="text" class="form-control col-form-label-sm harga" id="harga"
                     name="harga[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
-                          value="{{ $item->harga }}" 
+                          value="{{ number_format($item->harga, 0, "", ".") }}" 
                           @break
                         @endif
                       @endforeach
@@ -63,18 +63,18 @@
                     name="ppn[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
-                          value="{{ $item->ppn }}" 
+                          value="{{ number_format($item->ppn, 0, "", ".") }}" 
                           @break
                         @endif
                       @endforeach
                     />
                   </div>
                   <div class="form-group col-2 ml-2">
-                    <label for="hargaPPN" class="col-form-label text-bold">Harga Beli</label>
-                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" required
+                    <label for="hargaPPN" class="col-form-label text-bold">{{ $h->nama }}</label>
+                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
-                          value="{{ $item->harga_ppn }}" 
+                          value="{{ number_format($item->harga_ppn, 0, "", ".") }}" 
                           @break
                         @endif
                       @endforeach
@@ -121,15 +121,51 @@
 
 @push('addon-script')
 <script type="text/javascript">
-  const harga = document.querySelectorAll(".harga");
-  const ppn = document.querySelectorAll(".ppn");
-  const hargaPPN = document.querySelectorAll(".hargaPPN");
+const harga = document.querySelectorAll(".harga");
+const ppn = document.querySelectorAll(".ppn");
+const hargaPPN = document.querySelectorAll(".hargaPPN");
 
-  for(let i = 0; i < harga.length; i++) {
-    hargaPPN[i].addEventListener('change', function(e) {
-      ppn[i].value = +e.target.value * 1.1 / 100;
-      harga[i].value = +e.target.value - +ppn[i].value;
-    })
+/** Tampil Pricelist dan PPN **/
+for(let i = 0; i < harga.length; i++) {
+  hargaPPN[i].addEventListener('change', function(e) {
+    ppn[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") * 1.1 / 100));
+    harga[i].value = addCommas(+e.target.value.replace(/\./g, "") - +ppn[i].value.replace(/\./g, ""));
+  });
+
+  hargaPPN[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value
+      .replace(/\D/g, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+      ;
+    });
+  });
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    $(hargaPPN).tooltip('show');
+
+    return false;
   }
+  return true;
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	}
+	return x1 + x2;
+}
+
 </script>
 @endpush

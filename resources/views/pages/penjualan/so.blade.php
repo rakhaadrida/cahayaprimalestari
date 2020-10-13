@@ -47,7 +47,7 @@
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo"
+                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" readonly
                           {{-- @if($itemsRow != 0) 
                             value="{{ $items[$itemsRow - 1]->tempo }}"
                           @endif --}}
@@ -237,7 +237,7 @@
                       </td>
                       <td> 
                         <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
-                        value="{{ old('qty[]') }}">
+                        value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang">
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
@@ -249,7 +249,7 @@
                       </td>
                       <td style="width: 90px">
                         <input type="text" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
-                        value="{{ old('diskon[]') }}" >
+                        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
                       </td>
                       <td style="width: 100px">
                         <input type="text" name="diskonRp[]" id="diskonRp" class="form-control form-control-sm text-bold text-right text-dark diskonRp" 
@@ -484,7 +484,7 @@ const namaSales = document.getElementById('namaSales');
 const npwp = document.getElementById('npwp');
 const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
-const kategori = document.getElementById('kategori');
+const radios = document.querySelectorAll('input[type=radio][name="kategori"]');
 const kodeCust = document.getElementById('idCustomer');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
@@ -515,6 +515,10 @@ var netPast;
 namaCust.addEventListener('change', displayCust);
 newRow.addEventListener("click", displayRow);
 
+Array.prototype.forEach.call(radios, function(radio) {
+   radio.addEventListener('change', displayTempo);
+});
+
 /** Tampil Id Supplier **/
 function displayCust(e) {
   @foreach($customer as $c)
@@ -526,6 +530,18 @@ function displayCust(e) {
   @endforeach
 }
 
+/** Tampil Input Tempo **/
+function displayTempo(e) {
+  if((radios[1].checked) || (radios[2].checked)) {
+    tempo.removeAttribute('readonly');
+    tempo.setAttribute('required', 'true');
+  }
+  else if(radios[0].checked) {
+    tempo.setAttribute('readonly', 'true');
+    tempo.removeAttribute('required');
+  }
+}
+
 /** Add New Table Line **/
 function displayRow(e) {
   const lastRow = $(tablePO).find('tr:last').attr("id");
@@ -533,26 +549,26 @@ function displayRow(e) {
   var newNum = +lastRow + 1;
   var newNo = +lastNo + 1;
   const newTr = `
-    <tr class="text-bold" id="${newNum}">
+    <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
         <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" placeholder="Qty PO">
+        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td>
-        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right hargaRow" placeholder="Harga Satuan" >
+        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right hargaRow">
       </td>
       <td>
-        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right jumlahRow" placeholder="Total Harga" >
+        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right jumlahRow">
       </td>
       <td style="width: 60px">
         <input type="text" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
-        value="{{ old('diskon[]') }}" >
+        value="{{ old('diskon[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
       </td>
       <td style="width: 120px">
         <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRpRow" 
@@ -606,7 +622,20 @@ function displayRow(e) {
         qtyRow.setAttribute('required', true);
       }
     @endforeach
-  }   
+  } 
+
+  /** Inputan hanya bisa angka **/
+  qtyRow.addEventListener("keypress", function (e, evt) {
+    evt = (evt) ? evt : window.event;
+    var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
+    if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
+      $(qtyRow).tooltip('show');
+      
+      e.preventDefault();
+    }
+    
+    return true;
+  });  
 
   /** Tampil Jumlah **/
   qtyRow.addEventListener("change", function (e) {
@@ -626,6 +655,19 @@ function displayRow(e) {
       checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
+  });
+
+  /** Inputan hanya bisa angka **/
+  diskonRow.addEventListener("keypress", function (e, evt) {
+    evt = (evt) ? evt : window.event;
+    var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
+    if (charCodeRow > 31 && charCodeRow != 43  && (charCodeRow < 48 || charCodeRow > 57)) {
+      $(diskonRow).tooltip('show');
+      
+      e.preventDefault();
+    }
+    
+    return true;
   });
 
   /** Tampil Diskon Rp **/
@@ -876,6 +918,39 @@ function checkSubtotal(Past, Now) {
 function total_ppn(sub) {
   ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    if(inputan == "tempo") {
+      $(tempo).tooltip('show');
+    }
+    else {
+      for(let i = 1; i <= qty.length; i++) {
+        if(inputan == i)
+          $(qty[inputan-1]).tooltip('show');
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+/** Inputan hanya bisa angka dan plus **/
+function angkaPlus(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && charCode != 43  && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= diskon.length; i++) {
+      if(inputan == i)
+        $(diskon[inputan-1]).tooltip('show');
+    }
+    return false;
+  }
+  return true;
 }
 
 /** Add Thousand Separators **/

@@ -44,8 +44,8 @@ class CustomerController extends Controller
             'alamat' => $request->alamat,
             'telepon' => $request->telepon,
             'contact_person' => $request->contact_person,
-            'tempo' => $request->tempo,
-            'limit' => $request->limit,
+            'npwp' => $request->npwp,
+            'limit' => str_replace(".", "", $request->limit),
             'id_sales' => $request->id_sales
         ]);
 
@@ -77,9 +77,15 @@ class CustomerController extends Controller
 
     public function update(CustomerRequest $request, $id)
     {
-        $data = $request->all();
-        $item = Customer::findOrFail($id);
-        $item->update($data);
+        $item = Customer::where('id', $id)->first();
+        $item->{'nama'} = $request->nama;
+        $item->{'alamat'} = $request->alamat;
+        $item->{'telepon'} = $request->telepon;
+        $item->{'contact_person'} = $request->contact_person;
+        $item->{'npwp'} = $request->npwp;
+        $item->{'limit'} = str_replace(".", "", $request->limit);
+        $item->{'id_sales'} = $request->id_sales;
+        $item->save();
 
         return redirect()->route('customer.index');
     }

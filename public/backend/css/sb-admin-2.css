@@ -6123,7 +6123,7 @@ a.badge-dark.focus {
 
 .close {
     float: right;
-    font-size: 1.5rem;
+    font-size: 2.3rem;
     font-weight: 700;
     line-height: 1;
     color: #000;
@@ -6339,7 +6339,7 @@ a.close.disabled {
 .modal-title {
     margin-bottom: 0;
     padding: 20px 20px 20px 20px;
-    font-weight: bold;
+    font-weight: normal;
     color: black;
 }
 

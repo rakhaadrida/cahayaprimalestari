@@ -29,7 +29,7 @@
                 <label for="kode" class="col-1 col-form-label text-bold">Kode </label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
                   value="{{ $newcode }}" readonly>
                 </div>
               </div>
@@ -61,7 +61,7 @@
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran per Satuan" value="{{ old('ukuran') }}" id="ukuran" readonly>
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran per Satuan" value="{{ old('ukuran') }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" readonly>
                 </div>
                 <span class="col-form-label text-bold" id="labelUkuran"></span>
               </div>
@@ -92,15 +92,40 @@ const ukuran = document.getElementById('ukuran');
 const labelUkuran = document.getElementById('labelUkuran');
 const radios = document.querySelectorAll('input[type=radio][name="satuan"]');
 
+ukuran.addEventListener("keyup", formatNominal);
+
 Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayUkuran);
 });
 
+/** Tampil Label Satuan Ukuran **/
 function displayUkuran(e) {
   ukuran.removeAttribute('readonly');
   ukuran.setAttribute('required', 'true');
   ukuran.setAttribute('placeholder', '');
   labelUkuran.textContent = e.target.value;
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      $(ukuran).tooltip('show');
+
+    return false;
+  }
+  return true;
+}
+
+/** Input telepon strip separator **/
+function formatNominal(e){
+  $(this).val(function(index, value) {
+    return value
+    .replace(/\D/g, "")
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    ;
+  });
 }
 
 </script>

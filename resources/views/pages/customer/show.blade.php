@@ -3,8 +3,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" style="font-size: 20px"><i class="fa fa-user fa-fw"></i><b>  Detail Customer {{ $item->nama }}</b></h4>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="row">
+          <div class="col-10">
+            <h4 class="modal-title" style="font-size: 18px"><i class="fa fa-user fa-fw"></i> Detail Customer <b>{{ $item->nama }}</b></h4>
+          </div>
+          <div class="col-2">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+        </div>
       </div>
 
       @if ($errors->any())
@@ -19,47 +25,47 @@
 
       <div class="modal-body">
         <form method="POST" action="" enctype="multipart/form-data">
-          <table class="table table-responsive" border="0">
+          <table class="table table-responsive table-md table-modal" >
             <tbody>
-              <tr>
-                <td width="200px">Kode Customer</td>
-                <td>:</td>
+              <tr class="table-modal-first-row">
+                <td width="200px" class="text-bold">Kode Customer</td>
+                <td class="text-bold">:</td>
                 <td><b></b>{{ $item->id }}</td>
               </tr>
               <tr>
-                <td width="200px">Nama Customer</td>
-                <td>:</td>
+                <td width="200px" class="text-bold">Nama Customer</td>
+                <td class="text-bold">:</td>
                 <td>{{ $item->nama }}</td>
               </tr>
               <tr>
-                <td width="200px">Alamat</td>
-                <td>:</td>
-                <td>{{ $item->alamat }}</td>
+                <td width="200px" class="text-bold">Alamat</td>
+                <td class="text-bold">:</td>
+                <td width="300px">{{ $item->alamat }}</td>
               </tr>
               <tr>
-                <td width="200px">Telepon</td>
-                <td>:</td>
+                <td width="200px" class="text-bold">Telepon</td>
+                <td class="text-bold">:</td>
                 <td>{{ $item->telepon }}</td>
               </tr>
               <tr>
-                <td width="200px">Contact Person</td>
-                <td>:</td>
+                <td width="200px" class="text-bold">Contact Person</td>
+                <td class="text-bold">:</td>
                 <td>{{ $item->contact_person }}</td>
               </tr>
               <tr>
-                <td width="200px">Tempo</td>
-                <td>:</td>
-                <td>{{ $item->tempo }}</td>
+                <td width="200px" class="text-bold">NPWP</td>
+                <td class="text-bold">:</td>
+                <td>{{ $item->npwp }}</td>
               </tr>
               <tr>
-                <td width="200px">Limit</td>
-                <td>:</td>
-                <td>{{ $item->limit }}</td>
+                <td width="200px" class="text-bold">Limit</td>
+                <td class="text-bold">:</td>
+                <td>{{ number_format($item->limit, 0, "", ".") }}</td>
               </tr>
               <tr>
-                <td width="200px">Sales Cover</td>
-                <td>:</td>
-                <td>{{ $item->sales_cover }}</td>
+                <td width="200px" class="text-bold">Sales Cover</td>
+                <td class="text-bold">:</td>
+                <td>{{ $item->sales->nama }}</td>
               </tr>
             </tbody>
           </table>

@@ -89,6 +89,7 @@ const npwp = document.getElementById("npwp");
 
 telepon.addEventListener("keyup", formatPhone);
 
+/** Inputan hanya bisa angka **/
 function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -103,6 +104,7 @@ function angkaSaja(evt, inputan) {
   return true;
 }
 
+/** Input telepon strip separator **/
 function formatPhone(e){
   var value = e.target.value.replaceAll("-","");
   var arrValue = value.split("", 3);

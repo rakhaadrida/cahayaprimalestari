@@ -278,6 +278,8 @@
                     </div>
                     <!-- End Button Submit dan Reset -->
                   </div>
+
+                  <!-- Modal Ganti Status -->
                   <div class="modal" id="{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="{{$item->id}}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
@@ -285,7 +287,7 @@
                           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true" class="h2 text-bold">&times;</span>
                           </button>
-                          <h4 class="modal-title">Ubah Status Faktur {{$item->id}}</h4>
+                          <h4 class="modal-title">Ubah Status Faktur <b>{{$item->id}}</b></h4>
                         </div>
                         <div class="modal-body">
                             <div class="form-group row">
@@ -297,12 +299,14 @@
                             </div>
                             <div class="form-group subtotal-so">
                               <label for="keterangan" class="col-form-label">Keterangan</label>
-                              <input type="text" class="form-control" name="keterangan">
+                              <input type="text" class="form-control" name="ket{{$item->id}}" 
+                              id="ket{{$item->id}}" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
                             </div>
                             <hr>
                             <div class="form-row justify-content-center">
                               <div class="col-3">
-                                <button type="submit" formaction="{{ route('so-status', $item->id) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Simpan</button>
+                                <button type="submit" class="btn btn-success btn-block text-bold" id="btn{{$item->id}}" onclick="return checkEditable({{$item->id}})">Simpan</button>
+                                {{-- formaction="{{ route('so-status', $item->id) }}" formmethod="POST" --}}
                               </div>
                               <div class="col-3">
                                 <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
@@ -353,6 +357,22 @@ function displayKode(e) {
       kodeCust.value = '{{ $c->id }}';
     }
   @endforeach
+}
+
+function checkEditable(kode) {
+  const ket = document.getElementById("ket"+kode.id);
+  if(ket.value == "") {
+    $(ket).tooltip('show');
+    return false;
+  }
+  else {
+    @foreach($items as $item)
+      if('{{ $item->id }}' == kode.id) {
+        document.getElementById("btn"+kode.id).formMethod = "POST";
+        document.getElementById("btn"+kode.id).formAction = '{{ route('so-status', $item->id) }}';
+      }
+    @endforeach
+  }
 }
 
 /** Autocomplete Input Text **/

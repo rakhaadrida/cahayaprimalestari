@@ -53,7 +53,7 @@
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
                 </div>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="contact_person" value="{{ $item->contact_person }}" required>
@@ -64,7 +64,8 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="npwp" 
-                  value="{{ $item->npwp }}">
+                  onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9"
+                  value ="@if($item->npwp != ""){{ $item->npwp }}@else-@endif">
                 </div>
               </div>
               <hr>
@@ -73,11 +74,11 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="limit" 
-                  value="{{ $item->limit }}">
+                  value="{{ number_format($item->limit, 0, "", ".") }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
                 </div>
               </div>
               <div class="form-group row">
-                <label for="sales_cover" class="col-1 text-bold">Sales Cover</label>
+                <label for="sales_cover" class="col-1 col-form-label text-bold" style="margin-top: -7px">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" value="{{ $item->sales->nama }}" required>
@@ -108,10 +109,68 @@
 <script type="text/javascript">
 const namaSales = document.getElementById("sales");
 const kodeSales = document.getElementById("kodeSales");
+const telepon = document.getElementById("telepon");
+const npwp = document.getElementById("npwp");
+const limit = document.getElementById("limit");
 
-namaSales.addEventListener('change', displayId);
+namaSales.addEventListener('change', displayKode);
+telepon.addEventListener("keyup", formatPhone);
+limit.addEventListener("keyup", formatNominal);
 
-function displayId(e) {
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    if(inputan.id == "telepon")
+      $(telepon).tooltip('show');
+    else if(inputan.id == "npwp")
+      $(npwp).tooltip('show');
+    else if(inputan.id == "limit")
+      $(limit).tooltip('show');
+
+    return false;
+  }
+  return true;
+}
+
+/** Input telepon strip separator **/
+function formatPhone(e){
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if((kode == "021") || (kode == "022") || (kode == "061") || (kode == "024") || (kode == "031")) {
+    if(value.length > 3 && value.length <= 6) 
+      value = value.slice(0,3) + "-" + value.slice(3);
+    else if(value.length > 6 && value.length <= 9)
+      value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6);
+    else if(value.length > 9)
+      value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6,9) + "-" + value.slice(9);
+  }
+  else
+    if(value.length > 4 && value.length <= 8) 
+      value = value.slice(0,4) + "-" + value.slice(4);
+    else if(value.length > 8 && value.length <= 12)
+      value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8);
+    else if(value.length > 12)
+      value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8,12) + "-" + value.slice(12);
+  
+  telepon.value = value;
+}
+
+/** Input telepon strip separator **/
+function formatNominal(e){
+  $(this).val(function(index, value) {
+    return value
+    .replace(/\D/g, "")
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    ;
+  });
+}
+
+/** Display Kode Sales **/
+function displayKode(e) {
   @foreach($sales as $s)
     if('{{ $s->nama }}' == e.target.value) {
       kodeSales.value = '{{ $s->id }}';

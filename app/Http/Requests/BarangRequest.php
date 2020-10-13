@@ -28,9 +28,9 @@ class BarangRequest extends FormRequest
             // 'ukuran' => 'integer',
             // 'isi' => 'integer',
             // 'kapasitas' => 'integer'
-            'harga.*' => 'required|integer',
-            'ppn.*' => 'required|integer',
-            'stok.*' => 'required|integer'
+            'harga.*' => 'required',
+            'ppn.*' => 'required',
+            'stok.*' => 'required'
         ];
     }
 }

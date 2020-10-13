@@ -29,7 +29,7 @@
                <div class="container">
                 <div class="col-12">
                   <div class="form-group row">
-                    <label for="kode" class="col-2 col-form-label text-bold ">Nomor TB</label>
+                    <label for="kode" class="col-auto col-form-label text-bold ">Nomor TB</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2">
                       <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
@@ -37,7 +37,7 @@
                     <label for="nama" class="col-auto col-form-label text-bold ">Tanggal TB</label>
                     <span class="col-form-label text-bold ml-3">:</span>
                     <div class="col-2">
-                      <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" >
+                      <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" required>
                     </div>
                     <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div> 
@@ -103,45 +103,45 @@
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
               </span>
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
-                <thead class="text-center text-bold">
-                  <td style="width: 40px">No</td>
+                <thead class="text-center text-bold text-dark">
+                  <td class="align-middle" style="width: 40px">No</td>
                   <td style="width: 90px">Kode Barang</td>
-                  <td>Nama Barang</td>
-                  <td style="width: 160px">Gudang Asal</td>
+                  <td class="align-middle">Nama Barang</td>
+                  <td class="align-middle" style="width: 160px">Gudang Asal</td>
                   <td style="width: 60px">Stok Asal</td>
-                  <td style="width: 160px">Gudang Tujuan</td>
+                  <td class="align-middle" style="width: 160px">Gudang Tujuan</td>
                   <td style="width: 60px">Stok Tujuan</td>
                   <td style="width: 70px">Qty Transfer</td>
                   <td style="width: 50px">Delete</td>
                 </thead>
                 <tbody id="tablePO">
                   @for($i=1; $i<=5; $i++)
-                    <tr class="text-bold text-dark" id="{{ $i }}">
+                    <tr class="text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-dark kodeBarang"
                         value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-dark namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-bold text-dark gdgAsal" value="{{ old('gdgAsal[]') }}">
+                        <input type="text" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-dark gdgAsal" value="{{ old('gdgAsal[]') }}">
                         <input type="hidden" name="kodeAsal[]" class="kodeAsal">
                       </td>
                       <td> 
-                        <input type="text" name="stokAsal[]" id="stokAsal" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokAsal" value="{{ old('stokAsal[]') }}">
+                        <input type="text" name="stokAsal[]" id="stokAsal" readonly class="form-control-plaintext form-control-sm text-dark text-center stokAsal" value="{{ old('stokAsal[]') }}">
                       </td>
                       <td> 
-                        <input type="text" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-bold text-dark gdgTujuan" value="{{ old('gdgTujuan[]') }}">
+                        <input type="text" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-dark gdgTujuan" value="{{ old('gdgTujuan[]') }}">
                         <input type="hidden" name="kodeTujuan[]" class="kodeTujuan">
                       </td>
                       <td> 
-                        <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokTujuan" value="{{ old('stokTujuan[]') }}">
+                        <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuan" value="{{ old('stokTujuan[]') }}">
                       </td>
                       <td> 
-                        <input type="text" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-bold text-dark qtyTransfer" value="{{ old('qtyTransfer[]') }}">
+                        <input type="text" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -236,13 +236,13 @@ function displayRow(e) {
   var newNum = +lastRow + 1;
   var newNo = +lastNo + 1;
   const newTr = `
-    <tr class="text-bold" id="${newNum}">
+    <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
         <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" placeholder="Masukkan Nama" class="form-control form-control-sm text-bold nmBrgRow">
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold nmBrgRow">
       </td>
       <td> 
         <input type="text" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-bold text-dark gdgAsalRow" >
@@ -259,7 +259,7 @@ function displayRow(e) {
         <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokTujuanRow">
       </td>
       <td> 
-        <input type="text" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-bold text-dark qtyTransferRow">
+        <input type="text" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-bold text-dark qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -351,6 +351,19 @@ function displayRow(e) {
       }
     @endforeach
   }
+
+  /** Inputan hanya bisa angka **/
+  qtyTransferRow.addEventListener("keypress", function (e, evt) {
+    evt = (evt) ? evt : window.event;
+    var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
+    if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
+      $(qtyTransferRow).tooltip('show');
+      
+      e.preventDefault();
+    }
+    
+    return true;
+  });
   
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
@@ -500,6 +513,7 @@ for(let i = 0; i < brgNama.length; i++) {
       $(this).parents('tr').find('input').val('');
       gdgAsal[i].removeAttribute('required');
       gdgTujuan[i].removeAttribute('required');
+      qtyTransfer[i].removeAttribute('required');
     }
 
     @foreach($barang as $br)
@@ -507,6 +521,7 @@ for(let i = 0; i < brgNama.length; i++) {
         kodeBarang[i].value = '{{ $br->id }}';
         gdgAsal[i].setAttribute('required', true);
         gdgTujuan[i].setAttribute('required', true);
+        qtyTransfer[i].setAttribute('required', true);
       }
     @endforeach
   });
@@ -516,6 +531,7 @@ for(let i = 0; i < brgNama.length; i++) {
       $(this).parents('tr').find('input').val('');
       gdgAsal[i].removeAttribute('required');
       gdgTujuan[i].removeAttribute('required');
+      qtyTransfer[i].removeAttribute('required');
     }
 
     @foreach($barang as $br)
@@ -523,6 +539,7 @@ for(let i = 0; i < brgNama.length; i++) {
         brgNama[i].value = '{{ $br->nama }}';
         gdgAsal[i].setAttribute('required', true);
         gdgTujuan[i].setAttribute('required', true);
+        qtyTransfer[i].setAttribute('required', true);
       }
     @endforeach
   });
@@ -567,6 +584,22 @@ for(let i = 0; i < gdgAsal.length; i++) {
   }
 }
 
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  console.log(charCode);
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= qtyTransfer.length; i++) {
+      if(inputan == i)
+        $(qtyTransfer[inputan-1]).tooltip('show');
+    }
+
+    return false;
+  }
+  return true;
+}
+
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
@@ -580,10 +613,12 @@ for(let i = 0; i < hapusBaris.length; i++) {
     if(kodeBarang[i+1].value == "") {
       gdgAsal[i].removeAttribute('required');
       gdgTujuan[i].removeAttribute('required');
+      qtyTransfer[i].removeAttribute('required');
     }
     else {
       gdgAsal[i+1].removeAttribute('required');
       gdgTujuan[i+1].removeAttribute('required');
+      qtyTransfer[i].removeAttribute('required');
     }
     $(this).parents('tr').next().find('input').val('');
   });

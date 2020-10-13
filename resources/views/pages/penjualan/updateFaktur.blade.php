@@ -77,8 +77,8 @@
                   <label for="alamat" class="col-2 col-form-label text-bold text-dark">Keterangan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
-                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1">
-                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
+                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1" required>
+                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
@@ -116,13 +116,13 @@
                     <tr class="text-bold" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold kodeBarang" value="{{ $item->id_barang }}">
+                        <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold kodeBarang" value="{{ $item->id_barang }}" required>
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold namaBarang" value="{{ $item->barang->nama }}">
+                        <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold namaBarang" value="{{ $item->barang->nama }}" required>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" class="form-control form-control-sm text-bold qty" value="{{ $item->qty }}">
+                        <input type="text" name="qty[]" class="form-control form-control-sm text-bold qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
                       </td>
                       <td align="right">
                         <input type="text" name="harga[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" readonly>
@@ -131,8 +131,7 @@
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($item->qty * $item->harga, 0, "", ".") }}" >
                       </td>
                       <td align="right" style="width: 60px">
-                        <input type="text" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" 
-                        value="{{ $item->diskon }}" >
+                        <input type="text" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" required>
                       </td>
                       @php 
                         $diskon = 100;
@@ -331,6 +330,35 @@ function checkSubtotal(Past, Now) {
 function total_ppn(sub) {
   ppn.value = addCommas(sub * 10 / 100);
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {   
+    for(let i = 1; i <= qty.length; i++) {
+      if(inputan == i)
+        $(qty[inputan-1]).tooltip('show');
+    }
+
+    return false;
+  }
+  return true;
+}
+
+/** Inputan hanya bisa angka dan plus **/
+function angkaPlus(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && charCode != 43  && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= diskon.length; i++) {
+      if(inputan == i)
+        $(diskon[inputan-1]).tooltip('show');
+    }
+    return false;
+  }
+  return true;
 }
 
 /** Add Thousand Separators **/

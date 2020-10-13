@@ -30,7 +30,7 @@
                 <label for="kode" class="col-1 col-form-label text-bold">Kode</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
                   value="{{ $item->id }}" readonly>
                 </div>
               </div>
@@ -63,7 +63,7 @@
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}" id="ukuran">
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ number_format($item->ukuran, 0, "", ".") }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" required>
                 </div>
                 <span class="col-form-label text-bold" id="labelUkuran">{{ $item->satuan }}</span>
               </div>
@@ -86,3 +86,33 @@
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+const ukuran = document.getElementById('ukuran');
+const labelUkuran = document.getElementById('labelUkuran');
+const radios = document.querySelectorAll('input[type=radio][name="satuan"]');
+
+Array.prototype.forEach.call(radios, function(radio) {
+   radio.addEventListener('change', displayUkuran);
+});
+
+/** Tampil Label Satuan Ukuran **/
+function displayUkuran(e) {
+  labelUkuran.textContent = e.target.value;
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      $(ukuran).tooltip('show');
+
+    return false;
+  }
+  return true;
+}
+
+</script>
+@endpush
