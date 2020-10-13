@@ -29,7 +29,7 @@
                 <label for="kode" class="col-1 col-form-label text-bold">Kode </label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
                   value="{{ $newcode }}" readonly>
                 </div>
               </div>

@@ -19,8 +19,8 @@
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+        <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="text-center text-bold text-dark">
             <tr align="center">
               <th>No</th>
               <th>Nama</th>
@@ -31,15 +31,15 @@
           <tbody>
             @php $i=1; @endphp
             @forelse ($items as $item)
-              <tr>
-                <td align="center">{{ $i }}</td>
-                <td>{{ $item->nama }}</td>
-                <td align="center">
+              <tr class="text-dark">
+                <td class="align-middle" align="center">{{ $i }}</td>
+                <td class="align-middle">{{ $item->nama }}</td>
+                <td class="align-middle" align="center">
                   <a href="{{ route('sales.edit', $item->id) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-fw fa-edit"></i>
                   </a>
                 </td>
-                <td align="center">
+                <td class="align-middle" align="center">
                   <form action="{{ route('sales.destroy', $item->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('delete')

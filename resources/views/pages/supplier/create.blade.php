@@ -29,7 +29,7 @@
                 <label for="kode" class="col-1 col-form-label text-bold ">Kode</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kode" placeholder="Kode Supplier" value="{{ $newcode }}" readonly>
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" placeholder="Kode Supplier" value="{{ $newcode }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
@@ -52,14 +52,14 @@
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" onkeypress="return angkaSaja(event)" id="telepon" required>
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="npwp" class="col-1 col-form-label text-bold">NPWP</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" onkeypress="return angkaSaja(event)">
+                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9">
                 </div>
               </div>
               <hr>
@@ -85,14 +85,20 @@
 @push('addon-script')
 <script type="text/javascript">
 const telepon = document.getElementById("telepon");
+const npwp = document.getElementById("npwp");
 
 telepon.addEventListener("keyup", formatPhone);
 
-function angkaSaja(evt) {
+function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-      return false;
+    if(inputan.id == "telepon")
+      $(telepon).tooltip('show');
+    else if(inputan.id == "npwp")
+      $(npwp).tooltip('show');
+    
+    return false;
   }
   return true;
 }

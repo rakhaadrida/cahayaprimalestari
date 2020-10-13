@@ -2168,7 +2168,7 @@ pre code {
     color: #6e707e;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #d1d3e2;
+    border: 1px solid #9e9ead;
     border-radius: 0.35rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -2254,6 +2254,7 @@ select.form-control:focus::-ms-value {
     margin-bottom: 0;
     font-size: inherit;
     line-height: 1.5;
+    color: #5a5c69;
 }
 
 .col-form-label-lg {
