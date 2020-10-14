@@ -22,13 +22,13 @@
           <td style="width: 40px" class="align-middle">No</td>
           <td style="width: 90px">Kode Barang</td>
           <td style="width: 180px" class="align-middle">Nama Barang</td>
-          <td style="width: 110px" class="align-middle">Total Stok</td>
+          <td style="width: 110px" class="align-middle total-stok">Total Stok</td>
           @foreach($gudang as $g)
             <td style="width: 110px" class="align-middle">{{ $g->nama }}</td>
           @endforeach
         </tr>
       </thead>
-      <tbody id="tablePO">
+      <tbody>
         @php $i = 1; @endphp
         @foreach($stok as $s)
           <tr class="text-dark ">

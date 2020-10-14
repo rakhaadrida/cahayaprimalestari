@@ -20,8 +20,8 @@
       <thead class="text-center text-dark text-bold">
         <tr>
           <td style="width: 30px" class="align-middle">No</td>
-          <td style="width: 70px">Kode Barang</td>
-          <td class="align-middle">Nama Barang</td>
+          <td style="width: 70px" class="align-middle">Kode Barang</td>
+          <td class="align-middle" class="align-middle">Nama Barang</td>
           <td style="width: 70px; background-color: yellow" class="align-middle">Total Stok</td>
           @foreach($gudang as $g)
             <td style="width: 70px" class="align-middle">{{ $g->nama }}</td>

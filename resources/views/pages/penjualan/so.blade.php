@@ -433,7 +433,7 @@
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold"
-                  onclick="return checkRequired()" id="submitSO" >Submit</button>
+                  onclick="return checkRequired(event)" id="submitSO" >Submit</button>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
@@ -449,14 +449,15 @@
                       <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="h2 text-bold">&times;</span>
                       </button>
-                      <h4 class="modal-title">Konfirmasi Faktur {{$newcode}}</h4>
+                      <h4 class="modal-title">Konfirmasi Faktur <b>{{$newcode}}</b></h4>
                     </div>
                     <div class="modal-body">
                       <p>Faktur <strong>{{$newcode}}</strong> akan disimpan. Silahkan pilih cetak atau input faktur lagi.</p>
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Cetak</button>
+                          {{-- <a href="{{ url('/so/process/'.$newcode.'/CETAK') }}" class="btn btn-success btn-block text-bold btnCetak">Cetak</a> --}}
+                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
                         </div>
                         <div class="col-3">
                           <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
@@ -467,6 +468,12 @@
                 </div>
               </div>
               <!-- End Modal Konfirmasi -->
+
+              @if($status == 'true')
+                <!-- Tampilan Cetak -->
+                <iframe src="{{url('so/cetak/'.$lastcode)}}" id="frameCetak" frameborder="0" hidden></iframe>
+              @endif
+
             </form>
           </div>
         </div>
@@ -478,13 +485,22 @@
 @endsection
 
 @push('addon-script')
+<script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
 <script type="text/javascript">
+
+@if($status == 'true')
+  $(document).ready(function() {
+    $("#frameCetak").printPage();
+  });
+@endif
+
 const namaCust = document.getElementById('namaCustomer');
 const namaSales = document.getElementById('namaSales');
 const npwp = document.getElementById('npwp');
 const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
 const radios = document.querySelectorAll('input[type=radio][name="kategori"]');
+const kategori = document.getElementById('kategori');
 const kodeCust = document.getElementById('idCustomer');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
@@ -991,7 +1007,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  if((namaCust.value == "") || (tempo.value == "") || (tanggalKirim.value == "") || 
+  if((namaCust.value == "") || (tanggalKirim.value == "") || 
   (kategori.value == "") || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
   }

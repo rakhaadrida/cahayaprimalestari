@@ -91,7 +91,7 @@
     </a>
     <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ route('so') }}">Sales Order</a>
+        <a class="collapse-item" href="{{ route('so', 'false') }}">Sales Order</a>
         <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
         <a class="collapse-item" href="{{ route('cetak-faktur') }}">Cetak Faktur</a>
         <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>

@@ -61,7 +61,7 @@ Route::middleware(['auth', 'admin'])
                 ->name('tb-remove');
 
         // Sales Order
-        Route::get('/so', 'SalesOrderController@index')->name('so');
+        Route::get('/so/{status}', 'SalesOrderController@index')->name('so');
         Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create');
         Route::post('/so/process/{id}/{status}', 'SalesOrderController@process')->name('so-process');
         Route::get('/so/cetak/{id}', 'SalesOrderController@cetak')->name('so-cetak');

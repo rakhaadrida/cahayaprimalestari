@@ -19,7 +19,7 @@ use PDF;
 
 class SalesOrderController extends Controller
 {
-    public function index(Request $request) {
+    public function index($status) {
         $customer = Customer::with(['sales'])->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -45,7 +45,9 @@ class SalesOrderController extends Controller
             'stok' => $stok,
             'gudang' => $gudang,
             'newcode' => $newcode,
-            'tanggal' => $tanggal
+            'tanggal' => $tanggal,
+            'status' => $status,
+            'lastcode' => $lastcode
             // 'itemsRow' => $itemsRow,
             // 'items' => $items
         ];
@@ -126,9 +128,7 @@ class SalesOrderController extends Controller
             }
         }
 
-        // $this->cetak($id);
-        return redirect()->route('so');
-        // return redirect()->route('so-cetak', $id);
+        return redirect()->route('so', 'true');
     }
 
     public function cetak(Request $request, $id) {
@@ -139,6 +139,7 @@ class SalesOrderController extends Controller
 
         $paper = array(0,0,686,394);
         $pdf = PDF::loadview('pages.penjualan.cetakSO', $data)->setPaper($paper);
+        ob_end_clean();
         return $pdf->stream('cetak-so.pdf');
     }
 

@@ -10910,7 +10910,7 @@ a.text-dark:focus {
     }
 
     @page {
-        size: a3;
+        size: a4;
     }
 
     body {
@@ -10931,16 +10931,27 @@ a.text-dark:focus {
 
     .table {
         border-collapse: collapse !important;
+        margin: 0 auto !important;
+        width: 80% !important;
     }
 
     .table td,
     .table th {
-        background-color: #fff !important;
+        background-color: #fff ;
+    }
+
+    .total-stok {
+        background-color: yellow !important;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) td{
+        background-color: rgba(0, 0, 0, 0.05);
+        -webkit-print-color-adjust: exact;
     }
 
     .table-bordered th,
     .table-bordered td {
-        border: 1px solid #dddfeb !important;
+        border: 1px solid #98999b !important;
     }
 
     .table-dark {
