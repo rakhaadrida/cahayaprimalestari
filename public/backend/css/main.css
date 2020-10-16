@@ -357,3 +357,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
+
+/* @media print {
+    .cetak-all-container {
+        display: block;
+    }
+} */

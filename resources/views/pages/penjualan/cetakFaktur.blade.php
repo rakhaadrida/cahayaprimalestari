@@ -42,7 +42,7 @@
                     <input type="text" class="form-control form-control-sm mt-1" name="kodeAkhir" id="kode" placeholder="Kode Akhir">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('cetak-all') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold btnCetak">Cetak</button>
+                    <button type="submit" formaction="{{ route('cetak-process') }}" formmethod="POST" id="btn-cetak" class="btn btn-success btn-sm btn-block text-bold btnCetak">Cetak</button>
                   </div>
                 </div>  
               </div>
@@ -83,9 +83,11 @@
                 </tbody>
               </table>
               <!-- End Tabel Detil Transaksi Harian -->
-              
-              <!-- Tampilan Cetak -->
-              <iframe src="{{url('cetak-faktur/cetak')}}" id="frameCetak" frameborder="0" hidden></iframe>
+
+              @if($status == 'true')
+                <!-- Tampilan Cetak -->
+                <iframe src="{{url('cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" frameborder="0" hidden></iframe>
+              @endif
             </form>
           </div>
         </div>
@@ -102,9 +104,11 @@
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
 <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
 <script type="text/javascript">
-$(".btnCetak").click(function() {
-  $("#frameCetak").printPage();
-});
+@if($status == 'true')
+  $(document).ready(function() {
+    $("#frameCetak").printPage();
+  });
+@endif
 
 /** Autocomplete Input Text **/
 $(function() {

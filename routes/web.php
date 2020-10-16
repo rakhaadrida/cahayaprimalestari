@@ -78,8 +78,12 @@ Route::middleware(['auth', 'admin'])
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
 
         // Cetak Faktur
-        Route::get('/cetak-faktur', 'CetakFakturController@index')->name('cetak-faktur');
-        Route::post('/cetak-faktur/cetak', 'CetakFakturController@cetak')->name('cetak-all');
+        Route::get('/cetak-faktur/{status}/{awal}/{akhir}', 'CetakFakturController@index')
+                ->name('cetak-faktur');
+        Route::post('/cetak-faktur/process', 'CetakFakturController@process')
+                ->name('cetak-process');
+        Route::get('/cetak/{awal}/{akhir}', 'CetakFakturController@cetak')
+                ->name('cetak-all');
 
         // Surat Jalan
         Route::get('/sj', 'SuratJalanController@index')->name('sj');
