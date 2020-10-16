@@ -33,7 +33,7 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal" value="{{ $itemsBRG[0]->id }}">
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
+                  <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAkhir" id="kodeAkhir" 
                     value="{{ $itemsBRG[$itemsBRG->count() - 1]->id }}">
@@ -45,7 +45,7 @@
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" value="{{ $awal }}">
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
+                  <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" value="{{ $akhir }}" >
                   </div>
@@ -70,6 +70,7 @@
 
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
+                  @php $j=0; @endphp
                   @foreach($itemsBRG as $item)
                   <div class="carousel-item 
                     @if($item->id == $itemsBRG[0]->id) active
@@ -118,7 +119,7 @@
                       @if(($rowBM != 0) || ($rowSO != 0))
                         <tr>
                           <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
-                          <td class="text-bold text-dark text-right">100</td>
+                          <td class="text-bold text-dark text-right">{{ $stokAwal[$j] }}</td>
                           <td colspan="7"></td>
                         </tr>
                         @php 
@@ -178,14 +179,16 @@
                         @endforeach
                         <tr>
                           <td colspan="5" class="text-bold text-dark text-center">Total</td>
-                          <td class="text-bold text-dark text-right">{{ $totalBM }}</td>
+                          <td class="text-bold text-dark text-right">
+                            {{ $stokAwal[$j] + $totalBM }}
+                          </td>
                           <td colspan="2"></td>
                           <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
                           <td colspan="4"></td>
                         </tr>
                         <tr style="background-color: yellow">
                           <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
-                          <td class="text-bold text-dark text-right">100</td>
+                          <td class="text-bold text-dark text-right">{{ $stok[$j]->total }}</td>
                           <td colspan="7"></td>
                         </tr>
                       @else 
@@ -199,6 +202,7 @@
                   <!-- End Tabel Data Detil PO -->
 
                   </div>
+                  @php $j++; @endphp
                   @endforeach
                 </div>
                 @if(($itemsBRG->count() > 0) && ($itemsBRG->count() != 1)) 
@@ -232,9 +236,78 @@ const kodeAkhir = document.getElementById("kodeAkhir");
 
 /** Call Fungsi Setelah Inputan Terisi **/
 
-
 /** Autocomplete Input Text **/
+$(function() {
+  var barang = [];
+  @foreach($barang as $b)
+    barang.push('{{ $b->id }}');
+  @endforeach
+    
+  function split(val) {
+    return val.split(/,\s*/);
+  }
 
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
+  /*-- Autocomplete Input Kode Barang --*/
+  $(kodeAwal).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(barang, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  $(kodeAkhir).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(barang, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+});
 
 </script>
 @endpush

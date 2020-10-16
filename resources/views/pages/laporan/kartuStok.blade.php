@@ -33,7 +33,7 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal">
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
+                  <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAkhir" id="kodeAkhir">
                   </div>
@@ -44,7 +44,7 @@
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" >
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
+                  <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" >
                   </div>
@@ -72,7 +72,6 @@ const kodeAwal = document.getElementById("kodeAwal");
 const kodeAkhir = document.getElementById("kodeAkhir");
 
 /** Call Fungsi Setelah Inputan Terisi **/
-
 
 /** Autocomplete Input Text **/
 $(function() {

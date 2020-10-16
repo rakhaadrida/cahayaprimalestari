@@ -8,6 +8,7 @@ use App\Models\Gudang;
 use App\Models\Barang;
 use Illuminate\Support\Facades\DB;
 use PDF;
+// use PDFSnappy;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapStokExport;
 use Carbon\Carbon;
@@ -57,6 +58,8 @@ class RekapStokController extends Controller
         ];
 
         $pdf = PDF::loadview('pages.laporan.pdfRekap', $data)->setPaper('A4', 'portrait');
+        // $pdf->setOption('enable-local-file-access', true);
+        ob_end_clean();
         return $pdf->stream('rekap-stok.pdf');
     }
 

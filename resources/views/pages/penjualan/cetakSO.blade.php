@@ -2,8 +2,282 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <link href="backend/css/sb-admin-2.css" rel="stylesheet">
-    <link href="backend/css/main.css" rel="stylesheet">
+    {{-- <link href="backend/css/sb-admin-2.css" rel="stylesheet">
+    <link href="backend/css/main.css" rel="stylesheet"> --}}
+    <style>
+      body {
+          margin: 0;
+          font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-size: 1rem;
+          font-weight: 400;
+          line-height: 1.5;
+          color: #858796;
+          text-align: left;
+          background-color: #fff;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+          margin-top: 0;
+          margin-bottom: 0.5rem;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      .h1,
+      .h2,
+      .h3,
+      .h4,
+      .h5,
+      .h6 {
+          margin-bottom: 0.5rem;
+          font-weight: 400;
+          line-height: 1.2;
+      }
+
+      h5,
+      .h5 {
+          font-size: 1.25rem;
+      }
+
+      .container-fluid {
+          width: 100%;
+          padding-right: 0.75rem;
+          padding-left: 0.75rem;
+          margin-right: auto;
+          margin-left: auto;
+      }
+
+      .text-center {
+          text-align: center !important;
+      }
+
+      .text-bold {
+        font-weight: bold
+      }
+
+      .text-dark {
+          color: #5a5c69 !important;
+      }
+      
+      .text-right {
+          text-align: right !important;
+      }
+
+      .text-wrap {
+          white-space: normal !important;
+      }
+
+      .float-right {
+          float: right !important;
+      }
+
+      table {
+          border-collapse: collapse;
+      }
+
+      .table {
+          width: 100%;
+          margin-bottom: 1rem;
+          color: #858796;
+      }
+
+      .table th,
+      .table td {
+          padding: 0.75rem;
+          vertical-align: top;
+          border-top: 1px solid #afbbc5;
+      }
+
+      .table thead th {
+          vertical-align: bottom;
+          border-bottom: 1px solid #afbbc5;
+      }
+
+      .table tbody+tbody {
+          border-top: 1px solid #afbbc5;
+      }
+
+      .table-sm th,
+      .table-sm td {
+          padding: 0.3rem;
+      }
+
+      .table-bordered {
+          border: 1px solid #afbbc5;
+      }
+
+      .table-bordered th,
+      .table-bordered td {
+          border: 1px solid #afbbc5;
+      }
+
+      .table-bordered thead th,
+      .table-bordered thead td {
+          border-bottom-width: 2px;
+      }
+
+      .table-striped tbody tr:nth-of-type(odd) {
+          background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .table-hover tbody tr:hover {
+          color: #858796;
+          background-color: rgba(59, 57, 57, 0.075);
+      }
+
+      .header-cetak-so {
+          display: inline-block;
+          border: dotted;
+          border-bottom: none;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+          padding-top: 5px;
+          padding-bottom: 10px;
+          margin-top: -30px;
+          margin-left: 30px;
+          margin-right: 30px;
+      }
+
+      .subtitle-cetak-so-one {
+          margin-top: -5px;
+          font-size: 12px;
+      }
+
+      .subtitle-cetak-so-second {
+          margin-left: 7px;
+          font-size: 12px;
+      }
+
+      .customer-cetak-so {
+          font-size: 12px;
+          width: 220px;
+          margin-top: -25px;
+          margin-right: 30px;
+      }
+
+      .nama-cetak-so {
+          margin-top: 10px;
+          margin-bottom: 10px;
+          font-size: 14px;
+      }
+
+      .alamat-cetak-so {
+          margin-bottom: -10px;
+          line-height: 15px;
+      }
+
+      .telepon-cetak-so {
+          /* margin-bottom: -15px; */
+          line-height: 13px;
+      }
+
+      .table-info-cetak-so {
+          margin-top: -25px;
+          font-size: 11px;
+          border: dotted;
+          border-spacing: 0px;
+          margin-left: 29px;
+          margin-right: 29px;
+      }
+
+      .th-info-cetak-so {
+          line-height: 5px;
+      }
+
+      .tr-info-cetak-so {
+          line-height: 10px;
+      }
+
+      .table-cetak {
+          font-size: 11px;
+          height: 200px;
+          margin-left: 31px;
+          margin-right: 31px;
+          margin-top: -13px;
+      }
+
+      .th-detail-cetak-so {
+          line-height: 5px;
+          border: dotted;
+      }
+
+      .tr-detail-cetak-so {
+          line-height: 10px;
+      }
+
+      .footer-cetak-so {
+          display: inline-block;
+          border: dotted;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+          border-bottom-left-radius: 10px;
+          border-bottom-right-radius: 10px;
+          margin-bottom: -50px;
+          margin-left: 30px;
+          margin-right: 30px;
+      }
+
+      .table-footer {
+          margin-left: -15px;
+      }
+
+      .ttd-penerima {
+          font-size: 12px;
+          padding-left: -5px;
+          margin-bottom: 15px;
+      }
+
+      .info_bayar {
+          margin-top: -20px;
+          margin-left: 5px;
+          margin-right: 30px;
+          font-size: 12px;
+          line-height: 24px;
+      }
+
+      .ttd-gudang {
+          font-size: 12px;
+          margin-top: 1px;
+          margin-left: 2px;
+      }
+
+      .ttd-mengetahui {
+          font-size: 12px;
+          margin-top: -7px;
+          line-height: 13px;
+      }
+
+      .tgl-ttd {
+          font-size: 11px;
+      }
+
+      .total-faktur {
+          margin-top: -3px;
+          margin-left: 5px;
+          font-size: 12px;
+      }
+
+      .tabel-total-faktur {
+          line-height: 16px;
+      }
+
+      .title-total {
+          width: 170px;
+      }
+
+      .angka-total {
+          font-size: 14px;
+      }
+    </style>
   </head>
   <body>
     <div class="container-fluid header-cetak-so">
@@ -30,7 +304,7 @@
       <br>
       <span class="alamat-cetak-so text-wrap">{{ $items[0]->so->customer->alamat }}</span>
       <br>
-      <span>{{ $items[0]->so->customer->telepon }}</span>
+      <span class="telepon-cetak-so">{{ $items[0]->so->customer->telepon }}</span>
     </div>
     <br>
     <br>
@@ -139,31 +413,31 @@
               <div class="total-faktur">
                 <table class="tabel-total-faktur">
                   <tr>
-                    <td style="width: 180px">Jumlah</td>
+                    <td class="title-total text-bold">Jumlah</td>
                     <td class="text-right angka-total">{{ number_format($items[0]->so->total, 0, "", ".") }}</td>
                   </tr>
                   <tr>
-                    <td style="width: 180px">Disc Faktur</td>
+                    <td class="title-total text-bold">Disc Faktur</td>
                     <td class="text-right angka-total">0</td>
                   </tr>
                   <tr>
-                    <td style="width: 180px">Nilai Netto</td>
+                    <td class="title-total text-bold">Nilai Netto</td>
                     <td class="text-right angka-total">{{ number_format($items[0]->so->total, 0, "", ".") }}</td>
                   </tr>
                   <tr>
-                    <td style="width: 180px">PPN</td>
+                    <td class="title-total text-bold">PPN</td>
                     <td class="text-right angka-total"></td>
                   </tr>
                   <tr>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td></td>
+                    <td class="title-total"></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td style="width: 180px">Nilai Tagihan</td>
+                    <td class="title-total"></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td class="title-total text-bold">Nilai Tagihan</td>
                     <td class="text-right angka-total">{{ number_format($items[0]->so->total, 0, "", ".") }}</td>
                   </tr>
                   </tr>

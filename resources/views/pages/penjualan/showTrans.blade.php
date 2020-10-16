@@ -65,14 +65,14 @@
                   @php $i=1; @endphp
                   @forelse ($items as $item)
                     <tr>
-                      <td align="center">{{ $i }}</td>
-                      <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-link text-bold">{{ $item->id }}</button></td>
-                      <td class="text-center">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')  }}</td>
-                      <td>{{ $item->customer->nama }}</td>
-                      <td class="text-right">{{ number_format($item->total, 0, "", ",") }}</td>
-                      <td class="text-center">{{ $item->kategori }}</td>
-                      <td class="text-center">{{ $item->tempo }} Hari</td>
-                      <td>{{ $item->status }}</td>
+                      <td align="center" class="align-middle">{{ $i }}</td>
+                      <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $item->id }}</button></td>
+                      <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')  }}</td>
+                      <td class="align-middle">{{ $item->customer->nama }}</td>
+                      <td class="text-right align-middle">{{ number_format($item->total, 0, "", ",") }}</td>
+                      <td class="text-center align-middle">{{ $item->kategori }}</td>
+                      <td class="text-center align-middle">{{ $item->tempo }} Hari</td>
+                      <td class="align-middle">{{ $item->status }}</td>
                     </tr>
                     @php $i++; @endphp
                   @empty
