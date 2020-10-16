@@ -42,7 +42,7 @@
                     <input type="text" class="form-control form-control-sm mt-1" name="kodeAkhir" id="kode" placeholder="Kode Akhir">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="" formmethod="" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cetak</button>
+                    <button type="submit" formaction="{{ route('cetak-all') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold btnCetak">Cetak</button>
                   </div>
                 </div>  
               </div>
@@ -65,14 +65,14 @@
                   @php $i=1; @endphp
                   @forelse ($items as $item)
                     <tr>
-                      <td align="center">{{ $i }}</td>
-                      <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-link text-bold">{{ $item->id }}</=></td>
-                      <td class="text-center">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')  }}</td>
-                      <td>{{ $item->customer->nama }}</td>
-                      <td class="text-right">{{ number_format($item->total, 0, "", ",") }}</td>
-                      <td class="text-center">{{ $item->kategori }}</td>
-                      <td class="text-center">{{ $item->tempo }} Hari</td>
-                      <td class="text-center">{{ $item->status }}</td>
+                      <td align="center" class="align-middle">{{ $i }}</td>
+                      <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $item->id }}</button></td>
+                      <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')  }}</td>
+                      <td class="align-middle">{{ $item->customer->nama }}</td>
+                      <td class="text-right align-middle">{{ number_format($item->total, 0, "", ",") }}</td>
+                      <td class="text-center align-middle">{{ $item->kategori }}</td>
+                      <td class="text-center align-middle">{{ $item->tempo }} Hari</td>
+                      <td class="text-center align-middle">{{ $item->status }}</td>
                     </tr>
                     @php $i++; @endphp
                   @empty
@@ -84,6 +84,8 @@
               </table>
               <!-- End Tabel Detil Transaksi Harian -->
               
+              <!-- Tampilan Cetak -->
+              <iframe src="{{url('cetak-faktur/cetak')}}" id="frameCetak" frameborder="0" hidden></iframe>
             </form>
           </div>
         </div>
@@ -98,7 +100,12 @@
 <script src="{{ url('backend/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
+<script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
 <script type="text/javascript">
+$(".btnCetak").click(function() {
+  $("#frameCetak").printPage();
+});
+
 /** Autocomplete Input Text **/
 $(function() {
   var kodeSO = [];

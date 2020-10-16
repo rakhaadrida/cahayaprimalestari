@@ -79,6 +79,7 @@ Route::middleware(['auth', 'admin'])
 
         // Cetak Faktur
         Route::get('/cetak-faktur', 'CetakFakturController@index')->name('cetak-faktur');
+        Route::post('/cetak-faktur/cetak', 'CetakFakturController@cetak')->name('cetak-all');
 
         // Surat Jalan
         Route::get('/sj', 'SuratJalanController@index')->name('sj');

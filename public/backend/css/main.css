@@ -219,8 +219,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .customer-cetak-so {
     font-size: 12px;
-    width: 250px;
+    width: 220px;
     margin-top: -25px;
+    margin-right: 30px;
 }
 
 .nama-cetak-so {
@@ -286,6 +287,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .tabel-total-faktur {
     line-height: 16px;
+}
+
+.title-total {
+    width: 170px;
 }
 
 .angka-total {
