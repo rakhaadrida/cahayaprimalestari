@@ -12,6 +12,8 @@ use App\Models\Barang;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\KartuStokExport;
 
 class KartuStokController extends Controller
 {
@@ -83,5 +85,14 @@ class KartuStokController extends Controller
         
         // var_dump($stok);
         return view('pages.laporan.detilKS', $data);
+    }
+
+    public function cetak_excel(Request $request) {
+        $awal = $request->tglAwal;
+        $akhir = $request->tglAkhir;
+        $kodeAwal = $request->kodeAwal;
+        $kodeAkhir = $request->kodeAkhir;
+
+        return Excel::download(new KartuStokExport($awal, $akhir, $kodeAwal, $kodeAkhir), 'kartu-stok.xlsx');
     }
 }

@@ -93,6 +93,7 @@ Route::middleware(['auth', 'admin'])
         // Kartu Stok
         Route::get('kartu', 'KartuStokController@index')->name('kartu');
         Route::post('kartu/show', 'KartuStokController@show')->name('ks-show');
+        Route::post('kartu/excel', 'KartuStokController@cetak_excel')->name('ks-excel');
 
         // Rekap Stok
         Route::get('rekap', 'RekapStokController@index')->name('rekap');

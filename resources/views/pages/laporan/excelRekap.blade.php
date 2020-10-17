@@ -1,10 +1,12 @@
 <html>
   <body>
     <center>
-      <h3 class="text-bold text-dark">Rekap Stok Barang</h3>
-      <h4 class="text-dark">
+      <h2 class="text-bold text-dark">Rekap Stok Barang</h2>
+      <h3 class="text-dark">
         Dari Kode {{$stok[0]->id_barang}} s/d {{ $stok[$stok->count() - 1]->id_barang}}
-      </h4>
+      </h3>
+      <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
+      
     </center>
     <br>
 
@@ -30,7 +32,7 @@
             <td>{{ $s->barang->nama }}</td>
             <td align="right" style="background-color: yellow">{{ $s->total }}</td>
             @php
-              $stokGd = \App\StokBarang::where('id_barang', $s->id_barang)->get();
+              $stokGd = \App\Models\StokBarang::where('id_barang', $s->id_barang)->get();
             @endphp
             @foreach($stokGd as $sg)
               <td align="right">{{ $sg->stok }}</td>

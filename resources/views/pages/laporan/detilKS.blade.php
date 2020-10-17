@@ -28,7 +28,7 @@
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container"> 
                 <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-bold">Dari Kode Barang</label>
+                  <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Kode Barang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal" value="{{ $itemsBRG[0]->id }}">
@@ -40,7 +40,7 @@
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-bold">Dari Tanggal</label>
+                  <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" value="{{ $awal }}">
@@ -56,6 +56,7 @@
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
+
               <div class="container">
                 <div class="row justify-content-center">
                   <h5 class="text-bold text-dark">
@@ -64,6 +65,11 @@
                 </div>
                 <div class="row justify-content-center" style="margin-top: -5px">
                   <h5 class="text-bold text-dark">Tanggal : {{$awal}} s/d {{$akhir}}</h5>
+                </div>
+                <div class="row justify-content-end" style="margin-top: -55px">
+                  <div class="col-2">
+                    <button type="submit" formaction="{{ route('ks-excel') }}" formmethod="POST"  class="btn btn-success btn-block text-bold">Download Excel</>
+                  </div>
                 </div>
               </div>
               <br>

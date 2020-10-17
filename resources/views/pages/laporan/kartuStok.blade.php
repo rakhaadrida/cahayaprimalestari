@@ -28,7 +28,7 @@
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container"> 
                 <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-bold">Dari Kode Barang</label>
+                  <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Kode Barang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal">
@@ -39,7 +39,7 @@
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-bold">Dari Tanggal</label>
+                  <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" >

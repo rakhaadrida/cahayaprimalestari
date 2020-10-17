@@ -64,7 +64,6 @@ class RekapStokController extends Controller
     }
 
     public function cetak_excel() {
-
         return Excel::download(new RekapStokExport, 'rekap-stok.xlsx');
     }
 }
