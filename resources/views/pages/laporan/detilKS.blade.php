@@ -50,7 +50,7 @@
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" value="{{ $akhir }}" >
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="" formmethod="" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>

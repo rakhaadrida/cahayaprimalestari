@@ -18,74 +18,51 @@ use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Carbon\Carbon;
 
-class KartuStokExport implements WithMultipleSheets
+class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    public function __construct(String $awal, String $akhir, String $kodeAwal, String $kodeAkhir)
+    public function __construct(String $kode, String $awal, String $akhir)
     {
+        $this->kode = $kode;
         $this->awal = $awal;
         $this->akhir = $akhir;
-        $this->kodeAwal = $kodeAwal;
-        $this->kodeAkhir = $kodeAkhir;
-    }
-
-    public function sheets(): array
-    {
-        $sheets = [];
-
-        $itemsBRG = Barang::whereBetween('id', [$this->kodeAwal, $this->kodeAkhir])
-                    ->get();
-
-        foreach($itemsBRG as $item) {
-            $sheets[] = new KartuPerBarangExport($item->id, $this->awal, $this->akhir);
-        }
-
-        return $sheets;
     }
     
-    /* public function view(): View {
+    public function view(): View
+    {
         $barang = Barang::All();
         $tglAwal = $this->awal;
         $tglAkhir = $this->akhir;
+        $tahun = Carbon::now();
+        $sejak = '2020';
 
         $rowBM = DetilBM::with(['bm', 'barang'])
-                    ->whereBetween('id_barang', [$this->kodeAwal, $this->kodeAkhir])
+                    ->where('id_barang', $this->kode)
                     ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
-                    })->count();
+                    })->get();
         $rowSO = DetilSO::with(['so', 'barang'])
-                    ->whereBetween('id_barang', [$this->kodeAwal, $this->kodeAkhir])
+                    ->where('id_barang', $this->kode)
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
-                    })->count();
-        $itemsBRG = Barang::whereBetween('id', [$this->kodeAwal, $this->kodeAkhir])
-                        ->get();
+                    })->get();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
-                        ->whereBetween('id_barang', [$this->kodeAwal, $this->kodeAkhir])
+                        ->where('id_barang', $this->kode)
                         ->groupBy('id_barang')->get();
 
         $i = 0;
-        $stokAwal = [];
+        $stokAwal = 0;
         foreach($stok as $s) {
-            $stokAwal[$i] = $s->total;
-            $itemsBM = DetilBM::with(['bm', 'barang'])
-                        ->where('id_barang', $s->id_barang)
-                        ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir]);
-                        })->get();
-            foreach($itemsBM as $bm) {
-                $stokAwal[$i] -= $bm->qty;
+            $stokAwal = $s->total;
+            foreach($rowBM as $bm) {
+                $stokAwal -= $bm->qty;
             }
 
-            $itemsSO = DetilSO::with(['so', 'barang'])
-                        ->where('id_barang', $s->id_barang)
-                        ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir]);
-                        })->get();
-            foreach($itemsSO as $so) {
-                $stokAwal[$i] += $so->qty;
+            foreach($rowSO as $so) {
+                $stokAwal += $so->qty;
             }
 
             $i++;
@@ -93,20 +70,22 @@ class KartuStokExport implements WithMultipleSheets
 
         $data = [
             'barang' => $barang,
-            'itemsBRG' => $itemsBRG,
             'rowBM' => $rowBM,
             'rowSO' => $rowSO,
             'awal' => $tglAwal,
             'akhir' => $tglAkhir,
             'stok' => $stok,
-            'stokAwal' => $stokAwal
+            'stokAwal' => $stokAwal,
+            'tahun' => $tahun,
+            'sejak' => $sejak
         ];
         
         return view('pages.laporan.excelKartu', $data);
-    } */
+    }
 
-    /* public function styles(Worksheet $sheet) {
-        $sheet->setTitle('KS-BRG001');
+    public function styles(Worksheet $sheet)
+    {
+        $sheet->setTitle('KS-'.$this->kode);
         
         $sheet->mergeCells('A1:M1');
         $sheet->mergeCells('A2:M2');
@@ -129,6 +108,24 @@ class KartuStokExport implements WithMultipleSheets
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFF00');
 
+        $tglAwal = $this->awal;
+        $tglAkhir = $this->akhir;
+        $rowBM = DetilBM::with(['bm', 'barang'])
+                    ->where('id_barang', $this->kode)
+                    ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
+                    })->count();
+        $rowSO = DetilSO::with(['so', 'barang'])
+                    ->where('id_barang', $this->kode)
+                    ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
+                    })->count();
+
+        $range = 9 + $rowBM + $rowSO + 2;
+        $rangeStr = strval($range);
+        $rangeMinOne = strval($range-1);
+        $rangeTab = 'M'.$rangeStr;
+
         $styleArray = [
             'borders' => [
                 'allBorders' => [
@@ -138,12 +135,12 @@ class KartuStokExport implements WithMultipleSheets
             ],
         ];
 
-        $rangeTable = 'A7:M14';
+        $rangeTable = 'A7:M'.$rangeStr;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 
         $stokAwal = 'A9:E9';
-        $total = 'A13:E13';
-        $stokAkhir = 'A14:E14';
+        $total = 'A'.$rangeMinOne.':E'.$rangeMinOne;
+        $stokAkhir = 'A'.$rangeStr.':E'.$rangeStr;
         $sheet->getStyle($stokAwal)->getFont()->setBold(true);
         $sheet->getStyle($stokAwal)->getAlignment()->setHorizontal('center');
         $sheet->getStyle($total)->getFont()->setBold(true);
@@ -152,9 +149,9 @@ class KartuStokExport implements WithMultipleSheets
         $sheet->getStyle($stokAkhir)->getAlignment()->setHorizontal('center');
 
         $awalRow = 'F9:M9';
-        $totalRow = 'F13:M13';
-        $akhirRow = 'F14:M14';
-        $akhirFull = 'A14:M14';
+        $totalRow = 'F'.$rangeMinOne.':M'.$rangeMinOne;
+        $akhirRow = 'F'.$rangeStr.':M'.$rangeStr;
+        $akhirFull = 'A'.$rangeStr.':M'.$rangeStr;
 
         $sheet->getStyle($awalRow)->getFont()->setBold(true);
         $sheet->getStyle($awalRow)->getAlignment()->setHorizontal('right');
@@ -166,23 +163,6 @@ class KartuStokExport implements WithMultipleSheets
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFF00');
 
-        $tglAwal = $this->awal;
-        $tglAkhir = $this->akhir;
-        $rowBM = DetilBM::with(['bm', 'barang'])
-                    ->whereBetween('id_barang', [$this->kodeAwal, $this->kodeAkhir])
-                    ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
-                    })->count();
-        $rowSO = DetilSO::with(['so', 'barang'])
-                    ->whereBetween('id_barang', [$this->kodeAwal, $this->kodeAkhir])
-                    ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
-                    })->count();
-
-        $range = 9 + $rowBM + $rowSO + 2;
-        $rangeStr = strval($range);
-        $rangeTab = 'M'.$rangeStr;
-
         $rangeIsiTable = 'A9:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
@@ -192,5 +172,5 @@ class KartuStokExport implements WithMultipleSheets
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('d6d7e2');
         }
-    } */
+    } 
 }

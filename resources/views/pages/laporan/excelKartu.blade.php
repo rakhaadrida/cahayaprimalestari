@@ -3,14 +3,14 @@
     <center>
       <h2 class="text-bold text-dark">Kartu Stok (Good Stock)</h2>
       <h3 class="text-dark">
-        Kode Barang : {{$itemsBRG[0]->id}}
+        Kode Barang : {{$rowBM[0]->barang->id}}
       </h3>
       <h5 class="waktu-cetak">Tanggal : {{\Carbon\Carbon::parse($awal)->format('d-m-Y')}} s/d {{\Carbon\Carbon::parse($akhir)->format('d-m-Y')}}</h5>
     </center>
     <br>
 
-    <h5>Kode Barang : {{ $itemsBRG[0]->id }} - {{ $itemsBRG[0]->nama }}</h5>
-    <h5>Ukuran : {{ $itemsBRG[0]->ukuran }}  {{ $itemsBRG[0]->satuan }} </h5>
+    <h5>Kode Barang : {{ $rowBM[0]->barang->id }} - {{ $rowBM[0]->barang->nama }}</h5>
+    <h5>Ukuran : {{ $rowBM[0]->barang->ukuran }}  {{ $rowBM[0]->barang->satuan }} </h5>
 
     <!-- Tabel Data Detil PO -->
     <table class="table table-sm table-bordered table-striped table-responsive-sm">
@@ -36,26 +36,16 @@
         </tr>
       </thead>
       <tbody>
-        @if(($rowBM != 0) || ($rowSO != 0))
+        @if(($rowBM->count() != 0) || ($rowSO->count() != 0))
           <tr>
             <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
-            <td class="text-bold text-dark text-right">{{ $stokAwal[0] }}</td>
+            <td class="text-bold text-dark text-right">{{ $stokAwal }}</td>
             <td colspan="7"></td>
           </tr>
           @php 
             $i = 1; $totalBM = 0; $totalSO = 0;
-            $itemsBM = \App\Models\DetilBM::with(['bm', 'barang'])
-                        ->where('id_barang', $itemsBRG[0]->id)
-                        ->whereHas('bm', function($q) use($awal, $akhir) {
-                            $q->whereBetween('tanggal', [$awal, $akhir]);
-                        })->get();
-            $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
-                        ->where('id_barang', $itemsBRG[0]->id)
-                        ->whereHas('so', function($q) use($awal, $akhir) {
-                            $q->whereBetween('tgl_so', [$awal, $akhir]);
-                        })->get();
           @endphp
-          @foreach($itemsBM as $ib)
+          @foreach($rowBM as $ib)
             <tr class="text-bold">
               <td align="center">{{ $i }}</td>
               <td align="center">
@@ -78,7 +68,7 @@
             </tr>
             @php $i++; @endphp
           @endforeach
-          @foreach($itemsSO as $is)
+          @foreach($rowSO as $is)
             <tr class="text-bold">
               <td align="center">{{ $i }}</td>
               <td align="center">{{ \Carbon\Carbon::parse($is->so->tgl_so)->format('d-m-Y') }} </td>
@@ -102,7 +92,7 @@
           <tr>
             <td colspan="5" class="text-bold text-dark text-center">Total</td>
             <td class="text-bold text-dark text-right">
-              {{ $stokAwal[0] + $totalBM }}
+              {{ $stokAwal + $totalBM }}
             </td>
             <td colspan="2"></td>
             <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
@@ -120,7 +110,8 @@
         @endif
       </tbody>
     </table>
-    <hr>
+    <br>
     <!-- End Tabel Data Detil PO -->
+    <h4>Copyright &copy; {{$sejak}} @if($tahun->year != $sejak) - {{$tahun->year}} @endif | rakhaadrida</h4>
   </body>
 </html>
