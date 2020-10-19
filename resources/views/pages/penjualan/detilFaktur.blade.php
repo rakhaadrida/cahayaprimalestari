@@ -6,7 +6,9 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Ubah Faktur</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">
+        @if(Auth::user()->roles == 'FINANCE') Cek Faktur @else Ubah Faktur @endif
+      </h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -33,12 +35,14 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" value="{{ $id }}" >
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-4">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
-                    <input type="hidden" name="kode" id="kodeCustomer">
-                  </div>
+                  @if(Auth::user()->roles != 'FINANCE')
+                    <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
+                    <span class="col-form-label text-bold">:</span>
+                    <div class="col-4">
+                      <input type="text" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
+                      <input type="hidden" name="kode" id="kodeCustomer">
+                    </div>
+                  @endif
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
@@ -102,7 +106,7 @@
                             <div class="col-2">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold"
                               @if($itemsRow != 0)
-                                value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}"
+                                value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}"
                               @endif
                               >
                             </div>
@@ -143,7 +147,7 @@
                             <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
                               @if($itemsRow != 0)
-                                value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-m-Y') }}"
+                                value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}"
                               @endif
                               >
                             </div>
@@ -265,18 +269,20 @@
                     <hr>
                     <!-- End Tabel Data Detil PO -->
 
-                    <!-- Button Submit dan Reset -->
-                    <div class="form-row justify-content-center">
-                      <div class="col-2">
-                        <a href="" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold"> Ganti Status
-                        </a>
-                        {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
+                    @if(Auth::user()->roles != 'FINANCE')
+                      <!-- Button Submit dan Reset -->
+                      <div class="form-row justify-content-center">
+                        <div class="col-2">
+                          <a href="" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold"> Ganti Status
+                          </a>
+                          {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
+                        </div>
+                        <div class="col-2">
+                          <button type="submit" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi Faktur</button>
+                        </div>
                       </div>
-                      <div class="col-2">
-                        <button type="submit" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi Faktur</button>
-                      </div>
-                    </div>
-                    <!-- End Button Submit dan Reset -->
+                      <!-- End Button Submit dan Reset -->
+                    @endif
                   </div>
 
                   <!-- Modal Ganti Status -->

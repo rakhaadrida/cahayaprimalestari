@@ -61,7 +61,7 @@ Route::middleware(['auth', 'admin'])
                 ->name('tb-remove');
 
         // Sales Order
-        Route::get('/so/{status}', 'SalesOrderController@index')->name('so');
+        Route::get('/so/index/{status}', 'SalesOrderController@index')->name('so');
         Route::post('/so/create/{id}', 'SalesOrderController@create')->name('so-create');
         Route::post('/so/process/{id}/{status}', 'SalesOrderController@process')->name('so-process');
         Route::get('/so/cetak/{id}', 'SalesOrderController@cetak')->name('so-cetak');
@@ -112,6 +112,11 @@ Route::middleware(['auth', 'admin'])
         // Notif
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
+
+        // Account Receivable
+        Route::get('ar', 'AccReceivableController@index')->name('ar');
+        Route::post('ar/show', 'AccReceivableController@show')->name('ar-show');
+        Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
 });
 
 

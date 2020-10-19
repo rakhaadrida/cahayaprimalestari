@@ -33,6 +33,16 @@ class CetakFakturController extends Controller
     public function cetak($awal, $akhir) {
         $items = SalesOrder::with(['customer'])->where('status', 'INPUT')->whereBetween('id', [$awal, $akhir])->get();
 
+        foreach($items as $i) {
+            AccReceivable::create([
+                'id_so' => $i->id,
+                'tgl_bayar' => NULL,
+                'cicil' => NULL,
+                'retur' => NULL,
+                'keterangan' => 'BELUM LUNAS'
+            ]);
+        }
+
         $data = [
             'items' => $items
         ];

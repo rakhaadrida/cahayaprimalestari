@@ -51,7 +51,7 @@
             $items = \App\Models\SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
           @endphp
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
-        @elseif(Auth::user()->roles == 'ADMIN')
+        @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
           @php 
             $items = \App\Models\SalesOrder::has('approval')->where('status', 'UPDATE')
                         ->get();
@@ -69,7 +69,7 @@
             <a class="dropdown-item d-flex align-items-center" 
             @if(Auth::user()->roles == 'SUPER') 
               href="{{ route('app-show', $item->id) }}"
-            @elseif(Auth::user()->roles == 'ADMIN')
+            @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
               href="{{ route('notif-show', $item->id) }}"
             @endif
             >
@@ -86,7 +86,7 @@
                   <span class="font-weight-bold">
                     Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada faktur {{ $item->id }}
                   </span>
-                @elseif(Auth::user()->roles == 'ADMIN')
+                @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
                   <div class="small text-gray-500">
                     {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-m-Y') }}
                   </div>

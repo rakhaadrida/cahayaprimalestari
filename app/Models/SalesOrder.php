@@ -34,4 +34,8 @@ class SalesOrder extends Model
     public function detil_approval() {
         return $this->hasMany('App\Models\DetilApproval', 'id_so', 'id');
     }
+
+    public function ar() {
+        return $this->hasOne('App\Models\AccReceivable', 'id_so', 'id');
+    }
 }

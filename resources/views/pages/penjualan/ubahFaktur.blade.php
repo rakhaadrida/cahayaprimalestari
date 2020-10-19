@@ -6,7 +6,9 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Ubah Faktur</h1>
+    <h1 class="h3 mb-0 text-gray-800 menu-title">
+      @if(Auth::user()->roles == 'FINANCE') Cek Faktur @else Ubah Faktur @endif
+    </h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -33,12 +35,14 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode">
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-4">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" id="namaCustomer" name="nama">
-                    <input type="hidden" name="kode" id="kodeCustomer">
-                  </div>
+                  @if(Auth::user()->roles != 'FINANCE')
+                    <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
+                    <span class="col-form-label text-bold">:</span>
+                    <div class="col-4">
+                      <input type="text" class="form-control form-control-sm text-bold mt-1" id="namaCustomer" name="nama">
+                      <input type="hidden" name="kode" id="kodeCustomer">
+                    </div>
+                  @endif
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
@@ -46,8 +50,7 @@
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" >
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">Tanggal Akhir</label>
-                  <span class="col-form-label text-bold ml-3">:</span>
+                  <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
                     <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" >
                   </div>

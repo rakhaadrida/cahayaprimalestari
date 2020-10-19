@@ -12,6 +12,7 @@ use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
 use App\Models\HargaBarang;
 use App\Models\Gudang;
+use App\Models\AccReceivable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
@@ -93,6 +94,16 @@ class SalesOrderController extends Controller
             'id_customer' => $request->kodeCustomer
         ]);
 
+        if($status == 'CETAK') {
+            AccReceivable::create([
+                'id_so' => $id,
+                'tgl_bayar' => NULL,
+                'cicil' => NULL,
+                'retur' => NULL,
+                'keterangan' => 'BELUM LUNAS'
+            ]);
+        }
+
         for($i = 0; $i < $jumlah; $i++) {
             if($request->kodeBarang[$i] != "") {
                 $arrGudang = explode(",", $request->kodeGudang[$i]);
@@ -128,7 +139,12 @@ class SalesOrderController extends Controller
             }
         }
 
-        return redirect()->route('so', 'true');
+        if($status == 'INPUT')
+            $cetak = 'false';
+        else
+            $cetak = 'true';
+
+        return redirect()->route('so', $cetak);
     }
 
     public function cetak(Request $request, $id) {

@@ -358,8 +358,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: #ffffff;
 }
 
-/* @media print {
-    .cetak-all-container {
-        display: block;
-    }
-} */
+.table-ar {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.table-ar input[type=text] {
+    font-size: 13px;
+    padding: 0px 0px ;
+}

@@ -155,7 +155,7 @@ function formatPhone(e){
   telepon.value = value;
 }
 
-/** Input telepon strip separator **/
+/** Input nominal titik separator **/
 function formatNominal(e){
   $(this).val(function(index, value) {
     return value

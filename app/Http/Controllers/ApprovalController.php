@@ -9,6 +9,7 @@ use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
 use App\Models\Approval;
 use App\Models\DetilApproval;
+use App\Models\AccReceivable;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
@@ -94,6 +95,8 @@ class ApprovalController extends Controller
         $item = SalesOrder::where('id', $id)->first();
         $item->{'status'} = "CETAK";
         $item->save();
+
+        $ar = AccReceivable::where('id_so', $id)->delete();
 
         session()->put('url.intended', URL::previous());
         return Redirect::intended('/');  
