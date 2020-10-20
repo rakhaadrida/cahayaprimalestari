@@ -140,7 +140,7 @@
 
   <!-- Nav Item - Account Payable -->
   <li class="nav-item sidebar-menu-icon">
-    <a class="nav-link" href="charts.html">
+    <a class="nav-link" href="{{ route('ap') }}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Account Payable</span></a>
   </li>

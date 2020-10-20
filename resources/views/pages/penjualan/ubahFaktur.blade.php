@@ -79,7 +79,9 @@ const kodeCust = document.getElementById('kodeCustomer');
 const kodeSO = document.getElementById('kode');
 
 /** Call Fungsi Setelah Inputan Terisi **/
+@if(Auth::user()->roles != 'FINANCE')
 namaCust.addEventListener("change", displayKode);
+@endif
 
 function displayKode(e) {
   @foreach($customer as $c)

@@ -117,6 +117,13 @@ Route::middleware(['auth', 'admin'])
         Route::get('ar', 'AccReceivableController@index')->name('ar');
         Route::post('ar/show', 'AccReceivableController@show')->name('ar-show');
         Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
+
+        // Account Payable
+        Route::get('ap', 'AccPayableController@index')->name('ap');
+        Route::post('ap/show', 'AccPayableController@show')->name('ap-show');
+        Route::post('ap/detail/{id}', 'AccPayableController@detail')->name('ap-detail');
+        Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
+        Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
 });
 
 
