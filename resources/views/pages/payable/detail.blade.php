@@ -117,7 +117,7 @@
                           <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
                           <td rowspan="2" style="width: 130px" class="align-middle">Jumlah</td>
                           <td colspan="2">Diskon</td>
-                          <td rowspan="2" style="width: 130px" class="align-middle">Netto (Rp)</td>
+                          <td rowspan="2" style="width: 130px" class="align-middle">HPP</td>
                         </tr>
                         <tr>
                           <td style="width: 95px">%</td>

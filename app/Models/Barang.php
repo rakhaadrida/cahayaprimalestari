@@ -10,8 +10,12 @@ class Barang extends Model
     use SoftDeletes;
     protected $table = 'barang';
     protected $keyType = "string";
-    protected $fillable = ['id', 'nama', 'satuan', 'ukuran'];
+    protected $fillable = ['id', 'nama', 'id_kategori', 'satuan', 'ukuran'];
     public $incrementing = false;
+
+    public function jenis() {
+        return $this->belongsTo('App\Models\JenisBarang', 'id_kategori', 'id');
+    }
 
     public function hargaBarang() {
         return $this->hasMany('App\Models\HargaBarang', 'id_barang', 'id');

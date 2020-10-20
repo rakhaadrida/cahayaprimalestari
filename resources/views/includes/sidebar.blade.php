@@ -61,6 +61,7 @@
         <a class="collapse-item" href="{{ route('supplier.index') }}">Supplier</a>
         <a class="collapse-item" href="{{ route('sales.index') }}">Sales</a>
         <a class="collapse-item" href="{{ route('customer.index') }}">Customer</a>
+        <a class="collapse-item" href="{{ route('jenis.index') }}">Jenis Barang</a>
         <a class="collapse-item" href="{{ route('barang.index') }}">Barang</a>
         <a class="collapse-item" href="{{ route('harga.index') }}">Harga</a>
         <a class="collapse-item" href="{{ route('gudang.index') }}">Gudang</a>
@@ -147,7 +148,7 @@
 
   <!-- Nav Item - Laporan Keuangan -->
   <li class="nav-item sidebar-menu-icon">
-    <a class="nav-link" href="tables.html">
+    <a class="nav-link" href="{{ route('lap-keu') }}">
       <i class="fas fa-fw fa-table"></i>
       <span>Laporan</span></a>
   </li>

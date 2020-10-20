@@ -117,7 +117,8 @@
                         <input type="text" name="ret{{$s->id}}" id="retur" class="form-control form-control-sm text-bold text-dark text-right retur" 
                         @if($s->ar != null) value="{{ number_format($s->ar->retur, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">{{ number_format($s->total, 0, "", ",") }}</td>
+                      <td align="right" class="align-middle">
+                        @if($s->ar != null) {{ number_format($s->total - $s->ar->cicil, 0, "", ",") }} @else {{ number_format($s->total, 0, "", ",") }} @endif</td>
                       <td align="center" class="align-middle text-bold" @if(($s->ar != null) && ($s->ar->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         @if($s->ar != null) {{$s->ar->keterangan}} @else BELUM LUNAS @endif
                       </td>

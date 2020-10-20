@@ -20,6 +20,7 @@ Route::middleware(['auth', 'admin'])
         Route::resource('supplier', 'SupplierController');
         Route::resource('sales', 'SalesController');
         Route::resource('customer', 'CustomerController');
+        Route::resource('jenis', 'JenisBarangController');
         Route::resource('barang', 'BarangController');
         Route::resource('gudang', 'GudangController');
         Route::resource('harga', 'HargaController');
@@ -124,6 +125,10 @@ Route::middleware(['auth', 'admin'])
         Route::post('ap/detail/{id}', 'AccPayableController@detail')->name('ap-detail');
         Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
         Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
+
+        // Laporan Keuangan
+        Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
+        Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
 });
 
 

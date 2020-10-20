@@ -40,6 +40,14 @@
                   <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Barang" value="{{ old('nama') }}" required>
                 </div>
               </div>
+              <div class="form-group row">
+                <label for="kategori" class="col-1 col-form-label text-bold">Kategori</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" value="{{ old('kategori') }}" required>
+                </div>
+                <input type="hidden" name="kodeJenis" id="kodeJenis">
+              </div>
               <hr>
               <div class="form-group row">
                 <label for="satuan" class="col-1 col-form-label text-bold">Satuan</label>
@@ -88,6 +96,8 @@
 
 @push('addon-script')
 <script type="text/javascript">
+const kategori = document.getElementById('kategori');
+const kodeJenis = document.getElementById('kodeJenis');
 const ukuran = document.getElementById('ukuran');
 const labelUkuran = document.getElementById('labelUkuran');
 const radios = document.querySelectorAll('input[type=radio][name="satuan"]');
@@ -96,6 +106,14 @@ ukuran.addEventListener("keyup", formatNominal);
 
 Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayUkuran);
+});
+
+kategori.addEventListener("keydown", function(e) {
+  @foreach($jenis as $j)
+    if('{{ $j->nama }}' == e.target.value) {
+      kodeJenis.value = '{{ $j->id }}';
+    }
+  @endforeach
 });
 
 /** Tampil Label Satuan Ukuran **/
@@ -127,6 +145,51 @@ function formatNominal(e){
     ;
   });
 }
+
+/** Autocomplete Input Text **/
+$(function() {
+  var jenis = [];
+  @foreach($jenis as $s)
+    jenis.push('{{ $s->nama }}');
+  @endforeach
+
+  function split(val) {
+    return val.split(/,\s*/);
+  }
+
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
+  /*-- Autocomplete Input Barang --*/
+  $(kategori).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(jenis, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+});
 
 </script>
 @endpush

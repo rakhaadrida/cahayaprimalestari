@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\JenisBarang;
 use App\Models\Harga;
 use App\Models\Gudang;
 use App\Models\HargaBarang;
@@ -37,9 +38,11 @@ class BarangController extends Controller
         $lastnumber = (int) substr($lastcode, 3, 3);
         $lastnumber++;
         $newcode = 'BRG'.sprintf("%03s", $lastnumber);
+        $jenis = JenisBarang::All();
 
         $data = [
-            'newcode' => $newcode
+            'newcode' => $newcode,
+            'jenis' => $jenis
         ];
         
         return view('pages.barang.create', $data);
@@ -49,6 +52,7 @@ class BarangController extends Controller
         Barang::create([
             'id' => $request->kode,
             'nama' => $request->nama,
+            'id_kategori' => $request->kodeJenis,
             'satuan' => $request->satuan,
             'ukuran' => str_replace(".", "", $request->ukuran)
         ]);
@@ -183,9 +187,11 @@ class BarangController extends Controller
     }
 
     public function edit($id) {
-        $item = Barang::findOrFail($id);
+        $item = Barang::with(['jenis'])->findOrFail($id);
+        $jenis = JenisBarang::All();
         $data = [
-            'item' => $item
+            'item' => $item,
+            'jenis' => $jenis
         ];
         
         return view('pages.barang.edit', $data);
@@ -194,6 +200,7 @@ class BarangController extends Controller
     public function update(BarangRequest $request, $id) {
         $item = Barang::where('id', $id)->first();
         $item->{'nama'} = $request->nama;
+        $item->{'id_kategori'} = $request->kodeJenis;
         $item->{'satuan'} = $request->satuan;
         $item->{'ukuran'} = str_replace(".", "", $request->ukuran);
         $item->save();
