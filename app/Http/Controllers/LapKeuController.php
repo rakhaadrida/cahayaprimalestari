@@ -8,6 +8,7 @@ use App\Models\Sales;
 use App\Models\Customer;
 use App\Models\SalesOrder;
 use App\Models\DetilSO;
+use App\Models\Barang;
 use Illuminate\Support\Facades\DB;
 
 class LapKeuController extends Controller
@@ -29,34 +30,40 @@ class LapKeuController extends Controller
                 $month = '';
         }
 
-        $i = 0;
-        $custBySales = array();
+        $jenis = JenisBarang::All();
         $sales = Sales::All();
-        foreach($sales as $s) {
-            $custBySales[$i] = array();
-            $customer = Customer::where('id_sales', $s->id)->get();
-            
-            foreach($customer as $c) {
-                array_push($custBySales[$i], $c->id);
-            }
-            var_dump($custBySales[$i]);
-            echo "<br>";
-            $i++;
-        }
 
-        $items = SalesOrder::
-                    select('id_customer', DB::raw('sum(total) as total')) 
-                    ->whereYear('tgl_so', $request->tahun)
-                    ->whereMonth('tgl_so', $month)
-                    ->whereIn('id_customer', $custBySales[2])
-                    ->groupBy('id_customer')
+        // $so = SalesOrder::join('customer', 'customer.id', '=', 'so.id_customer')
+        //             ->select('customer.id_sales', DB::raw('sum(total) as total')) 
+        //             ->whereYear('tgl_so', $request->tahun)
+        //             ->whereMonth('tgl_so', $month)
+        //             ->groupBy('customer.id_sales')
+        //             ->get();
+
+        $items = DetilSO::join('barang', 'barang.id', '=', 'detilso.id_barang')
+                    ->join('so', 'so.id', '=', 'detilso.id_so')
+                    ->join('customer', 'customer.id', '=', 'so.id_customer')
+                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
+                    ->select('customer.id_sales', 'barang.id_kategori', DB::raw('sum(harga * qty) as total')) 
+                    ->whereYear('so.tgl_so', $request->tahun)
+                    ->whereMonth('so.tgl_so', $month)
+                    ->groupBy('customer.id_sales', 'barang.id_kategori')
                     ->get();
-        foreach($items as $i) {
-        echo "<br>";
-        // var_dump(sizeof($custBySales));
-        var_dump($i->id_customer." = ".$i->total);
-        }
 
-        // $jenis = JenisBarang::All();
+        // echo "<br>";            
+        // foreach($items as $i) {
+        // echo "<br>";
+        // var_dump($i->id_sales." - ".$i->id_kategori." = ".$i->total);
+        // }
+
+        $data = [
+            'tahun' => $tahun,
+            'bulan' => $request->bulan,
+            'jenis' => $jenis,
+            'sales' => $sales,
+            'items' => $items
+        ];
+
+        return view('pages.keuangan.show', $data);
     }
 }
