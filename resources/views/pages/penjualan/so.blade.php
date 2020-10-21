@@ -791,8 +791,8 @@ function displayRow(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("change", displayHarga) ;
-  kodeBarang[i].addEventListener("change", displayHarga);
+  brgNama[i].addEventListener("keydown", displayHarga) ;
+  kodeBarang[i].addEventListener("keydown", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
@@ -814,9 +814,9 @@ for(let i = 0; i < brgNama.length; i++) {
         qty[i].setAttribute('required', true);
       }
     @endforeach
-  }
 
-  kodeGudang[i].value = 'GDG01';
+    kodeGudang[i].value = 'GDG01';
+  }
 }
 
 /** Tampil Jumlah Harga Otomatis **/

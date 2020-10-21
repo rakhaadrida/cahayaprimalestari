@@ -80,7 +80,8 @@
                 <thead class="text-center text-bold text-dark">
                   <tr style="font-size: 14px">
                     <th style="width: 10px" class="align-middle">NO</th>
-                    <th style="width: 220px" class="align-middle">SALES</th>
+                    <th style="width: 120px" class="align-middle">SALES</th>
+                    <th style="width: 70px" class="align-middle">DETAIL</th>
                     @foreach($jenis as $j)
                       <th style="width: 40px" class="align-middle">{{$j->nama}}</th>
                     @endforeach
@@ -92,11 +93,12 @@
                   @php $no = 1 @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
-                      <td align="center" class="align-middle">{{ $no }}</td>
-                      <td class="align-middle">{{ $s->nama }}</td>
+                      <td rowspan=3 align="center" class="align-middle">{{ $no }}</td>
+                      <td rowspan=3 class="align-middle">{{ $s->nama }}</td>
+                      <td align="center" style="background-color: #f0ededda !important">Revenue</td>
                       @php $total = 0; @endphp
                       @foreach($jenis as $j)
-                        <td align="right" class="align-middle">
+                        <td align="right" class="align-middle" style="background-color: #f0ededda !important">
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
                             {{ number_format($i->total, 0, "", ",") }}
@@ -104,6 +106,28 @@
                           @endif
                         @endforeach
                         </td>
+                      @endforeach
+                      <td align="right" class="align-middle" style="background-color: #f0ededda !important"></td>
+                      <td align="right" class="align-middle" style="background-color: #f0ededda !important">
+                        {{ number_format($total, 0, "", ",") }}
+                      </td>
+                    </tr>
+                    <tr class="text-dark" style="background-color: white">
+                      <td align="center">HPP</td>
+                      @php $total = 0; @endphp
+                      @foreach($jenis as $j)
+                        <td></td>
+                      @endforeach
+                      <td align="right" class="align-middle"></td>
+                      <td align="right" class="align-middle">
+                        {{ number_format($total, 0, "", ",") }}
+                      </td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="background-color: yellow">
+                      <td align="center">Laba</td>
+                      @php $total = 0; @endphp
+                      @foreach($jenis as $j)
+                        <td></td>
                       @endforeach
                       <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
@@ -131,20 +155,20 @@
 @endsection
 
 @push('addon-script')
-<script src="{{ url('backend/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+{{-- <script src="{{ url('backend/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
+<script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script> --}}
 <script type="text/javascript">
 const tahun = document.getElementById('tahun');
 const bulan = document.getElementById('bulan');
 
 /** Sort Datatable **/
-$('#dataTable').dataTable( {
+/* $('#dataTable').dataTable( {
   "columnDefs": [
-    { "orderable": false, "targets": [0] }
+    { "orderable": false, "targets": [0, 1, 2] }
   ],
   "aaSorting" : []
-});
+}); */
 
 /** Autocomplete Input Text **/
 $(function() {
