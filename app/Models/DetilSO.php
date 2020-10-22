@@ -12,7 +12,7 @@ class DetilSO extends Model
     protected $table = "detilso";
     protected $primaryKey = ['id_so', 'id_barang', 'id_gudang'];
     protected $keyType = "string";
-    protected $fillable = ['id_so', 'id_barang', 'id_gudang', 'harga', 'qty', 'diskon'];
+    protected $fillable = ['id_so', 'id_barang', 'id_gudang', 'harga', 'qty', 'diskon', 'diskonRp'];
 
     public $incrementing = false;
 

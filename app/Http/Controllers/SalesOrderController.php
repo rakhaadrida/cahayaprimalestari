@@ -81,6 +81,16 @@ class SalesOrderController extends Controller
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
+
+        if($request->tempo == "") 
+            $tempo = 0;
+        else
+            $tempo = $request->tempo;
+
+        if($request->pkp == "") 
+            $pkp = 0;
+        else
+            $tempo = $request->pkp;
         
         SalesOrder::create([
             'id' => $id,
@@ -88,26 +98,25 @@ class SalesOrderController extends Controller
             'tgl_kirim' => $request->tanggalKirim,
             'total' => str_replace(".", "", $request->grandtotal),
             'kategori' => $request->kategori,
-            'tempo' => $request->tempo,
-            'pkp' => $request->pkp,
+            'tempo' => $tempo,
+            'pkp' => $pkp,
             'status' => $status,
             'id_customer' => $request->kodeCustomer
         ]);
 
-        if($status == 'CETAK') {
-            AccReceivable::create([
-                'id_so' => $id,
-                'tgl_bayar' => NULL,
-                'cicil' => NULL,
-                'retur' => NULL,
-                'keterangan' => 'BELUM LUNAS'
-            ]);
-        }
+        AccReceivable::create([
+            'id_so' => $id,
+            'tgl_bayar' => NULL,
+            'cicil' => NULL,
+            'retur' => NULL,
+            'keterangan' => 'BELUM LUNAS'
+        ]);
 
         for($i = 0; $i < $jumlah; $i++) {
             if($request->kodeBarang[$i] != "") {
                 $arrGudang = explode(",", $request->kodeGudang[$i]);
                 $arrStok = explode(",", $request->qtyGudang[$i]);
+                $diskonRp = str_replace(".", "", $request->diskonRp[$i]) / sizeof($arrGudang);
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
                         'id_so' => $id,
@@ -115,26 +124,26 @@ class SalesOrderController extends Controller
                         'id_gudang' => $arrGudang[$j],
                         'harga' => str_replace(".", "", $request->harga[$i]),
                         'qty' => $arrStok[$j],
-                        'diskon' => $request->diskon[$i]
+                        'diskon' => $request->diskon[$i],
+                        'diskonRp' => $diskonRp
                     ]);
-
-                    // $qty = $qtyGudang[$j];
 
                     $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                                 ->where('id_gudang', $arrGudang[$j])->first();
                                 var_dump($updateStok);
                     $updateStok->{'stok'} -= $arrStok[$j];
                     $updateStok->save();
-                    // foreach($updateStok as $us) {
-                    //     if($request->qty[$i] <= $us->stok) {
-                    //         $us->stok -= $request->qty[$i];
-                    //     }
-                    //     else {
-                    //         $qty -= $us->stok;
-                    //         $us->stok -= $us->stok;
-                    //     }
-                    //     $us->save();
-                    // }
+                    
+                    /* foreach($updateStok as $us) {
+                        if($request->qty[$i] <= $us->stok) {
+                            $us->stok -= $request->qty[$i];
+                        }
+                        else {
+                            $qty -= $us->stok;
+                            $us->stok -= $us->stok;
+                        }
+                        $us->save();
+                    } */
                 }
             }
         }

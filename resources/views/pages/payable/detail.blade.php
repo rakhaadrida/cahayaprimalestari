@@ -140,7 +140,7 @@
                             </td>
                             <td align="right">
                               <input type="text" name="dis{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" @if($detil->diskon != null) 
-                              value="{{ $detil->diskon }}" @endif >
+                              value="{{ $detil->diskon }}" @endif required>
                             </td>
                             @if($detil->diskon != null)
                               @php 
@@ -153,12 +153,12 @@
                               @endphp
                             @endif
                             <td align="right">
-                              <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" @if($detil->diskon != null) 
+                              <input type="text" name="disRp{{$detil->id_barang}}" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" @if($detil->diskon != null) 
                               value="{{ number_format((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}" 
                               @endif>
                             </td>
                             <td align="right">
-                              <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" @if($detil->diskon != null) 
+                              <input type="text" name="hpp{{$detil->id_barang}}" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" @if($detil->diskon != null) 
                               value="{{ number_format(($detil->qty * $detil->harga) - 
                               ((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}" @endif>
                             </td>

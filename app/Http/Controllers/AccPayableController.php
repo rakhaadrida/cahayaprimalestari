@@ -67,10 +67,12 @@ class AccPayableController extends Controller
 
         foreach($detil as $d) {
             $d->diskon = $request->{"dis".$d->id_barang};
+            $d->hpp = (int) (str_replace(".", "", $request->{"hpp".$d->id_barang}) / $d->qty);
             $d->save();
         }
 
         $bm->{'total'} = str_replace(".", "", $request->subtotal);
+        $bm->{'status'} = "LENGKAP";
         $bm->save();
 
         return redirect()->route('ap');

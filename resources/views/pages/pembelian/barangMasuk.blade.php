@@ -66,7 +66,6 @@
                       <span class="col-form-label text-bold ml-2">Rp</span>
                       <div class="col-5">
                         <input type="text" readonly class="form-control-plaintext text-bold text-right text-danger" name="grandtotal" id="grandtotal">
-                        <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                       </div>
                     </div>
                   </div>
@@ -76,6 +75,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
                     <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" required>
+                    <input type="hidden" name="kodeGudang" id="kodeGudang"> 
                   </div>
                 </div>
                 <div class="form-group row subtotal-so">
@@ -145,24 +145,24 @@
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold text-dark">
                   <tr>
-                    <td rowspan="2" style="width: 30px" class="align-middle">No</td>
-                    <td rowspan="2" style="width: 90px" class="align-middle">Kode Barang</td>
-                    <td rowspan="2" @if(Auth::user()->roles == 'ADMIN') style="width: 320px" @endif class="align-middle">Nama Barang</td>
-                    <td rowspan="2" style="width: 55px" class="align-middle">Qty</td>
-                    <td rowspan="2" style="width: 90px" class="align-middle">Harga</td>
-                    <td rowspan="2" style="width: 110px" class="align-middle">Jumlah</td>
-                    @if(Auth::user()->roles == 'SUPER')
+                    <td style="width: 30px" class="align-middle">No</td>
+                    <td style="width: 120px" class="align-middle">Kode Barang</td>
+                    <td @if(Auth::user()->roles == 'ADMIN') style="width: 320px" @endif class="align-middle">Nama Barang</td>
+                    <td style="width: 85px" class="align-middle">Qty</td>
+                    <td style="width: 120px" class="align-middle">Harga</td>
+                    <td style="width: 140px" class="align-middle">Jumlah</td>
+                    {{-- @if(Auth::user()->roles == 'SUPER')
                       <td colspan="2">Diskon</td>
                       <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
-                    @endif
-                    <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
+                    @endif --}}
+                    <td style="width: 50px" class="align-middle">Hapus</td>
                   </tr>
-                  @if(Auth::user()->roles == 'SUPER')
+                  {{-- @if(Auth::user()->roles == 'SUPER')
                     <tr>
                       <td>%</td>
                       <td>Rupiah</td>
                     </tr>
-                  @endif
+                  @endif --}}
                 </thead>
                 <tbody id="tablePO">
                   @for($i=1; $i<=5; $i++)
@@ -185,7 +185,7 @@
                       <td>
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                       </td>
-                      @if(Auth::user()->roles == 'SUPER')
+                      {{-- @if(Auth::user()->roles == 'SUPER')
                         <td style="width: 90px">
                           <input type="text" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
                           value="{{ old('diskon[]') }}" >
@@ -197,7 +197,7 @@
                         <td>
                           <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ old('netto[]') }}" >
                         </td>
-                      @endif
+                      @endif --}}
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
@@ -281,6 +281,7 @@
 const namaSup = document.getElementById('namaSupplier');
 const kodeSup = document.getElementById('kodeSupplier');
 const gudang = document.getElementById('namaGudang');
+const kodeGud = document.getElementById('kodeGudang');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
@@ -298,7 +299,8 @@ const jumBaris = document.getElementById('jumBaris');
 var netPast;
 // const keterangan = document.querySelectorAll(".keterangan");
 
-namaSup.addEventListener('change', displaySupp);
+gudang.addEventListener('keydown', displayGud);
+namaSup.addEventListener('keydown', displaySupp);
 newRow.addEventListener('click', displayRow);
 
 /** Add New Table Line **/
@@ -344,7 +346,7 @@ function displayRow(e) {
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
 
   /** Tampil Harga **/
-  brgRow.addEventListener("change", function (e) {   
+  brgRow.addEventListener("keydown", function (e) {   
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
@@ -358,7 +360,7 @@ function displayRow(e) {
     displayHargaRow(kodeRow.value);
   });
 
-  kodeRow.addEventListener("change", function (e) {
+  kodeRow.addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
@@ -395,7 +397,7 @@ function displayRow(e) {
   });
 
   /** Tampil Jumlah **/
-  qtyRow.addEventListener("change", function (e) {
+  qtyRow.addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       jumlahRow.value = "";
     }
@@ -408,13 +410,13 @@ function displayRow(e) {
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
-    if(curNum < lastNum) {
+    if(+curNum < +lastNum) {
       $(newRow).remove();
-      for(let i = curNum; i < lastNum; i++) {
+      for(let i = +curNum; i < +lastNum; i++) {
         $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
       }
     }
-    else if(curNum == lastNum) {
+    else if(+curNum == +lastNum) {
       $(newRow).remove();
     }
     jumBaris.value -= 1;
@@ -486,6 +488,15 @@ function displayRow(e) {
 }
 
 /** Tampil Id Supp **/
+function displayGud(e) {
+  @foreach($gudang as $g)
+    if('{{ $g->nama }}' == e.target.value) {
+      kodeGud.value = '{{ $g->id }}';
+    }
+  @endforeach
+}
+
+/** Tampil Id Supp **/
 function displaySupp(e) {
   @foreach($supplier as $s)
     if('{{ $s->nama }}' == e.target.value) {
@@ -496,7 +507,7 @@ function displaySupp(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("change", function (e) {
+  brgNama[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
@@ -511,7 +522,7 @@ for(let i = 0; i < brgNama.length; i++) {
     displayHarga(kodeBarang[i].value);
   });
 
-  kodeBarang[i].addEventListener("change", function (e) {
+  kodeBarang[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
@@ -529,7 +540,7 @@ for(let i = 0; i < brgNama.length; i++) {
   function displayHarga(kode) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-        harga[i].value = addCommas('{{ $hb->harga }}');
+        harga[i].value = addCommas('{{ $hb->harga_ppn }}');
         qty[i].setAttribute('required', true);
       }
     @endforeach
@@ -538,34 +549,15 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("change", function (e) {
+  qty[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
-      netto[i].value = "";
     }
     else {  
-      @if(Auth::user()->roles == 'SUPER')
-        netPast = +netto[i].value.replace(/\./g, "");
-      @elseif(Auth::user()->roles == 'ADMIN')
-        netPast = +jumlah[i].value.replace(/\./g, "");
-      @endif
-
+      netPast = +jumlah[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
-
-      @if(Auth::user()->roles == 'SUPER')
-        if(diskon[i].value != "") {
-          var angkaDiskon = hitungDiskon(diskon[i].value);
-          diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
-        }
-      @endif
-
-      @if(Auth::user()->roles == 'SUPER')
-        netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
-        checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
-      @elseif(Auth::user()->roles == 'ADMIN')
-        checkSubtotal(netPast, +jumlah[i].value.replace(/\./g, ""));
-      @endif
+      checkSubtotal(netPast, +jumlah[i].value.replace(/\./g, ""));
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
   });
@@ -573,7 +565,7 @@ for(let i = 0; i < qty.length; i++) {
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
-  diskon[i].addEventListener("change", function (e) {
+  diskon[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       netPast = netto[i].value.replace(/\./g, "");
       netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
@@ -613,7 +605,7 @@ function checkSubtotal(Past, Now) {
 
 /** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  ppn.value = addCommas(Math.floor(sub * 10 / 100));
+  // ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
 }
 

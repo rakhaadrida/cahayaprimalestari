@@ -10,8 +10,12 @@ class BarangMasuk extends Model
     use SoftDeletes;
     protected $table = "barangmasuk";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tanggal', 'total', 'id_supplier', 'status'];
+    protected $fillable = ['id', 'tanggal', 'total', 'id_gudang', 'id_supplier', 'status'];
     public $incrementing = false;
+
+    public function gudang() {
+        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id');
+    }
 
     public function supplier() {
         return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id');

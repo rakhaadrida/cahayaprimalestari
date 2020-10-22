@@ -112,9 +112,7 @@
                         <input type="text" name="tr{{$a->id_bm}}" id="transfer" class="form-control form-control-sm text-bold text-dark text-right transfer" @if($a->transfer != null) value="{{ number_format($a->transfer, 0, "", ",") }}" @endif>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->bm->total - $a->transfer, 0, "", ",") }}</td>
-                      <td align="center" class="align-middle text-bold align-middle" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        @if($a->keterangan != null) {{$a->keterangan}} @else BELUM LUNAS @endif
-                      </td>
+                      <td align="center" class="align-middle text-bold align-middle" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>{{$a->keterangan}}</td>
                     </tr>
                     @php $i++ @endphp
                   @empty

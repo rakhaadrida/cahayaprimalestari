@@ -62,7 +62,7 @@
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
               <!-- Button Submit dan Reset -->
-              <div class="form-row justify-content-center" @if($so->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
+              <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
                 <div class="col-1">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                 </div>
@@ -74,7 +74,7 @@
 
               <!-- Tabel Data Detil AR -->
               <input type="hidden" id="kodeSO" name="kodeSO">
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($so->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
+              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ar->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
                     <th style="width: 30px" class="align-middle">No</th>
@@ -93,34 +93,32 @@
                 </thead>
                 <tbody class="table-ar">
                   @php $i = 1 @endphp
-                  @forelse($so as $s)
+                  @forelse($ar as $a)
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="align-middle">{{ $s->customer->nama }}</td>
-                      <td class="align-middle">{{ $s->customer->sales->nama }}</td>
-                      <td align="center" class="align-middle">{{ $s->kategori }}</td>
-                      <td align="center" class="align-middle">{{ $s->id }}</td>
+                      <td class="align-middle">{{ $a->so->customer->nama }}</td>
+                      <td class="align-middle">{{ $a->so->customer->sales->nama }}</td>
+                      <td align="center" class="align-middle">{{ $a->so->kategori }}</td>
+                      <td align="center" class="align-middle">{{ $a->id_so }}</td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($s->tgl_so)->format('d-M-y') }}
+                        {{ \Carbon\Carbon::parse($a->so->tgl_so)->format('d-M-y') }}
                       </td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($s->tgl_so)->add($s->tempo, 'days')
+                        {{ \Carbon\Carbon::parse($a->so->tgl_so)->add($a->so->tempo, 'days')
                           ->format('d-M-y') }}
                       </td>
                       <td align="right" class="align-middle">
-                        {{ number_format($s->total, 0, "", ",") }}
+                        {{ number_format($a->so->total, 0, "", ",") }}
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="cic{{$s->id}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($s->ar != null) value="{{ number_format($s->ar->cicil, 0, "", ",") }}" @endif>
+                        <input type="text" name="cic{{$a->id_so}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($a->cicil != null) value="{{ number_format($a->cicil, 0, "", ",") }}" @endif>
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="ret{{$s->id}}" id="retur" class="form-control form-control-sm text-bold text-dark text-right retur" 
-                        @if($s->ar != null) value="{{ number_format($s->ar->retur, 0, "", ",") }}" @endif>
+                        <input type="text" name="ret{{$a->id_so}}" id="retur" class="form-control form-control-sm text-bold text-dark text-right retur" 
+                        @if($a->retur != null) value="{{ number_format($a->retur, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">
-                        @if($s->ar != null) {{ number_format($s->total - $s->ar->cicil, 0, "", ",") }} @else {{ number_format($s->total, 0, "", ",") }} @endif</td>
-                      <td align="center" class="align-middle text-bold" @if(($s->ar != null) && ($s->ar->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        @if($s->ar != null) {{$s->ar->keterangan}} @else BELUM LUNAS @endif
+                      <td align="right" class="align-middle">{{ number_format($a->so->total - $a->cicil, 0, "", ",") }}</td>
+                      <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif> {{ $a->keterangan }}
                       </td>
                     </tr>
                     @php $i++ @endphp
@@ -133,7 +131,7 @@
               </table>
 
               <!-- Button Submit dan Reset -->
-              <div class="form-row justify-content-center" @if($so->count() != 0) style="margin-top: -18px" @endif>
+              <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
                 <div class="col-1">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                 </div>

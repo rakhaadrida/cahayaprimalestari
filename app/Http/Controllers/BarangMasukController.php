@@ -10,6 +10,7 @@ use App\Models\BarangMasuk;
 use App\Models\DetilBM;
 use App\Models\StokBarang;
 use App\Models\Gudang;
+use App\Models\AccPayable;
 use Carbon\Carbon;
 
 class BarangMasukController extends Controller
@@ -74,8 +75,17 @@ class BarangMasukController extends Controller
         BarangMasuk::create([
             'id' => $id,
             'tanggal' => $tanggal,
+            'total' => str_replace(".", "", $request->subtotal),
+            'id_gudang' => $request->kodeGudang,
             'id_supplier' => $request->kodeSupplier,
-            'status' => 'COMPLETE'
+            'status' => 'NO_DISC'
+        ]);
+
+        AccPayable::create([
+            'id_bm' => $id,
+            'tgl_bayar' => NULL,
+            'transfer' => NULL,
+            'keterangan' => "BELUM LUNAS"
         ]);
 
         for($i = 0; $i < $jumlah; $i++) {
@@ -85,9 +95,14 @@ class BarangMasukController extends Controller
                     'id_barang' => $request->kodeBarang[$i],
                     'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $request->qty[$i],
-                    'diskon' => $request->diskon[$i],
-                    'keterangan' => ""
+                    'diskon' => NULL,
+                    'hpp' => NULL,
                 ]);
+
+                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                            ->where('id_gudang', $request->kodeGudang)->first();
+                $updateStok->{'stok'} = $updateStok->{'stok'} + $request->qty[$i];
+                $updateStok->save();
             }
         }
 

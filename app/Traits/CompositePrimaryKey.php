@@ -35,4 +35,5 @@ trait CompositePrimaryKey {
 
         return $this->getAttribute($keyName);
     }
+    
 }

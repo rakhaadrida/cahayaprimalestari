@@ -81,12 +81,12 @@
                   <tr style="font-size: 14px">
                     <th style="width: 10px" class="align-middle">NO</th>
                     <th style="width: 120px" class="align-middle">SALES</th>
-                    <th style="width: 70px" class="align-middle">DETAIL</th>
+                    <th style="width: 60px" class="align-middle">DETAIL</th>
                     @foreach($jenis as $j)
-                      <th style="width: 40px" class="align-middle">{{$j->nama}}</th>
+                      <th style="width: 70px" class="align-middle">{{$j->nama}}</th>
                     @endforeach
                     <th style="width: 50px" class="align-middle">RETUR</th>
-                    <th style="width: 50px" class="align-middle">Grand Total</th>
+                    <th style="width: 40px" class="align-middle">Grand Total</th>
                   </tr>
                 </thead>
                 <tbody class="table-ar">
@@ -114,24 +114,38 @@
                     </tr>
                     <tr class="text-dark" style="background-color: white">
                       <td align="center">HPP</td>
-                      @php $total = 0; @endphp
+                      @php $hpp = 0; @endphp
                       @foreach($jenis as $j)
-                        <td></td>
+                        <td align="right" class="align-middle">
+                        @foreach($items as $i)
+                          @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
+                            {{ number_format($i->hpp, 0, "", ",") }}
+                            @php $hpp += $i->hpp @endphp
+                          @endif
+                        @endforeach
+                        </td>
                       @endforeach
                       <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
-                        {{ number_format($total, 0, "", ",") }}
+                        {{ number_format($hpp, 0, "", ",") }}
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="background-color: yellow">
                       <td align="center">Laba</td>
-                      @php $total = 0; @endphp
+                      @php $laba = 0; @endphp
                       @foreach($jenis as $j)
-                        <td></td>
+                        <td align="right" class="align-middle">
+                        @foreach($items as $i)
+                          @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
+                            {{ number_format($i->total - $i->hpp, 0, "", ",") }}
+                            @php $laba += ($i->total - $i->hpp) @endphp
+                          @endif
+                        @endforeach
+                        </td>
                       @endforeach
                       <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
-                        {{ number_format($total, 0, "", ",") }}
+                        {{ number_format($laba, 0, "", ",") }}
                       </td>
                     </tr>
                     @php $no++ @endphp

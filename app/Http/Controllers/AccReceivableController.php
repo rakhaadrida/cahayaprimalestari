@@ -10,9 +10,9 @@ use Carbon\Carbon;
 class AccReceivableController extends Controller
 {
     public function index() {
-        $so = SalesOrder::with(['customer'])->whereIn('status', ['CETAK', 'UPDATE'])->get();
+        $ar = AccReceivable::with(['so'])->where('keterangan', 'BELUM LUNAS')->get();
         $data = [
-            'so' => $so
+            'ar' => $ar
         ];
 
         return view('pages.receivable.index', $data);

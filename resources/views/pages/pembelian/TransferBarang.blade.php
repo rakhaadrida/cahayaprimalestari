@@ -284,7 +284,7 @@ function displayRow(e) {
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
 
   /** Tampil Harga **/
-  brgRow.addEventListener("change", function (e) {   
+  brgRow.addEventListener("keydown", function (e) {   
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsalRow.removeAttribute('required');
@@ -300,7 +300,7 @@ function displayRow(e) {
     @endforeach
   });
 
-  kodeRow.addEventListener("change", function (e) {
+  kodeRow.addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsalRow.removeAttribute('required');
@@ -316,7 +316,7 @@ function displayRow(e) {
     @endforeach
   });
 
-  gdgAsalRow.addEventListener("change", function (e) {
+  gdgAsalRow.addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       kodeAsalRow.value = "";
       stokAsalRow.value = "";
@@ -330,7 +330,7 @@ function displayRow(e) {
     displayStokRow(kodeAsalRow.value, stokAsalRow);
   });
 
-  gdgTujuanRow.addEventListener("change", function (e) {
+  gdgTujuanRow.addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       kodeTujuanRow.value = "";
       stokTujuanRow.value = "";
@@ -369,13 +369,13 @@ function displayRow(e) {
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
-    if(curNum < lastNum) {
+    if(+curNum < +lastNum) {
       $(newRow).remove();
-      for(let i = curNum; i < lastNum; i++) {
+      for(let i = +curNum; i < +lastNum; i++) {
         $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
       }
     }
-    else if(curNum == lastNum) {
+    else if(+curNum == +lastNum) {
       $(newRow).remove();
     }
     jumBaris.value -= 1;
@@ -508,7 +508,7 @@ function displayRow(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("change", function (e) {
+  brgNama[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsal[i].removeAttribute('required');
@@ -526,7 +526,7 @@ for(let i = 0; i < brgNama.length; i++) {
     @endforeach
   });
 
-  kodeBarang[i].addEventListener("change", function (e) {
+  kodeBarang[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsal[i].removeAttribute('required');
@@ -547,7 +547,7 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Stok Gudang **/
 for(let i = 0; i < gdgAsal.length; i++) {
-  gdgAsal[i].addEventListener("change", function (e) {
+  gdgAsal[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       kodeAsal[i].value = "";
       stokAsal[i].value = "";
@@ -561,7 +561,7 @@ for(let i = 0; i < gdgAsal.length; i++) {
     displayStok(kodeAsal[i].value, stokAsal[i]);
   });
 
-  gdgTujuan[i].addEventListener("change", function (e) {
+  gdgTujuan[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
       kodeTujuan[i].value = "";
       stokTujuan[i].value = "";

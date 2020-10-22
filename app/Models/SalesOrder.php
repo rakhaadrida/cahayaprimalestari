@@ -11,7 +11,7 @@ class SalesOrder extends Model
 
     protected $table = "so";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'kategori', 'tempo', 'pkp', 'status', 'keterangan', 'id_customer'];
+    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'kategori', 'tempo', 'pkp', 'status', 'id_customer'];
 
     public $incrementing = false;
 
