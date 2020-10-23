@@ -32,6 +32,16 @@ class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
 
     public function styles(Worksheet $sheet)
     {
+        $sheet->setTitle('Rekap-Stok');
+
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setName('Logo');
+        $drawing->setPath(public_path('/backend/img/Logo_CPL.jpg'));
+        $drawing->setHeight(50);
+        $drawing->setCoordinates('A1');
+        $drawing->setWorksheet($sheet);
+        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
+        
         $stok = StokBarang::with(['barang'])
                         ->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
@@ -49,7 +59,7 @@ class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->mergeCells('A3:G3');
         $title = 'A1:G3';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A3:G3')->getFont()->setBold(false)->setSize(11);
+        $sheet->getStyle('A3:G3')->getFont()->setBold(false)->setSize(12);
 
         $styleArray = [
             'borders' => [

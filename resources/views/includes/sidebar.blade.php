@@ -46,7 +46,7 @@
 
   @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN'))
   <!-- Heading Sales and Purchases -->
-  <div class="sidebar-heading sidebar-heading-title">
+  <div class="sidebar-heading sidebar-heading-title text-white">
     Sales and Purchases
   </div>
 
@@ -121,7 +121,7 @@
 
   @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'FINANCE'))
   <!-- Heading -->
-  <div class="sidebar-heading sidebar-heading-title">
+  <div class="sidebar-heading sidebar-heading-title text-white">
     Finance
   </div>
 

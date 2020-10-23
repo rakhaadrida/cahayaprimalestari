@@ -543,7 +543,7 @@ const nmbrg = document.querySelectorAll(".nmbrg");
 var netPast;
 var kodeModal;
 var totTemp;
-var sisa;
+var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keydown', displayCust);
@@ -839,10 +839,10 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("keydown", function (e) {
-    var stokJohar = 0;
-    var stokLain = [];
-    var totStok = 0;
+  qty[i].addEventListener("change", function (e) {
+    stokJohar = 0;
+    stokLain = [];
+    totStok = 0;
     @foreach($stok as $s)
       if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
         stokJohar = '{{ $s->stok }}';
@@ -858,6 +858,8 @@ for(let i = 0; i < qty.length; i++) {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
       netto[i].value = "";
+      kodeGudang[i].value = "GDG01";
+      qtyGudang[i].value = "";
     }
     else if(e.target.value > totStok) {
       $('#notif'+i).modal("show");
@@ -884,6 +886,7 @@ for(let i = 0; i < qty.length; i++) {
         qtyGudang[i].value = stokJohar;
       }
       else {
+        kodeGudang[i].value = "GDG01";
         qtyGudang[i].value = e.target.value;
       }
 
@@ -930,6 +933,8 @@ for(let j = 0; j < modalGudang.length; j++) {
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
     for(let i = 0; i < btnPilih.length; i++) {
       btnPilih[i].addEventListener("click", function (e) {
+        kodeGudang[j].value = 'GDG01';
+        qtyGudang[j].value = stokJohar;
         totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
         if(totPast < qtyOrder[j].textContent) {
           sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
@@ -943,6 +948,7 @@ for(let j = 0; j < modalGudang.length; j++) {
           @endforeach
         }
         else {
+          console.log(j);
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisaQty[j].textContent}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
         }

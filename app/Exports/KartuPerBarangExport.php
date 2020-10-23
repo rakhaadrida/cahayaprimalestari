@@ -86,7 +86,15 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
     public function styles(Worksheet $sheet)
     {
         $sheet->setTitle('KS-'.$this->kode);
+
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setName('Logo');
+        $drawing->setPath(public_path('/backend/img/Logo_CPL.jpg'));
+        $drawing->setHeight(60);
+        $drawing->setCoordinates('A1');
+        $drawing->setWorksheet($sheet);
         
+        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
         $sheet->mergeCells('A1:M1');
         $sheet->mergeCells('A2:M2');
         $sheet->mergeCells('A3:M3');
@@ -173,4 +181,15 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 ->getStartColor()->setARGB('d6d7e2');
         }
     } 
+
+    // public function drawings()
+    // {
+    //     $drawing = new Drawing();
+    //     $drawing->setName('Logo');
+    //     $drawing->setPath(public_path('backend/img/Logo_CPL.jpg'));
+    //     $drawing->setHeight(50);
+    //     $drawing->setCoordinates('B3');
+
+    //     return $drawing;
+    // }
 }

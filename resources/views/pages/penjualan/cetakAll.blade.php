@@ -80,6 +80,10 @@
           float: right !important;
       }
 
+      .float-left {
+          float: left !important;
+      }
+
       table {
           border-collapse: collapse;
       }
@@ -155,6 +159,13 @@
       .subtitle-cetak-so-second {
           margin-left: 7px;
           font-size: 12px;
+      }
+
+      .logo-cetak-so img {
+        width: 132px;
+        height: 50px;
+        margin-top: 5px;
+        margin-left: 35px;
       }
 
       .customer-cetak-so {
@@ -271,12 +282,18 @@
       }
 
       .title-total {
-          width: 170px;
+          width: 160px;
       }
 
       .angka-total {
           font-size: 14px;
       }
+
+      /* @media print {
+        @page {
+          size: 24.2cm 13.8cm;
+        }
+      } */
     </style>
   </head>
   <body>
@@ -297,6 +314,9 @@
             <span>:</span>
             <span class="text-bold">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}</span>
           </div>
+        </div>
+        <div class="float-left logo-cetak-so">
+          <img src="backend/img/Logo_CPL.jpg" alt="">
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
@@ -338,18 +358,26 @@
           </tbody>
         </table>
         
-        @php $itemsDet = \App\Models\DetilSO::with(['barang'])->where('id_so', $item->id)->get();
+        @php 
+        $itemsDet = \App\Models\DetilSO::with(['barang'])
+                          ->select('id_barang', 'diskon')
+                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                          ->where('id_so', $item->id)
+                          ->groupBy('id_barang', 'diskon')
+                          ->distinct('diskon')
+                          ->get();
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-hover table-cetak">
           <thead class="text-center text-bold th-detail-cetak-so">
             <tr>
-              <td style="width: 30px">No</td>
-              <td style="width: 70px">Kode</td>
+              <td style="width: 10px">No</td>
+              <td style="width: 50px">Kode</td>
               <td>Nama Barang</td>
-              <td style="width: 50px">Qty</td>
-              <td style="width: 80px">Harga</td>
-              <td style="width: 80px">Rupiah</td>
+              <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
+              <td style="width: 30px">UOM</td>
+              <td style="width: 55px">Harga</td>
+              <td style="width: 70px">Rupiah</td>
               <td colspan="2">Diskon</td>
               <td style="width: 80px">Netto Rp</td>
             </tr>
@@ -358,23 +386,37 @@
             @php $i = 1; @endphp
             @foreach($itemsDet as $itemDet)
               <tr class="text-dark ">
-                <td align="center">{{ $i }}</td>
-                <td>{{ $itemDet->id_barang }}</td>
-                <td>{{ $itemDet->barang->nama }}</td>
-                <td align="right">{{ $itemDet->qty }}</td>
-                <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
-                <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
+                <td rowspan="2" align="center">{{ $i }}</td>
+                <td rowspan="2">{{ $itemDet->id_barang }}</td>
+                <td rowspan="2">{{ $itemDet->barang->nama }}</td>
+                <td rowspan="2" align="right" style="width: 50px">{{ $itemDet->qty }}</td>
+                <td rowspan="2" align="center" style="width: 50px">
+                  {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Pack") Pack @else Rol @endif
+                </td>
+                <td rowspan="2" align="center">
+                  @if($itemDet->barang->satuan == "Pcs / Pack") PCS @else MTR @endif
+                </td>
+                <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
+                <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
                 @php 
                   $diskon = 100;
                   $arrDiskon = explode("+", $itemDet->diskon);
                   for($j = 0; $j < sizeof($arrDiskon); $j++) {
                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
                   } 
-                  $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
+                  $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
-                <td style="width: 50px" align="right">{{ str_replace(".", ",", $diskon) }} %</td>
-                <td style="width: 80px" align="right">{{ number_format(($itemDet->qty * $itemDet->harga) * $diskon / 100, 0, "", ".") }}</td>
-                <td align="right">{{ number_format((($itemDet->qty * $itemDet->harga) - (($itemDet->qty * $itemDet->harga) * $diskon / 100)), 0, "", ".") }}</td>
+                <td style="width: 70px; border-bottom: none !important" align="right">
+                  {{ $itemDet->diskon }} 
+                </td>
+                <td rowspan="2" style="width: 60px" align="right">
+                  {{ number_format($itemDet->diskonRp, 0, "", ".") }}
+                </td>
+                <td rowspan="2" align="right">
+                  {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
+              </tr>
+              <tr class="text-dark">
+                <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">({{ $diskon }}%)</td>
               </tr>
               @php $i++ @endphp
             @endforeach

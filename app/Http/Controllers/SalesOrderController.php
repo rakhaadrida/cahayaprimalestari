@@ -90,7 +90,7 @@ class SalesOrderController extends Controller
         if($request->pkp == "") 
             $pkp = 0;
         else
-            $tempo = $request->pkp;
+            $pkp = $request->pkp;
         
         SalesOrder::create([
             'id' => $id,
@@ -157,7 +157,7 @@ class SalesOrderController extends Controller
     }
 
     public function cetak(Request $request, $id) {
-        $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
+        $items = SalesOrder::with(['customer'])->where('id', $id)->get();
         $data = [
             'items' => $items
         ];

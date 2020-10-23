@@ -33,15 +33,19 @@ class CetakFakturController extends Controller
     public function cetak($awal, $akhir) {
         $items = SalesOrder::with(['customer'])->where('status', 'INPUT')->whereBetween('id', [$awal, $akhir])->get();
 
-        // foreach($items as $i) {
-        //     AccReceivable::create([
-        //         'id_so' => $i->id,
-        //         'tgl_bayar' => NULL,
-        //         'cicil' => NULL,
-        //         'retur' => NULL,
-        //         'keterangan' => 'BELUM LUNAS'
-        //     ]);
-        // }
+        $data = [
+            'items' => $items
+        ];
+
+        $paper = array(0,0,686,394);
+        $pdf = PDF::loadview('pages.penjualan.cetakAll', $data)->setPaper($paper);
+        ob_end_clean();
+        return $pdf->stream('cetak-all.pdf');
+    } 
+
+    /* public function cetak(Request $request) {
+        $items = SalesOrder::with(['customer'])->where('status', 'INPUT')
+                    ->whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])->get();
 
         $data = [
             'items' => $items
@@ -51,5 +55,5 @@ class CetakFakturController extends Controller
         $pdf = PDF::loadview('pages.penjualan.cetakAll', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-all.pdf');
-    }
+    } */
 }
