@@ -42,6 +42,14 @@
                   value="{{ $item->nama }}" required>
                 </div>
               </div>
+              <div class="form-group row">
+                <label for="tipe" class="col-1 col-form-label text-bold">Tipe</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-1">
+                  <input type="text" class="form-control col-form-label-sm" name="tipe" 
+                  value="{{ $item->tipe }}" required>
+                </div>
+              </div>
               <hr>
               <div class="form-row">
                 <div class="col">

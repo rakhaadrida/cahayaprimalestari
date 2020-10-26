@@ -66,11 +66,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: rgba(0, 0, 0, 0.005);
 }
 
+.diskon-faktur {
+    border: 0;
+    background: transparent;
+    padding: 0px 0px;
+    height: 25px;
+}
+
 .so-update-container {
     margin-left: -20px;
     margin-bottom: -10px;
 }
-
 
 .supplier-row {
     margin-top: -55px;
@@ -366,4 +372,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .table-ar input[type=text] {
     font-size: 13px;
     padding: 0px 0px ;
+}
+
+.table-kartu-stok {
+    font-size: 14px;
+    font-weight: 600;
 }

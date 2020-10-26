@@ -25,7 +25,7 @@ class RekapStokController extends Controller
             'stok' => $stok,
         ];
         
-        return view('pages.laporan.rekapStok', $data);
+        return view('pages.laporan.rekapstok.index', $data);
     }
 
     public function cetak() {
@@ -41,7 +41,7 @@ class RekapStokController extends Controller
             'waktu' => $waktu
         ];
 
-        return view('pages.laporan.cetakRekap', $data);
+        return view('pages.laporan.rekapstok.cetak', $data);
     }
 
     public function cetak_pdf() {
@@ -57,7 +57,7 @@ class RekapStokController extends Controller
             'waktu' => $waktu
         ];
 
-        $pdf = PDF::loadview('pages.laporan.pdfRekap', $data)->setPaper('A4', 'portrait');
+        $pdf = PDF::loadview('pages.laporan.rekapstok.pdf', $data)->setPaper('A4', 'portrait');
         // $pdf->setOption('enable-local-file-access', true);
         ob_end_clean();
         return $pdf->stream('rekap-stok.pdf');

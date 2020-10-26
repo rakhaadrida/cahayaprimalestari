@@ -17,7 +17,7 @@ class CetakFakturController extends Controller
             'akhir' => $akhir
         ];
 
-        return view('pages.penjualan.cetakFaktur', $data);
+        return view('pages.penjualan.cetakfaktur.index', $data);
     }
 
     public function process(Request $request) {
@@ -38,7 +38,7 @@ class CetakFakturController extends Controller
         ];
 
         $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.penjualan.cetakAll', $data)->setPaper($paper);
+        $pdf = PDF::loadview('pages.penjualan.cetakfaktur.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-all.pdf');
     } 

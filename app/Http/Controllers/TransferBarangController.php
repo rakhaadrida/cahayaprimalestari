@@ -38,7 +38,7 @@ class TransferBarangController extends Controller
             // 'itemsRow' => $itemsRow
         ];
 
-        return view('pages.pembelian.transferBarang', $data);
+        return view('pages.pembelian.transferbarang.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {

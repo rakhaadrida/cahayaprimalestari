@@ -40,6 +40,14 @@
                   <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Harga" value="{{ old('nama') }}" required>
                 </div>
               </div>
+              <div class="form-group row">
+                <label for="tipe" class="col-1 col-form-label text-bold">Tipe</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-1">
+                  <input type="text" class="form-control col-form-label-sm" name="tipe" 
+                  value="{{ old('tipe') }}" required>
+                </div>
+              </div>
               <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">

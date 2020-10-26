@@ -8,7 +8,7 @@ use App\Models\SalesOrder;
 class TransaksiController extends Controller
 {
     public function index() {
-        return view('pages.penjualan.transaksi');
+        return view('pages.penjualan.transaksiharian.index');
     }
 
     public function show(Request $request) {
@@ -22,7 +22,7 @@ class TransaksiController extends Controller
             'tglAkhir' => $request->tglAkhir
         ];
 
-        return view('pages.penjualan.showTrans', $data);
+        return view('pages.penjualan.transaksiharian.show', $data);
     }
 
     public function detail(Request $request, $id) {
@@ -37,6 +37,6 @@ class TransaksiController extends Controller
             'tglAkhir' => $request->tglAkhir
         ];
 
-        return view('pages.penjualan.detilTrans', $data);
+        return view('pages.penjualan.transaksiharian.detail', $data);
     }
 }

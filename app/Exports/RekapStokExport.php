@@ -21,7 +21,7 @@ class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
         $waktu = Carbon::now();
         $waktu = $waktu->format('d F Y, H:i:s');
         
-        return view('pages.laporan.excelRekap', [
+        return view('pages.laporan.rekapstok.excel', [
             'gudang' => Gudang::all(),
             'stok' => StokBarang::with(['barang'])
                         ->select('id_barang', DB::raw('sum(stok) as total'))

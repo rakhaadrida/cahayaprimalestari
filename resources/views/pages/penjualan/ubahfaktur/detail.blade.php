@@ -178,9 +178,12 @@
                         <td style="width: 80px">Kode</td>
                         <td>Nama Barang</td>
                         <td style="width: 50px">Qty</td>
+                        @foreach($gudang as $g)
+                          <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
+                        @endforeach
                         <td>Harga</td>
                         <td>Jumlah</td>
-                        <td style="width: 80px">Diskon(%)</td>
+                        <td style="width: 100px">Diskon(%)</td>
                         <td style="width: 110px">Diskon(Rp)</td>
                         <td style="width: 120px">Netto (Rp)</td>
                       </thead>
@@ -188,8 +191,12 @@
                         @if($itemsRow != 0)
                           @php 
                             $i = 1; $subtotal = 0;
-                            $itemsDetail = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so',
-                              $item->id)->get();
+                            $itemsDetail = \App\Models\DetilSO::with(['barang'])
+                                      ->select('id_barang', 'diskon')
+                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                      ->where('id_so', $item->id)
+                                      ->groupBy('id_barang', 'diskon')
+                                      ->get();
                           @endphp
                           @foreach($itemsDetail as $itemDet)
                             <tr class="text-bold">
@@ -197,6 +204,18 @@
                               <td align="center">{{ $itemDet->id_barang }} </td>
                               <td>{{ $itemDet->barang->nama }}</td>
                               <td align="right">{{ $itemDet->qty }}</td>
+                              @foreach($gudang as $g)
+                                @php
+                                  $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
+                                            ->where('id_barang', $itemDet->id_barang)
+                                            ->where('id_gudang', $g->id)->get();
+                                @endphp
+                                @if($itemGud->count() != 0)
+                                  <td align="right">{{ $itemGud[0]->qty }}</td>
+                                @else
+                                  <td></td>
+                                @endif
+                              @endforeach
                               <td align="right">
                                 {{ number_format($itemDet->harga, 0, "", ".") }}
                               </td>
@@ -237,10 +256,7 @@
                       <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right"
-                        @if($itemsRow != 0) 
-                          value="{{ number_format($subtotal, 0, "", ".") }}"
-                        @endif
+                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}"
                         />
                       </div>
                     </div>
@@ -248,10 +264,7 @@
                       <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
-                        @if($itemsRow != 0) 
-                          value="{{ number_format($subtotal * 10 / 100, 0, "", ".") }}"
-                        @endif
+                        <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0"
                         />
                       </div>
                     </div>
@@ -259,10 +272,7 @@
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" 
-                        @if($itemsRow != 0) 
-                          value="{{number_format($subtotal + ($subtotal * 10 / 100),0,"",".")}}"
-                        @endif
+                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($subtotal, 0, "", ".") }}"
                         />
                       </div>
                     </div>

@@ -43,7 +43,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-4">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="tglSO" 
-                        value="{{ $items[0]->so->tgl_so }}">
+                        value="{{ \Carbon\Carbon::parse($items[0]->so->tgl_so)->format('d-M-y') }}">
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">

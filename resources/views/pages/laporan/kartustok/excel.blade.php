@@ -5,7 +5,7 @@
       <h3 class="text-dark">
         Kode Barang : {{$rowBM[0]->barang->id}}
       </h3>
-      <h5 class="waktu-cetak">Tanggal : {{\Carbon\Carbon::parse($awal)->format('d-m-Y')}} s/d {{\Carbon\Carbon::parse($akhir)->format('d-m-Y')}}</h5>
+      <h5 class="waktu-cetak">Tanggal : {{\Carbon\Carbon::parse($awal)->format('d-M-y')}} s/d {{\Carbon\Carbon::parse($akhir)->format('d-M-y')}}</h5>
     </center>
     <br>
 
@@ -16,23 +16,32 @@
     <table class="table table-sm table-bordered table-striped table-responsive-sm">
       <thead class="text-center text-bold text-dark">
         <tr>
-          <td rowspan="2">No</td>
-          <td rowspan="2">Tanggal</td>
-          <td rowspan="2">Tipe Transaksi</td>
-          <td rowspan="2">Nomor Transaksi</td>
-          <td rowspan="2">Keterangan</td>
+          <td rowspan="3">No</td>
+          <td rowspan="3">Tanggal</td>
+          <td rowspan="3">Tipe Transaksi</td>
+          <td rowspan="3">Nomor Transaksi</td>
+          <td rowspan="3">Keterangan</td>
           <td colspan="3">Pemasukan</td>
-          <td colspan="3">Pengeluaran</td>
-          <td rowspan="2">Pemakai</td>
-          <td rowspan="2">Waktu</td>
+          <td colspan="5">Pengeluaran</td>
+          <td rowspan="3">Pemakai</td>
+          <td rowspan="3">Waktu</td>
         </tr>
         <tr>
-          <td>Pack</td>
-          <td>Pcs</td>
-          <td>Rupiah</td>
-          <td>Pack</td>
-          <td>Pcs</td>
-          <td>Rupiah</td>
+          <td rowspan="2">
+            @if($rowBM[0]->barang->satuan == "Pcs / Dus") Pcs @else Meter @endif
+          </td>
+          <td rowspan="2">Gudang</td>
+          <td rowspan="2">Rupiah</td>
+          <td rowspan="2">
+            @if($rowBM[0]->barang->satuan == "Pcs / Dus") Pcs @else Meter @endif
+          </td>
+          <td colspan="{{ $gudang->count() }}">Dari Gudang</td>
+          <td rowspan="2">Rupiah</td>
+        </tr>
+        <tr>
+          @foreach($gudang as $g)
+            <td>{{ substr($g->nama, 0, 3) }}</td>
+          @endforeach
         </tr>
       </thead>
       <tbody>
@@ -40,7 +49,7 @@
           <tr>
             <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
             <td class="text-bold text-dark text-right">{{ $stokAwal }}</td>
-            <td colspan="7"></td>
+            <td colspan="9"></td>
           </tr>
           @php 
             $i = 1; $totalBM = 0; $totalSO = 0;
@@ -49,21 +58,23 @@
             <tr class="text-bold">
               <td align="center">{{ $i }}</td>
               <td align="center">
-                {{ \Carbon\Carbon::parse($ib->bm->tanggal)->format('d-m-Y') }} 
+                {{ \Carbon\Carbon::parse($ib->bm->tanggal)->format('d-M-y') }} 
               </td>
               <td>Barang Masuk</td>
               <td>{{ $ib->bm->id }}</td>
               <td>{{ $ib->bm->supplier->nama }}</td>
               <td align="right">{{ $ib->qty }}</td>
-              <td align="right"></td>
+              <td>{{ $ib->bm->gudang->nama }}</td>
               <td align="right">
                 {{ number_format($ib->qty * $ib->harga, 0, "", ",") }}
               </td>
               <td align="right"></td>
+              @foreach($gudang as $g)
+                <td></td>
+              @endforeach
               <td align="right"></td>
               <td align="right"></td>
-              <td align="right"></td>
-              <td align="left">{{ \Carbon\Carbon::parse($ib->created_at)->format('d-m-Y H:i:s') }}</td>
+              <td align="left">{{ \Carbon\Carbon::parse($ib->updated_at)->format('H:i:s') }}</td>
               @php $totalBM += $ib->qty @endphp
             </tr>
             @php $i++; @endphp
@@ -71,7 +82,7 @@
           @foreach($rowSO as $is)
             <tr class="text-bold">
               <td align="center">{{ $i }}</td>
-              <td align="center">{{ \Carbon\Carbon::parse($is->so->tgl_so)->format('d-m-Y') }} </td>
+              <td align="center">{{ \Carbon\Carbon::parse($is->so->tgl_so)->format('d-M-y') }} </td>
               <td>Penjualan Barang</td>
               <td>{{ $is->so->id }}</td>
               <td>{{ $is->so->customer->nama }}</td>
@@ -79,12 +90,24 @@
               <td align="right"></td>
               <td align="right"></td>
               <td align="right">{{ $is->qty }}</td>
-              <td align="right"></td>
+              @foreach($gudang as $g)
+                @php
+                  $itemGud = \App\Models\DetilSO::where('id_so', $is->so->id)
+                            ->where('id_barang', $is->id_barang)
+                            ->where('id_gudang', $g->id)->get();
+                @endphp
+                @if($itemGud->count() != 0)
+                  <td align="right">{{ $itemGud[0]->qty }}
+                  </td>
+                @else
+                  <td></td>
+                @endif
+              @endforeach
               <td align="right">
                 {{ number_format($is->qty * $is->harga, 0, "", ",") }}
               </td>
               <td align="right"></td>
-              <td align="left">{{ \Carbon\Carbon::parse($is->created_at)->format('d-m-Y H:i:s') }}</td>
+              <td align="left">{{ \Carbon\Carbon::parse($is->updated_at)->format('H:i:s') }}</td>
               @php $totalSO += $is->qty @endphp
             </tr>
             @php $i++; @endphp
@@ -96,16 +119,16 @@
             </td>
             <td colspan="2"></td>
             <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
-            <td colspan="4"></td>
+            <td colspan="6"></td>
           </tr>
           <tr style="background-color: yellow">
             <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
             <td class="text-bold text-dark text-right">{{ $stok[0]->total }}</td>
-            <td colspan="7"></td>
+            <td colspan="9"></td>
           </tr>
         @else 
           <tr>
-            <td colspan="12" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
+            <td colspan="15" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
           </tr>
         @endif
       </tbody>

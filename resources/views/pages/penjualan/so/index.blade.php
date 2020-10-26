@@ -211,14 +211,17 @@
                     <td rowspan="2" style="width: 30px" class="align-middle">No</td>
                     <td rowspan="2" style="width: 90px" class="align-middle">Kode Barang</td>
                     <td rowspan="2" class="align-middle">Nama Barang</td>
-                    <td rowspan="2" style="width: 75px" class="align-middle">Qty</td>
-                    <td rowspan="2" style="width: 110px" class="align-middle">Harga</td>
-                    <td rowspan="2" style="width: 120px" class="align-middle">Jumlah</td>
+                    <td colspan="2" style="width: 130px" class="align-middle">Qty</td>
+                    <td rowspan="2" style="width: 50px" class="align-middle">Tipe Harga</td>
+                    <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 110px" class="align-middle">Jumlah</td>
                     <td colspan="2">Diskon</td>
                     <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
                     <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
                   </tr>
                   <tr>
+                    <td style="width: 70px" id="pcs"></td>
+                    <td style="width: 60px" id="satuanUkuran"></td>
                     <td style="width: 100px">%</td>
                     <td style="width: 110px">Rupiah</td>
                   </tr>
@@ -240,6 +243,14 @@
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang">
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
+                      </td>
+                      <td>
+                        <input type="text" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
+                        value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                      </td>
+                      <td>
+                        <input type="text" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
+                        value="{{ old('tipe[]') }}">
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -296,7 +307,7 @@
                             @foreach($gudang as $g)
                               @if($g->id != "GDG01")
                                 <div class="row">
-                                <label for="kode" class="col-7 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudang{{$i-1}}"></span>)</label>
+                                <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudang{{$i-1}}"></span>)</label>
                                   <input type="hidden" class="kodeGud{{$i-1}}" value="{{$g->id}}">
                                   <div class="col-3">
                                     <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih{{$i-1}}">Pilih</button>
@@ -319,7 +330,7 @@
                             <h4 class="modal-title text-bold">Notifikasi Stok Barang</h4>
                           </div>
                           <div class="modal-body text-dark">
-                            <h5>Qty input tidak bisa melebihi total stok. Total stok untuk barang <span class="col-form-label text-bold nmbrg"></span> adalah <span class="col-form-label text-bold totalstok"></span> Pcs</h5>
+                            <h5>Qty input tidak bisa melebihi total stok. Total stok untuk barang <span class="col-form-label text-bold nmbrg"></span> adalah <span class="col-form-label text-bold totalstok"></span> atau <span class="col-form-label text-bold totalsatuan"></span></h5>
                           </div>
                         </div>
                       </div>
@@ -412,7 +423,29 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-secondary text-right" />
+                  <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext form-control-sm text-bold text-secondary text-right mt-1" />
+                  {{-- @if($itemsRow != 0) 
+                    value="{{ $totalNotPPN }}"
+                  @endif --}}
+                </div>
+              </div>
+              <div class="form-group row justify-content-end total-so so-info-total">
+                <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                <span class="col-form-label text-bold">:</span>
+                <span class="col-form-label text-bold ml-2">Rp</span>
+                <div class="col-2">
+                  <input type="text" name="diskonFaktur" id="diskonFaktur" class="form-control form-control-sm text-bold text-dark text-right mt-1 diskon-faktur" placeholder="Input Diskon" onkeypress="return angkaSaja(event, 'OKE')" />
+                  {{-- @if($itemsRow != 0) 
+                    value="{{ $totalNotPPN }}"
+                  @endif --}}
+                </div>
+              </div>
+              <div class="form-group row justify-content-end total-so so-info-total">
+                <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                <span class="col-form-label text-bold">:</span>
+                <span class="col-form-label text-bold ml-2">Rp</span>
+                <div class="col-2">
+                  <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext form-control-sm text-bold text-secondary text-right mt-1" />
                   {{-- @if($itemsRow != 0) 
                     value="{{ $totalNotPPN }}"
                   @endif --}}
@@ -423,7 +456,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
+                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right" 
                   {{-- @if($itemsRow != 0) 
                     value="{{ $ppn }}"
                   @endif --}}
@@ -435,7 +468,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-danger text-right" 
+                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right mt-1" 
                   {{-- @if($itemsRow != 0) 
                     value="{{ $grandtotal }}"
                   @endif --}}
@@ -518,11 +551,15 @@ const tanggalKirim = document.getElementById('tanggalKirim');
 const radios = document.querySelectorAll('input[type=radio][name="kategori"]');
 const kategori = document.getElementById('kategori');
 const kodeCust = document.getElementById('idCustomer');
+const pcs = document.getElementById("pcs");
+const satuanUkuran = document.getElementById("satuanUkuran");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
+const satuan = document.querySelectorAll(".satuan");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
 const qtyGudang = document.querySelectorAll(".qtyGudang");
+const tipe = document.querySelectorAll(".tipe");
 const harga = document.querySelectorAll(".harga");
 const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
@@ -530,6 +567,8 @@ const diskonRp = document.querySelectorAll(".diskonRp");
 const netto = document.querySelectorAll(".netto");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const subTotal = document.getElementById('subtotal');
+const diskonFaktur = document.getElementById('diskonFaktur');
+const totalNotPPN = document.getElementById('totalNotPPN');
 const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
 const newRow = document.getElementsByClassName('table-add')[0];
@@ -539,8 +578,9 @@ const qtyOrder = document.querySelectorAll('.qtyOrder');
 const sisaQty = document.querySelectorAll('.sisaQty');
 const modalGudang = document.querySelectorAll(".modalGudang");
 const totalstok = document.querySelectorAll(".totalstok");
+const totalsatuan = document.querySelectorAll(".totalsatuan");
 const nmbrg = document.querySelectorAll(".nmbrg");
-var netPast;
+var netPast; var ukuran;
 var kodeModal;
 var totTemp;
 var sisa; var stokJohar; var stokLain; var totStok;
@@ -548,6 +588,8 @@ var sisa; var stokJohar; var stokLain; var totStok;
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keydown', displayCust);
 newRow.addEventListener("click", displayRow);
+diskonFaktur.addEventListener('keyup', formatNominal);
+diskonFaktur.addEventListener('keyup', displayTotal);
 
 Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayTempo);
@@ -823,23 +865,35 @@ for(let i = 0; i < brgNama.length; i++) {
       if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
         kodeBarang[i].value = '{{ $br->id }}';
         brgNama[i].value = '{{ $br->nama }}';
+        satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
+        if(satuanUkuran.innerHTML == 'Dus')
+          pcs.innerHTML = 'Pcs';
+        else
+          pcs.innerHTML = 'Meter';
+        ukuran = '{{ $br->ukuran }}';
       }
     @endforeach
 
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        tipe[i].value = '{{ $hb->hargaBarang->tipe }}';
         harga[i].value = addCommas('{{ $hb->harga_ppn }}');
         qty[i].setAttribute('required', true);
       }
     @endforeach
 
     kodeGudang[i].value = 'GDG01';
+    qty[i].value = '';
+    satuan[i].value = '';
   }
 }
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("change", function (e) {
+  qty[i].addEventListener("change", displayQty);
+  satuan[i].addEventListener("change", displayQty);
+
+  function displayQty(e) {
     stokJohar = 0;
     stokLain = [];
     totStok = 0;
@@ -854,34 +908,40 @@ for(let i = 0; i < qty.length; i++) {
       }
     @endforeach
 
+    hitungQty(i, e.target.id, e.target.value);
+
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
       netto[i].value = "";
       kodeGudang[i].value = "GDG01";
       qtyGudang[i].value = "";
+      qty[i].value = "";
+      satuan[i].value = "";
     }
-    else if(e.target.value > totStok) {
+    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (+e.target.value * +ukuran) > totStok)) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
-      totalstok[i].textContent = totStok;
+      totalstok[i].textContent = `${totStok} ${pcs.innerHTML}`;
+      totalsatuan[i].textContent = `${totStok / ukuran} ${satuanUkuran.innerHTML}`;
 
       qty[i].value = "";
+      satuan[i].value = "";
       jumlah[i].value = "";
       netto[i].value = "";
 
       return false;
     }
     else {
-      if(+e.target.value > stokJohar) {
+      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (+e.target.value * +ukuran) > stokJohar)) {
         $('#'+i).modal("show");
         kodeModal = i;
-        teksJohar[i].textContent = stokJohar;
-        qtyOrder[i].textContent = e.target.value;
-        sisaQty[i].textContent = +e.target.value - +stokJohar;
+        teksJohar[i].textContent = `${stokJohar} ${pcs.innerHTML} / ${stokJohar / ukuran} ${satuanUkuran.innerHTML}`;
+        qtyOrder[i].textContent = `${qty[i].value} ${pcs.innerHTML} / ${qty[i].value / ukuran} ${satuanUkuran.innerHTML}`;
+        sisaQty[i].textContent = `${+qty[i].value - +stokJohar} ${pcs.innerHTML} / ${(qty[i].value - +stokJohar) / ukuran} ${satuanUkuran.innerHTML}`;
         const stokGudang = document.querySelectorAll('.stokGudang'+i);
         for(let i = 0; i < stokGudang.length; i++) {
-          stokGudang[i].textContent = stokLain[i];
+          stokGudang[i].textContent = `${stokLain[i]} ${pcs.innerHTML} / ${stokLain[i] / ukuran} ${satuanUkuran.innerHTML}`;
         }
         qtyGudang[i].value = stokJohar;
       }
@@ -900,8 +960,9 @@ for(let i = 0; i < qty.length; i++) {
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
+    ppn.value = 0;
     grandtotal.value = subtotal.value;
-  });
+  }
 }  
 
 /** Tampil Diskon Rupiah Otomatis **/
@@ -958,6 +1019,14 @@ for(let j = 0; j < modalGudang.length; j++) {
   });
 }
 
+/** Hitung Qty **/
+function hitungQty(urutan, kode, angka) {
+  if(kode == 'qty')
+    satuan[urutan].value = +angka / +ukuran;
+  else if(kode == 'satuan') 
+    qty[urutan].value = +angka * +ukuran;
+}
+
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
@@ -982,6 +1051,11 @@ function checkSubtotal(Past, Now) {
 function total_ppn(sub) {
   // ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
+}
+
+function displayTotal(e) {
+  totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +e.target.value.replace(/\./g, ""));
+  grandtotal.value = totalNotPPN.value;
 }
 
 /** Inputan hanya bisa angka **/
@@ -1015,6 +1089,16 @@ function angkaPlus(evt, inputan) {
     return false;
   }
   return true;
+}
+
+/** Add Nominal Separators **/
+function formatNominal(e){
+  $(this).val(function(index, value) {
+    return value
+    .replace(/\D/g, "")
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    ;
+  });
 }
 
 /** Add Thousand Separators **/
@@ -1075,6 +1159,11 @@ $(function() {
     barangNama.push('{{ $b->nama }}');
   @endforeach
 
+  var tipeHarga = [];
+  @foreach($hrg as $h)
+    tipeHarga.push('{{ $h->tipe }}');
+  @endforeach
+
   var customer = [];
   @foreach($customer as $c)
     customer.push('{{ $c->nama }}');
@@ -1128,6 +1217,35 @@ $(function() {
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
       response($.ui.autocomplete.filter(barangNama, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  /*-- Autocomplete Input Tipe Harga --*/
+  $(tipe).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(tipeHarga, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus

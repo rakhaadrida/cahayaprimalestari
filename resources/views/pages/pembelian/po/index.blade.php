@@ -75,14 +75,8 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4">
                     <input type="text" name="namaSupplier" id="namaSupplier" placeholder="Nama Supplier" class="form-control form-control-sm" required
-                      @if($itemsRow != 0) 
-                        value="{{ $items[0]->supplier->nama }}" readonly
-                      @endif
                     />
                     <input type="hidden" name="kodeSupplier" id="idSupplier" 
-                      @if($itemsRow != 0) 
-                        value="{{ $items[0]->id_supplier }}"
-                      @endif
                     />
                   </div>
                 </div>

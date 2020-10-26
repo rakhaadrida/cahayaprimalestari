@@ -9,6 +9,7 @@ use App\Models\BarangMasuk;
 use App\Models\TransferBarang;
 use App\Models\StokBarang;
 use App\Models\Barang;
+use App\Models\Gudang;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
@@ -23,13 +24,14 @@ class KartuStokController extends Controller
             'barang' => $barang
         ];
 
-        return view('pages.laporan.kartuStok', $data);
+        return view('pages.laporan.kartustok.index', $data);
     }
 
     public function show(Request $request) {
         $awal = $request->tglAwal;
         $akhir = $request->tglAkhir;
         $barang = Barang::All();
+        $gudang = Gudang::All();
 
         $rowBM = DetilBM::with(['bm', 'barang'])
                     ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
@@ -73,6 +75,7 @@ class KartuStokController extends Controller
         }
 
         $data = [
+            'gudang' => $gudang,
             'barang' => $barang,
             'itemsBRG' => $itemsBRG,
             'rowBM' => $rowBM,
@@ -84,7 +87,7 @@ class KartuStokController extends Controller
         ];
         
         // var_dump($stok);
-        return view('pages.laporan.detilKS', $data);
+        return view('pages.laporan.kartustok.detail', $data);
     }
 
     public function cetak_excel(Request $request) {

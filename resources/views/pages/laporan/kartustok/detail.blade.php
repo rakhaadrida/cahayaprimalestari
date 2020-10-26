@@ -64,7 +64,7 @@
                   </h5>
                 </div>
                 <div class="row justify-content-center" style="margin-top: -5px">
-                  <h5 class="text-bold text-dark">Tanggal : {{$awal}} s/d {{$akhir}}</h5>
+                  <h5 class="text-bold text-dark">Tanggal : {{ \Carbon\Carbon::parse($awal)->format('d-M-y') }} s/d {{ \Carbon\Carbon::parse($akhir)->format('d-M-y') }}</h5>
                 </div>
                 <div class="row justify-content-end" style="margin-top: -55px">
                   <div class="col-2">
@@ -99,26 +99,41 @@
                   </div>
 
                   <!-- Tabel Data Detil PO -->
-                  <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+                  <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover table-kartu-stok">
                     <thead class="text-center text-bold text-dark" style="background-color: yellow">
                       <tr>
-                        <td rowspan="2" style="width: 30px" class="align-middle">No</td>
-                        <td rowspan="2" style="width: 95px" class="align-middle">Tanggal</td>
-                        <td rowspan="2" style="width: 100px"class="align-middle">Tipe Transaksi</td>
-                        <td rowspan="2" style="width: 100px"class="align-middle">Nomor Transaksi</td>
-                        <td rowspan="2" style="width: 140px" class="align-middle">Keterangan</td>
-                        <td colspan="3">Pemasukan</td>
-                        <td colspan="3">Pengeluaran</td>
-                        <td rowspan="2" style="width: 80px" class="align-middle">Pemakai</td>
-                        <td rowspan="2" style="width: 50px" class="align-middle">Waktu</td>
+                        <td rowspan="3" style="width: 30px" class="align-middle">No</td>
+                        <td rowspan="3" style="width: 80px" class="align-middle">Tanggal</td>
+                        <td rowspan="3" style="width: 60px"class="align-middle">Tipe Transaksi</td>
+                        <td rowspan="3" style="width: 60px"class="align-middle">Nomor Transaksi</td>
+                        <td rowspan="3" style="width: 120px" class="align-middle">Keterangan</td>
+                        <td colspan="3" class="align-middle">Pemasukan</td>
+                        <td colspan="5">Pengeluaran</td>
+                        <td rowspan="3" style="width: 80px" class="align-middle">Pemakai</td>
+                        <td rowspan="3" style="width: 70px" class="align-middle">Waktu</td>
                       </tr>
                       <tr>
-                        <td style="width: 40px">Pack</td>
-                        <td style="width: 45px">Pcs</td>
-                        <td style="width: 90px">Rupiah</td>
-                        <td style="width: 40px">Pack</td>
-                        <td style="width: 45px">Pcs</td>
-                        <td style="width: 90px">Rupiah</td>
+                        <td rowspan="2" style="width: 40px" class="align-middle">
+                          @if($item->satuan == "Pcs / Dus") Pcs @else Meter @endif
+                        </td>
+                        <td rowspan="2" style="width: 40px" class="align-middle">Gudang</td>
+                        {{-- <td style="width: 45px">
+                          @if($item->satuan == "Pcs / Dus") Dus @else Rol @endif
+                        </td> --}}
+                        <td rowspan="2" style="width: 70px" class="align-middle">Rupiah</td>
+                        <td rowspan="2" style="width: 40px" class="align-middle">
+                          @if($item->satuan == "Pcs / Dus") Pcs @else Meter @endif
+                        </td>
+                        <td colspan="{{ $gudang->count() }}">Dari Gudang</td>
+                        <td rowspan="2" style="width: 70px" class="align-middle">Rupiah</td>
+                      </tr>
+                      <tr>
+                        @foreach($gudang as $g)
+                          <td style="width: 40px">{{ substr($g->nama, 0, 3) }}</td>
+                        @endforeach
+                        {{-- <td style="width: 45px">
+                          @if($item->satuan == "Pcs / Dus") Dus @else Rol @endif
+                        </td> --}}
                       </tr>
                     </thead>
                     <tbody>
@@ -126,7 +141,7 @@
                         <tr>
                           <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
                           <td class="text-bold text-dark text-right">{{ $stokAwal[$j] }}</td>
-                          <td colspan="7"></td>
+                          <td colspan="9"></td>
                         </tr>
                         @php 
                           $i = 1; $totalBM = 0; $totalSO = 0;
@@ -136,49 +151,66 @@
                                           $q->whereBetween('tanggal', [$awal, $akhir]);
                                       })->get();
                           $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
+                                      ->select('id_so', 'id_barang')
+                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty')
                                       ->where('id_barang', $item->id)
                                       ->whereHas('so', function($q) use($awal, $akhir) {
-                                          $q->whereBetween('tgl_so', [$awal, $akhir]);
-                                      })->get();
+                                        $q->whereBetween('tgl_so', [$awal, $akhir]);
+                                      })->groupBy('id_so', 'id_barang')
+                                      ->get();
                         @endphp
                         @foreach($itemsBM as $ib)
                           <tr class="text-bold">
-                            <td align="center">{{ $i }}</td>
-                            <td align="center">{{ $ib->bm->tanggal }} </td>
-                            <td>Barang Masuk</td>
-                            <td>{{ $ib->bm->id }}</td>
-                            <td>{{ $ib->bm->supplier->nama }}</td>
-                            <td align="right">{{ $ib->qty }}</td>
-                            <td align="right"></td>
-                            <td align="right">
+                            <td align="center" class="align-middle">{{ $i }}</td>
+                            <td align="center" class="align-middle">{{ \Carbon\Carbon::parse($ib->bm->tanggal)->format('d-M-y') }}</td>
+                            <td class="align-middle">Barang Masuk</td>
+                            <td class="align-middle">{{ $ib->bm->id }}</td>
+                            <td class="align-middle">{{ $ib->bm->supplier->nama }}</td>
+                            <td class="align-middle" align="right">{{ $ib->qty }}</td>
+                            <td class="align-middle">{{ $ib->bm->gudang->nama }}</td>
+                            <td class="align-middle" align="right">
                               {{ number_format($ib->qty * $ib->harga, 0, "", ".") }}
                             </td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                            <td align="right"></td>
+                            <td class="align-middle" align="right"></td>
+                            @foreach($gudang as $g)
+                              <td></td>
+                            @endforeach
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="left">{{ \Carbon\Carbon::parse($ib->bm->updated_at)->format('H:i:s') }}</td>
                             @php $totalBM += $ib->qty @endphp
                           </tr>
                           @php $i++; @endphp
                         @endforeach
                         @foreach($itemsSO as $is)
                           <tr class="text-bold">
-                            <td align="center">{{ $i }}</td>
-                            <td align="center">{{ $is->so->tgl_so }} </td>
-                            <td>Penjualan Barang</td>
-                            <td>{{ $is->so->id }}</td>
-                            <td>{{ $is->so->customer->nama }}</td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                            <td align="right"></td>
-                            <td align="right">{{ $is->qty }}</td>
-                            <td align="right"></td>
-                            <td align="right">
+                            <td class="align-middle" align="center">{{ $i }}</td>
+                            <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($is->so->tgl_so)->format('d-M-y') }}</td>
+                            <td class="align-middle">Penjualan Barang</td>
+                            <td class="align-middle">{{ $is->so->id }}</td>
+                            <td class="align-middle">{{ $is->so->customer->nama }}</td>
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="right">{{ $is->qty }}</td>
+                            @foreach($gudang as $g)
+                              @php
+                                $itemGud = \App\Models\DetilSO::where('id_so', $is->so->id)
+                                          ->where('id_barang', $is->id_barang)
+                                          ->where('id_gudang', $g->id)->get();
+                              @endphp
+                              @if($itemGud->count() != 0)
+                                <td class="align-middle" align="right">{{ $itemGud[0]->qty }}
+                                </td>
+                              @else
+                                <td></td>
+                              @endif
+                            @endforeach
+                            <td class="align-middle" align="right">
                               {{ number_format($is->qty * $is->harga, 0, "", ".") }}
                             </td>
-                            <td align="right"></td>
-                            <td align="right"></td>
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="left">{{ \Carbon\Carbon::parse($is->so->updated_at)->format('H:i:s') }}</td>
                             @php $totalSO += $is->qty @endphp
                           </tr>
                           @php $i++; @endphp
@@ -190,16 +222,16 @@
                           </td>
                           <td colspan="2"></td>
                           <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
-                          <td colspan="4"></td>
+                          <td colspan="6"></td>
                         </tr>
                         <tr style="background-color: yellow">
                           <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
                           <td class="text-bold text-dark text-right">{{ $stok[$j]->total }}</td>
-                          <td colspan="7"></td>
+                          <td colspan="9"></td>
                         </tr>
                       @else 
                         <tr>
-                          <td colspan="12" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
+                          <td colspan="14" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
                         </tr>
                       @endif
                     </tbody>

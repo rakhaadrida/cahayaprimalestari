@@ -46,7 +46,7 @@ class BarangMasukController extends Controller
             'gudang' => $gudang
         ];
 
-        return view('pages.pembelian.barangMasuk', $data);
+        return view('pages.pembelian.barangmasuk.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {

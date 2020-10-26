@@ -78,7 +78,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal SO</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}" >
                             </div>
                           </div>
                         </div> 
@@ -107,7 +107,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-m-Y') }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}" >
                             </div>
                           </div>
                         </div>

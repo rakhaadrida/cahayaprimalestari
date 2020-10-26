@@ -302,7 +302,9 @@
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold text-dark">FAKTUR PENJUALAN</h5>
-            <h5 class="text-bold text-dark" style="margin-top: -10px">(CASH)</h5>
+            <h5 class="text-bold text-dark" style="margin-top: -10px">
+              (@if($item->kategori == "Cash") CASH @else TEMPO @endif)
+            </h5>
           </div>
           <div class="subtitle-cetak-so-one text-center">
             <span class="text-right">Nomor</span>
@@ -312,7 +314,7 @@
           <div class="subtitle-cetak-so-second text-center">
             <span class="text-right">Tanggal</span>
             <span>:</span>
-            <span class="text-bold">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}</span>
+            <span class="text-bold">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</span>
           </div>
         </div>
         <div class="float-left logo-cetak-so">
@@ -346,11 +348,11 @@
             <tr class="tr-info-cetak-so">
               <td align="center" style="border: dotted">{{ $item->id }}</td>
               <td align="center" style="border: dotted">
-                {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}
+                {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
               </td>
               <td align="center" style="border: dotted">0 Hari</td>
               <td align="center" style="border: dotted">
-                {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-m-Y') }}
+                {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}
               </td>
               <td align="center" style="border: dotted">{{ $item->customer->sales->nama }}</td>
               <td align="center" style="border: dotted">{{ Auth::user()->name }}</td>
@@ -364,7 +366,6 @@
                           ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
                           ->where('id_so', $item->id)
                           ->groupBy('id_barang', 'diskon')
-                          ->distinct('diskon')
                           ->get();
         @endphp
         <!-- Tabel Data Detil BM-->
@@ -453,7 +454,7 @@
                 <td style="border-right: dotted; width: 80px">
                   <div class="ttd-mengetahui">
                     <span class="tgl-ttd">
-                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')}}
+                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
                     </span>
                     <br>
                     <span>Mengetahui,</span> 

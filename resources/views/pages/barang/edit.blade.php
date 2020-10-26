@@ -58,8 +58,8 @@
                 <div class="col-6">
                   <div class="form-check form-check-inline mt-2">
                     <input class="form-check-input" type="radio" name="satuan" 
-                    value="Pcs / Pack" @if($item->satuan == "Pcs / Pack") checked @endif required >
-                    <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Pack</label>
+                    value="Pcs / Dus" @if($item->satuan == "Pcs / Dus") checked @endif required >
+                    <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Dus</label>
                   </div>
                   <div class="form-check form-check-inline ml-4">
                     <input class="form-check-input" type="radio" name="satuan" 

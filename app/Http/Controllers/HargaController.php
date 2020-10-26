@@ -36,7 +36,8 @@ class HargaController extends Controller
     {
         Harga::create([
             'id' => $request->kode,
-            'nama' => $request->nama
+            'nama' => $request->nama,
+            'tipe' => $request->tipe
         ]);
 
         return redirect()->route('harga.index');

@@ -13,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Contracts\View\View;
 use App\Models\StokBarang;
 use App\Models\Barang;
+use App\Models\Gudang;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
     public function view(): View
     {
         $barang = Barang::All();
+        $gudang = Gudang::All();
         $tglAwal = $this->awal;
         $tglAkhir = $this->akhir;
         $tahun = Carbon::now();
@@ -45,10 +47,13 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                         $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
                     })->get();
         $rowSO = DetilSO::with(['so', 'barang'])
+                    ->select('id_so', 'id_barang')
+                    ->selectRaw('avg(harga) as harga, sum(qty) as qty')
                     ->where('id_barang', $this->kode)
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
-                    })->get();
+                    })->groupBy('id_so', 'id_barang')
+                    ->get();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->where('id_barang', $this->kode)
                         ->groupBy('id_barang')->get();
@@ -70,6 +75,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
 
         $data = [
             'barang' => $barang,
+            'gudang' => $gudang,
             'rowBM' => $rowBM,
             'rowSO' => $rowSO,
             'awal' => $tglAwal,
@@ -80,7 +86,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             'sejak' => $sejak
         ];
         
-        return view('pages.laporan.excelKartu', $data);
+        return view('pages.laporan.kartustok.excel', $data);
     }
 
     public function styles(Worksheet $sheet)
@@ -95,21 +101,21 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setWorksheet($sheet);
         
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
-        $sheet->mergeCells('A1:M1');
-        $sheet->mergeCells('A2:M2');
-        $sheet->mergeCells('A3:M3');
-        $sheet->mergeCells('A5:M5');
-        $sheet->mergeCells('A6:M6');
+        $sheet->mergeCells('A1:O1');
+        $sheet->mergeCells('A2:O2');
+        $sheet->mergeCells('A3:O3');
+        $sheet->mergeCells('A5:O5');
+        $sheet->mergeCells('A6:O6');
 
-        $title = 'A1:M3';
+        $title = 'A1:O3';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A3:M3')->getFont()->setSize(12);
+        $sheet->getStyle('A3:O3')->getFont()->setSize(12);
 
-        $infoBrg = 'A5:M6';
+        $infoBrg = 'A5:O6';
         $sheet->getStyle($infoBrg)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($infoBrg)->getAlignment()->setHorizontal('left');
 
-        $header = 'A7:M8';
+        $header = 'A7:O9';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center')->setVertical('center');
         $sheet->getStyle($header)->getFill()
@@ -124,15 +130,18 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                         $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
                     })->count();
         $rowSO = DetilSO::with(['so', 'barang'])
+                    ->select('id_so', 'id_barang')
+                    ->selectRaw('avg(harga) as harga, sum(qty) as qty')
                     ->where('id_barang', $this->kode)
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
-                    })->count();
+                    })->groupBy('id_so', 'id_barang')
+                    ->count();
 
-        $range = 9 + $rowBM + $rowSO + 2;
+        $range = 13 + $rowBM + $rowSO + 2;
         $rangeStr = strval($range);
         $rangeMinOne = strval($range-1);
-        $rangeTab = 'M'.$rangeStr;
+        $rangeTab = 'O'.$rangeStr;
 
         $styleArray = [
             'borders' => [
@@ -143,10 +152,10 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
-        $rangeTable = 'A7:M'.$rangeStr;
+        $rangeTable = 'A7:O'.$rangeStr;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 
-        $stokAwal = 'A9:E9';
+        $stokAwal = 'A10:E10';
         $total = 'A'.$rangeMinOne.':E'.$rangeMinOne;
         $stokAkhir = 'A'.$rangeStr.':E'.$rangeStr;
         $sheet->getStyle($stokAwal)->getFont()->setBold(true);
@@ -156,10 +165,10 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($stokAkhir)->getFont()->setBold(true);
         $sheet->getStyle($stokAkhir)->getAlignment()->setHorizontal('center');
 
-        $awalRow = 'F9:M9';
-        $totalRow = 'F'.$rangeMinOne.':M'.$rangeMinOne;
-        $akhirRow = 'F'.$rangeStr.':M'.$rangeStr;
-        $akhirFull = 'A'.$rangeStr.':M'.$rangeStr;
+        $awalRow = 'F10:O10';
+        $totalRow = 'F'.$rangeMinOne.':O'.$rangeMinOne;
+        $akhirRow = 'F'.$rangeStr.':O'.$rangeStr;
+        $akhirFull = 'A'.$rangeStr.':O'.$rangeStr;
 
         $sheet->getStyle($awalRow)->getFont()->setBold(true);
         $sheet->getStyle($awalRow)->getAlignment()->setHorizontal('right');
@@ -171,25 +180,14 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFF00');
 
-        $rangeIsiTable = 'A9:'.$rangeTab;
+        $rangeIsiTable = 'A10:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
-        for($i = 9; $i <= $range-1; $i+=2) {
-            $rangeRow = 'A'.$i.':M'.$i;
+        for($i = 10; $i <= $range-1; $i+=2) {
+            $rangeRow = 'A'.$i.':O'.$i;
             $sheet->getStyle($rangeRow)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('d6d7e2');
         }
     } 
-
-    // public function drawings()
-    // {
-    //     $drawing = new Drawing();
-    //     $drawing->setName('Logo');
-    //     $drawing->setPath(public_path('backend/img/Logo_CPL.jpg'));
-    //     $drawing->setHeight(50);
-    //     $drawing->setCoordinates('B3');
-
-    //     return $drawing;
-    // }
 }

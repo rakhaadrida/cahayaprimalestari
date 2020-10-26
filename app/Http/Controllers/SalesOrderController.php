@@ -11,6 +11,7 @@ use App\Models\DetilSO;
 use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
 use App\Models\HargaBarang;
+use App\Models\Harga;
 use App\Models\Gudang;
 use App\Models\AccReceivable;
 use Carbon\Carbon;
@@ -24,6 +25,7 @@ class SalesOrderController extends Controller
         $customer = Customer::with(['sales'])->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $hrg = Harga::All();
         $stok = StokBarang::All();
         $gudang = Gudang::All();
 
@@ -43,6 +45,7 @@ class SalesOrderController extends Controller
             'customer' => $customer,
             'barang' => $barang,
             'harga' => $harga,
+            'hrg' => $hrg,
             'stok' => $stok,
             'gudang' => $gudang,
             'newcode' => $newcode,
@@ -53,7 +56,7 @@ class SalesOrderController extends Controller
             // 'items' => $items
         ];
 
-        return view('pages.penjualan.so', $data);
+        return view('pages.penjualan.so.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
@@ -163,7 +166,7 @@ class SalesOrderController extends Controller
         ];
 
         $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.penjualan.cetakSO', $data)->setPaper($paper);
+        $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-so.pdf');
     }
@@ -183,7 +186,7 @@ class SalesOrderController extends Controller
             'customer' => $customer
         ];
 
-        return view('pages.penjualan.ubahFaktur', $data);
+        return view('pages.penjualan.ubahfaktur.index', $data);
     }
 
     public function show(Request $request) {
@@ -197,12 +200,16 @@ class SalesOrderController extends Controller
                     ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
                     ->count();
         $customer = Customer::All();
+        $gudang = Gudang::All();
+        $stok = StokBarang::All();
         $so = SalesOrder::All();
         
         $data = [
             'items' => $items,
             'itemsRow' => $itemsRow,
             'customer' => $customer,
+            'gudang' => $gudang,
+            'stok' => $stok,
             'so' => $so,
             'id' => $request->id,
             'nama' => $request->nama,
@@ -210,7 +217,7 @@ class SalesOrderController extends Controller
             'tglAkhir' => $request->tglAkhir
         ];
 
-        return view('pages.penjualan.detilFaktur', $data);
+        return view('pages.penjualan.ubahfaktur.detail', $data);
     }
 
     public function status(Request $request, $id) {
@@ -243,7 +250,7 @@ class SalesOrderController extends Controller
             'tglAkhir' => $request->tglAkhir
         ];
 
-        return view('pages.penjualan.updateFaktur', $data);
+        return view('pages.penjualan.ubahfaktur.edit', $data);
     }
 
     public function update(Request $request) {

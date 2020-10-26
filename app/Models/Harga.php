@@ -10,7 +10,7 @@ class Harga extends Model
     use SoftDeletes;
     protected $table = 'harga';
     protected $keyType = "string";
-    protected $fillable = ['id', 'nama'];
+    protected $fillable = ['id', 'nama', 'tipe'];
     public $incrementing = false;
 
     public function hargaBarang() {

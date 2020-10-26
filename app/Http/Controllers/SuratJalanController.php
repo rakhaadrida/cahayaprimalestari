@@ -24,7 +24,7 @@ class SuratJalanController extends Controller
             'tanggal' => $tanggal
         ];
 
-        return view('pages.penjualan.suratJalan', $data);
+        return view('pages.penjualan.suratjalan.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
@@ -45,7 +45,7 @@ class SuratJalanController extends Controller
             'tanggal' => $tanggal
         ];
 
-        return view('pages.penjualan.detilSJ', $data);
+        return view('pages.penjualan.suratjalan.detail', $data);
     }
 
     public function process(Request $request, $id) {

@@ -84,7 +84,7 @@
               </table>
               <!-- End Tabel Detil Transaksi Harian -->
 
-              @if($status == 'true')
+              @if($status == "true")
                 <!-- Tampilan Cetak -->
                 <iframe src="{{url('cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" frameborder="0" hidden></iframe>
               @endif
@@ -104,7 +104,7 @@
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
 <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
 <script type="text/javascript">
-@if($status == 'true')
+@if($status == "true")
   $(document).ready(function() {
     $("#frameCetak").printPage();
   });

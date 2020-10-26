@@ -127,9 +127,10 @@ const hargaPPN = document.querySelectorAll(".hargaPPN");
 
 /** Tampil Pricelist dan PPN **/
 for(let i = 0; i < harga.length; i++) {
-  hargaPPN[i].addEventListener('change', function(e) {
-    ppn[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") * 1.1 / 100));
-    harga[i].value = addCommas(+e.target.value.replace(/\./g, "") - +ppn[i].value.replace(/\./g, ""));
+  hargaPPN[i].addEventListener('keyup', function(e) {
+    console.log(e.target.value.replace(/\./g, ""));
+    harga[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") / 1.1));
+    ppn[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") - harga[i].value.replace(/\./g, "")));
   });
 
   hargaPPN[i].addEventListener("keyup", function(e) {

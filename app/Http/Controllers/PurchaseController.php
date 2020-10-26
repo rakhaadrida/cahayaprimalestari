@@ -8,7 +8,6 @@ use App\Models\Supplier;
 use App\Models\Barang;
 use App\Models\HargaBarang;
 use App\Models\DetilPO;
-use App\Models\TempDetilPO;
 use Carbon\Carbon;
 
 class PurchaseController extends Controller
@@ -24,16 +23,16 @@ class PurchaseController extends Controller
         $lastnumber++;
         $newcode = 'PO'.sprintf('%04s', $lastnumber);
 
-        $items = TempDetilPO::with(['barang', 'supplier'])->where('id_po', $newcode)->get();
-        $itemsRow = TempDetilPO::where('id_po', $newcode)->count();
+        // $items = TempDetilPO::with(['barang', 'supplier'])->where('id_po', $newcode)->get();
+        // $itemsRow = TempDetilPO::where('id_po', $newcode)->count();
 
         // date now
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
         $data = [
-            'items' => $items,
-            'itemsRow' => $itemsRow,
+            // 'items' => $items,
+            // 'itemsRow' => $itemsRow,
             'supplier' => $supplier,
             'newcode' => $newcode,
             'tanggal' => $tanggal,
@@ -41,7 +40,7 @@ class PurchaseController extends Controller
             'harga' => $harga
         ];
 
-        return view('pages.poAlter', $data);
+        return view('pages.pembelian.po.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
@@ -76,7 +75,7 @@ class PurchaseController extends Controller
         return redirect()->route('po');
     }
 
-    public function update(Request $request) {
+    /* public function update(Request $request) {
         $items = $request->all();
 
         foreach($items as $item) {
@@ -86,11 +85,11 @@ class PurchaseController extends Controller
         }
 
         return redirect()->route('po');
-    }
+    } 
 
     public function remove($po, $barang) {
         $tempDetil = TempDetilPO::where('id_po', $po)->where('id_barang', $barang)->delete();
 
         return redirect()->route('po');
-    }
+    } */
 }
