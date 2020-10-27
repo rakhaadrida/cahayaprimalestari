@@ -117,7 +117,7 @@
                         <input type="text" name="ret{{$a->id_so}}" id="retur" class="form-control form-control-sm text-bold text-dark text-right retur" 
                         @if($a->retur != null) value="{{ number_format($a->retur, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">{{ number_format($a->so->total - $a->cicil, 0, "", ",") }}</td>
+                      <td align="right" class="align-middle">{{ number_format($a->so->total - $a->cicil - $a->retur, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif> {{ $a->keterangan }}
                       </td>
                     </tr>
@@ -199,6 +199,18 @@ for(let i = 0; i < cicil.length; i++) {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
       ;
     });
+  })
+
+  retur[i].addEventListener("change", function(e) {
+    var arrKode = kodeSO.value.split(',');
+    var kode = retur[i].name.substr(-7);
+
+    if(arrKode[0] != "") {
+      kodeSO.value = kodeSO.value.concat(`,${kode}`);
+    }
+    else {
+      kodeSO.value = kode;
+    }
   })
 }
 

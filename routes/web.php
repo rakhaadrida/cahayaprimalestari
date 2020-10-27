@@ -100,6 +100,7 @@ Route::middleware(['auth', 'admin'])
 
         // Rekap Stok
         Route::get('rekap', 'RekapStokController@index')->name('rekap');
+        Route::post('rekap/show', 'RekapStokController@show')->name('rs-show');
         Route::get('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
         Route::post('rekap/pdf', 'RekapStokController@cetak_pdf')->name('rs-pdf');
         Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');

@@ -136,9 +136,9 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
                     })->groupBy('id_so', 'id_barang')
-                    ->count();
+                    ->get();
 
-        $range = 13 + $rowBM + $rowSO + 2;
+        $range = 10 + $rowBM + $rowSO->count() + 2;
         $rangeStr = strval($range);
         $rangeMinOne = strval($range-1);
         $rangeTab = 'O'.$rangeStr;

@@ -10,7 +10,9 @@ use Carbon\Carbon;
 class AccReceivableController extends Controller
 {
     public function index() {
-        $ar = AccReceivable::with(['so'])->where('keterangan', 'BELUM LUNAS')->get();
+        $tahun = Carbon::now();
+        $tahun = $tahun->month;
+        $ar = AccReceivable::with(['so'])->get();
         $data = [
             'ar' => $ar
         ];
