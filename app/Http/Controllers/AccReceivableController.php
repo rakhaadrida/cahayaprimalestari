@@ -21,9 +21,21 @@ class AccReceivableController extends Controller
     }
 
     public function show(Request $request) {
+        if($request->status == 'ALL')  {
+            $status[0] = 'LUNAS';
+            $status[1] = 'BELUM LUNAS';
+        }
+        else {
+            $status[0] = $request->status;
+            $status[1] = '';
+        }
+
         $awal = $request->tglAwal;
         $akhir = $request->tglAkhir;
-        $status = $request->status;
+
+        if(($request->bulan == '') || ($request->tglAwal == ''))
+            $isi = 1;
+
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
         for($i = 0; $i < sizeof($bulan); $i++) {
@@ -35,17 +47,23 @@ class AccReceivableController extends Controller
                 $month = '';
         }
 
-        $so = SalesOrder::with(['customer'])->whereIn('status', ['CETAK', 'UPDATE'])
-                ->where(function ($query) use($month, $awal, $akhir) {
-                    $query->whereMonth('tgl_so', $month)->orWhereBetween('tgl_so', [$awal, $akhir]);
-                })
-                // ->orWhereHas('ar', function($q) use($status) {
-                //     $q->where('keterangan', $status);
-                // })
+        if($isi != 1) {
+            $ar = AccReceivable::with(['so'])->whereMonth('updated_at', $month)
+                ->orWhereBetween('updated_at', [$awal, $akhir])
+                ->orWhereIn('keterangan', [$status[0], $status[1]])
                 ->get();
+        } else {
+            $ar = AccReceivable::with(['so'])->join('so', 'so.id', '=', 'ar.id_so')
+                ->whereIn('keterangan', [$status[0], $status[1]])
+                ->where(function ($q) use ($awal, $akhir, $month) {
+                    $q->whereMonth('so.tgl_so', $month)
+                    ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
+                })->get();
+        }
+        
         
         $data = [
-            'so' => $so,
+            'ar' => $ar,
             'bulan' => $request->bulan,
             'tglAwal' => $request->tglAwal,
             'tglAkhir' => $request->tglAkhir,
@@ -70,14 +88,14 @@ class AccReceivableController extends Controller
                     AccReceivable::create([
                         'id_so' => $arrKode[$i],
                         'tgl_bayar' => Carbon::now()->toDateString(),
-                        'cicil' => str_replace(",", "", $request->{"cic".$arrKode[$i]}),
+                        'cicil' => (int) str_replace(",", "", $request->{"cic".$arrKode[$i]}),
                         'retur' => (int) str_replace(",", "", $request->{"ret".$arrKode[$i]}),
                         'keterangan' => $status
                     ]);
                 }
                 else {
                     $ar->{'tgl_bayar'} = Carbon::now()->toDateString();
-                    $ar->{'cicil'} = str_replace(",", "", $request->{"cic".$arrKode[$i]});
+                    $ar->{'cicil'} = (int) str_replace(",", "", $request->{"cic".$arrKode[$i]});
                     $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
                     $ar->{'keterangan'} = $status;
                     $ar->save();

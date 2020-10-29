@@ -40,8 +40,15 @@
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
+                    <select class="form-control form-control-sm mt-1" name="status">
+                      <option value="ALL" selected>ALL</option>
+                      <option value="LUNAS">LUNAS</option>
+                      <option value="BELUM LUNAS">BELUM LUNAS</option>
+                    </select>
                   </div>
+                  {{-- <div class="col-2">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
+                  </div> --}}
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
@@ -92,7 +99,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1 @endphp
+                  @php $i = 1; $total = 0; @endphp
                   @forelse($ar as $a)
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
@@ -121,7 +128,7 @@
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif> {{ $a->keterangan }}
                       </td>
                     </tr>
-                    @php $i++ @endphp
+                    @php $i++; $total += ($a->so->total - $a->cicil - $a->retur); @endphp
                   @empty
                     <tr>
                       <td colspan=12 class="text-center text-bold h4 p-2"><i>Tidak ada daftar account receivable</i></td>
@@ -133,6 +140,7 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
                 <div class="col-1">
+                  <input type="text" name="total" value="{{number_format($total, 0, "", ",")}}">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-1">
