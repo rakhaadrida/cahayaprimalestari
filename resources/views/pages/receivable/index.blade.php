@@ -80,7 +80,7 @@
               <!-- End Button Submit dan Reset -->
 
               <!-- Tabel Data Detil AR -->
-              <input type="hidden" id="kodeSO" name="kodeSO">
+              <input type="text" id="kodeSO" name="kodeSO">
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ar->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -99,8 +99,11 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1; $total = 0; @endphp
+                  @php $i = 1; @endphp
                   @forelse($ar as $a)
+                    @php $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
+                                  ->where('id_ar', $a->id)->get();
+                    @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->so->customer->nama }}</td>
@@ -118,29 +121,38 @@
                         {{ number_format($a->so->total, 0, "", ",") }}
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="cic{{$a->id_so}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($a->cicil != null) value="{{ number_format($a->cicil, 0, "", ",") }}" @endif>
+                        <input type="text" name="cic{{$a->id_so}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif>
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="ret{{$a->id_so}}" id="retur" class="form-control form-control-sm text-bold text-dark text-right retur" 
+                        <input type="text" name="ret{{$a->id_so}}" id="retur{{$a->id_so}}" class="form-control form-control-sm text-bold text-dark text-right retur" 
                         @if($a->retur != null) value="{{ number_format($a->retur, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">{{ number_format($a->so->total - $a->cicil - $a->retur, 0, "", ",") }}</td>
+                      <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $a->retur, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif> {{ $a->keterangan }}
                       </td>
                     </tr>
-                    @php $i++; $total += ($a->so->total - $a->cicil - $a->retur); @endphp
+                    @php $i++; @endphp
                   @empty
                     <tr>
                       <td colspan=12 class="text-center text-bold h4 p-2"><i>Tidak ada daftar account receivable</i></td>
                     </tr>
                   @endforelse
                 </tbody>
+                <tfoot>
+                  <tr class="text-right text-bold text-dark" style="background-color: lightgrey; font-size: 14px">
+                    <td colspan="7" class="text-center">Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tfoot>
               </table>
 
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
                 <div class="col-1">
-                  <input type="text" name="total" value="{{number_format($total, 0, "", ",")}}">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-1">
@@ -174,7 +186,62 @@ $('#dataTable').dataTable( {
   "columnDefs": [
     { "orderable": false, "targets": [0, 3] }
   ],
-  "aaSorting" : []
+  "aaSorting" : [],
+  "footerCallback": function ( row, data, start, end, display ) {
+    var api = this.api(), data;
+
+    // Remove the formatting to get integer data for summation
+    var intVal = function ( i ) {
+      return typeof i === 'string' ?
+        i.replace(/[\$,]/g, '')*1 :
+        typeof i === 'number' ?
+            i : 0;
+    };
+
+    $.each([7, 8, 9, 10], function(index, value) {
+
+      if((value == 7) || (value == 10)) {
+        var column = api
+          .column(value, {
+              page: 'current'
+          })
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal(b);
+          }, 0 );
+      }
+      else {
+        var column = api
+          .column(value, {
+              page: 'current'
+          })
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal($(b).val());
+          }, 0 );
+      }
+
+      if((value == 7) || (value == 10)) {
+        var column_total = api
+          .column(value)
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal(b);
+          }, 0 );
+      }
+      else {
+        var column_total = api
+          .column(value)
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal($(b).val());
+          }, 0 );
+      }
+
+      // Update footer
+      $(api.column(value).footer()).html(addCommas(column));
+    }); 
+  }
 });
 
 /** Input nominal comma separator **/
@@ -220,6 +287,19 @@ for(let i = 0; i < cicil.length; i++) {
       kodeSO.value = kode;
     }
   })
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
 }
 
 /** Autocomplete Input Text **/

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\AccReceivable;
+use App\Models\DetilAR;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AccReceivableController extends Controller
 {
@@ -74,32 +76,49 @@ class AccReceivableController extends Controller
     }
 
     public function process(Request $request) {
+        $lastcode = DetilAR::max('id_cicil');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'CIC'.sprintf("%04s", $lastnumber);
+
         if($request->kodeSO != "") {
             $arrKode = explode(",", $request->kodeSO);
+            $arrKode = array_unique($arrKode);
             for($i = 0; $i < sizeof($arrKode); $i++) {
                 $ar = AccReceivable::where('id_so', $arrKode[$i])->first();
+                $total = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+                            ->select('ar.id', DB::raw('sum(cicil) as totCicil'))
+                            ->where('ar.id_so', $arrKode[$i])
+                            ->groupBy('ar.id')->get();
                 $so = SalesOrder::where('id', $arrKode[$i])->get();
-                if($so[0]->total == str_replace(",", "", $request->{"cic".$arrKode[$i]})) 
+
+                if($total == NULL) 
+                    $totCicil = 0;
+                else 
+                    $totCicil = $total[$i]->totCicil;
+
+                // if($total[0]->totCicil == NULL) {
+                //     $total[0]->totCicil = 0;
+                //     $retur = str_replace(",", "", $request->{"cic".$arrKode[$i]});
+                // } else {
+                //     $retur = $total[0]->totCicil + str_replace(",", "", $request->{"cic".$arrKode[$i]});
+                // }
+
+                if($so[0]->total == str_replace(",", "", $request->{"cic".$arrKode[$i]}))
                         $status = 'LUNAS';
                     else 
                         $status = 'BELUM LUNAS';
 
-                if($ar == null) {
-                    AccReceivable::create([
-                        'id_so' => $arrKode[$i],
-                        'tgl_bayar' => Carbon::now()->toDateString(),
-                        'cicil' => (int) str_replace(",", "", $request->{"cic".$arrKode[$i]}),
-                        'retur' => (int) str_replace(",", "", $request->{"ret".$arrKode[$i]}),
-                        'keterangan' => $status
-                    ]);
-                }
-                else {
-                    $ar->{'tgl_bayar'} = Carbon::now()->toDateString();
-                    $ar->{'cicil'} = (int) str_replace(",", "", $request->{"cic".$arrKode[$i]});
-                    $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
-                    $ar->{'keterangan'} = $status;
-                    $ar->save();
-                }
+                $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
+                $ar->{'keterangan'} = $status;
+                $ar->save();
+
+                DetilAR::create([
+                    'id_ar' => $ar->{'id'},
+                    'id_cicil' => $newcode,
+                    'tgl_bayar' => Carbon::now()->toDateString(),
+                    'cicil' => (int) str_replace(",", "", $request->{"cic".$arrKode[$i]}) - $totCicil
+                ]);
             }
         }
 

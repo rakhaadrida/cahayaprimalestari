@@ -94,6 +94,11 @@ class SalesOrderController extends Controller
             $pkp = 0;
         else
             $pkp = $request->pkp;
+
+        $lastcode = AccReceivable::max('id');
+        $lastnumber = (int) substr($lastcode, 2, 4);
+        $lastnumber++;
+        $newcode = 'AR'.sprintf('%04s', $lastnumber);
         
         SalesOrder::create([
             'id' => $id,
@@ -108,9 +113,8 @@ class SalesOrderController extends Controller
         ]);
 
         AccReceivable::create([
+            'id' => $newcode,
             'id_so' => $id,
-            'tgl_bayar' => NULL,
-            'cicil' => NULL,
             'retur' => NULL,
             'keterangan' => 'BELUM LUNAS'
         ]);
