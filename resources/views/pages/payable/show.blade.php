@@ -1,3 +1,4 @@
+@extends('pages.payable.detail')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -40,7 +41,11 @@
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status" value="{{ $status }}">
+                    <select class="form-control form-control-sm mt-1" name="status">
+                      <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
+                      <option value="LUNAS" @if($status == 'LUNAS') selected @endif>LUNAS</option>
+                      <option value="BELUM LUNAS" @if($status == 'BELUM LUNAS') selected @endif>BELUM LUNAS</option>
+                    </select>
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
@@ -55,6 +60,9 @@
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('ap-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" formaction="{{ route('ap-home') }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                 </div>  
               </div>
@@ -92,6 +100,9 @@
                 <tbody class="table-ar">
                   @php $i = 1 @endphp
                   @forelse($ap as $a)
+                    @php 
+                      $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as totTransfer'))->where('id_ap', $a->id)->get();
+                    @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->bm->supplier->nama }}</td>
@@ -108,12 +119,12 @@
                       <td align="right" class="align-middle">
                         @if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total, 0, "", ",") }} @endif
                       </td>
-                      <td align="right" class="align-middle">
-                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" class="form-control form-control-sm text-bold text-dark text-right transfer" @if($a->transfer != null) value="{{ number_format($a->transfer, 0, "", ",") }}" @endif>
+                      <td class="align-middle">
+                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" class="form-control form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">{{ number_format($a->bm->total - $a->transfer, 0, "", ",") }}</td>
-                      <td align="center" class="align-middle text-bold align-middle" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        @if($a->keterangan != null) {{$a->keterangan}} @else BELUM LUNAS @endif
+                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total - $total[0]->totTransfer, 0, "", ",") }} @endif</td>
+                      <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
+                        <a href="#Detail{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
                     </tr>
                     @php $i++ @endphp
@@ -123,6 +134,15 @@
                     </tr>
                   @endforelse
                 </tbody>
+                <tfoot>
+                  <tr class="text-right text-bold text-dark" style="background-color: lightgrey; font-size: 14px">
+                    <td colspan="6" class="text-center">Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tfoot>
               </table>
 
               <!-- Button Submit dan Reset -->
@@ -160,7 +180,62 @@ $('#dataTable').dataTable( {
   "columnDefs": [
     { "orderable": false, "targets": [0, 4, 5] }
   ],
-  "aaSorting" : []
+  "aaSorting" : [],
+  "footerCallback": function ( row, data, start, end, display ) {
+    var api = this.api(), data;
+
+    // Remove the formatting to get integer data for summation
+    var intVal = function ( i ) {
+      return typeof i === 'string' ?
+        i.replace(/[\$,]/g, '')*1 :
+        typeof i === 'number' ?
+            i : 0;
+    };
+
+    $.each([6, 7, 8], function(index, value) {
+
+      if((value == 6) || (value == 8)) {
+        var column = api
+          .column(value, {
+              page: 'current'
+          })
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal(b);
+          }, 0 );
+      }
+      else {
+        var column = api
+          .column(value, {
+              page: 'current'
+          })
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal($(b).val());
+          }, 0 );
+      }
+
+      if((value == 6) || (value == 8)) {
+        var column_total = api
+          .column(value)
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal(b);
+          }, 0 );
+      }
+      else {
+        var column_total = api
+          .column(value)
+          .data()
+          .reduce( function (a, b) {
+            return intVal(a) + intVal($(b).val());
+          }, 0 );
+      }
+
+      // Update footer
+      $(api.column(value).footer()).html(addCommas(column));
+    }); 
+  }
 });
 
 /** Input nominal comma separator **/
@@ -185,6 +260,19 @@ for(let i = 0; i < transfer.length; i++) {
       kodeBM.value = kode;
     }
   })
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
 }
 
 /** Autocomplete Input Text **/

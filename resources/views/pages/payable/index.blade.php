@@ -1,3 +1,4 @@
+@extends('pages.payable.detail')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -40,7 +41,11 @@
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
+                    <select class="form-control form-control-sm mt-1" name="status">
+                      <option value="ALL" selected>ALL</option>
+                      <option value="LUNAS">LUNAS</option>
+                      <option value="BELUM LUNAS">BELUM LUNAS</option>
+                    </select>
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
@@ -92,6 +97,9 @@
                 <tbody class="table-ar">
                   @php $i = 1 @endphp
                   @forelse($ap as $a)
+                    @php 
+                      $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as totTransfer'))->where('id_ap', $a->id)->get();
+                    @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->bm->supplier->nama }}</td>
@@ -108,11 +116,13 @@
                       <td align="right" class="align-middle">
                         @if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total, 0, "", ",") }} @endif
                       </td>
-                      <td align="right" class="align-middle">
-                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" class="form-control form-control-sm text-bold text-dark text-right transfer" @if($a->transfer != null) value="{{ number_format($a->transfer, 0, "", ",") }}" @endif>
+                      <td class="align-middle">
+                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" class="form-control form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">{{ number_format($a->bm->total - $a->transfer, 0, "", ",") }}</td>
-                      <td align="center" class="align-middle text-bold align-middle" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>{{$a->keterangan}}</td>
+                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total - $total[0]->totTransfer, 0, "", ",") }} @endif</td>
+                      <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
+                        <a href="#Detail{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
+                      </td>
                     </tr>
                     @php $i++ @endphp
                   @empty

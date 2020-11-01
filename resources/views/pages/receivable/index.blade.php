@@ -1,3 +1,4 @@
+@extends('pages.receivable.detail')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -80,7 +81,7 @@
               <!-- End Button Submit dan Reset -->
 
               <!-- Tabel Data Detil AR -->
-              <input type="text" id="kodeSO" name="kodeSO">
+              <input type="hidden" id="kodeSO" name="kodeSO">
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ar->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -101,7 +102,8 @@
                 <tbody class="table-ar">
                   @php $i = 1; @endphp
                   @forelse($ar as $a)
-                    @php $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
+                    @php 
+                        $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
                                   ->where('id_ar', $a->id)->get();
                     @endphp
                     <tr class="text-dark">
@@ -128,9 +130,10 @@
                         @if($a->retur != null) value="{{ number_format($a->retur, 0, "", ",") }}" @endif>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $a->retur, 0, "", ",") }}</td>
-                      <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif> {{ $a->keterangan }}
+                      <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
+                        <a href="#Detail{{ $a->id_so }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
-                    </tr>
+                    </tr>     
                     @php $i++; @endphp
                   @empty
                     <tr>

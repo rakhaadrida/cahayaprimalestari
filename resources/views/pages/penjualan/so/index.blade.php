@@ -275,7 +275,6 @@
                         </a>
                       </td>
                     </tr>
-                    </div>
                     <div class="modal modalGudang" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">

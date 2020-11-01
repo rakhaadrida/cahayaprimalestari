@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\DB;
 class AccReceivableController extends Controller
 {
     public function index() {
-        $tahun = Carbon::now();
-        $tahun = $tahun->month;
         $ar = AccReceivable::with(['so'])->get();
         $data = [
             'ar' => $ar
@@ -35,7 +33,8 @@ class AccReceivableController extends Controller
         $awal = $request->tglAwal;
         $akhir = $request->tglAkhir;
 
-        if(($request->bulan == '') || ($request->tglAwal == ''))
+        $isi = 2;
+        if(($request->bulan == '') && ($request->tglAwal == ''))
             $isi = 1;
 
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
@@ -49,20 +48,30 @@ class AccReceivableController extends Controller
                 $month = '';
         }
 
-        if($isi != 1) {
-            $ar = AccReceivable::with(['so'])->whereMonth('updated_at', $month)
-                ->orWhereBetween('updated_at', [$awal, $akhir])
-                ->orWhereIn('keterangan', [$status[0], $status[1]])
+        if($isi == 1) {
+            $ar = AccReceivable::with(['so'])->whereIn('keterangan', [$status[0], $status[1]])
                 ->get();
+
+            // $ar = AccReceivable::with(['so'])->whereMonth('updated_at', $month)
+            //     ->orWhereBetween('updated_at', [$awal, $akhir])
+            //     ->orWhereIn('keterangan', [$status[0], $status[1]])
+            //     ->get();
         } else {
+            // $ar = AccReceivable::with(['so'])->whereMonth('updated_at', $month)
+            //     ->orWhereBetween('updated_at', [$awal, $akhir])
+            //     ->orWhereIn('keterangan', [$status[0], $status[1]])
+            //     ->get();
+
             $ar = AccReceivable::with(['so'])->join('so', 'so.id', '=', 'ar.id_so')
+                ->select('*', 'so.id as id_so', 'ar.id as id')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
                 })->get();
         }
-        
+
+        // var_dump($isi.' = '.$ar[0]->id.' = '.$ar[0]->id_so);
         
         $data = [
             'ar' => $ar,
@@ -92,17 +101,10 @@ class AccReceivableController extends Controller
                             ->groupBy('ar.id')->get();
                 $so = SalesOrder::where('id', $arrKode[$i])->get();
 
-                if($total == NULL) 
+                if($total->count() == 0) 
                     $totCicil = 0;
                 else 
                     $totCicil = $total[$i]->totCicil;
-
-                // if($total[0]->totCicil == NULL) {
-                //     $total[0]->totCicil = 0;
-                //     $retur = str_replace(",", "", $request->{"cic".$arrKode[$i]});
-                // } else {
-                //     $retur = $total[0]->totCicil + str_replace(",", "", $request->{"cic".$arrKode[$i]});
-                // }
 
                 if($so[0]->total == str_replace(",", "", $request->{"cic".$arrKode[$i]}))
                         $status = 'LUNAS';
