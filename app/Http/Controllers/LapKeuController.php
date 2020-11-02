@@ -10,6 +10,7 @@ use App\Models\SalesOrder;
 use App\Models\DetilSO;
 use App\Models\Barang;
 use App\Models\DetilBM;
+use App\Models\AccReceivable;
 use Illuminate\Support\Facades\DB;
 
 class LapKeuController extends Controller
@@ -43,17 +44,23 @@ class LapKeuController extends Controller
                     ->groupBy('id_sales', 'id_barang')
                     ->get();
 
-        $hppPerItems = DetilBM::select('id_barang', DB::raw('avg(hpp) as avgHpp')) 
+        $hppPerItems = DetilBM::join('barangmasuk', 'barangmasuk.id', '=', 'detilbm.id_bm')
+                    ->select('id_barang', DB::raw('avg(harga) as avgHarga'),
+                    DB::raw('avg(disPersen) as avgDisPersen')) 
                     ->where('diskon', '!=', NULL)
-                    ->whereYear('updated_at', $request->tahun)
-                    ->whereMonth('updated_at', $month)
+                    ->whereYear('barangmasuk.tanggal', $request->tahun)
+                    ->whereMonth('barangmasuk.tanggal', $month)
                     ->groupBy('id_barang')
                     ->get();
 
         foreach($qtySalesPerItems as $q) {
             foreach($hppPerItems as $h) {
                 if($q->id_barang == $h->id_barang) {
-                    $q['hpp'] = (int) ($q->qtyItems * $h->avgHpp);
+                    $q['hpp'] = number_format($h->avgDisPersen, 2, ".", "");
+                    $q['hrg'] = number_format($h->avgHarga, 0, "", "");
+                    $q['disHpp'] = number_format(($h->avgHarga * $h->avgDisPersen) / 100, 0, "", "");
+                    $q['hrgHpp'] = number_format($h->avgHarga - $q['disHpp'], 0, "", "");
+                    $q['totHpp'] = $q['hrgHpp'] * $q->qtyItems;
                 }
             }
         }
@@ -61,7 +68,7 @@ class LapKeuController extends Controller
         // echo "<br>";
         // foreach($qtySalesPerItems as $qty) {
         // echo "<br>";
-        // var_dump($qty->id_sales." = ".$qty->id_barang." = ".$qty->id_kategori." = ".$qty->qtyItems." = ".$qty->hpp);
+        // var_dump($qty->id_sales." = ".$qty->id_barang." = ".$qty->id_kategori." = ".$qty->qtyItems." = ".$qty->hpp." = ".$qty->hrg." = ".$qty->disHpp." = ".$qty->hrgHpp." = ".$qty->totHpp);
         // }
 
         $items = DetilSO::join('barang', 'barang.id', '=', 'detilso.id_barang')
@@ -73,22 +80,38 @@ class LapKeuController extends Controller
                     ->whereMonth('so.tgl_so', $month)
                     ->groupBy('customer.id_sales', 'barang.id_kategori')
                     ->get();
+        
+        $retur = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+                    ->join('customer', 'customer.id', '=', 'so.id_customer')
+                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
+                    ->select('customer.id_sales', DB::raw('sum(retur) as total')) 
+                    ->whereYear('so.tgl_so', $request->tahun)
+                    ->whereMonth('so.tgl_so', $month)
+                    ->groupBy('customer.id_sales')
+                    ->get();
 
         foreach($items as $i) {
             foreach($qtySalesPerItems as $q) {
                 if(($i->id_kategori == $q->id_kategori) && ($i->id_sales == $q->id_sales)) {
-                    $i['hpp'] += (int) ($q->hpp);
+                    $i['hpp'] += $q->totHpp;
                 }
             }
         }
         // return response()->json($items);
+        // echo "<br>";
+        // foreach($items as $i) {
+        // echo "<br>";
+        // var_dump($i->id_sales." = ".$i->id_kategori." = ".$i->hpp);
+        // }
 
         $data = [
             'tahun' => $tahun,
             'bulan' => $request->bulan,
+            'month' => $month,
             'jenis' => $jenis,
             'sales' => $sales,
-            'items' => $items
+            'items' => $items,
+            'retur' => $retur
         ];
 
         return view('pages.keuangan.show', $data);
