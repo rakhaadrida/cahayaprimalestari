@@ -120,7 +120,7 @@
                         <td align="right" class="align-middle">
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
-                            <a href="#Detail{{ $i->id_kategori }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
+                            <a href="#Detail{{ $i->id_kategori }}{{ $i->id_sales }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
                               {{ number_format($i->hpp, 0, "", ",") }}
                             </a>
                             @php $hpp += $i->hpp @endphp
