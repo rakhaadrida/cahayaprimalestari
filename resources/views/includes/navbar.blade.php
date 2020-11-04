@@ -48,7 +48,7 @@
         <!-- Counter - Alerts -->
         @if(Auth::user()->roles == 'SUPER')
           @php 
-            $items = \App\Models\SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
+            $items = \App\Models\NeedApproval::All();
           @endphp
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
@@ -68,7 +68,7 @@
           @foreach($items as $item)
             <a class="dropdown-item d-flex align-items-center" 
             @if(Auth::user()->roles == 'SUPER') 
-              href="{{ route('app-show', $item->id) }}"
+              href="{{ route('app-show', $item->id_dokumen) }}"
             @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
               href="{{ route('notif-show', $item->id) }}"
             @endif
@@ -80,26 +80,26 @@
               </div>
               <div>
                 @if(Auth::user()->roles == 'SUPER')
-                  <div class="small text-gray-500">
-                    {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y') }}
+                  <div class="small text-dark-500 text-bold">
+                    {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
                   </div>
                   <span class="font-weight-bold">
-                    Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada faktur {{ $item->id }}
+                    Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada {{ $item->tipe }} {{ $item->id_dokumen }}
                   </span>
                 @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
                   <div class="small text-gray-500">
                     {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-m-Y') }}
                   </div>
                   <span class="font-weight-bold">
-                    Perubahan @if($item->status == "UPDATE") detail @elseif($item->status == "BATAL") status @endif faktur {{ $item->id }} telah di approve. Silahkan cetak faktur.
+                    Perubahan @if($item->status == "UPDATE") detail @elseif($item->status == "BATAL") status @endif faktur {{ $item->id_dokumen }} telah di approve. Silahkan cetak faktur.
                   </span>
                 @endif
               </div>
             </a>
           @endforeach
-          <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+          <a class="dropdown-item text-center small text-dark-500" href="#">Show All Alerts</a>
         @else
-          <a class="dropdown-item text-center small text-gray-500" href="#">Tidak Ada Notifikasi</a>
+          <a class="dropdown-item text-center small text-dark-500" href="#">Tidak Ada Notifikasi</a>
         @endif
         {{-- <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">

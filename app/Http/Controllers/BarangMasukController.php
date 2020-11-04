@@ -11,6 +11,8 @@ use App\Models\DetilBM;
 use App\Models\StokBarang;
 use App\Models\Gudang;
 use App\Models\AccPayable;
+use App\Models\NeedApproval;
+use App\Models\NeedAppDetil;
 use Carbon\Carbon;
 
 class BarangMasukController extends Controller
@@ -150,4 +152,105 @@ class BarangMasukController extends Controller
 
         return redirect()->route('barangMasuk');
     } */
+
+    public function change() {
+        $bm = BarangMasuk::All();
+        $supplier = Supplier::All();
+
+        $data = [
+            'bm' => $bm,
+            'supplier' => $supplier
+        ];
+
+        return view('pages.pembelian.ubahBM.index', $data);
+    }
+
+    public function show(Request $request) {
+        $items = BarangMasuk::with(['supplier', 'gudang'])->where('id', $request->id)
+                ->orWhere('id_supplier', $request->kode)
+                ->orWhereBetween('tanggal', [$request->tglAwal, $request->tglAkhir])
+                ->orderBy('id', 'asc')->get();
+        
+        $supplier = Supplier::All();
+        $stok = StokBarang::All();
+        $bm = BarangMasuk::All();
+        
+        $data = [
+            'items' => $items,
+            'supplier' => $supplier,
+            'stok' => $stok,
+            'bm' => $bm,
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
+        ];
+
+        return view('pages.pembelian.ubahBM.detail', $data);
+    }
+
+    public function edit(Request $request, $id) {
+        $items = DetilBM::with(['bm', 'barang'])->where('id_bm', $id)->get();
+        $tanggal = Carbon::now()->toDateString();
+        $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
+
+        $data = [
+            'items' => $items,
+            'tanggal' => $tanggal,
+            'barang' => $barang,
+            'harga' => $harga,
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
+        ];
+
+        return view('pages.pembelian.ubahBM.edit', $data);
+    }
+
+    public function update(Request $request) {
+        $tanggal = $request->tanggal;
+        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+        $jumlah = $request->jumBaris;
+
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        $items = BarangMasuk::where('id', $request->kode)->first();
+        $items->{'status'} = 'PENDING_UPDATE';
+        $items->save();
+
+        NeedApproval::create([
+                'id' => $newcode,
+                'tanggal' => Carbon::now(),
+                'status' => 'PENDING_UPDATE',
+                'keterangan' => $request->keterangan,
+                'id_dokumen' => $request->kode,
+                'tipe' => 'Dokumen'
+            ]);
+
+        for($i = 0; $i < $jumlah; $i++) {
+            NeedAppDetil::create([
+                'id_app' => $newcode,
+                'id_barang' => $request->kodeBarang[$i],
+                'harga' => str_replace(".", "", $request->harga[$i]),
+                'qty' => $request->qty[$i],
+                'diskon' => NULL,
+            ]);
+        }
+
+        $data = [
+            'id' => $request->kode,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
+        ];
+
+        $url = Route('bm-show', $data);
+        return redirect($url);
+    }
 }

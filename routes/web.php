@@ -53,6 +53,10 @@ Route::middleware(['auth', 'admin'])
         Route::get('/barangmasuk/remove/{bm}/{barang}', 'BarangMasukController@remove')
                 ->name('bm-remove');
         Route::get('/barangmasuk/reset/{bm}', 'BarangMasukController@reset')->name('bm-reset');
+        Route::get('/barangmasuk/change', 'BarangMasukController@change')->name('bm-change');
+        Route::get('/barangmasuk/change/show', 'BarangMasukController@show')->name('bm-show');
+        Route::post('/barangmasuk/change/edit/{id}', 'BarangMasukController@edit')->name('bm-edit');
+        Route::post('/barangmasuk/change/update', 'BarangMasukController@update')->name('bm-update');
 
         // Transfer Barang
         Route::get('/transfer', 'TransferBarangController@index')->name('tb');

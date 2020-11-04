@@ -26,11 +26,11 @@ class ApprovalController extends Controller
     }
 
     public function show($id) {
-        $status = SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
+        $approval = NeedApproval::All();
         // $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
         // $itemsUpdate = NeedApproval::with(['barang'])->where('id_so', $id)->get();
         $data = [
-            'status' => $status,
+            'approval' => $approval,
             // 'items' => $items,
             // 'itemsUpdate' => $itemsUpdate,
             'kode' => $id

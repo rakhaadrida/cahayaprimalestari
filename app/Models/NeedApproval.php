@@ -8,12 +8,16 @@ class NeedApproval extends Model
 {
     protected $table = "need_approval";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tanggal', 'status', 'keterangan', 'id_so'];
+    protected $fillable = ['id', 'tanggal', 'status', 'keterangan', 'id_dokumen', 'tipe'];
 
     public $incrementing = false;
 
     public function so() {
-        return $this->belongsTo('App\Models\SalesOrder', 'id_so');
+        return $this->belongsTo('App\Models\SalesOrder', 'id_dokumen', 'id');
+    }
+
+    public function bm() {
+        return $this->belongsTo('App\Models\BarangMasuk', 'id_dokumen', 'id');
     }
 
     public function need_appdetil() {

@@ -276,7 +276,8 @@ class SalesOrderController extends Controller
                 'tanggal' => Carbon::now(),
                 'status' => 'PENDING_UPDATE',
                 'keterangan' => $request->keterangan,
-                'id_so' => $request->kode,
+                'id_dokumen' => $request->kode,
+                'tipe' => 'Faktur'
             ]);
 
         for($i = 0; $i < $jumlah; $i++) {

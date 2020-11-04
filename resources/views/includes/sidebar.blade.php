@@ -79,6 +79,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('po') }}">Purchase Order</a>
         <a class="collapse-item" href="{{ route('barangMasuk')}}">Penerimaan Barang</a>
+        <a class="collapse-item" href="{{ route('bm-change')}}">Ubah Barang Masuk</a>
         <a class="collapse-item" href="{{ route('tb') }}">Transfer Barang</a>
       </div>
     </div>
