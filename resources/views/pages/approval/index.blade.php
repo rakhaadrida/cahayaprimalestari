@@ -34,14 +34,18 @@
             @forelse ($items as $item)
               <tr>
                 <td align="center">{{ $i }}</td>
-                <td>{{ $item->id }}</td>
-                <td>{{ $item->tgl_so }}</td>
-                <td>{{ $item->customer->nama }}</td>
+                <td>{{ $item->id_dokumen }}</td>
+                @if($item->tipe == 'Faktur')
+                  <td>{{ $item->so->tgl_so }}</td>
+                  <td>{{ $item->so->customer->nama }}</td>
+                @else
+                  <td>{{ $item->bm->tanggal }}</td>
+                  <td>{{ $item->bm->supplier->nama }}</td>
+                @endif
                 <td>{{ $item->status }}</td>
-                @php $ket = \App\Models\NeedApproval::where('id_so', $item->id)->first(); @endphp
-                <td>{{ $ket['keterangan'] }}</td>
+                <td>{{ $item->keterangan }}</td>
                 <td align="center">
-                  <a href="{{ route('app-show', $item->id) }}" class="btn btn-success">
+                  <a href="{{ route('app-show', $item->id_dokumen) }}" class="btn btn-success">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>

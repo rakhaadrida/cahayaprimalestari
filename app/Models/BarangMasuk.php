@@ -28,4 +28,8 @@ class BarangMasuk extends Model
     public function ap() {
         return $this->hasOne('App\Models\AccPayable', 'id_bm', 'id');
     }
+
+    public function approval() {
+        return $this->hasMany('App\Models\Approval', 'id_dokumen', 'id');
+    }
 }

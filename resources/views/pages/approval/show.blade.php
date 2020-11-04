@@ -28,17 +28,17 @@
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($approval as $item)
-                  <div class="carousel-item @if($item->id == $kode) active @endif "/>
+                  <div class="carousel-item @if($item->id_dokumen == $kode) active @endif "/>
                     @php 
                       if($item->tipe == 'Faktur') {
                         $items = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so', $item->id_dokumen)->get();
 
-                        $itemsUpdate = \App\Models\NeedApproval::with(['so'])->where('id_dokumen', $item->id)->get();
+                        $itemsUpdate = \App\Models\NeedApproval::with(['so'])->where('id_dokumen', $item->id_dokumen)->get();
                       } 
                       elseif($item->tipe == 'Dokumen') {
                         $items = \App\Models\DetilBM::with(['bm', 'barang'])->where('id_bm', $item->id_dokumen)->get();
 
-                        $itemsUpdate = \App\Models\NeedApproval::with(['bm'])->where('id_dokumen', $item->id)->get();
+                        $itemsUpdate = \App\Models\NeedApproval::with(['bm'])->where('id_dokumen', $item->id_dokumen)->get();
                       }
 
                     @endphp
@@ -115,10 +115,12 @@
                             <div class="col-3">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
                               @if($item->tipe == 'Faktur')
-                                value="{{ $item->so->status }}" >
+                                value="{{ $item->so->status }}" 
                               @else
-                                value="{{ $item->bm->status }}" >
+                                value="{{ $item->bm->status }}" 
                               @endif
+                              >
+                              <input type="hidden" name="tipe" value={{ $item->tipe }}>
                             </div>
                           </div>
                         </div>
@@ -169,19 +171,28 @@
                             </td>
                             @if($item->tipe == 'Faktur') 
                               <td align="right">{{ $i->diskon }} %</td>
+                              @php 
+                                $diskon = 100;
+                                $arrDiskon = explode("+", $i->diskon);
+                                for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                                  $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                                } 
+                                $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
+                              @endphp
                               <td align="right">
-                                {{ number_format((($i->qty * $i->harga) * $i->diskon) / 100, 0, "", ".") }}
+                                {{ number_format((($i->qty * $i->harga) * $diskon) / 100, 0, "", ".") }}
                               </td>
                               <td align="right">
                                 {{ number_format(($i->qty * $i->harga) - 
-                                ((($i->qty * $i->harga) * $i->diskon) / 100), 0, "", ".") }}
+                                ((($i->qty * $i->harga) * $diskon) / 100), 0, "", ".") }}
                               </td>
                             @endif
                             @php 
-                              if($item->tipe == 'Faktur')
+                              if($item->tipe == 'Faktur') {
                                 $subtotal += ($i->qty * $i->harga) - 
-                                ((($i->qty * $i->harga) * $i->diskon) / 100); 
-                              @else
+                                ((($i->qty * $i->harga) * $diskon) / 100); 
+                              }
+                              else
                                 $subtotal += $i->qty * $i->harga;
                             @endphp
                           </tr>
@@ -264,9 +275,11 @@
                           <td style="width: 50px">Qty</td>
                           <td>Harga</td>
                           <td>Jumlah</td>
-                          <td style="width: 80px">Diskon(%)</td>
-                          <td style="width: 110px">Diskon(Rp)</td>
-                          <td style="width: 120px">Netto (Rp)</td>
+                          @if($item->tipe == 'Faktur') 
+                            <td style="width: 80px">Diskon(%)</td>
+                            <td style="width: 110px">Diskon(Rp)</td>
+                            <td style="width: 120px">Netto (Rp)</td>
+                          @endif
                         </thead>
                         <tbody>
                           @php 
@@ -291,19 +304,21 @@
                               @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
                                 {{number_format(($detItem->qty * $detItem->harga), 0, "", ".")}}
                               </td>
-                              <td align="right"
-                              @if($detItem->diskon != $items[$i-1]->diskon) class="bg-warning text-danger" @endif>
-                                {{ $detItem->diskon }} %
-                              </td>
-                              <td align="right"
-                              @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
-                                {{ number_format((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100, 0, "", ".") }}
-                              </td>
-                              <td align="right"
-                              @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
-                                {{ number_format(($detItem->qty * $detItem->harga) - 
-                                ((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100), 0, "", ".") }}
-                              </td>
+                              @if($item->tipe == 'Faktur') 
+                                <td align="right"
+                                @if($detItem->diskon != $items[$i-1]->diskon) class="bg-warning text-danger" @endif>
+                                  {{ $detItem->diskon }} %
+                                </td>
+                                <td align="right"
+                                @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
+                                  {{ number_format((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100, 0, "", ".") }}
+                                </td>
+                                <td align="right"
+                                @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
+                                  {{ number_format(($detItem->qty * $detItem->harga) - 
+                                  ((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100), 0, "", ".") }}
+                                </td>
+                              @endif
                               @php $subtotalUpdate += ($detItem->qty * $detItem->harga) - 
                                 ((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100); 
                               @endphp
@@ -324,7 +339,7 @@
                         <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2 mr-1">
-                          <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotalUpdate * 10 / 100, 0, "", ".") }}" />
+                          <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
                         </div>
                       </div>
                       <div class="form-group row justify-content-end grandtotal-so">
@@ -332,7 +347,7 @@
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2 mr-1">
                           <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right
-                          @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{number_format($subtotalUpdate + ($subtotalUpdate * 10 / 100),0,"",".")}}" />
+                          @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{number_format($subtotalUpdate, 0, "", ".")}}" />
                         </div>
                       </div>
                       @if($item->id != $itemsUpdate[$itemsUpdate->count() - 1]->id)
@@ -347,10 +362,10 @@
                     <!-- Button Submit dan Reset -->
                     <div class="form-row justify-content-center">
                       <div class="col-2">
-                        <button type="submit" formaction="{{route('app-process', $items[0]->id_so)}}" formmethod="POST" class="btn btn-success btn-block text-bold">Approve</button>
+                        <button type="submit" formaction="{{route('app-process', $item->id_dokumen)}}" formmethod="POST" class="btn btn-success btn-block text-bold">Approve</button>
                       </div>
                       <div class="col-2">
-                        <button type="submit" formaction="{{route('app-batal', $items[0]->id_so)}}" formmethod="POST" class="btn btn-danger btn-block text-bold">Batal Ubah</button>
+                        <button type="submit" formaction="{{route('app-batal', $item->id_dokumen)}}" formmethod="POST" class="btn btn-danger btn-block text-bold">Batal Ubah</button>
                       </div>
                     </div>
                     <!-- End Button Submit dan Reset -->

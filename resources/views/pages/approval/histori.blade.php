@@ -23,7 +23,7 @@
               <th>No</th>
               <th>No. Transaksi</th>
               <th>Tanggal Approval</th>
-              <th>Customer</th>
+              <th>Customer / Supplier</th>
               <th>Status</th>
               <th>Keterangan</th>
               <th>Detail</th>
@@ -34,13 +34,17 @@
             @forelse ($items as $item)
               <tr>
                 <td align="center">{{ $i }}</td>
-                <td>{{ $item->id_so }}</td>
+                <td>{{ $item->id_dokumen }}</td>
                 <td>{{ $item->tanggal }}</td>
-                <td>{{ $item->id_so }}</td>
+                @if($item->tipe == 'Faktur')
+                  <td>{{ $item->so->customer->nama }}</td>
+                @else
+                  <td>{{ $item->bm->supplier->nama }}</td>
+                @endif
                 <td>{{ $item->status }}</td>
                 <td>{{ $item->keterangan }}</td>
                 <td align="center">
-                  <a href="{{ route('app-detail', $item->id_so) }}" class="btn btn-success">
+                  <a href="{{ route('app-detail', $item->id_dokumen) }}" class="btn btn-success">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>

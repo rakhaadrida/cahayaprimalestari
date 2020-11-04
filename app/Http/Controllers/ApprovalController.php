@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
+use App\Models\BarangMasuk;
 use App\Models\DetilSO;
+use App\Models\DetilBM;
 use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
 use App\Models\Approval;
@@ -17,7 +19,7 @@ use Carbon\Carbon;
 class ApprovalController extends Controller
 {
     public function index() {
-        $items = SalesOrder::where('status', 'LIKE', '%PENDING%')->get();
+        $items = NeedApproval::with(['so', 'bm'])->get();
         $data = [
             'items' => $items
         ];
@@ -29,6 +31,7 @@ class ApprovalController extends Controller
         $approval = NeedApproval::All();
         // $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
         // $itemsUpdate = NeedApproval::with(['barang'])->where('id_so', $id)->get();
+
         $data = [
             'approval' => $approval,
             // 'items' => $items,
@@ -40,7 +43,11 @@ class ApprovalController extends Controller
     }
 
     public function process(Request $request, $id) {
-        $item = SalesOrder::where('id', $id)->first();
+        if($request->tipe == 'Faktur')
+            $item = SalesOrder::where('id', $id)->first();
+        else
+            $item = BarangMasuk::where('id', $id)->first();
+
         if($item->{'status'} == 'PENDING_UPDATE') {
             $item->{'status'} = "UPDATE";
             $item->{'total'} = str_replace(".", "", $request->grandtotal);
@@ -50,18 +57,24 @@ class ApprovalController extends Controller
         }
         $item->save();
 
-        $needApp = NeedApproval::where('id_so', $id)->orderBy('id', 'desc')->get();
+        $needApp = NeedApproval::where('id_dokumen', $id)->orderBy('id', 'desc')->get();
         Approval::create([
-            'id_so' => $id,
+            'id' => $needApp[0]->id,
+            'id_dokumen' => $id,
             'tanggal' => Carbon::now()->toDateString(),
             'status' => $item->{'status'},
-            'keterangan' => $needApp[0]->keterangan
+            'keterangan' => $needApp[0]->keterangan,
+            'tipe' => $request->tipe
         ]);
 
-        $detil = DetilSO::where('id_so', $id)->get();
+        if($request->tipe == 'Faktur')
+            $detil = DetilSO::where('id_so', $id)->get();
+        else
+            $detil = DetilBM::where('id_bm', $id)->get();
+
         foreach($detil as $d) {
             DetilApproval::create([
-                'id_so' => $d->id_so,
+                'id_app' => $needApp[0]->id,
                 'id_barang' => $d->id_barang,
                 'harga' => $d->harga,
                 'qty' => $d->qty,
@@ -69,24 +82,41 @@ class ApprovalController extends Controller
             ]);
         }
 
-        DetilSO::where('id_so', $id)->delete();
+        if($request->tipe == 'Faktur')
+            DetilSO::where('id_so', $id)->delete();
+        else
+            DetilBM::where('id_bm', $id)->delete();
+
         $items = NeedAppDetil::where('id_app', $needApp[0]->id)->get();
 
         foreach($items as $item) {
-            DetilSO::create([
-                'id_so' => $id,
-                'id_barang' => $item->id_barang,
-                'id_gudang' => 'GDG01',
-                'harga' => $item->harga,
-                'qty' => $item->qty,
-                'diskon' => $item->diskon
-            ]);
+            if($request->tipe == 'Faktur') {
+                DetilSO::create([
+                    'id_so' => $id,
+                    'id_barang' => $item->id_barang,
+                    'id_gudang' => 'GDG01',
+                    'harga' => $item->harga,
+                    'qty' => $item->qty,
+                    'diskon' => $item->diskon
+                ]);
+            }
+            else {
+                DetilBM::create([
+                    'id_bm' => $id,
+                    'id_barang' => $item->id_barang,
+                    'harga' => $item->harga,
+                    'qty' => $item->qty,
+                    'diskon' => $item->diskon,
+                    'disPersen' => NULL,
+                    'hpp' => NULL
+                ]);
+            }
         }
 
         foreach($needApp as $need) {
             NeedAppDetil::where('id_app', $need->id)->delete();
         }
-        NeedApproval::where('id_so', $id)->delete();
+        NeedApproval::where('id_dokumen', $id)->delete();
 
         return redirect()->route('approval');
     } 
@@ -103,7 +133,7 @@ class ApprovalController extends Controller
     }
 
     public function histori() {
-        $items = Approval::All();
+        $items = Approval::with(['so', 'bm'])->get();
         // var_dump($items);
         $data = [
             'items' => $items
@@ -112,10 +142,10 @@ class ApprovalController extends Controller
     }
 
     public function detail($id) {
-        $status = Approval::whereIn('status', ['UPDATE', 'BATAL'])->get();
+        $approval = Approval::All();
 
         $data = [
-            'status' => $status,
+            'approval' => $approval,
             'kode' => $id
         ];
         
