@@ -83,9 +83,15 @@
                   <div class="small text-dark-500 text-bold">
                     {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
                   </div>
-                  <span class="font-weight-bold">
-                    Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada {{ $item->tipe }} {{ $item->id_dokumen }}
-                  </span>
+                  @if($item->status != "PENDING_LIMIT")
+                    <span class="font-weight-bold">
+                      Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada {{ $item->tipe }} {{ $item->id_dokumen }}
+                    </span>
+                  @else
+                    <span class="font-weight-bold">
+                      Customer {{ $item->so->customer->nama }} melebihi limit pada faktur {{ $item->id_dokumen }}
+                    </span>
+                  @endif
                 @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
                   <div class="small text-gray-500">
                     {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-m-Y') }}

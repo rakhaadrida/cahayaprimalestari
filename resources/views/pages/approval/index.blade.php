@@ -35,7 +35,7 @@
               <tr>
                 <td align="center">{{ $i }}</td>
                 <td>{{ $item->id_dokumen }}</td>
-                @if($item->tipe == 'Faktur')
+                @if($item->tipe != 'Dokumen')
                   <td>{{ $item->so->tgl_so }}</td>
                   <td>{{ $item->so->customer->nama }}</td>
                 @else

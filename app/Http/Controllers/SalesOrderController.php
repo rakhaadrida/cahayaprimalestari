@@ -14,9 +14,11 @@ use App\Models\HargaBarang;
 use App\Models\Harga;
 use App\Models\Gudang;
 use App\Models\AccReceivable;
+use App\Models\DetilAR;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 use PDF;
 
 class SalesOrderController extends Controller
@@ -37,9 +39,26 @@ class SalesOrderController extends Controller
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
-        // $items = TempDetilSO::with(['barang', 'customer'])
-        //                     ->where('id_so', $newcode)->latest()->get();
-        // $itemsRow = TempDetilSO::where('id_so', $newcode)->count();
+        $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(total- retur) as totKredit'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        foreach($totalPerCust as $q) {
+            foreach($cicilPerCust as $h) {
+                if($q->id_customer == $h->id_customer) {
+                    $q['total'] = $q->totKredit - $h->totCicil;
+                }
+            }
+        }
 
         $data = [
             'customer' => $customer,
@@ -51,9 +70,8 @@ class SalesOrderController extends Controller
             'newcode' => $newcode,
             'tanggal' => $tanggal,
             'status' => $status,
-            'lastcode' => $lastcode
-            // 'itemsRow' => $itemsRow,
-            // 'items' => $items
+            'lastcode' => $lastcode,
+            'totalKredit' => $totalPerCust
         ];
 
         return view('pages.penjualan.so.index', $data);
@@ -119,6 +137,22 @@ class SalesOrderController extends Controller
             'keterangan' => 'BELUM LUNAS'
         ]);
 
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 2, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        if($status == 'LIMIT') {
+            NeedApproval::create([
+                'id' => $newcode,
+                'tanggal' => Carbon::now()->toDateString(),
+                'status' => 'PENDING_LIMIT',
+                'keterangan' => 'Melebihi limit',
+                'id_dokumen' => $id,
+                'tipe' => 'Limit'
+            ]);
+        }
+
         for($i = 0; $i < $jumlah; $i++) {
             if($request->kodeBarang[$i] != "") {
                 $arrGudang = explode(",", $request->kodeGudang[$i]);
@@ -134,6 +168,16 @@ class SalesOrderController extends Controller
                         'diskon' => $request->diskon[$i],
                         'diskonRp' => $diskonRp
                     ]);
+
+                    if($status == 'LIMIT') {
+                        NeedAppDetil::create([
+                            'id_app' => $newcode,
+                            'id_barang' => $request->kodeBarang[$i],
+                            'harga' => str_replace(".", "", $request->harga[$i]),
+                            'qty' => $arrStok[$j],
+                            'diskon' => $request->diskon[$i],
+                        ]);
+                    }
 
                     $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                                 ->where('id_gudang', $arrGudang[$j])->first();
@@ -155,7 +199,7 @@ class SalesOrderController extends Controller
             }
         }
 
-        if($status == 'INPUT')
+        if($status != 'CETAK')
             $cetak = 'false';
         else
             $cetak = 'true';
@@ -272,13 +316,13 @@ class SalesOrderController extends Controller
         $items->save();
 
         NeedApproval::create([
-                'id' => $newcode,
-                'tanggal' => Carbon::now(),
-                'status' => 'PENDING_UPDATE',
-                'keterangan' => $request->keterangan,
-                'id_dokumen' => $request->kode,
-                'tipe' => 'Faktur'
-            ]);
+            'id' => $newcode,
+            'tanggal' => Carbon::now(),
+            'status' => 'PENDING_UPDATE',
+            'keterangan' => $request->keterangan,
+            'id_dokumen' => $request->kode,
+            'tipe' => 'Faktur'
+        ]);
 
         for($i = 0; $i < $jumlah; $i++) {
             NeedAppDetil::create([

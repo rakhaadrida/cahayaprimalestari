@@ -111,6 +111,7 @@
                   <div class="col-3">
                     <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required />
                     <input type="hidden" name="kodeCustomer" id="idCustomer">
+                    <input type="hidden" name="limit" id="limit">
                   </div>
                   <label for="customer" class="col-1 col-form-label text-bold">NPWP</label>
                   <span class="col-form-label text-bold">:</span>
@@ -489,6 +490,51 @@
               </div>
               <!-- End Button Submit dan Reset -->
 
+              <!-- Modal Konfirmasi Limit -->
+              <div class="modal" id="modalLimit" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title">Konfirmasi Limit <b><span class="col-form-label text-bold" id="limitNama"></span></b></h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Nilai Total SO untuk customer <strong><span class="col-form-label text-bold" id="limitTitle"></span></strong> melebihi limit senilai <span class="col-form-label text-bold" id="limitAngka"></span>.</p>
+                      <hr>
+                      <div class="form-group row" style="margin-top: -10px">
+                        <label for="kode" class="col-4 col-form-label text-bold">Total Kredit</label>
+                        <span class="col-auto col-form-label text-bold">:</span>
+                        <span class="col-3 col-form-label text-bold text-right" id="totalKredit"></span>
+                      </div>
+                      <div class="form-group row" style="margin-top: -30px">
+                        <label for="kode" class="col-4 col-form-label text-bold">Total SO</label>
+                        <span class="col-auto col-form-label text-bold">:</span>
+                        <span class="col-3 col-form-label text-bold text-right" id="totalSO"></span>
+                      </div>
+                      <div class="form-group row" style="margin-top: -20px">
+                        <label for="kode" class="col-4 col-form-label text-bold">Total Tagihan</label>
+                        <span class="col-auto col-form-label text-bold">:</span>
+                        <span class="col-3 col-form-label text-bold text-right" id="totalTagihan"></span>
+                      </div>
+                      <hr>
+                      <p>Silahkan pilih untuk simpan atau batal.</p>
+                      <div class="form-row justify-content-center">
+                        <div class="col-3">
+                          {{-- <a href="{{ url('/so/process/'.$newcode.'/CETAK') }}" class="btn btn-success btn-block text-bold btnCetak">Cetak</a> --}}
+                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'LIMIT']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Simpan</button>
+                        </div>
+                        <div class="col-3">
+                          <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Modal Konfirmasi -->
+
               <!-- Modal Konfirmasi Cetak atau Input -->
               <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -543,13 +589,14 @@
 @endif
 
 const namaCust = document.getElementById('namaCustomer');
+const kodeCust = document.getElementById('idCustomer');
+const limit = document.getElementById('limit');
 const namaSales = document.getElementById('namaSales');
 const npwp = document.getElementById('npwp');
 const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
 const radios = document.querySelectorAll('input[type=radio][name="kategori"]');
 const kategori = document.getElementById('kategori');
-const kodeCust = document.getElementById('idCustomer');
 const pcs = document.getElementById("pcs");
 const satuanUkuran = document.getElementById("satuanUkuran");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
@@ -579,6 +626,12 @@ const modalGudang = document.querySelectorAll(".modalGudang");
 const totalstok = document.querySelectorAll(".totalstok");
 const totalsatuan = document.querySelectorAll(".totalsatuan");
 const nmbrg = document.querySelectorAll(".nmbrg");
+const totalKredit = document.getElementById('totalKredit');
+const totalSO = document.getElementById('totalSO');
+const totalTagihan = document.getElementById('totalTagihan');
+const limitTitle = document.getElementById('limitTitle');
+const limitNama = document.getElementById('limitNama');
+const limitAngka = document.getElementById('limitAngka');
 var netPast; var ukuran;
 var kodeModal;
 var totTemp;
@@ -599,6 +652,7 @@ function displayCust(e) {
   @foreach($customer as $c)
     if('{{ $c->nama }}' == e.target.value) {
       kodeCust.value = '{{ $c->id }}';
+      limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
     }
@@ -1143,9 +1197,27 @@ function checkRequired(e) {
     e.stopPropagation();
   }
   else {
-    document.getElementById("submitSO").dataset.toggle = "modal";
-    document.getElementById("submitSO").dataset.target = "#modalKonfirm";
-    return false;
+    if(grandtotal.value > limit.value) {
+      document.getElementById("submitSO").dataset.toggle = "modal";
+      document.getElementById("submitSO").dataset.target = "#modalLimit";
+      limitTitle.textContent = namaCust.value;
+      limitNama.textContent = namaCust.value;
+      limitAngka.textContent = addCommas(limit.value);
+      totalSO.textContent = grandtotal.value;
+      @foreach($totalKredit as $t)
+        if('{{ $t->id_customer }}' == kodeCust.value) {
+          totalKredit.textContent = addCommas('{{ $t->total }}');
+          totalTagihan.textContent = addCommas(+'{{ $t->total }}' + +grandtotal.value.replace(/\./g, ""));
+        }
+      @endforeach
+      
+      return false;
+    } 
+    else {
+      document.getElementById("submitSO").dataset.toggle = "modal";
+      document.getElementById("submitSO").dataset.target = "#modalKonfirm";
+      return false;
+    }
   }
 }
 

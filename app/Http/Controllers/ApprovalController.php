@@ -12,8 +12,10 @@ use App\Models\NeedAppDetil;
 use App\Models\Approval;
 use App\Models\DetilApproval;
 use App\Models\AccReceivable;
+use App\Models\DetilAR;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class ApprovalController extends Controller
@@ -29,14 +31,31 @@ class ApprovalController extends Controller
 
     public function show($id) {
         $approval = NeedApproval::All();
-        // $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
-        // $itemsUpdate = NeedApproval::with(['barang'])->where('id_so', $id)->get();
+        $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(total- retur) as totKredit'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        foreach($totalPerCust as $q) {
+            foreach($cicilPerCust as $h) {
+                if($q->id_customer == $h->id_customer) {
+                    $q['total'] = $q->totKredit - $h->totCicil;
+                }
+            }
+        }
 
         $data = [
             'approval' => $approval,
-            // 'items' => $items,
-            // 'itemsUpdate' => $itemsUpdate,
-            'kode' => $id
+            'kode' => $id,
+            'total' => $totalPerCust
         ];
 
         return view('pages.approval.show', $data);
