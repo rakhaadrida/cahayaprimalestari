@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('addon-style')
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -39,7 +43,7 @@
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" class="form-control form-control-sm text-bold" name="tanggal" value="{{ $tanggal }}" required>
+                        <input type="text" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
                       </div>
                     </div>   
                   </div>
@@ -277,9 +281,29 @@
 @endsection
 
 @push('addon-script')
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+
 <script type="text/javascript">
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
+
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
+
 const namaSup = document.getElementById('namaSupplier');
 const kodeSup = document.getElementById('kodeSupplier');
+const tanggal = document.getElementById('tanggal');
 const gudang = document.getElementById('namaGudang');
 const kodeGud = document.getElementById('kodeGudang');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
@@ -299,6 +323,7 @@ const jumBaris = document.getElementById('jumBaris');
 var netPast;
 // const keterangan = document.querySelectorAll(".keterangan");
 
+tanggal.addEventListener("keyup", formatTanggal);
 gudang.addEventListener('keydown', displayGud);
 namaSup.addEventListener('keydown', displaySupp);
 newRow.addEventListener('click', displayRow);
@@ -485,6 +510,19 @@ function displayRow(e) {
       }
     });
   }); 
+}
+
+function formatTanggal(e) {
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if(value.length > 2 && value.length <= 4) 
+    value = value.slice(0,2) + "-" + value.slice(2);
+  else if(value.length > 4 && value.length <= 8)
+    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+  
+  tanggal.value = value;
 }
 
 /** Tampil Id Supp **/

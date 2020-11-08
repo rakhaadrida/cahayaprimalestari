@@ -15,6 +15,7 @@ use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KartuStokExport;
+use Carbon\Carbon;
 
 class KartuStokController extends Controller
 {
@@ -27,21 +28,28 @@ class KartuStokController extends Controller
         return view('pages.laporan.kartustok.index', $data);
     }
 
+    public function formatTanggal($tanggal, $format) {
+        $formatTanggal = Carbon::parse($tanggal)->format($format);
+        return $formatTanggal;
+    }
+
     public function show(Request $request) {
-        $awal = $request->tglAwal;
-        $akhir = $request->tglAkhir;
+        $tglAwal = $request->tglAwal;
+        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+        $tglAkhir = $request->tglAkhir;
+        $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
         $barang = Barang::All();
         $gudang = Gudang::All();
 
         $rowBM = DetilBM::with(['bm', 'barang'])
                     ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
-                    ->whereHas('bm', function($q) use($awal, $akhir) {
-                        $q->whereBetween('tanggal', [$awal, $akhir]);
+                    ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$tglAwal, $tglAkhir]);
                     })->count();
         $rowSO = DetilSO::with(['so', 'barang'])
                     ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
-                    ->whereHas('so', function($q) use($awal, $akhir) {
-                        $q->whereBetween('tgl_so', [$awal, $akhir]);
+                    ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir]);
                     })->count();
         $itemsBRG = Barang::whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])
                         ->get();
@@ -55,8 +63,8 @@ class KartuStokController extends Controller
             $stokAwal[$i] = $s->total;
             $itemsBM = \App\Models\DetilBM::with(['bm', 'barang'])
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('bm', function($q) use($awal, $akhir) {
-                            $q->whereBetween('tanggal', [$awal, $akhir]);
+                        ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
+                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir]);
                         })->get();
             foreach($itemsBM as $bm) {
                 $stokAwal[$i] -= $bm->qty;
@@ -64,8 +72,8 @@ class KartuStokController extends Controller
 
             $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('so', function($q) use($awal, $akhir) {
-                            $q->whereBetween('tgl_so', [$awal, $akhir]);
+                        ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
+                            $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir]);
                         })->get();
             foreach($itemsSO as $so) {
                 $stokAwal[$i] += $so->qty;
@@ -80,8 +88,8 @@ class KartuStokController extends Controller
             'itemsBRG' => $itemsBRG,
             'rowBM' => $rowBM,
             'rowSO' => $rowSO,
-            'awal' => $awal,
-            'akhir' => $akhir,
+            'awal' => $tglAwal,
+            'akhir' => $tglAkhir,
             'stok' => $stok,
             'stokAwal' => $stokAwal
         ];

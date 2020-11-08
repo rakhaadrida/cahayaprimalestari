@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('addon-style')
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -48,12 +52,12 @@
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" value="{{ $tglAwal }}">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">Tanggal Akhir</label>
                   <span class="col-form-label text-bold ml-3">:</span>
                   <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" value="{{ $tglAkhir }}">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('so-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -359,13 +363,35 @@
 @endsection
 
 @push('addon-script')
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
+
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
+
 const namaCust = document.getElementById('namaCustomer');
 const kodeCust = document.getElementById('kodeCustomer');
+const tglAwal = document.getElementById('tglAwal');
+const tglAkhir = document.getElementById('tglAkhir');
 const kodeSO = document.getElementById('kode');
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener("change", displayKode);
+tglAwal.addEventListener("keyup", formatTanggal);
+tglAkhir.addEventListener("keyup", formatTanggal);
 
 function displayKode(e) {
   @foreach($customer as $c)
@@ -373,6 +399,22 @@ function displayKode(e) {
       kodeCust.value = '{{ $c->id }}';
     }
   @endforeach
+}
+
+function formatTanggal(e) {
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if(value.length > 2 && value.length <= 4) 
+    value = value.slice(0,2) + "-" + value.slice(2);
+  else if(value.length > 4 && value.length <= 8)
+    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+  
+  if(e.target.id == 'tglAwal')
+    tglAwal.value = value;
+  else
+    tglAkhir.value = value;
 }
 
 function checkEditable(kode) {

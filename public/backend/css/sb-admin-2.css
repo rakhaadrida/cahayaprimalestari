@@ -1864,7 +1864,7 @@ pre code {
 
 .table-hover tbody tr:hover {
     color: #858796;
-    background-color: rgba(59, 57, 57, 0.075);
+    background-color: rgba(0, 0, 0, 0.116);
 }
 
 .table-primary,
@@ -11558,6 +11558,7 @@ a:focus {
 .sidebar .nav-item .collapse .collapse-inner {
     border-radius: 0.35rem;
     box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    background-color: #7bdaff;
 }
 
 .sidebar .nav-item .collapsing {
@@ -11591,8 +11592,15 @@ a:focus {
     display: block;
     color: #3a3b45;
     text-decoration: none;
-    border-radius: 0.35rem;
+    /* border-radius: 0.35rem; */
     white-space: nowrap;
+    border-bottom: solid #686869;
+    border-width: thin;
+}
+
+.sidebar .nav-item .collapse .collapse-inner .collapse-item:last-child,
+.sidebar .nav-item .collapsing .collapse-inner .collapse-item:last-child {
+    border-bottom: none !important;
 }
 
 .sidebar .nav-item .collapse .collapse-inner .collapse-item:hover,

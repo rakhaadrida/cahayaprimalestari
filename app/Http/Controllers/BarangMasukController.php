@@ -166,9 +166,14 @@ class BarangMasukController extends Controller
     }
 
     public function show(Request $request) {
+        $tglAwal = $request->tglAwal;
+        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+        $tglAkhir = $request->tglAkhir;
+        $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
+
         $items = BarangMasuk::with(['supplier', 'gudang'])->where('id', $request->id)
                 ->orWhere('id_supplier', $request->kode)
-                ->orWhereBetween('tanggal', [$request->tglAwal, $request->tglAkhir])
+                ->orWhereBetween('tanggal', [$tglAwal, $tglAkhir])
                 ->orderBy('id', 'asc')->get();
         
         $supplier = Supplier::All();

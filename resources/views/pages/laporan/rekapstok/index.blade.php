@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('addon-style')
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -31,7 +35,7 @@
                   <label for="tanggal" class="col-auto col-form-label text-bold">Tanggal Rekap</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tanggal" >
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tanggal" id="tanggal" placeholder="DD-MM-YYYY" >
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('rs-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -109,10 +113,45 @@
 @endsection
 
 @push('addon-script')
-  <script src="{{ url('backend/vendor/jquery/jquery.printPage.js') }}"></script>
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $('.btnprnt').printPage();
-    });
-  </script>
+<script src="{{ url('backend/vendor/jquery/jquery.printPage.js') }}"></script>
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.btnprnt').printPage();
+});
+
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
+
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
+
+const tanggal = document.getElementById('tanggal');
+
+tanggal.addEventListener("keyup", formatTanggal);
+
+function formatTanggal(e) {
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if(value.length > 2 && value.length <= 4) 
+    value = value.slice(0,2) + "-" + value.slice(2);
+  else if(value.length > 4 && value.length <= 8)
+    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+  
+  tanggal.value = value;
+}
+</script>
 @endpush

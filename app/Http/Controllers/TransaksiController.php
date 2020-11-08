@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
+use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
@@ -11,9 +12,19 @@ class TransaksiController extends Controller
         return view('pages.penjualan.transaksiharian.index');
     }
 
+    public function formatTanggal($tanggal, $format) {
+        $formatTanggal = Carbon::parse($tanggal)->format($format);
+        return $formatTanggal;
+    }
+
     public function show(Request $request) {
+        $tglAwal = $request->tglAwal;
+        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+        $tglAkhir = $request->tglAkhir;
+        $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
+        
         $items = SalesOrder::with('customer')
-                ->whereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
+                ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
                 ->orderBy('id', 'asc')->get();
         
         $data = [

@@ -22,8 +22,9 @@
         <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
           <thead class="text-center text-bold text-dark">
             <tr align="center">
-              <th>No</th>
-              <th>Nama</th>
+              <th style="width: 80px">No</th>
+              <th style="width: 540px">Nama</th>
+              <th>Tipe</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -34,6 +35,7 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
+                <td align="center" class="align-middle">{{ $item->tipe }}</td>
                 <td align="center">
                   <a href="{{ route('harga.edit', $item->id) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-fw fa-edit"></i>

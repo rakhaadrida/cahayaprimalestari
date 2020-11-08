@@ -3,6 +3,7 @@
 
 @push('addon-style')
   <link href="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -52,11 +53,11 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" value="{{ $tglAwal }}">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3">s / d</label>
                   <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1 ml-1" name="tglAkhir" value="{{ $tglAkhir }}">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('ar-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -178,11 +179,50 @@
 <script src="{{ url('backend/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 
-<script>
+<script type="text/javascript">
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
+
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
+
 const cicil = document.querySelectorAll(".cicil");
 const retur = document.querySelectorAll(".retur");
 const kodeSO = document.getElementById("kodeSO");
+const tglAwal = document.getElementById('tglAwal');
+const tglAkhir = document.getElementById('tglAkhir');
+
+tglAwal.addEventListener("keyup", formatTanggal);
+tglAkhir.addEventListener("keyup", formatTanggal);
+
+function formatTanggal(e) {
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if(value.length > 2 && value.length <= 4) 
+    value = value.slice(0,2) + "-" + value.slice(2);
+  else if(value.length > 4 && value.length <= 8)
+    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+  
+  if(e.target.id == 'tglAwal')
+    tglAwal.value = value;
+  else
+    tglAkhir.value = value;
+}
 
 /** Sort Datatable **/
 $('#dataTable').dataTable( {

@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('addon-style')
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -151,7 +155,7 @@
                   <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control form-control-sm mt-1" required />
+                    <input type="text" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" required />
                     <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div>
                 </div>
@@ -580,6 +584,7 @@
 
 @push('addon-script')
 <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
 
 @if($status == 'true')
@@ -587,6 +592,23 @@
     $("#frameCetak").printPage();
   });
 @endif
+
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
+
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
 
 const namaCust = document.getElementById('namaCustomer');
 const kodeCust = document.getElementById('idCustomer');
@@ -639,6 +661,7 @@ var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keydown', displayCust);
+tanggalKirim.addEventListener("keyup", formatTanggal);
 newRow.addEventListener("click", displayRow);
 diskonFaktur.addEventListener('keyup', formatNominal);
 diskonFaktur.addEventListener('keyup', displayTotal);
@@ -657,6 +680,19 @@ function displayCust(e) {
       npwp.value = '{{ $c->npwp }}';
     }
   @endforeach
+}
+
+function formatTanggal(e) {
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if(value.length > 2 && value.length <= 4) 
+    value = value.slice(0,2) + "-" + value.slice(2);
+  else if(value.length > 4 && value.length <= 8)
+    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+  
+  tanggalKirim.value = value;
 }
 
 /** Tampil Input Tempo **/

@@ -21,6 +21,11 @@ class AccPayableController extends Controller
         return view('pages.payable.index', $data);
     }
 
+    public function formatTanggal($tanggal, $format) {
+        $formatTanggal = Carbon::parse($tanggal)->format($format);
+        return $formatTanggal;
+    }
+
     public function show(Request $request) {
         if($request->status == 'ALL')  {
             $status[0] = 'LUNAS';
@@ -32,7 +37,9 @@ class AccPayableController extends Controller
         }
 
         $awal = $request->tglAwal;
+        $awal = $this->formatTanggal($awal, 'Y-m-d');
         $akhir = $request->tglAkhir;
+        $akhir = $this->formatTanggal($akhir, 'Y-m-d');
 
         $isi = 2;
         if(($request->bulan == '') && ($request->tglAwal == ''))

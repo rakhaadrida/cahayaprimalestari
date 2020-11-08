@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('addon-style')
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -37,7 +41,7 @@
                     <label for="nama" class="col-auto col-form-label text-bold ">Tanggal TB</label>
                     <span class="col-form-label text-bold ml-3">:</span>
                     <div class="col-2">
-                      <input type="text" class="form-control col-form-label-sm text-bold" name="tanggal" value="{{ $tanggal }}" required>
+                      <input type="text" class="form-control datepicker col-form-label-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
                     </div>
                     <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div> 
@@ -213,7 +217,26 @@
 @endsection
 
 @push('addon-script')
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
+
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
+
+const tanggal = document.getElementById('tanggal');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const gdgAsal = document.querySelectorAll(".gdgAsal");
@@ -228,6 +251,20 @@ const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
 
 newRow.addEventListener('click', displayRow);
+tanggal.addEventListener("keyup", formatTanggal);
+
+function formatTanggal(e) {
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if(value.length > 2 && value.length <= 4) 
+    value = value.slice(0,2) + "-" + value.slice(2);
+  else if(value.length > 4 && value.length <= 8)
+    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+  
+  tanggal.value = value;
+}
 
 /** Add New Table Line **/
 function displayRow(e) {

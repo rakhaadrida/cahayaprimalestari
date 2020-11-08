@@ -60,7 +60,7 @@
                     />
                   </div>
                   <span class="col-form-label text-bold">
-                    @if($barang->satuan == "Pcs / Pack") Pcs @elseif($barang->satuan == "Meter / Rol") Rol @endif
+                    @if($barang->satuan == "Pcs / Dus") Pcs @elseif($barang->satuan == "Meter / Rol") Rol @endif
                   </span>
                 </div>
                 @php $i++; @endphp

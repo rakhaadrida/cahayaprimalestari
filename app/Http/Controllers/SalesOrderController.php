@@ -238,14 +238,19 @@ class SalesOrderController extends Controller
     }
 
     public function show(Request $request) {
+        $tglAwal = $request->tglAwal;
+        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+        $tglAkhir = $request->tglAkhir;
+        $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
+
         $items = SalesOrder::with('customer')->where('id', $request->id)
                 ->orWhere('id_customer', $request->kode)
-                ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
+                ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir])
                 ->orderBy('id', 'asc')->get();
         
         $itemsRow = SalesOrder::where('id', $request->id)
                     ->orWhere('id_customer', $request->kode)
-                    ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
+                    ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir])
                     ->count();
         $customer = Customer::All();
         $gudang = Gudang::All();

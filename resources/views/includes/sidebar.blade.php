@@ -24,7 +24,7 @@
       <span>Approval</span>
     </a>
     <div id="collapseApproval" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
+      <div class="py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('approval') }}">Butuh Approval</a>
         <a class="collapse-item" href="{{ route('app-histori') }}">Histori Approval</a>
       </div>
@@ -77,7 +77,7 @@
     </a>
     <div id="collapsePembelian" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ route('po') }}">Purchase Order</a>
+        {{-- <a class="collapse-item" href="{{ route('po') }}">Purchase Order</a> --}}
         <a class="collapse-item" href="{{ route('barangMasuk')}}">Penerimaan Barang</a>
         <a class="collapse-item" href="{{ route('bm-change')}}">Ubah Barang Masuk</a>
         <a class="collapse-item" href="{{ route('tb') }}">Transfer Barang</a>
@@ -97,7 +97,7 @@
         <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
         <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
         <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
-        <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a>
+        {{-- <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a> --}}
       </div>
     </div>
   </li>
