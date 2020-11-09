@@ -13,6 +13,8 @@ use App\Models\Gudang;
 use App\Models\AccPayable;
 use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
 
 class BarangMasukController extends Controller
@@ -198,6 +200,29 @@ class BarangMasukController extends Controller
         return view('pages.pembelian.ubahBM.detail', $data);
     }
 
+    public function status(Request $request, $id) {
+        $item = BarangMasuk::where('id', $id)->first();
+        $item->{'status'} = 'PENDING_BATAL';
+        $item->save();
+
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        NeedApproval::create([
+            'id' => $newcode,
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => 'PENDING_BATAL',
+            'keterangan' => $request->input("ket".$id),
+            'id_dokumen' => $id,
+            'tipe' => 'Dokumen'
+        ]);
+
+        session()->put('url.intended', URL::previous());
+        return Redirect::intended('/');  
+    }
+
     public function edit(Request $request, $id) {
         $items = DetilBM::with(['bm', 'barang'])->where('id_bm', $id)->get();
         $tanggal = Carbon::now()->toDateString();
@@ -234,13 +259,13 @@ class BarangMasukController extends Controller
         $items->save();
 
         NeedApproval::create([
-                'id' => $newcode,
-                'tanggal' => Carbon::now(),
-                'status' => 'PENDING_UPDATE',
-                'keterangan' => $request->keterangan,
-                'id_dokumen' => $request->kode,
-                'tipe' => 'Dokumen'
-            ]);
+            'id' => $newcode,
+            'tanggal' => Carbon::now(),
+            'status' => 'PENDING_UPDATE',
+            'keterangan' => $request->keterangan,
+            'id_dokumen' => $request->kode,
+            'tipe' => 'Dokumen'
+        ]);
 
         for($i = 0; $i < $jumlah; $i++) {
             NeedAppDetil::create([

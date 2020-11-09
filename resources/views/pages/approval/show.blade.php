@@ -110,18 +110,18 @@
                       </div>
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12">
-                          <div class="form-group row customer-detail">
+                          <div class="form-group row customer-detail" @if($item->status == 'PENDING_BATAL') style="margin-top: -20px" @endif>
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                              <input type="text" name="status" readonly class="form-control-plaintext col-form-label-sm text-bold @if($item->status == 'PENDING_BATAL') bg-warning text-danger @endif" 
                               @if($item->tipe != 'Dokumen')
                                 value="{{ $item->so->status }}" 
                               @else
                                 value="{{ $item->bm->status }}" 
                               @endif
                               >
-                              <input type="hidden" name="tipe" value={{ $item->tipe }}>
+                              <input type="hidden" name="tipe" value="{{ $item->tipe }}">
                             </div>
                           </div>
                         </div>
@@ -137,9 +137,9 @@
                           </div>
                         @endif
                       </div>
-                      @if($item->tipe == 'Limit')
-                        <div class="row" style="margin-top: 5px;">
-                          <div class="col">
+                      <div class="row" style="margin-top: 5px;">
+                        <div class="col-12">
+                          @if($item->tipe == 'Limit')
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-2 form-control-sm text-bold text-dark mt-1" style="font-size: 16px">Limit</label>
                               <span class="col-form-label text-bold">:</span>
@@ -147,9 +147,20 @@
                                 <input type="text" readonly class="form-control-plaintext col-form-label-md bg-warning text-danger text-bold text-lg" value="{{ number_format($item->so->customer->limit, 0, "", ".") }}" >
                               </div>
                             </div>
-                          </div>
+                          @endif
                         </div>
-                      @endif
+                        @if(($item->tipe == 'Limit') || ($item->status == 'PENDING_BATAL'))
+                          <div class="col" style="margin-left: -450px; @if($item->tipe == 'Limit') margin-top: -10px @else margin-top: -20px @endif">
+                            <div class="form-group row customer-detail">
+                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Keterangan</label>
+                              <span class="col-form-label text-bold">:</span>
+                              <div class="col-6">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->keterangan }}" >
+                              </div>
+                            </div>
+                          </div>
+                        @endif
+                      </div>
                     </div>
 
                     <!-- Tabel Data Awal SO -->
@@ -233,7 +244,7 @@
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">@if($item->tipe != 'Limit') Total Tagihan @else Total SO @endif</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold @if($item->tipe != 'Limit') bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
+                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($item->tipe != 'Limit') && ($item->tipe != 'Batal')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
                       </div>
                     </div>
                     @if($item->tipe == 'Limit')
@@ -259,7 +270,7 @@
                         </div>
                       </div>
                     @endif
-                    @if($item->tipe != 'Limit')
+                    @if(($item->tipe != 'Limit') && ($item->status != 'PENDING_BATAL'))
                       <div class="row justify-content-center" style="margin-top: -80px">
                         <i class="fas fa-arrow-down fa-4x text-primary"></i>
                       </div>
@@ -267,7 +278,7 @@
                     <hr>
                     <!-- End Tabel Data Awal SO -->
 
-                    @if($item->tipe != 'Limit')
+                    @if(($item->tipe != 'Limit') && ($item->status != 'PENDING_BATAL'))
                       @foreach($itemsUpdate as $iu)
                         <div class="container so-update-container" style="margin-top: 40px">
                           <div class="row" >

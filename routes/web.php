@@ -55,6 +55,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('/barangmasuk/reset/{bm}', 'BarangMasukController@reset')->name('bm-reset');
         Route::get('/barangmasuk/change', 'BarangMasukController@change')->name('bm-change');
         Route::get('/barangmasuk/change/show', 'BarangMasukController@show')->name('bm-show');
+        Route::post('/barangmasuk/change/status/{id}', 'BarangMasukController@status')->name('bm-status');
         Route::post('/barangmasuk/change/edit/{id}', 'BarangMasukController@edit')->name('bm-edit');
         Route::post('/barangmasuk/change/update', 'BarangMasukController@update')->name('bm-update');
 

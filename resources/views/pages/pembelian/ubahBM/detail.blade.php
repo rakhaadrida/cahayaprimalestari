@@ -230,7 +230,7 @@
                           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true" class="h2 text-bold">&times;</span>
                           </button>
-                          <h4 class="modal-title">Ubah Status BM <b>{{$item->id}}</b></h4>
+                          <h4 class="modal-title">Ubah Status Barang Masuk <b>{{$item->id}}</b></h4>
                         </div>
                         <div class="modal-body">
                             <div class="form-group row">
@@ -312,7 +312,7 @@ function checkEditable(kode) {
     @foreach($items as $item)
       if('{{ $item->id }}' == kode.id) {
         document.getElementById("btn"+kode.id).formMethod = "POST";
-        document.getElementById("btn"+kode.id).formAction = '{{ route('so-status', $item->id) }}';
+        document.getElementById("btn"+kode.id).formAction = '{{ route('bm-status', $item->id) }}';
       }
     @endforeach
   }

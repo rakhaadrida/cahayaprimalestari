@@ -101,6 +101,8 @@ class SalesOrderController extends Controller
     public function process(Request $request, $id, $status) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+        $tglKirim = $request->tanggalKirim;
+        $tglKirim = $this->formatTanggal($tglKirim, 'Y-m-d');
         $jumlah = $request->jumBaris;
 
         if($request->tempo == "") 
@@ -121,7 +123,7 @@ class SalesOrderController extends Controller
         SalesOrder::create([
             'id' => $id,
             'tgl_so' => $tanggal,
-            'tgl_kirim' => $request->tanggalKirim,
+            'tgl_kirim' => $tglKirim,
             'total' => str_replace(".", "", $request->grandtotal),
             'kategori' => $request->kategori,
             'tempo' => $tempo,
@@ -275,9 +277,22 @@ class SalesOrderController extends Controller
 
     public function status(Request $request, $id) {
         $item = SalesOrder::where('id', $id)->first();
-        $item->{'status'} = $request->statusUbah;
-        $item->{'keterangan'} = $request->input("ket".$id);
+        $item->{'status'} = 'PENDING_BATAL';
         $item->save();
+
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        NeedApproval::create([
+            'id' => $newcode,
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => 'PENDING_BATAL',
+            'keterangan' => $request->input("ket".$id),
+            'id_dokumen' => $id,
+            'tipe' => 'Faktur'
+        ]);
 
         session()->put('url.intended', URL::previous());
         return Redirect::intended('/');  
