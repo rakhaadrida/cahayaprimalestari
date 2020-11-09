@@ -83,10 +83,14 @@ class BarangMasukController extends Controller
             'status' => 'NO_DISC'
         ]);
 
+        $lastcode = AccPayable::max('id');
+        $lastnumber = (int) substr($lastcode, 2, 4);
+        $lastnumber++;
+        $newcode = 'AP'.sprintf('%04s', $lastnumber);
+
         AccPayable::create([
+            'id' => $newcode, 
             'id_bm' => $id,
-            'tgl_bayar' => NULL,
-            'transfer' => NULL,
             'keterangan' => "BELUM LUNAS"
         ]);
 

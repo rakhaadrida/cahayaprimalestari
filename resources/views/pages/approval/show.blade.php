@@ -100,8 +100,9 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Gudang</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="namaGudang"
                                 value="{{ $item->bm->gudang->nama }}" >
+                                <input type="hidden" name="kodeGudang" value="{{ $item->bm->id_gudang }}">
                               </div>
                             </div>
                           </div>
@@ -348,18 +349,26 @@
                                   @if($detItem->diskon != $items[$i-1]->diskon) class="bg-warning text-danger" @endif>
                                     {{ $detItem->diskon }} %
                                   </td>
+                                  @php 
+                                    $diskon = 100;
+                                    $arrDiskon = explode("+", $detItem->diskon);
+                                    for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                                      $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                                    } 
+                                    $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
+                                  @endphp
                                   <td align="right"
                                   @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
-                                    {{ number_format((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100, 0, "", ".") }}
+                                    {{ number_format((($detItem->qty * $detItem->harga) * $diskon) / 100, 0, "", ".") }}
                                   </td>
                                   <td align="right"
                                   @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
                                     {{ number_format(($detItem->qty * $detItem->harga) - 
-                                    ((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100), 0, "", ".") }}
+                                    ((($detItem->qty * $detItem->harga) * $diskon) / 100), 0, "", ".") }}
                                   </td>
                                 @endif
                                 @php $subtotalUpdate += ($detItem->qty * $detItem->harga) - 
-                                  ((($detItem->qty * $detItem->harga) * $detItem->diskon) / 100); 
+                                  ((($detItem->qty * $detItem->harga) * $diskon) / 100); 
                                 @endphp
                               </tr>
                               @php $i++; @endphp

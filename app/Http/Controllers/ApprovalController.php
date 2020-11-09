@@ -13,6 +13,7 @@ use App\Models\Approval;
 use App\Models\DetilApproval;
 use App\Models\AccReceivable;
 use App\Models\DetilAR;
+use App\Models\StokBarang;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -76,9 +77,14 @@ class ApprovalController extends Controller
         }
         $item->save();
 
+        $lastcode = Approval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APR'.sprintf('%04s', $lastnumber);
+
         $needApp = NeedApproval::where('id_dokumen', $id)->orderBy('id', 'desc')->get();
         Approval::create([
-            'id' => $needApp[0]->id,
+            'id' => $newcode,
             'id_dokumen' => $id,
             'tanggal' => Carbon::now()->toDateString(),
             'status' => $item->{'status'},
@@ -93,7 +99,7 @@ class ApprovalController extends Controller
 
         foreach($detil as $d) {
             DetilApproval::create([
-                'id_app' => $needApp[0]->id,
+                'id_app' => $newcode,
                 'id_barang' => $d->id_barang,
                 'harga' => $d->harga,
                 'qty' => $d->qty,
@@ -130,6 +136,32 @@ class ApprovalController extends Controller
                     'hpp' => NULL
                 ]);
             }
+
+            $stokAwal = DetilApproval::where('id_app', $newcode)
+                        ->where('id_barang', $item->id_barang)->first();
+            if($request->tipe == 'Dokumen') {
+                $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                            ->where('id_gudang', $request->kodeGudang)->first();
+            }
+            elseif($request->tipe == 'Faktur') {
+                $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                            ->where('id_gudang', 'GDG01')->first();
+            }
+
+            if($stokAwal->{'qty'} > $item->qty) {
+                if($request->tipe == 'Dokumen')
+                    $updateStok->{'stok'} -= ($stokAwal->{'qty'} - $item->qty);
+                elseif($request->tipe == 'Faktur')
+                    $updateStok->{'stok'} += ($stokAwal->{'qty'} - $item->qty);
+            }
+            else {
+                if($request->tipe == 'Dokumen')
+                    $updateStok->{'stok'} += ($item->qty - $stokAwal->{'qty'});
+                elseif($request->tipe == 'Faktur')
+                    $updateStok->{'stok'} -= ($item->qty - $stokAwal->{'qty'});
+            }
+
+            $updateStok->save();
         }
 
         foreach($needApp as $need) {

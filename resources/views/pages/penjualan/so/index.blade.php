@@ -1042,7 +1042,8 @@ for(let i = 0; i < qty.length; i++) {
       netPast = +netto[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
       if(diskon[i].value != "") {
-        diskonRp[i].value = addCommas(diskon[i].value * jumlah[i].value.replace(/\./g, "") / 100);
+        var angkaDiskon = hitungDiskon(diskon[i].value)
+        diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
       }
 
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));

@@ -196,7 +196,7 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
-                  value="{{ number_format($subtotal * 10 / 100, 0, "", ".") }}" />
+                  value="0" />
                 </div>
               </div>
               <div class="form-group row justify-content-end total-so so-info-total">
@@ -205,7 +205,7 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-right" 
-                  value="{{ number_format($subtotal - ($subtotal * 10 / 100), 0, "", ".") }}"
+                  value="{{ number_format($subtotal, 0, "", ".") }}"
                   />
                 </div>
               </div>
@@ -250,8 +250,8 @@ const jumBaris = document.getElementById('jumBaris');
 
 /** Tampil Nama dan Kode Barang Otomatis **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("change", displayHarga) ;
-  kodeBarang[i].addEventListener("change", displayHarga);
+  brgNama[i].addEventListener("keydown", displayHarga) ;
+  kodeBarang[i].addEventListener("keydown", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
@@ -288,13 +288,15 @@ for(let i = 0; i < qty.length; i++) {
       netPast = +netto[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
       if(diskon[i].value != "") {
-        diskonRp[i].value = addCommas(diskon[i].value * jumlah[i].value.replace(/\./g, "") / 100);
+        var angkaDiskon = hitungDiskon(diskon[i].value)
+        diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
       }
 
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    total_ppn(subtotal.value.replace(/\./g, ""));
+    // total_ppn(subtotal.value.replace(/\./g, ""));
+    grandtotal.value = subtotal.value;
   });
 } 
 
@@ -308,12 +310,14 @@ for(let i = 0; i < diskon.length; i++) {
       diskonRp[i].value = "";
     }
     else {
+      var angkaDiskon = hitungDiskon(e.target.value);
       netPast = +netto[i].value.replace(/\./g, "")
-      diskonRp[i].value = addCommas(e.target.value * jumlah[i].value.replace(/\./g, "") / 100);
+      diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    total_ppn(subtotal.value.replace(/\./g, ""));
+    // total_ppn(subtotal.value.replace(/\./g, ""));
+    grandtotal.value = subtotal.value;
   });
 }
 
@@ -324,6 +328,17 @@ function checkSubtotal(Past, Now) {
   } else {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + (+Now - +Past));
   }
+}
+
+/** Hitung Diskon **/
+function hitungDiskon(angka) {
+  var totDiskon = 100;
+  var arrDiskon = angka.split('+');
+  for(let i = 0; i < arrDiskon.length; i++) {
+    totDiskon -= (arrDiskon[i] * totDiskon) / 100;
+  }
+  totDiskon = ((totDiskon - 100) * -1).toFixed(2);
+  return totDiskon;
 }
 
 /** Hitung PPN Dan Total **/
