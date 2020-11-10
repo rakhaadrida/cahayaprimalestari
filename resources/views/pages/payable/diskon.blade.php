@@ -63,14 +63,14 @@
                   <div class="carousel-item @if($item->id == $id) active
                     @endif "
                   />
-                    <div class="container so-update-container">
+                    <div class="container so-update-container text-dark">
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group row">
                             <label for="kode" class="col-2 form-control-sm text-bold  text-right mt-1">Nomor BM</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" name="kode" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->id }}" >
+                              <input type="text" name="kode" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id }}" >
                             </div>
                           </div>
                         </div> 
@@ -79,7 +79,7 @@
                             <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Supplier</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->supplier->nama }} ({{ $item->id_supplier }})" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->supplier->nama }} ({{ $item->id_supplier }})" >
                             </div>
                           </div>
                         </div>
@@ -90,7 +90,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold text-right mt-1">Tanggal SO</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}" >
                             </div>
                           </div>
                         </div> 
@@ -99,7 +99,7 @@
                             <label for="tanggal" class="col-3 form-control-sm text-bold mt-1 text-right">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->status }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->status }}" >
                             </div>
                           </div>
                         </div>
@@ -127,7 +127,7 @@
                       <tbody>
                         @php $i = 1; $subtotal = 0; @endphp
                         @foreach($item->detilbm as $detil)
-                          <tr class="text-bold">
+                          <tr class="text-dark text-bold">
                             <td align="center" class="align-middle">{{ $i }}</td>
                             <td align="center" class="align-middle">{{ $detil->id_barang }} </td>
                             <td class="align-middle">{{ $detil->barang->nama }}</td>

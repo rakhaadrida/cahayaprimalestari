@@ -65,7 +65,7 @@
                 <tbody>
                   @php $i=1; @endphp
                   @forelse ($items as $item)
-                    <tr>
+                    <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $item->id }}</button></td>
                       <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')  }}</td>

@@ -42,14 +42,14 @@
                       }
 
                     @endphp
-                    <div class="container so-update-container">
+                    <div class="container so-update-container text-dark">
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group row" >
                             <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor @if($item->tipe == 'Faktur') SO @else BM @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->id_dokumen }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id_dokumen }}" >
                             </div>
                           </div>
                         </div> 
@@ -58,7 +58,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama @if($item->tipe != 'Dokumen') Customer @else Supplier @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold"
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($item->tipe != 'Dokumen')
                                 value="{{ $item->so->customer->nama }} ({{ $item->so->id_customer }})" >
                               @else
@@ -74,7 +74,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal @if($item->tipe != 'Dokumen') SO @else BM @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                               @if($item->tipe != 'Dokumen')
                                 value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" >
                               @else
@@ -89,7 +89,7 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                                 value="{{ $item->so->customer->sales->nama }}" >
                               </div>
                             </div>
@@ -100,7 +100,7 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Gudang</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="namaGudang"
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
                                 value="{{ $item->bm->gudang->nama }}" >
                                 <input type="hidden" name="kodeGudang" value="{{ $item->bm->id_gudang }}">
                               </div>
@@ -114,7 +114,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" name="status" readonly class="form-control-plaintext col-form-label-sm text-bold @if($item->status == 'PENDING_BATAL') bg-warning text-danger @endif" 
+                              <input type="text" name="status" readonly class="form-control-plaintext col-form-label-sm text-bold @if($item->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" 
                               @if($item->tipe != 'Dokumen')
                                 value="{{ $item->so->status }}" 
                               @else
@@ -131,7 +131,7 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($items[0]->so->tgl_so)->add($items[0]->so->tempo, 'days')->format('d-m-Y') }}" >
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($items[0]->so->tgl_so)->add($items[0]->so->tempo, 'days')->format('d-m-Y') }}" >
                               </div>
                             </div>
                           </div>
@@ -155,7 +155,7 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Keterangan</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-6">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->keterangan }}" >
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->keterangan }}" >
                               </div>
                             </div>
                           </div>
@@ -183,7 +183,7 @@
                           $j = 1; $subtotal = 0;
                         @endphp
                         @foreach($items as $i)
-                          <tr class="text-bold">
+                          <tr class="text-bold text-dark">
                             <td align="center">{{ $j }}</td>
                             <td align="center">{{ $i->id_barang }} </td>
                             <td>{{ $i->barang->nama }}</td>

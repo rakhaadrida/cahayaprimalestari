@@ -17,8 +17,8 @@
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+        <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="text-center text-bold text-dark">
             <tr align="center">
               <th>No</th>
               <th>No. Transaksi</th>
@@ -32,15 +32,15 @@
           <tbody>
             @php $i=1; @endphp
             @forelse ($items as $item)
-              <tr>
-                <td align="center">{{ $i }}</td>
-                <td>{{ $item->id }}</td>
-                <td>{{ $item->approval[0]->tanggal }}</td>
-                <td>{{ $item->customer->nama }}</td>
-                <td>{{ $item->status }}</td>
-                <td>{{ $item->approval[0]->keterangan }}</td>
-                <td align="center">
-                  <a href="{{ route('notif-show', $item->id) }}" class="btn btn-success">
+              <tr class="text-dark">
+                <td class="align-middle" align="center">{{ $i }}</td>
+                <td class="align-middle" align="center">{{ $item->id }}</td>
+                <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-M-y') }}</td>
+                <td class="align-middle">{{ $item->customer->nama }}</td>
+                <td class="align-middle" align="center">{{ $item->status }}</td>
+                <td class="align-middle">{{ $item->approval[0]->keterangan }}</td>
+                <td class="align-middle" align="center">
+                  <a href="{{ route('notif-show', $item->id) }}" class="btn btn-success btn-sm">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>

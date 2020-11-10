@@ -32,33 +32,35 @@
                     @endif "
                   />
                     @php 
-                      $items = \App\Models\DetilApproval::with(['barang', 'approval'])->where('id_app', $item->id)->get();
+                      if($item->tipe != 'Dokumen') {
+                        $items = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so', $item->id_dokumen)->get();
 
-                      if($item->tipe == 'Faktur') {
-                        $itemsUpdate = \App\Models\DetilSO::with(['barang'])->where('id_so', $item->id_dokumen)->get();
-                      }
+                        $itemsUpdate = \App\Models\NeedApproval::with(['so'])->where('id_dokumen', $item->id_dokumen)->get();
+                      } 
                       else {
-                        $itemsUpdate = \App\Models\DetilBM::with(['barang'])->where('id_bm', $item->id_dokumen)->get();
+                        $items = \App\Models\DetilBM::with(['bm', 'barang'])->where('id_bm', $item->id_dokumen)->get();
+
+                        $itemsUpdate = \App\Models\NeedApproval::with(['bm'])->where('id_dokumen', $item->id_dokumen)->get();
                       }
                     @endphp
-                    <div class="container so-update-container">
+                    <div class="container so-update-container text-dark">
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group row" >
                             <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor @if($item->tipe == 'Faktur') SO @else BM @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->id_dokumen }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id_dokumen }}" >
                             </div>
                           </div>
                         </div> 
                         <div class="col" style="margin-left: -450px">
                           <div class="form-group row">
-                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama @if($item->tipe == 'Faktur') Customer @else Supplier @endif</label>
+                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama @if($item->tipe != 'Dokumen') Customer @else Supplier @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold"
-                              @if($item->tipe == 'Faktur')
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
+                              @if($item->tipe != 'Dokumen')
                                 value="{{ $item->so->customer->nama }} ({{ $item->so->id_customer }})" >
                               @else
                                 value="{{ $item->bm->supplier->nama }} ({{ $item->bm->id_supplier }})" >
@@ -70,11 +72,11 @@
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12">
                           <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal @if($item->tipe == 'Faktur') SO @else BM @endif</label>
+                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal @if($item->tipe != 'Dokumen') SO @else BM @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
-                              @if($item->tipe == 'Faktur')
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
+                              @if($item->tipe != 'Dokumen')
                                 value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" >
                               @else
                                 value="{{ \Carbon\Carbon::parse($item->bm->tanggal)->format('d-M-y') }}" >
@@ -82,13 +84,13 @@
                             </div>
                           </div>
                         </div>
-                        @if($item->tipe == 'Faktur')   
+                        @if($item->tipe != 'Dokumen')   
                           <div class="col" style="margin-left: -450px">
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                                 value="{{ $item->so->customer->sales->nama }}" >
                               </div>
                             </div>
@@ -99,8 +101,9 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Gudang</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
                                 value="{{ $item->bm->gudang->nama }}" >
+                                <input type="hidden" name="kodeGudang" value="{{ $item->bm->id_gudang }}">
                               </div>
                             </div>
                           </div>
@@ -108,28 +111,52 @@
                       </div>
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12">
-                          <div class="form-group row customer-detail">
+                          <div class="form-group row customer-detail" @if($item->status == 'PENDING_BATAL') style="margin-top: -20px" @endif>
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
-                              @if($item->tipe == 'Faktur')
+                              <input type="text" name="status" readonly class="form-control-plaintext col-form-label-sm text-bold @if($item->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" 
+                              @if($item->tipe != 'Dokumen')
                                 value="{{ $item->so->status }}" 
                               @else
                                 value="{{ $item->bm->status }}" 
                               @endif
                               >
-                              <input type="hidden" name="tipe" value={{ $item->tipe }}>
+                              <input type="hidden" name="tipe" value="{{ $item->tipe }}">
                             </div>
                           </div>
                         </div>
-                        @if($item->tipe == 'Faktur') 
+                        @if($item->tipe != 'Dokumen') 
                           <div class="col" style="margin-left: -450px">
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')->format('d-m-Y') }}" >
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($items[0]->so->tgl_so)->add($items[0]->so->tempo, 'days')->format('d-m-Y') }}" >
+                              </div>
+                            </div>
+                          </div>
+                        @endif
+                      </div>
+                      <div class="row" style="margin-top: 5px;">
+                        <div class="col-12">
+                          @if($item->tipe == 'Limit')
+                            <div class="form-group row customer-detail">
+                              <label for="tanggal" class="col-2 form-control-sm text-bold text-dark mt-1" style="font-size: 16px">Limit</label>
+                              <span class="col-form-label text-bold">:</span>
+                              <div class="col-2">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-md bg-warning text-danger text-bold text-lg" value="{{ number_format($item->so->customer->limit, 0, "", ".") }}" >
+                              </div>
+                            </div>
+                          @endif
+                        </div>
+                        @if(($item->tipe == 'Limit') || ($item->status == 'PENDING_BATAL'))
+                          <div class="col" style="margin-left: -450px; @if($item->tipe == 'Limit') margin-top: -10px @else margin-top: -20px @endif">
+                            <div class="form-group row customer-detail">
+                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Keterangan</label>
+                              <span class="col-form-label text-bold">:</span>
+                              <div class="col-6">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->keterangan }}" >
                               </div>
                             </div>
                           </div>
@@ -146,7 +173,7 @@
                         <td style="width: 50px">Qty</td>
                         <td>Harga</td>
                         <td>Jumlah</td>
-                        @if($item->tipe == 'Faktur') 
+                        @if($item->tipe != 'Dokumen') 
                           <td style="width: 80px">Diskon(%)</td>
                           <td style="width: 110px">Diskon(Rp)</td>
                           <td style="width: 120px">Netto (Rp)</td>
@@ -157,7 +184,7 @@
                           $j = 1; $subtotal = 0;
                         @endphp
                         @foreach($items as $i)
-                          <tr class="text-bold">
+                          <tr class="text-bold text-dark">
                             <td align="center">{{ $j }}</td>
                             <td align="center">{{ $i->id_barang }} </td>
                             <td>{{ $i->barang->nama }}</td>
@@ -168,7 +195,7 @@
                             <td align="right">
                               {{number_format(($i->qty * $i->harga), 0, "", ".")}}
                             </td>
-                            @if($item->tipe == 'Faktur') 
+                            @if($item->tipe != 'Dokumen') 
                               <td align="right">{{ $i->diskon }} %</td>
                               @php 
                                 $diskon = 100;
@@ -187,7 +214,7 @@
                               </td>
                             @endif
                             @php 
-                              if($item->tipe == 'Faktur') {
+                              if($item->tipe != 'Dokumen') {
                                 $subtotal += ($i->qty * $i->harga) - 
                                 ((($i->qty * $i->harga) * $diskon) / 100); 
                               }
@@ -215,15 +242,40 @@
                       </div>
                     </div>
                     <div class="form-group row justify-content-end grandtotal-so">
-                      <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
+                      <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">@if($item->tipe != 'Limit') Total Tagihan @else Total SO @endif</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
+                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($item->tipe != 'Limit') && ($item->tipe != 'Batal')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
                       </div>
                     </div>
-                    <div class="row justify-content-center" style="margin-top: -80px">
-                      <i class="fas fa-arrow-down fa-4x text-primary"></i>
-                    </div>
+                    @if($item->tipe == 'Limit')
+                      <div class="form-group row justify-content-end" style="margin-top: 5px">
+                        <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Kredit</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2 mr-1">
+                          <input type="text" name="totalKredit" id="totalKredit" readonly class="form-control-plaintext text-bold text-dark text-lg text-right" @foreach($total as $t)
+                            @if($t->id_customer == $item->so->id_customer)
+                              value="{{number_format($t->total, 0, "", ".")}}" 
+                              @php $totalKredit = $t->total; @endphp
+                            @endif
+                          @endforeach 
+                          />
+                        </div>
+                      </div>
+                      <br>
+                      <div class="form-group row justify-content-end" style="margin-top: -40px">
+                        <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2 mr-1">
+                          <input type="text" name="totalTagihan" id="totalTagihan" readonly class="form-control-plaintext text-bold bg-warning text-danger text-lg text-right" value="{{number_format($subtotal + $totalKredit, 0, "", ".")}}" />
+                        </div>
+                      </div>
+                    @endif
+                    @if(($item->tipe != 'Limit') && ($item->status != 'PENDING_BATAL'))
+                      <div class="row justify-content-center" style="margin-top: -80px">
+                        <i class="fas fa-arrow-down fa-4x text-primary"></i>
+                      </div>
+                    @endif
                     <hr>
                     <!-- End Tabel Data Awal SO -->
 

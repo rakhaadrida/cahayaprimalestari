@@ -88,10 +88,10 @@
                   />
                   <div class="container so-update-container">
                     <div class="form-group row">
-                      <label for="kode" class="col-auto form-control-sm text-bold mt-1">Kode Barang</label>
+                      <label for="kode" class="col-auto form-control-sm text-bold text-dark mt-1">Kode Barang</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-6">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold"
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                         @if($rowBM != 0)
                           value="{{ $item->id }} - {{ $item->nama }}"
                         @elseif($rowSO != 0)
@@ -164,7 +164,7 @@
                                       ->get();
                         @endphp
                         @foreach($itemsBM as $ib)
-                          <tr class="text-bold">
+                          <tr class="text-dark">
                             <td align="center" class="align-middle">{{ $i }}</td>
                             <td align="center" class="align-middle">{{ \Carbon\Carbon::parse($ib->bm->tanggal)->format('d-M-y') }}</td>
                             <td class="align-middle">Barang Masuk</td>
@@ -187,7 +187,7 @@
                           @php $i++; @endphp
                         @endforeach
                         @foreach($itemsSO as $is)
-                          <tr class="text-bold">
+                          <tr class="text-dark">
                             <td class="align-middle" align="center">{{ $i }}</td>
                             <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($is->so->tgl_so)->format('d-M-y') }}</td>
                             <td class="align-middle">Penjualan Barang</td>

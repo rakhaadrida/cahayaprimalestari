@@ -51,11 +51,11 @@
                 </div>
               </div>
               <hr>
-              <div class="form-row">
-                <div class="col">
+              <div class="form-row justify-content-center">
+                <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
-                <div class="col">
+                <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>

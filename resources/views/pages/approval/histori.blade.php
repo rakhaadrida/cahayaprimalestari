@@ -17,8 +17,8 @@
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
+        <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+          <thead class="text-center text-bold text-dark">
             <tr align="center">
               <th>No</th>
               <th>No. Transaksi</th>
@@ -32,21 +32,20 @@
           <tbody>
             @php $i=1; @endphp
             @forelse ($items as $item)
-              <tr>
-                <td align="center">{{ $i }}</td>
-                <td>{{ $item->id_dokumen }}</td>
-                <td>{{ $item->tanggal }}</td>
-                @if($item->tipe == 'Faktur')
-                  <td>{{ $item->so->customer->nama }}</td>
+              <tr class="text-dark">
+                <td class="align-middle" align="center">{{ $i }}</td>
+                <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
+                @if($item->tipe != 'Dokumen')
+                  <td class="align-middle" align="center">{{ $item->so->tgl_so }}</td>
+                  <td class="align-middle" align="center">{{ $item->so->customer->nama }}</td>
                 @else
-                  <td>{{ $item->bm->supplier->nama }}</td>
+                  <td class="align-middle" align="center">{{ $item->bm->tanggal }}</td>
+                  <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
                 @endif
-                <td>{{ $item->status }}</td>
-                <td>{{ $item->keterangan }}</td>
-                <td align="center">
-                  <a href="{{ route('app-detail', $item->id_dokumen) }}" class="btn btn-success">
-                    <i class="fas fa-fw fa-eye"></i>
-                  </a>
+                <td class="align-middle" align="center">{{ $item->status }}</td>
+                <td class="align-middle">{{ $item->keterangan }}</td>
+                <td class="align-middle" align="center">
+                  <a href="{{ route('app-detail', $item->id_dokumen) }}" class="btn btn-success btn-sm"><i class="fas fa-fw fa-eye"></i></a>
                 </td>
               </tr>
               @php $i++; @endphp

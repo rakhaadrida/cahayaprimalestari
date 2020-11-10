@@ -73,14 +73,14 @@
                   <div class="carousel-item @if($item->id == $items[$itemsRow-1]->id) active
                     @endif "
                   />
-                    <div class="container so-update-container">
+                    <div class="container so-update-container text-dark">
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group row">
                             <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor SO</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold"
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($itemsRow != 0)
                                 value="{{ $item->id }}"
                               @endif
@@ -93,7 +93,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Customer</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                               @if($itemsRow != 0)
                                 value="{{ $item->customer->nama }} ({{ $item->id_customer }})"
                               @endif
@@ -108,7 +108,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal SO</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold"
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($itemsRow != 0)
                                 value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}"
                               @endif
@@ -121,7 +121,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                               @if($itemsRow != 0)
                                 value="{{ $item->customer->sales->nama }}"
                               @endif
@@ -136,7 +136,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold"
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($itemsRow != 0)
                                 value="{{ $item->status }}"
                               @endif
@@ -149,7 +149,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" 
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                               @if($itemsRow != 0)
                                 value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}"
                               @endif
@@ -203,7 +203,7 @@
                                       ->get();
                           @endphp
                           @foreach($itemsDetail as $itemDet)
-                            <tr class="text-bold">
+                            <tr class="text-dark">
                               <td align="center">{{ $i }}</td>
                               <td align="center">{{ $itemDet->id_barang }} </td>
                               <td>{{ $itemDet->barang->nama }}</td>

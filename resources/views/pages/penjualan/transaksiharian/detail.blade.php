@@ -51,14 +51,14 @@
                   <div class="carousel-item @if($item->id == $kode) active
                     @endif "
                   />
-                    <div class="container so-update-container">
+                    <div class="container so-update-container text-dark">
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group row">
                             <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor SO</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->id }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id }}" >
                             </div>
                           </div>
                         </div> 
@@ -67,7 +67,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Customer</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->customer->nama }} ({{ $item->id_customer }})" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->customer->nama }} ({{ $item->id_customer }})" >
                             </div>
                           </div>
                         </div>
@@ -78,7 +78,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal SO</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}" >
                             </div>
                           </div>
                         </div> 
@@ -87,7 +87,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->customer->sales->nama }}">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->customer->sales->nama }}">
                             </div>
                           </div>
                         </div>
@@ -98,7 +98,7 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ $item->status }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->status }}" >
                             </div>
                           </div>
                         </div>
@@ -107,7 +107,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}" >
                             </div>
                           </div>
                         </div>
@@ -134,7 +134,7 @@
                             $item->id)->get();
                         @endphp
                         @foreach($itemsDetail as $itemDet)
-                          <tr class="text-bold">
+                          <tr class="text-dark">
                             <td align="center">{{ $i }}</td>
                             <td align="center">{{ $itemDet->id_barang }} </td>
                             <td>{{ $itemDet->barang->nama }}</td>
