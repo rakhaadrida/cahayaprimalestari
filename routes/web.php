@@ -97,6 +97,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-process');
         Route::get('/cetak/{awal}/{akhir}', 'CetakFakturController@cetak')
             ->name('cetak-all');
+        Route::post('/cetak-faktur/{awal}/{akhir}', 'CetakFakturController@update')
+            ->name('cetak-update');
         // Route::post('/cetak-faktur/cetak', 'CetakFakturController@cetak')
             // ->name('cetak-all');
 

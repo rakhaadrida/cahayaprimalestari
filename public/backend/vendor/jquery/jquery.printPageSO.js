@@ -49,7 +49,7 @@
                 $("body").append(components.iframe(url));
                 $('#printPage').on("load", function () {
                     printit();
-                })
+                });
             } else {
                 $('#printPage').attr("src", url);
             }
@@ -58,8 +58,11 @@
          * Call the print browser functionnality, focus is needed for IE
          */
         function printit() {
-            frames["printPage"].focus();
-            frames["printPage"].print();
+            window.frames["printPage"].focus();
+            window.frames["printPage"].onafterprint = function(e) {
+                afterPrint();
+            }
+            window.frames["printPage"].print();
             unloadMessage();
         }
         /*
@@ -72,6 +75,12 @@
                 $(this).remove();
             });
         }
+
+        function afterPrint() {
+            // window.location.href = "https://google.com";
+            alert('Ok');
+        }
+
         /*
          * Build html compononents for thois plugin
          */
@@ -94,5 +103,9 @@
           " + message + "</div>";
             }
         }
+    };
+
+    $.fn.afterPrint = function (e) {
+        window.location.href = "https://google.com";
     };
 })(jQuery);

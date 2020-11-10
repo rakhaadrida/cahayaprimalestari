@@ -104,9 +104,20 @@
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
 <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
 <script type="text/javascript">
+// window.onafterprint = function() {
+//   window.location.href = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+// };
+
 @if($status == "true")
   $(document).ready(function() {
-    $("#frameCetak").printPage();
+    document.getElementById("frameCetak").contentWindow.onafterprint = function(e) {
+      alert('ok');
+    };
+    
+    document.getElementById("frameCetak").contentWindow.print();
+    // $("#frameCetak").get(0).contentWindow.print();
+    // $("#frameCetak").printPage();
+    // $("#frameCetak").afterPrint();
   });
 @endif
 

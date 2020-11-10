@@ -56,4 +56,24 @@ class CetakFakturController extends Controller
         ob_end_clean();
         return $pdf->stream('cetak-all.pdf');
     } */
+
+    public function update($awal, $akhir) {
+        $items = SalesOrder::whereBetween('id', [$awal, $akhir])->get();
+
+        foreach($items as $item) {
+            $item->status = 'CETAK';
+            $item->save();
+        }
+
+        $items = SalesOrder::where('status', 'INPUT')->get();
+
+        $data = [
+            'items' => $items,
+            'status' => 'false',
+            'awal' => 0,
+            'akhir' => 0
+        ];
+
+        return view('pages.penjualan.cetakfaktur.index', $data);
+    }
 }
