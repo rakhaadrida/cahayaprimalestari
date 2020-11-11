@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
+use App\Models\StokBarang;
 
 class GudangController extends Controller
 {
@@ -72,6 +73,58 @@ class GudangController extends Controller
         $item = Gudang::findOrFail($id);
         $item->delete();
 
+        $item = StokBarang::where('id_gudang', $id);
+        $item->delete();
+
         return redirect()->route('gudang.index');
+    }
+
+    public function trash() {
+        $items = Gudang::onlyTrashed()->get();
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.gudang.trash', $data);
+    }
+
+    public function restore($id) {
+        $item = Gudang::onlyTrashed()->where('id', $id);
+        $item->restore();
+
+        $item = StokBarang::onlyTrashed()->where('id_gudang', $id);
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function restoreAll() {
+        $items = Gudang::onlyTrashed();
+        $items->restore();
+
+        $item = StokBarang::onlyTrashed();
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function hapus($id) {
+        $item = Gudang::onlyTrashed()->where('id', $id);
+        $item->forceDelete();
+
+        $item = StokBarang::onlyTrashed()->where('id_gudang', $id);
+        $item->forceDelete();
+
+        return redirect()->back();
+    }
+
+    public function hapusAll() {
+        $items = Gudang::onlyTrashed();
+        $items->forceDelete();
+
+        $item = StokBarang::onlyTrashed();
+        $item->forceDelete();
+
+        return redirect()->back();
     }
 }

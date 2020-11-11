@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('addon-style')
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -31,14 +35,14 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" value="{{ $tglAwal }}">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}" required>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
                   <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" value="{{ $tglAkhir }}">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" required>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="" formmethod="" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -121,50 +125,69 @@
                         <td style="width: 80px">Kode</td>
                         <td>Nama Barang</td>
                         <td style="width: 50px">Qty</td>
+                        @foreach($gudang as $g)
+                          <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
+                        @endforeach
                         <td>Harga</td>
                         <td>Jumlah</td>
-                        <td style="width: 80px">Diskon(%)</td>
+                        <td style="width: 100px">Diskon(%)</td>
                         <td style="width: 110px">Diskon(Rp)</td>
                         <td style="width: 120px">Netto (Rp)</td>
                       </thead>
                       <tbody>
                         @php 
                           $i = 1; $subtotal = 0;
-                          $itemsDetail = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so',
-                            $item->id)->get();
+                          $itemsDetail = \App\Models\DetilSO::with(['barang'])
+                                      ->select('id_barang', 'diskon')
+                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                      ->where('id_so', $item->id)
+                                      ->groupBy('id_barang', 'diskon')
+                                      ->get();
                         @endphp
                         @foreach($itemsDetail as $itemDet)
                           <tr class="text-dark">
-                            <td align="center">{{ $i }}</td>
-                            <td align="center">{{ $itemDet->id_barang }} </td>
-                            <td>{{ $itemDet->barang->nama }}</td>
-                            <td align="right">{{ $itemDet->qty }}</td>
-                            <td align="right">
-                              {{ number_format($itemDet->harga, 0, "", ".") }}
-                            </td>
-                            <td align="right">
-                              {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
-                            </td>
-                            <td align="right">{{ $itemDet->diskon }} %</td>
-                            @php 
-                              $diskon = 100;
-                              $arrDiskon = explode("+", $itemDet->diskon);
-                              for($j = 0; $j < sizeof($arrDiskon); $j++) {
-                                $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                              } 
-                              $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
-                            @endphp
-                            <td align="right">
-                              {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
-                            </td>
-                            <td align="right">
-                              {{ number_format(($itemDet->qty * $itemDet->harga) - 
-                              ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
-                            </td>
-                            @php $subtotal += ($itemDet->qty * $itemDet->harga) - 
-                              ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
-                            @endphp
-                          </tr>
+                              <td align="center">{{ $i }}</td>
+                              <td align="center">{{ $itemDet->id_barang }} </td>
+                              <td>{{ $itemDet->barang->nama }}</td>
+                              <td align="right">{{ $itemDet->qty }}</td>
+                              @foreach($gudang as $g)
+                                @php
+                                  $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
+                                            ->where('id_barang', $itemDet->id_barang)
+                                            ->where('id_gudang', $g->id)->get();
+                                @endphp
+                                @if($itemGud->count() != 0)
+                                  <td align="right">{{ $itemGud[0]->qty }}</td>
+                                @else
+                                  <td></td>
+                                @endif
+                              @endforeach
+                              <td align="right">
+                                {{ number_format($itemDet->harga, 0, "", ".") }}
+                              </td>
+                              <td align="right">
+                                {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
+                              </td>
+                              <td align="right">{{ $itemDet->diskon }}</td>
+                              @php 
+                                $diskon = 100;
+                                $arrDiskon = explode("+", $itemDet->diskon);
+                                for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                                  $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                                } 
+                                $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                              @endphp
+                              <td align="right">
+                                {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
+                              </td>
+                              <td align="right">
+                                {{ number_format(($itemDet->qty * $itemDet->harga) - 
+                                ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
+                              </td>
+                              @php $subtotal += ($itemDet->qty * $itemDet->harga) - 
+                                ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
+                              @endphp
+                            </tr>
                           @php $i++; @endphp
                         @endforeach
                       </tbody>
@@ -181,14 +204,14 @@
                       <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal * 10 / 100, 0, "", ".") }}" />
+                        <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
                       </div>
                     </div>
                     <div class="form-group row justify-content-end grandtotal-so">
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{number_format($subtotal + ($subtotal * 10 / 100),0,"",".")}}" />
+                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
                       </div>
                     </div>
                     <hr>
@@ -229,7 +252,45 @@
 @endsection
 
 @push('addon-script')
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
 
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
+
+const tglAwal = document.getElementById('tglAwal');
+const tglAkhir = document.getElementById('tglAkhir');
+
+tglAwal.addEventListener("keyup", formatTanggal);
+tglAkhir.addEventListener("keyup", formatTanggal);
+
+function formatTanggal(e) {
+  var value = e.target.value.replaceAll("-","");
+  var arrValue = value.split("", 3);
+  var kode = arrValue.join("");
+
+  if(value.length > 2 && value.length <= 4) 
+    value = value.slice(0,2) + "-" + value.slice(2);
+  else if(value.length > 4 && value.length <= 8)
+    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+  
+  if(e.target.id == 'tglAwal')
+    tglAwal.value = value;
+  else
+    tglAkhir.value = value;
+}
 </script>
 @endpush

@@ -43,7 +43,7 @@
                     <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="" formmethod="" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -73,7 +73,7 @@
                       <td class="text-right align-middle">{{ number_format($item->total, 0, "", ",") }}</td>
                       <td class="text-center align-middle">{{ $item->kategori }}</td>
                       <td class="text-center align-middle">{{ $item->tempo }} Hari</td>
-                      <td class="align-middle">{{ $item->status }}</td>
+                      <td class="text-center align-middle">{{ $item->status }}</td>
                     </tr>
                     @php $i++; @endphp
                   @empty

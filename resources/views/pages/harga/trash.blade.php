@@ -10,59 +10,45 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
-    <h1 class="h3 mb-0 text-gray-800 menu-title">Data Supplier</h1>
-    <div class="justify-content-end">
-      <a href="{{ route('supplier.create') }}" class="btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Supplier
-      </a>
-      <span class="vertical-hr mr-2 ml-1"></span>
-      <a href="{{ route('sup-trash') }}" class="btn btn-sm btn-outline-danger shadow-sm">
-        <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Data Tak Terpakai
-      </a>
-    </div>
+    <h1 class="h3 mb-0 text-gray-800 menu-title">Data Harga Tidak Terpakai</h1>
+    <a href="{{ route('harga.index') }}" class="btn btn-sm btn-outline-primary shadow-sm">
+      Kembali ke Data Harga
+    </a>
   </div>
 
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+          <a href="{{ route('harga-restoreAll') }}" class="btn btn-sm btn-primary shadow-sm mb-3">Kembalikan Semua Data</a>
+          <a href="{{ route('harga-hapusAll') }}" class="btn btn-sm btn-outline-danger shadow-sm mb-3 ml-2">Hapus Permanen Semua Data</a>
           <thead class="text-center text-bold text-dark">
             <tr align="center">
-              <th>No</th>
-              <th>Nama</th>
-              <th>Alamat</th>
-              <th>Telepon</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th style="width: 60px">No</th>
+              <th style="width: 520px">Nama</th>
+              <th>Tipe</th>
+              <th style="width: 140px">Kembalikan</th>
+              <th style="width: 180px">Hapus Permanen</th>
             </tr>
           </thead>
           <tbody>
             @php $i=1; @endphp
             @forelse ($items as $item)
               <tr class="text-dark">
-                <td align="center" class="align-middle">{{ $i }}</td>
+                <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
-                <td class="align-middle">{{ $item->alamat }}</td>
-                <td class="align-middle">{{ $item->telepon }}</td>
+                <td align="center" class="align-middle">{{ $item->tipe }}</td>
                 <td class="align-middle" align="center">
-                  <a href="{{ route('supplier.edit', $item->id) }}" class="btn btn-info btn-sm">
-                    <i class="fas fa-fw fa-edit"></i>
-                  </a>
+                  <a href="{{ route('harga-restore', $item->id) }}" class="btn btn-success btn-sm"><i class="fas fa-fw fa-undo"></i></a>
                 </td>
                 <td class="align-middle" align="center">
-                  <form action="{{ route('supplier.destroy', $item->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('delete')
-                    <button class="btn btn-danger btn-sm">
-                      <i class="fas fa-fw fa-trash"></i>
-                    </button>  
-                  </form>
+                  <a href="{{ route('harga-hapus', $item->id) }}" class="btn btn-danger btn-sm"><i class="fas fa-fw fa-eraser"></i></a>
                 </td>
               </tr>
               @php $i++; @endphp
             @empty
               <tr>
-                <td colspan="8" class="text-center">Tidak Ada Data</td>
+                <td colspan="5" class="text-center">Tidak Ada Data</td>
               </tr>
             @endforelse
           </tbody>

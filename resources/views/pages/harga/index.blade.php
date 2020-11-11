@@ -10,10 +10,16 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Harga</h1>
+    <h1 class="h3 mb-0 text-gray-800 menu-title">Data Harga</h1>
+    <div class="justify-content-end">
       <a href="{{ route('harga.create') }}" class="btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50"></i>  Tambah Harga
+        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Harga
       </a>
+      <span class="vertical-hr mr-2 ml-1"></span>
+      <a href="{{ route('harga-trash') }}" class="btn btn-sm btn-outline-danger shadow-sm">
+        <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Data Tak Terpakai
+      </a>
+    </div>
   </div>
 
   <div class="row">

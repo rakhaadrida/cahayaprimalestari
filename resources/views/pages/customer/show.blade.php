@@ -65,7 +65,9 @@
               <tr>
                 <td width="200px" class="text-bold">Sales Cover</td>
                 <td class="text-bold">:</td>
-                <td>{{ $item->sales->nama }}</td>
+                <td>
+                  @if($item->id_sales != '') {{ $item->sales->nama }} @else - @endif
+                </td>
               </tr>
             </tbody>
           </table>

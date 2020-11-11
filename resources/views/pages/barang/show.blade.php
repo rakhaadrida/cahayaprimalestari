@@ -45,6 +45,13 @@
                   <td>{{ $item->nama }}</td>
                 </tr>
                 <tr>
+                  <td width="150px" class="text-bold">Kategori</td>
+                  <td>:</td>
+                  <td>
+                    @if($item->id_kategori != '') {{ $item->jenis->nama }} @endif
+                  </td>
+                </tr>
+                <tr>
                   <td width="150px" class="text-bold">Satuan</td>
                   <td>:</td>
                   <td>{{ $item->satuan }}</td>

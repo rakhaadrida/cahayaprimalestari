@@ -15,6 +15,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     // Dashboard
     Route::get('/', 'DashboardController@index')->name('dashboard');
 
+    // Ganti Password
+    Route::get('password', 'UserController@change')->name('user-change');
+    Route::post('password/process', 'UserController@process')->name('user-process');
+
     Route::group(['roles'=>['ADMIN', 'SUPER']], function() {
         //CRUD Master
         Route::resource('supplier', 'SupplierController');
@@ -25,6 +29,70 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::resource('gudang', 'GudangController');
         Route::resource('harga', 'HargaController');
         // Route::resource('po', 'PurchaseOrderController');
+
+        // Soft Deletes Suppllier
+        Route::get('supplier/trash/all', 'SupplierController@trash')->name('sup-trash');
+        Route::get('supplier/restore/{id}', 'SupplierController@restore')->name('sup-restore');
+        Route::get('supplier/restore-all/all', 'SupplierController@restoreAll')
+            ->name('sup-restoreAll');
+        Route::get('supplier/hapus/{id}', 'SupplierController@hapus')->name('sup-hapus');
+        Route::get('supplier/hapus-all/all', 'SupplierController@hapusAll')
+            ->name('sup-hapusAll');
+        
+        // Soft Deletes Sales
+        Route::get('sales/trash/all', 'SalesController@trash')->name('sales-trash');
+        Route::get('sales/restore/{id}', 'SalesController@restore')->name('sales-restore');
+        Route::get('sales/restore-all/all', 'SalesController@restoreAll')
+            ->name('sales-restoreAll');
+        Route::get('sales/hapus/{id}', 'SalesController@hapus')->name('sales-hapus');
+        Route::get('sales/hapus-all/all', 'SalesController@hapusAll')
+            ->name('sales-hapusAll');
+
+        // Soft Deletes Customer
+        Route::get('customer/trash/all', 'CustomerController@trash')->name('cus-trash');
+        Route::get('customer/restore/{id}', 'CustomerController@restore')->name('cus-restore');
+        Route::get('customer/restore-all/all', 'CustomerController@restoreAll')
+            ->name('cus-restoreAll');
+        Route::get('customer/hapus/{id}', 'CustomerController@hapus')->name('cus-hapus');
+        Route::get('customer/hapus-all/all', 'CustomerController@hapusAll')
+            ->name('cus-hapusAll');
+
+        // Soft Deletes Jenis Barang
+        Route::get('jenisbarang/trash/all', 'JenisBarangController@trash')->name('jb-trash');
+        Route::get('jenisbarang/restore/{id}', 'JenisBarangController@restore')
+            ->name('jb-restore');
+        Route::get('jenisbarang/restore-all/all', 'JenisBarangController@restoreAll')
+            ->name('jb-restoreAll');
+        Route::get('jenisbarang/hapus/{id}', 'JenisBarangController@hapus')->name('jb-hapus');
+        Route::get('jenisbarang/hapus-all/all', 'JenisBarangController@hapusAll')
+            ->name('jb-hapusAll');
+
+        // Soft Deletes Barang
+        Route::get('barang/trash/all', 'BarangController@trash')->name('barang-trash');
+        Route::get('barang/restore/{id}', 'BarangController@restore')->name('barang-restore');
+        Route::get('barang/restore-all/all', 'BarangController@restoreAll')
+            ->name('barang-restoreAll');
+        Route::get('barang/hapus/{id}', 'BarangController@hapus')->name('barang-hapus');
+        Route::get('barang/hapus-all/all', 'BarangController@hapusAll')
+            ->name('barang-hapusAll');
+
+        // Soft Deletes Harga
+        Route::get('harga/trash/all', 'HargaController@trash')->name('harga-trash');
+        Route::get('harga/restore/{id}', 'HargaController@restore')->name('harga-restore');
+        Route::get('harga/restore-all/all', 'HargaController@restoreAll')
+            ->name('harga-restoreAll');
+        Route::get('harga/hapus/{id}', 'HargaController@hapus')->name('harga-hapus');
+        Route::get('harga/hapus-all/all', 'HargaController@hapusAll')
+            ->name('harga-hapusAll');
+        
+        // Soft Deletes Gudang
+        Route::get('gudang/trash/all', 'GudangController@trash')->name('gudang-trash');
+        Route::get('gudang/restore/{id}', 'GudangController@restore')->name('gudang-restore');
+        Route::get('gudang/restore-all/all', 'GudangController@restoreAll')
+            ->name('gudang-restoreAll');
+        Route::get('gudang/hapus/{id}', 'GudangController@hapus')->name('gudang-hapus');
+        Route::get('gudang/hapus-all/all', 'GudangController@hapusAll')
+            ->name('gudang-hapusAll');
 
         // Detail Barang
         Route::get('barang/detail/{id}', 'BarangController@detail')->name('detailBarang');
@@ -128,6 +196,18 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('approval/batal/{id}', 'ApprovalController@batal')->name('app-batal');
         Route::get('approval/histori', 'ApprovalController@histori')->name('app-histori');
         Route::get('approval/histori/{id}', 'ApprovalController@detail')->name('app-detail');
+
+        // Master User
+        Route::resource('user', 'UserController');
+
+        // Soft Deletes Gudang
+        Route::get('user/trash/all', 'UserController@trash')->name('user-trash');
+        Route::get('user/restore/{id}', 'UserController@restore')->name('user-restore');
+        Route::get('user/restore-all/all', 'UserController@restoreAll')
+            ->name('user-restoreAll');
+        Route::get('user/hapus/{id}', 'UserController@hapus')->name('user-hapus');
+        Route::get('user/hapus-all/all', 'UserController@hapusAll')
+            ->name('user-hapusAll');
     });
 
     Route::group(['roles'=>['ADMIN', 'FINANCE']], function() {

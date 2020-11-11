@@ -97,4 +97,41 @@ class CustomerController extends Controller
 
         return redirect()->route('customer.index');
     }
+
+    public function trash() {
+        $items = Customer::onlyTrashed()->get();
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.customer.trash', $data);
+    }
+
+    public function restore($id) {
+        $item = Customer::onlyTrashed()->where('id', $id);
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function restoreAll() {
+        $items = Customer::onlyTrashed();
+        $items->restore();
+
+        return redirect()->back();
+    }
+
+    public function hapus($id) {
+        $item = Customer::onlyTrashed()->where('id', $id);
+        $item->forceDelete();
+
+        return redirect()->back();
+    }
+
+    public function hapusAll() {
+        $items = Customer::onlyTrashed();
+        $items->forceDelete();
+
+        return redirect()->back();
+    }
 }

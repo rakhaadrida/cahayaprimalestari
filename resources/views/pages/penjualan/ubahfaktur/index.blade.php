@@ -54,7 +54,8 @@
                   <div class="col-2">
                     <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
+                  <label for="tanggal" class="col-auto col-form-label text-bold ">Tanggal Akhir</label>
+                  <span class="col-form-label text-bold ml-3">:</span>
                   <div class="col-2">
                     <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
                   </div>
@@ -107,7 +108,7 @@ tglAkhir.addEventListener("keyup", formatTanggal);
 
 /** Call Fungsi Setelah Inputan Terisi **/
 @if(Auth::user()->roles != 'FINANCE')
-namaCust.addEventListener("change", displayKode);
+namaCust.addEventListener("keydown", displayKode);
 @endif
 
 function formatTanggal(e) {

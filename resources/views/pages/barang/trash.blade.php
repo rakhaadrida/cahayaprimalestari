@@ -11,34 +11,28 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
-    <h1 class="h3 mb-0 text-gray-800 menu-title">Data Barang</h1>
-    <div class="justify-content-end">
-      <a href="{{ route('barang.create') }}" class="btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Barang
-      </a>
-      <span class="vertical-hr mr-2 ml-1"></span>
-      <a href="{{ route('barang-trash') }}" class="btn btn-sm btn-outline-danger shadow-sm">
-        <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Data Tak Terpakai
-      </a>
-    </div>
+    <h1 class="h3 mb-0 text-gray-800 menu-title">Data Barang Tidak Terpakai</h1>
+    <a href="{{ route('barang.index') }}" class="btn btn-sm btn-outline-primary shadow-sm">
+      Kembali ke Data Barang
+    </a>
   </div>
 
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-sm table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+          <a href="{{ route('barang-restoreAll') }}" class="btn btn-sm btn-primary shadow-sm mb-3">Kembalikan Semua Data</a>
+          <a href="{{ route('barang-hapusAll') }}" class="btn btn-sm btn-outline-danger shadow-sm mb-3 ml-2">Hapus Permanen Semua Data</a>
           <thead class="text-bold text-dark">
             <tr align="center">
-              <th>No</th>
+              <th style="width: 40px">No</th>
               <th>Nama</th>
               @foreach($gudang as $g)
                 <th style="width: 80px">{{ $g->nama }}</th>
               @endforeach
-              <th>Detail</th>
-              <th>Harga</th>
-              <th>Stok</th>
-              <th>Ubah</th>
-              <th>Hapus</th>
+              <th style="width: 70px">Detail</th>
+              <th style="width: 80px">Kembalikan</th>
+              <th style="width: 140px">Hapus Permanen</th>
             </tr>
           </thead>
           <tbody>
@@ -60,33 +54,15 @@
                   @endif
                 @endforeach
                 <td align="center" style="width: 15px">
-                  <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
+                  <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-info" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
-                <td align="center" style="width: 15px">
-                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-warning">
-                    <i class="fas fa-fw fa-money-bill-alt"></i>
-                  </a>
+                <td class="align-middle" align="center">
+                  <a href="{{ route('barang-restore', $item->id) }}" class="btn btn-success btn-sm"><i class="fas fa-fw fa-undo"></i></a>
                 </td>
-                <td align="center" style="width: 15px">
-                  <a href="{{ route('stokBarang', $item->id) }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-fw fa-warehouse"></i>
-                  </a>
-                </td>
-                <td align="center" style="width: 15px">
-                  <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-sm btn-info">
-                    <i class="fas fa-fw fa-edit"></i>
-                  </a>
-                </td>
-                <td align="center" style="width: 20px">
-                  <form action="{{ route('barang.destroy', $item->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('delete')
-                    <button class="btn btn-sm btn-danger">
-                      <i class="fas fa-fw fa-trash"></i>
-                    </button>  
-                  </form>
+                <td class="align-middle" align="center">
+                  <a href="{{ route('barang-hapus', $item->id) }}" class="btn btn-danger btn-sm"><i class="fas fa-fw fa-eraser"></i></a>
                 </td>
               </tr>
               @php $j++; @endphp

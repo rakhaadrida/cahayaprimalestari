@@ -177,10 +177,22 @@ class BarangMasukController extends Controller
         $tglAkhir = $request->tglAkhir;
         $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
 
-        $items = BarangMasuk::with(['supplier', 'gudang'])->where('id', $request->id)
-                ->orWhere('id_supplier', $request->kode)
-                ->orWhereBetween('tanggal', [$tglAwal, $tglAkhir])
-                ->orderBy('id', 'asc')->get();
+        $isi = 1;
+        if(($request->kode != '') && ($request->tglAwal != '') && ($request->tglAkhir != ''))
+            $isi = 2;
+
+        if($isi == 1) {
+            $items = BarangMasuk::with(['supplier', 'gudang'])->where('id', $request->id)
+                    ->orWhere('id_supplier', $request->kode)
+                    ->orWhereBetween('tanggal', [$tglAwal, $tglAkhir])
+                    ->orderBy('id', 'asc')->get();
+        } else {
+            $items = BarangMasuk::with(['supplier', 'gudang'])
+                    ->where('id_supplier', $request->kode)
+                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                    ->orWhere('id', $request->id)
+                    ->orderBy('id', 'asc')->get();
+        }
         
         $supplier = Supplier::All();
         $stok = StokBarang::All();
@@ -193,6 +205,7 @@ class BarangMasukController extends Controller
             'bm' => $bm,
             'id' => $request->id,
             'nama' => $request->nama,
+            'kode' => $request->kode,
             'tglAwal' => $request->tglAwal,
             'tglAkhir' => $request->tglAkhir
         ];

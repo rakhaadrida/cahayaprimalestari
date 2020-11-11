@@ -11,10 +11,16 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Customer</h1>
+    <h1 class="h3 mb-0 text-gray-800 menu-title">Data Customer</h1>
+    <div class="justify-content-end">
       <a href="{{ route('customer.create') }}" class="btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50"></i>  Tambah Customer
+        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Customer
       </a>
+      <span class="vertical-hr mr-2 ml-1"></span>
+      <a href="{{ route('cus-trash') }}" class="btn btn-sm btn-outline-danger shadow-sm">
+        <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Data Tak Terpakai
+      </a>
+    </div>
   </div>
 
   <div class="row">
@@ -41,7 +47,9 @@
                 <td class="align-middle">{{ $item->nama }}</td>
                 <td class="align-middle">{{ $item->alamat }}</td>
                 <td class="align-middle">{{ $item->telepon }}</td>
-                <td class="align-middle">{{ $item->sales->nama }}</td>
+                <td class="align-middle">
+                  @if($item->id_sales != '') {{ $item->sales->nama }} @endif
+                </td>
                 <td class="align-middle" align="center">
                   <a href="#DetailCustomer{{ $item->id }}" class="btn btn-success btn-sm" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>

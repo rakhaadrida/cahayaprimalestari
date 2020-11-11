@@ -58,6 +58,9 @@
     </a>
     <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
+        @if(Auth::user()->roles == 'SUPER')
+          <a class="collapse-item" href="{{ route('user.index') }}">User</a>
+        @endif
         <a class="collapse-item" href="{{ route('supplier.index') }}">Supplier</a>
         <a class="collapse-item" href="{{ route('sales.index') }}">Sales</a>
         <a class="collapse-item" href="{{ route('customer.index') }}">Customer</a>

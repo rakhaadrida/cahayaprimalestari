@@ -212,6 +212,82 @@ class BarangController extends Controller
         $item = Barang::findOrFail($id);
         $item->delete();
 
+        $items = StokBarang::where('id_barang', $id);
+        $items->delete();
+
+        $item = HargaBarang::where('id_barang', $id);
+        $item->delete();
+
         return redirect()->route('barang.index');
+    }
+
+    public function trash() {
+        $items = Barang::onlyTrashed()->get();
+        $gudang = Gudang::All();
+        $stok = StokBarang::onlyTrashed()->get();
+        $harga = Harga::All();
+        $hargaBarang = HargaBarang::onlyTrashed()->get();
+
+        $data = [
+            'items' => $items,
+            'gudang' => $gudang,
+            'stok' => $stok,
+            'harga' => $harga,
+            'hargaBarang' => $hargaBarang
+        ];
+
+        return view('pages.barang.trash', $data);
+    }
+
+    public function restore($id) {
+        $item = Barang::onlyTrashed()->where('id', $id);
+        $item->restore();
+
+        $items = StokBarang::onlyTrashed()->where('id_barang', $id);
+        $items->restore();
+
+        $item = HargaBarang::onlyTrashed()->where('id_barang', $id);
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function restoreAll() {
+        $items = Barang::onlyTrashed();
+        $items->restore();
+
+        $items = StokBarang::onlyTrashed();
+        $items->restore();
+
+        $item = HargaBarang::onlyTrashed();
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function hapus($id) {
+        $item = Barang::onlyTrashed()->where('id', $id);
+        $item->forceDelete();
+
+        $items = StokBarang::onlyTrashed()->where('id_barang', $id);
+        $items->forceDelete();
+
+        $item = HargaBarang::onlyTrashed()->where('id_barang', $id);
+        $item->forceDelete();
+
+        return redirect()->back();
+    }
+
+    public function hapusAll() {
+        $items = Barang::onlyTrashed();
+        $items->forceDelete();
+
+        $items = StokBarang::onlyTrashed();
+        $items->forceDelete();
+
+        $item = HargaBarang::onlyTrashed();
+        $item->forceDelete();
+
+        return redirect()->back();
     }
 }

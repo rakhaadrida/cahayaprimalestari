@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\StokBarang;
 use App\Models\Gudang;
 use App\Models\Barang;
+use App\Models\JenisBarang;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +20,12 @@ use Symfony\Component\HttpFoundation\Response;
 class RekapStokController extends Controller
 {
     public function index() {
+        $jenis = JenisBarang::All();
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
         $data = [
+            'jenis' => $jenis,
             'gudang' => $gudang,
             'stok' => $stok,
         ];
@@ -71,6 +74,7 @@ class RekapStokController extends Controller
     }
 
     public function cetak() {
+        $jenis = JenisBarang::All();
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
@@ -78,6 +82,7 @@ class RekapStokController extends Controller
         $waktu = $waktu->format('d F Y, H:i:s');
 
         $data = [
+            'jenis' => $jenis,
             'gudang' => $gudang,
             'stok' => $stok,
             'waktu' => $waktu
@@ -87,6 +92,7 @@ class RekapStokController extends Controller
     }
 
     public function cetak_pdf() {
+        $jenis = JenisBarang::All();
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
@@ -94,6 +100,7 @@ class RekapStokController extends Controller
         $waktu = $waktu->format('d F Y, H:i:s');
 
         $data = [
+            'jenis' => $jenis,
             'gudang' => $gudang,
             'stok' => $stok,
             'waktu' => $waktu

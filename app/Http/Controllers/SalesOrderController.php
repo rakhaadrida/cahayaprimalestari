@@ -245,15 +245,22 @@ class SalesOrderController extends Controller
         $tglAkhir = $request->tglAkhir;
         $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
 
-        $items = SalesOrder::with('customer')->where('id', $request->id)
-                ->orWhere('id_customer', $request->kode)
-                ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir])
-                ->orderBy('id', 'asc')->get();
-        
-        $itemsRow = SalesOrder::where('id', $request->id)
+        $isi = 1;
+        if(($request->kode != '') && ($request->tglAwal != '') && ($request->tglAkhir != ''))
+            $isi = 2;
+
+        if($isi == 1) {
+            $items = SalesOrder::with('customer')->where('id', $request->id)
                     ->orWhere('id_customer', $request->kode)
                     ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir])
-                    ->count();
+                    ->orderBy('id', 'asc')->get();
+        } else {
+            $items = SalesOrder::with('customer')->where('id_customer', $request->kode)
+                    ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
+                    ->orWhere('id', $request->id)
+                    ->orderBy('id', 'asc')->get();
+        }
+        
         $customer = Customer::All();
         $gudang = Gudang::All();
         $stok = StokBarang::All();
@@ -261,13 +268,13 @@ class SalesOrderController extends Controller
         
         $data = [
             'items' => $items,
-            'itemsRow' => $itemsRow,
             'customer' => $customer,
             'gudang' => $gudang,
             'stok' => $stok,
             'so' => $so,
             'id' => $request->id,
             'nama' => $request->nama,
+            'kode' => $request->kode,
             'tglAwal' => $request->tglAwal,
             'tglAkhir' => $request->tglAkhir
         ];
@@ -305,6 +312,7 @@ class SalesOrderController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $gudang = Gudang::All();
 
         $data = [
             'items' => $items,
@@ -312,6 +320,7 @@ class SalesOrderController extends Controller
             'tanggal' => $tanggal,
             'barang' => $barang,
             'harga' => $harga,
+            'gudang' => $gudang,
             'id' => $request->id,
             'nama' => $request->nama,
             'tglAwal' => $request->tglAwal,

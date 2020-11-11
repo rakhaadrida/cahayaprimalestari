@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\JenisBarang;
+use App\Models\Barang;
 
 class JenisBarangController extends Controller
 {
@@ -63,6 +64,49 @@ class JenisBarangController extends Controller
         $item = JenisBarang::findOrFail($id);
         $item->delete();
 
+        $item = Barang::where('id_kategori', $id)->get();
+        foreach($item as $i) {
+            $i->id_kategori = '';
+            $i->save();
+        }
+
         return redirect()->route('jenis.index');
+    }
+
+    public function trash() {
+        $items = JenisBarang::onlyTrashed()->get();
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.jenisbarang.trash', $data);
+    }
+
+    public function restore($id) {
+        $item = JenisBarang::onlyTrashed()->where('id', $id);
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function restoreAll() {
+        $items = JenisBarang::onlyTrashed();
+        $items->restore();
+
+        return redirect()->back();
+    }
+
+    public function hapus($id) {
+        $item = JenisBarang::onlyTrashed()->where('id', $id);
+        $item->forceDelete();
+
+        return redirect()->back();
+    }
+
+    public function hapusAll() {
+        $items = JenisBarang::onlyTrashed();
+        $items->forceDelete();
+
+        return redirect()->back();
     }
 }

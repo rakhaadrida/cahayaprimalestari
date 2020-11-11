@@ -44,7 +44,7 @@
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-4">
                       <input type="text" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
-                      <input type="hidden" name="kode" id="kodeCustomer">
+                      <input type="hidden" name="kode" id="kodeCustomer" value="{{ $kode }}">
                     </div>
                   @endif
                 </div>   
@@ -70,7 +70,7 @@
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($items as $item)
-                  <div class="carousel-item @if($item->id == $items[$itemsRow-1]->id) active
+                  <div class="carousel-item @if($item->id == $items[$items->count()-1]->id) active
                     @endif "
                   />
                     <div class="container so-update-container text-dark">
@@ -81,7 +81,7 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($itemsRow != 0)
+                              @if($items->count() != 0)
                                 value="{{ $item->id }}"
                               @endif
                               >
@@ -94,7 +94,7 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-7">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                              @if($itemsRow != 0)
+                              @if($items->count() != 0)
                                 value="{{ $item->customer->nama }} ({{ $item->id_customer }})"
                               @endif
                               >
@@ -109,7 +109,7 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($itemsRow != 0)
+                              @if($items->count() != 0)
                                 value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}"
                               @endif
                               >
@@ -122,7 +122,7 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                              @if($itemsRow != 0)
+                              @if($items->count() != 0)
                                 value="{{ $item->customer->sales->nama }}"
                               @endif
                               >
@@ -137,7 +137,7 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($itemsRow != 0)
+                              @if($items->count() != 0)
                                 value="{{ $item->status }}"
                               @endif
                               >
@@ -150,7 +150,7 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                              @if($itemsRow != 0)
+                              @if($items->count() != 0)
                                 value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}"
                               @endif
                               >
@@ -167,10 +167,10 @@
                       </thead>
                       <tbody class="text-bold">
                         <td align="center" style="border: dotted">
-                          @if($itemsRow != 0) {{ $item->tempo }} @endif
+                          @if($items->count() != 0) {{ $item->tempo }} @endif
                         </td>
                         <td align="center"> 
-                          @if($itemsRow != 0) {{ $item->customer->sales->nama }} @endif
+                          @if($items->count() != 0) {{ $item->customer->sales->nama }} @endif
                         </td>
                       </tbody>
                     </table> --}}
@@ -192,7 +192,7 @@
                         <td style="width: 120px">Netto (Rp)</td>
                       </thead>
                       <tbody>
-                        @if($itemsRow != 0)
+                        @if($items->count() != 0)
                           @php 
                             $i = 1; $subtotal = 0;
                             $itemsDetail = \App\Models\DetilSO::with(['barang'])
@@ -226,7 +226,7 @@
                               <td align="right">
                                 {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
                               </td>
-                              <td align="right">{{ $itemDet->diskon }} %</td>
+                              <td align="right">{{ $itemDet->diskon }}</td>
                               @php 
                                 $diskon = 100;
                                 $arrDiskon = explode("+", $itemDet->diskon);
@@ -338,12 +338,12 @@
                   </div>
                   @endforeach
                 </div>
-                @if(($itemsRow > 0) && ($itemsRow != 1))
+                @if(($items->count() > 0) && ($items->count() != 1))
                   <a class="carousel-control-prev" href="#so-carousel" role="button" data-slide="prev">
                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                       <span class="sr-only">Previous</span>
                     </a>
-                  {{-- @if($item->id != $items[$itemsRow-1]->id) --}}
+                  {{-- @if($item->id != $items[$items->count()-1]->id) --}}
                     <a class="carousel-control-next " href="#so-carousel" role="button" data-slide="next">
                       <span class="carousel-control-next-icon" aria-hidden="true"></span>
                       <span class="sr-only">Next</span>
@@ -389,7 +389,7 @@ const tglAkhir = document.getElementById('tglAkhir');
 const kodeSO = document.getElementById('kode');
 
 /** Call Fungsi Setelah Inputan Terisi **/
-namaCust.addEventListener("change", displayKode);
+namaCust.addEventListener("keydown", displayKode);
 tglAwal.addEventListener("keyup", formatTanggal);
 tglAkhir.addEventListener("keyup", formatTanggal);
 

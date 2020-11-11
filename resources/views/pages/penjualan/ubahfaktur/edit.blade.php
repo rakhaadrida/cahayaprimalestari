@@ -33,7 +33,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold text-dark">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold" name="kode" value="{{ $items[0]->id_so }}">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id_so }}">
                       </div>
                     </div>  
                   </div>
@@ -42,7 +42,7 @@
                       <label for="tglSO" class="col-5 col-form-label text-bold text-right text-dark">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-4">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="tglSO" 
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tglSO" 
                         value="{{ \Carbon\Carbon::parse($items[0]->so->tgl_so)->format('d-M-y') }}">
                       </div>
                     </div>
@@ -50,7 +50,7 @@
                       <label for="namaCust" class="col-5 col-form-label text-bold text-right text-dark">Nama Customer</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-6">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="namaCust"
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaCust"
                         value="{{ $items[0]->so->customer->nama }}">
                         <input type="hidden" name="kodeCust" 
                         value="{{ $items[0]->so->id_customer }}">
@@ -60,7 +60,7 @@
                       <label for="namaSales" class="col-5 col-form-label text-bold text-right text-dark">Nama Sales</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="namaSales"
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSales"
                         value="{{ $items[0]->so->customer->sales->nama }}">
                       </div>
                     </div>
@@ -70,14 +70,14 @@
                   <label for="nama" class="col-2 col-form-label text-bold text-dark">Tanggal Update</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" readonly class="form-control-plaintext form-control-sm text-bold" name="tanggal" value="{{ $tanggal }}">
+                    <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="tanggal" value="{{ $tanggal }}">
                   </div>
                 </div>
                 <div class="form-group row so-update-input">
                   <label for="alamat" class="col-2 col-form-label text-bold text-dark">Keterangan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
-                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1" required>
+                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
                     <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
@@ -93,37 +93,57 @@
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
                 <thead class="text-center text-bold text-dark">
                   <tr>
-                    <td rowspan="2" style="width: 30px" class="align-middle">No</td>
-                    <td rowspan="2" style="width: 95px" class="align-middle">Kode Barang</td>
-                    <td rowspan="2" class="align-middle">Nama Barang</td>
-                    <td rowspan="2" style="width: 60px" class="align-middle">Qty</td>
-                    <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
-                    <td rowspan="2" style="width: 120px" class="align-middle">Jumlah</td>
-                    <td colspan="2">Diskon</td>
-                    <td rowspan="2" style="width: 130px" class="align-middle">Netto (Rp)</td>
-                    <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
-                  </tr>
-                  <tr>
-                    <td>%</td>
-                    <td>Rupiah</td>
+                    <td style="width: 30px">No</td>
+                    <td style="width: 80px">Kode</td>
+                    <td>Nama Barang</td>
+                    <td style="width: 55px">Qty</td>
+                    @foreach($gudang as $g)
+                      <td style="width: 55px">{{ substr($g->nama, 0, 3) }}</td>
+                    @endforeach
+                    <td style="width: 80px">Harga</td>
+                    <td style="width: 100px">Jumlah</td>
+                    <td style="width: 100px">Diskon(%)</td>
+                    <td style="width: 90px">Diskon(Rp)</td>
+                    <td style="width: 100px">Netto (Rp)</td>
+                    <td>Hapus</td>
                   </tr>
                 </thead>
                 <tbody id="tablePO">
                   @php 
                     $i = 1; $subtotal = 0;
+                    $itemsDetail = \App\Models\DetilSO::with(['barang'])
+                                    ->select('id_barang', 'diskon')
+                                    ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                    ->where('id_so', $items[0]->id_so)
+                                    ->groupBy('id_barang', 'diskon')
+                                    ->get();
                   @endphp
-                  @foreach($items as $item)
-                    <tr class="text-bold" id="{{ $i }}">
+                  @foreach($itemsDetail as $item)
+                    <tr class="text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold kodeBarang" value="{{ $item->id_barang }}" required>
+                        <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ $item->id_barang }}" required>
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold namaBarang" value="{{ $item->barang->nama }}" required>
+                        <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" class="form-control form-control-sm text-bold qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
+                        <input type="text" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
                       </td>
+                      @foreach($gudang as $g)
+                        @php
+                          $itemGud = \App\Models\DetilSO::where('id_so', $items[0]->id_so)
+                                    ->where('id_barang', $item->id_barang)
+                                    ->where('id_gudang', $g->id)->get();
+                        @endphp
+                        @if($itemGud->count() != 0)
+                          <td align="right" class="text-dark text-bold align-middle">
+                            {{ $itemGud[0]->qty }}
+                          </td>
+                        @else
+                          <td></td>
+                        @endif
+                      @endforeach
                       <td align="right">
                         <input type="text" name="harga[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" readonly>
                       </td>

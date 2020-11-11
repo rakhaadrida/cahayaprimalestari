@@ -33,7 +33,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold text-dark">Nomor BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold" name="kode" value="{{ $items[0]->id_bm }}">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id_bm }}">
                       </div>
                     </div>  
                   </div>
@@ -42,7 +42,7 @@
                       <label for="tglSO" class="col-5 col-form-label text-bold text-right text-dark">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-4">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="tglBM" 
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tglBM" 
                         value="{{ \Carbon\Carbon::parse($items[0]->bm->tanggal)->format('d-M-y') }}">
                       </div>
                     </div>
@@ -50,7 +50,7 @@
                       <label for="namaSupp" class="col-5 col-form-label text-bold text-right text-dark">Nama Supplier</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-6">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="namaSupp"
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSupp"
                         value="{{ $items[0]->bm->supplier->nama }}">
                         <input type="hidden" name="kodeSupp" 
                         value="{{ $items[0]->bm->id_supplier }}">
@@ -60,7 +60,7 @@
                       <label for="namaSales" class="col-5 col-form-label text-bold text-right text-dark">Nama Gudang</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold" name="namaGudang"
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
                         value="{{ $items[0]->bm->gudang->nama }}">
                       </div>
                     </div>
@@ -70,14 +70,14 @@
                   <label for="nama" class="col-2 col-form-label text-bold text-dark">Tanggal Update</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" readonly class="form-control-plaintext form-control-sm text-bold" name="tanggal" value="{{ $tanggal }}">
+                    <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="tanggal" value="{{ $tanggal }}">
                   </div>
                 </div>
                 <div class="form-group row so-update-input">
                   <label for="alamat" class="col-2 col-form-label text-bold text-dark">Keterangan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
-                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1" required>
+                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
                     <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $items->count() }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
@@ -105,16 +105,16 @@
                     $i = 1; $subtotal = 0;
                   @endphp
                   @foreach($items as $item)
-                    <tr class="text-bold" id="{{ $i }}">
+                    <tr class="text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold kodeBarang" value="{{ $item->id_barang }}" required>
+                        <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ $item->id_barang }}" required>
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold namaBarang" value="{{ $item->barang->nama }}" required>
+                        <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" class="form-control form-control-sm text-bold qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
+                        <input type="text" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
                       </td>
                       <td align="right">
                         <input type="text" name="harga[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" readonly>

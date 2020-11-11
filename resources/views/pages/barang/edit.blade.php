@@ -46,10 +46,10 @@
                 <label for="kategori" class="col-1 col-form-label text-bold">Kategori</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" value="{{ $item->jenis->nama }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" value="@if($item->id_kategori != '') {{ $item->jenis->nama }} @endif" required>
                 </div>
                 <input type="hidden" name="kodeJenis" id="kodeJenis" 
-                value="{{$item->jenis->id}}">
+                value="@if($item->id_kategori != '') {{$item->id_kategori}} @endif">
               </div>
               <hr>
               <div class="form-group row">

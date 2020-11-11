@@ -81,9 +81,9 @@
                 <label for="sales_cover" class="col-1 col-form-label text-bold" style="margin-top: -7px">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" value="{{ $item->sales->nama }}" required>
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" value="@if($item->id_sales != '') {{ $item->sales->nama }} @endif" required>
                   <input type="hidden" name="id_sales" id="kodeSales" 
-                  value="{{ $item->id_sales }}">
+                  value="@if($item->id_sales != '') {{ $item->id_sales }} @endif">
                 </div>
               </div>
               <div class="form-row justify-content-center">

@@ -79,4 +79,41 @@ class SupplierController extends Controller
 
         return redirect()->route('supplier.index');
     }
+
+    public function trash() {
+        $items = Supplier::onlyTrashed()->get();
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.supplier.trash', $data);
+    }
+
+    public function restore($id) {
+        $item = Supplier::onlyTrashed()->where('id', $id);
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function restoreAll() {
+        $items = Supplier::onlyTrashed();
+        $items->restore();
+
+        return redirect()->back();
+    }
+
+    public function hapus($id) {
+        $item = Supplier::onlyTrashed()->where('id', $id);
+        $item->forceDelete();
+
+        return redirect()->back();
+    }
+
+    public function hapusAll() {
+        $items = Supplier::onlyTrashed();
+        $items->forceDelete();
+
+        return redirect()->back();
+    }
 }

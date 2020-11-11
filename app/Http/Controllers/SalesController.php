@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\SalesRequest;
 use App\Models\Sales;
+use App\Models\Customer;
 
 class SalesController extends Controller
 {
@@ -64,6 +65,49 @@ class SalesController extends Controller
         $item = Sales::findOrFail($id);
         $item->delete();
 
+        $item = Customer::where('id_sales', $id)->get();
+        foreach($item as $i) {
+            $i->id_sales = '';
+            $i->save();
+        }
+
         return redirect()->route('sales.index');
+    }
+
+    public function trash() {
+        $items = Sales::onlyTrashed()->get();
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.sales.trash', $data);
+    }
+
+    public function restore($id) {
+        $item = Sales::onlyTrashed()->where('id', $id);
+        $item->restore();
+
+        return redirect()->back();
+    }
+
+    public function restoreAll() {
+        $items = Sales::onlyTrashed();
+        $items->restore();
+
+        return redirect()->back();
+    }
+
+    public function hapus($id) {
+        $item = Sales::onlyTrashed()->where('id', $id);
+        $item->forceDelete();
+
+        return redirect()->back();
+    }
+
+    public function hapusAll() {
+        $items = Sales::onlyTrashed();
+        $items->forceDelete();
+
+        return redirect()->back();
     }
 }

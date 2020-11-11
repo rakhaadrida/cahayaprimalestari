@@ -35,23 +35,22 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Kode Barang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal" value="{{ $itemsBRG[0]->id }}">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal" value="{{ $itemsBRG[0]->id }}" required>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAkhir" id="kodeAkhir" 
-                    value="{{ $itemsBRG[$itemsBRG->count() - 1]->id }}">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAkhir" id="kodeAkhir" value="{{ $itemsBRG[$itemsBRG->count() - 1]->id }}" required>
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ \Carbon\Carbon::parse($awal)->format('d-m-Y') }}">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ \Carbon\Carbon::parse($awal)->format('d-m-Y') }}" required>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ \Carbon\Carbon::parse($akhir)->format('d-m-Y') }}" >
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ \Carbon\Carbon::parse($akhir)->format('d-m-Y') }}" required>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -235,7 +234,7 @@
                         </tr>
                       @else 
                         <tr>
-                          <td colspan="14" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
+                          <td colspan="15" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
                         </tr>
                       @endif
                     </tbody>

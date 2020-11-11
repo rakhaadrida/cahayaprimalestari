@@ -168,33 +168,40 @@
 
     <!-- Tabel Data Detil BM-->
     <table class="table table-sm table-bordered table-striped table-responsive-sm table-cetak" style="border: none">
-      <thead class="text-center text-dark text-bold">
+      <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
-          <td style="width: 40px" class="align-middle">No</td>
-          <td style="width: 90px" class="align-middle">Kode Barang</td>
-          <td style="width: 180px" class="align-middle">Nama Barang</td>
-          <td style="width: 110px" class="align-middle total-stok">Total Stok</td>
+          <td style="width: 30px" class="align-middle">No</td>
+          {{-- <td style="width: 90px" class="align-middle">Kode Barang</td> --}}
+          <td style="width: 130px" class="align-middle">Nama Barang</td>
+          <td style="width: 40px" class="align-middle total-stok">Total Stok</td>
           @foreach($gudang as $g)
-            <td style="width: 110px" class="align-middle">{{ $g->nama }}</td>
+            <td style="width: 40px" class="align-middle">{{ $g->nama }}</td>
           @endforeach
         </tr>
       </thead>
       <tbody>
         @php $i = 1; @endphp
-        @foreach($stok as $s)
-          <tr class="text-dark ">
-            <td align="center">{{ $i }}</td>
-            <td>{{ $s->id_barang }}</td>
-            <td>{{ $s->barang->nama }}</td>
-            <td align="right" style="background-color: yellow">{{ $s->total }}</td>
-            @php
-              $stokGd = \App\Models\StokBarang::where('id_barang', $s->id_barang)->get();
-            @endphp
-            @foreach($stokGd as $sg)
-              <td align="right">{{ $sg->stok }}</td>
-            @endforeach
+        @foreach($jenis as $j)
+          <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+            <td colspan="6" align="center">{{ $j->nama }}</td>
           </tr>
-          @php $i++ @endphp
+          @foreach($stok as $s)
+            @if($s->barang->id_kategori == $j->id)
+              <tr class="text-dark ">
+                <td align="center">{{ $i }}</td>
+                {{-- <td>{{ $s->id_barang }}</td> --}}
+                <td>{{ $s->barang->nama }}</td>
+                <td align="right" style="background-color: yellow; width: 40px">{{ $s->total }}</td>
+                @php
+                  $stokGd = \App\Models\StokBarang::where('id_barang', $s->id_barang)->get();
+                @endphp
+                @foreach($stokGd as $sg)
+                  <td align="right" style="width: 40px">{{ $sg->stok }}</td>
+                @endforeach
+              </tr>
+              @php $i++ @endphp
+            @endif
+          @endforeach
         @endforeach
       </tbody>
     </table>

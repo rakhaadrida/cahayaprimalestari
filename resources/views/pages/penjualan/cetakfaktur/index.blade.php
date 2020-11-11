@@ -35,11 +35,11 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Nomor Faktur</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm mt-1" name="kodeAwal" id="kode" placeholder="Kode Awal">
+                    <input type="text" class="form-control form-control-sm mt-1" name="kodeAwal" id="kode" placeholder="Kode Awal" required>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm mt-1" name="kodeAkhir" id="kode" placeholder="Kode Akhir">
+                    <input type="text" class="form-control form-control-sm mt-1" name="kodeAkhir" id="kode" placeholder="Kode Akhir" required>
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('cetak-process') }}" formmethod="POST" id="btn-cetak" class="btn btn-success btn-sm btn-block text-bold btnCetak">Cetak</button>
@@ -86,7 +86,7 @@
 
               @if($status == "true")
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" frameborder="0" onafterprint="afterPrint()" hidden></iframe>
               @endif
             </form>
           </div>
@@ -102,23 +102,33 @@
 <script src="{{ url('backend/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
-<script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
+{{-- <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script> --}}
 <script type="text/javascript">
 // window.onafterprint = function() {
 //   window.location.href = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
 // };
 
 @if($status == "true")
-  $(document).ready(function() {
+  // $(document).ready(function() {
     document.getElementById("frameCetak").contentWindow.onafterprint = function(e) {
       alert('ok');
+      // document.body.alert('ok');
+      // afterPrint();
     };
+
+    // window.onafterprint = function(e) {
+    //   alert('ok');
+    // };
+    function afterPrint() {
+      alert("ok");
+    }
     
+    // window.print();
     document.getElementById("frameCetak").contentWindow.print();
     // $("#frameCetak").get(0).contentWindow.print();
     // $("#frameCetak").printPage();
     // $("#frameCetak").afterPrint();
-  });
+  // });
 @endif
 
 /** Autocomplete Input Text **/

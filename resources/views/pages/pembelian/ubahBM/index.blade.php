@@ -100,7 +100,7 @@ const tglAkhir = document.getElementById('tglAkhir');
 const kodeBM = document.getElementById('kode');
 
 /** Call Fungsi Setelah Inputan Terisi **/
-namaSupp.addEventListener("change", displayKode);
+namaSupp.addEventListener("keydown", displayKode);
 tglAwal.addEventListener("keyup", formatTanggal);
 tglAkhir.addEventListener("keyup", formatTanggal);
 
