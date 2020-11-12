@@ -9,7 +9,7 @@ use PDF;
 class CetakFakturController extends Controller
 {
     public function index($status, $awal, $akhir) {
-        $items = SalesOrder::where('status', 'INPUT')->get();
+        $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])->get();
         $data = [
             'items' => $items,
             'status' => $status,

@@ -77,6 +77,10 @@ class ApprovalController extends Controller
         elseif($item->{'status'} == 'PENDING_BATAL') {
             $item->{'status'} = "BATAL";
         }
+        elseif($item->{'status'} == 'LIMIT') {
+            $item->{'status'} = "APPROVE_LIMIT";
+        }
+
         $item->save();
 
         $lastcode = Approval::max('id');
@@ -109,18 +113,18 @@ class ApprovalController extends Controller
             ]);
         }
 
-        if(($request->tipe == 'Faktur') && ($status != 'PENDING_BATAL'))
+        if(($request->tipe == 'Faktur') && ($status == 'PENDING_UPDATE'))
             DetilSO::where('id_so', $id)->delete();
-        elseif(($request->tipe == 'Dokumen') && ($status != 'PENDING_BATAL'))
+        elseif(($request->tipe == 'Dokumen') && ($status == 'PENDING_UPDATE'))
             DetilBM::where('id_bm', $id)->delete();
 
-        if($status != 'PENDING_BATAL')
+        if($status == 'PENDING_UPDATE')
             $items = NeedAppDetil::where('id_app', $needApp[0]->id)->get();
         else
             $items = DetilApproval::where('id_app', $newcode)->get();
 
         foreach($items as $item) {
-            if(($request->tipe == 'Faktur') && ($status != 'PENDING_BATAL')) {
+            if(($request->tipe == 'Faktur') && ($status == 'PENDING_UPDATE')) {
                 DetilSO::create([
                     'id_so' => $id,
                     'id_barang' => $item->id_barang,
@@ -130,7 +134,7 @@ class ApprovalController extends Controller
                     'diskon' => $item->diskon
                 ]);
             }
-            elseif(($request->tipe == 'Dokumen') && ($status != 'PENDING_BATAL')) {
+            elseif(($request->tipe == 'Dokumen') && ($status == 'PENDING_UPDATE')) {
                 DetilBM::create([
                     'id_bm' => $id,
                     'id_barang' => $item->id_barang,
@@ -159,7 +163,7 @@ class ApprovalController extends Controller
                 elseif($request->tipe == 'Faktur')
                     $updateStok->{'stok'} += $item->qty;
             }
-            else {
+            elseif($status == 'PENDING_UPDATE') {
                 if($stokAwal->{'qty'} > $item->qty) {
                     if($request->tipe == 'Dokumen')
                         $updateStok->{'stok'} -= ($stokAwal->{'qty'} - $item->qty);

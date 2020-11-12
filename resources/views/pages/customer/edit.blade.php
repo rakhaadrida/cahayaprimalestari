@@ -113,7 +113,7 @@ const telepon = document.getElementById("telepon");
 const npwp = document.getElementById("npwp");
 const limit = document.getElementById("limit");
 
-namaSales.addEventListener('change', displayKode);
+namaSales.addEventListener('keyup', displayKode);
 telepon.addEventListener("keyup", formatPhone);
 limit.addEventListener("keyup", formatNominal);
 
@@ -174,6 +174,9 @@ function displayKode(e) {
   @foreach($sales as $s)
     if('{{ $s->nama }}' == e.target.value) {
       kodeSales.value = '{{ $s->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeSales.value = '';
     }
   @endforeach
 }

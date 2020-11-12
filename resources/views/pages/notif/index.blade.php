@@ -23,7 +23,7 @@
               <th>No</th>
               <th>No. Transaksi</th>
               <th>Tgl Approve</th>
-              <th>Customer</th>
+              <th>Customer / Supplier</th>
               <th>Status</th>
               <th>Keterangan</th>
               <th>Detail</th>
@@ -31,12 +31,18 @@
           </thead>
           <tbody>
             @php $i=1; @endphp
-            @forelse ($items as $item)
+            @forelse($items as $item)
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle" align="center">{{ $item->id }}</td>
                 <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-M-y') }}</td>
-                <td class="align-middle">{{ $item->customer->nama }}</td>
+                <td class="align-middle">
+                  @if($item->approval[0]->tipe == 'Faktur')
+                    {{ $item->customer->nama }}
+                  @else
+                    {{ $item->supplier->nama }}
+                  @endif
+                </td>
                 <td class="align-middle" align="center">{{ $item->status }}</td>
                 <td class="align-middle">{{ $item->approval[0]->keterangan }}</td>
                 <td class="align-middle" align="center">

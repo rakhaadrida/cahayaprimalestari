@@ -53,8 +53,13 @@
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
           @php 
-            $items = \App\Models\SalesOrder::has('approval')->where('status', 'UPDATE')
-                        ->get();
+            $so = \App\Models\SalesOrder::has('approval')
+                  ->select('id', 'status')
+                  ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT']);
+            $items = \App\Models\BarangMasuk::has('approval')
+                    ->select('id', 'status')
+                    ->whereIn('status', ['UPDATE', 'BATAL'])
+                    ->union($so)->get();
           @endphp 
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @endif
@@ -64,48 +69,58 @@
         <h6 class="dropdown-header">
           Notifikasi
         </h6>
+        @php $row = 1; @endphp
         @if($items->count() != 0)
           @foreach($items as $item)
-            <a class="dropdown-item d-flex align-items-center" 
-            @if(Auth::user()->roles == 'SUPER') 
-              href="{{ route('app-show', $item->id_dokumen) }}"
-            @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
-              href="{{ route('notif-show', $item->id) }}"
-            @endif
-            >
-              <div class="mr-3">
-                <div class="icon-circle bg-primary" style="margin-left: -10px">
-                  <i class="fas fa-file-alt text-white"></i>
+            @if($row <= 5)
+              <a class="dropdown-item d-flex align-items-center" 
+              @if(Auth::user()->roles == 'SUPER') 
+                href="{{ route('app-show', $item->id_dokumen) }}"
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
+                href="{{ route('notif-show', $item->id) }}"
+              @endif
+              >
+                <div class="mr-3">
+                  <div class="icon-circle bg-primary" style="margin-left: -10px">
+                    <i class="fas fa-file-alt text-white"></i>
+                  </div>
                 </div>
-              </div>
-              <div>
-                @if(Auth::user()->roles == 'SUPER')
-                  <div class="small text-dark-500 text-bold">
-                    {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
-                  </div>
-                  @if($item->status != "PENDING_LIMIT")
-                    <span class="font-weight-bold">
-                      Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada {{ $item->tipe }} {{ $item->id_dokumen }}
-                    </span>
-                  @else
-                    <span class="font-weight-bold">
-                      Customer {{ $item->so->customer->nama }} melebihi limit pada faktur {{ $item->id_dokumen }}
-                    </span>
+                <div>
+                  @if(Auth::user()->roles == 'SUPER')
+                    <div class="small text-dark-500 text-bold">
+                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
+                    </div>
+                    @if($item->status != "PENDING_LIMIT")
+                      <span class="font-weight-bold">
+                        Perubahan @if($item->status == "PENDING_UPDATE") isi detail @elseif($item->status == "PENDING_BATAL") status @endif pada {{ $item->tipe }} {{ $item->id_dokumen }}
+                      </span>
+                    @else
+                      <span class="font-weight-bold">
+                        Customer {{ $item->so->customer->nama }} melebihi limit pada faktur {{ $item->id_dokumen }}
+                      </span>
+                    @endif
+                  @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
+                    <div class="small text-dark-600">
+                      {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-M-y') }}
+                    </div>
+                    @if($item->status != "APPROVE_LIMIT")
+                      <span class="font-weight-bold">
+                        Perubahan @if($item->status == "UPDATE") <b>detail</b> @elseif($item->status == "BATAL") <b>status BATAL</b> pada @endif faktur <b>{{ $item->id }}</b> telah di disetujui. Silahkan cetak faktur.
+                      </span>
+                    @else
+                      <span class="font-weight-bold">
+                        Kelebihan limit pada faktur <b>{{ $item->id_dokumen }}</b> telah disetujui. Silahkan cetak faktur.
+                      </span>
+                    @endif
                   @endif
-                @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
-                  <div class="small text-gray-500">
-                    {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-m-Y') }}
-                  </div>
-                  <span class="font-weight-bold">
-                    Perubahan @if($item->status == "UPDATE") detail @elseif($item->status == "BATAL") status @endif faktur {{ $item->id_dokumen }} telah di approve. Silahkan cetak faktur.
-                  </span>
-                @endif
-              </div>
-            </a>
+                </div>
+              </a>
+              @php $row++; @endphp
+            @endif
           @endforeach
-          <a class="dropdown-item text-center small text-dark-500" href="#">Show All Alerts</a>
+          <a class="dropdown-item text-center medium text-dark-600" href="{{ route('notif') }}">Tampilkan Semua  Notifikasi</a>
         @else
-          <a class="dropdown-item text-center small text-dark-500" href="#">Tidak Ada Notifikasi</a>
+          <a class="dropdown-item text-center medium text-dark-600" href="#">Tidak Ada Notifikasi</a>
         @endif
         {{-- <a class="dropdown-item d-flex align-items-center" href="#">
           <div class="mr-3">

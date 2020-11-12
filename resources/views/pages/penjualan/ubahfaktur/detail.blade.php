@@ -389,7 +389,7 @@ const tglAkhir = document.getElementById('tglAkhir');
 const kodeSO = document.getElementById('kode');
 
 /** Call Fungsi Setelah Inputan Terisi **/
-namaCust.addEventListener("keydown", displayKode);
+namaCust.addEventListener("keyup", displayKode);
 tglAwal.addEventListener("keyup", formatTanggal);
 tglAkhir.addEventListener("keyup", formatTanggal);
 
@@ -397,6 +397,9 @@ function displayKode(e) {
   @foreach($customer as $c)
     if('{{ $c->nama }}' == e.target.value) {
       kodeCust.value = '{{ $c->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeCust.value = '';
     }
   @endforeach
 }

@@ -660,7 +660,7 @@ var totTemp;
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
-namaCust.addEventListener('keydown', displayCust);
+namaCust.addEventListener('keyup', displayCust);
 tanggalKirim.addEventListener("keyup", formatTanggal);
 newRow.addEventListener("click", displayRow);
 diskonFaktur.addEventListener('keyup', formatNominal);
@@ -678,6 +678,12 @@ function displayCust(e) {
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
+    }
+    else if(e.target.value == '') {
+      kodeCust.value = '';
+      limit.value = '';
+      namaSales.value = '';
+      npwp.value = '';
     }
   @endforeach
 }

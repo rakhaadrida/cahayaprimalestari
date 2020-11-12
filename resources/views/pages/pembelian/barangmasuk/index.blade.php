@@ -324,8 +324,8 @@ var netPast;
 // const keterangan = document.querySelectorAll(".keterangan");
 
 tanggal.addEventListener("keyup", formatTanggal);
-gudang.addEventListener('keydown', displayGud);
-namaSup.addEventListener('keydown', displaySupp);
+gudang.addEventListener("keyup", displayGud);
+namaSup.addEventListener("keyup", displaySupp);
 newRow.addEventListener('click', displayRow);
 
 /** Add New Table Line **/
@@ -531,6 +531,9 @@ function displayGud(e) {
     if('{{ $g->nama }}' == e.target.value) {
       kodeGud.value = '{{ $g->id }}';
     }
+    else if(e.target.value == '') {
+      kodeGud.value = '';
+    }
   @endforeach
 }
 
@@ -539,6 +542,9 @@ function displaySupp(e) {
   @foreach($supplier as $s)
     if('{{ $s->nama }}' == e.target.value) {
       kodeSup.value = '{{ $s->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeSup.value = '';
     }
   @endforeach
 }

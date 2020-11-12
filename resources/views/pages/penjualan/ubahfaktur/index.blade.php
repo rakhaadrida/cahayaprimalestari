@@ -108,7 +108,7 @@ tglAkhir.addEventListener("keyup", formatTanggal);
 
 /** Call Fungsi Setelah Inputan Terisi **/
 @if(Auth::user()->roles != 'FINANCE')
-namaCust.addEventListener("keydown", displayKode);
+namaCust.addEventListener("keyup", displayKode);
 @endif
 
 function formatTanggal(e) {
@@ -131,6 +131,9 @@ function displayKode(e) {
   @foreach($customer as $c)
     if('{{ $c->nama }}' == e.target.value) {
       kodeCust.value = '{{ $c->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeCust.value = '';
     }
   @endforeach
 }

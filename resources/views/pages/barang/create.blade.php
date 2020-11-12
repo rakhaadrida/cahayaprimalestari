@@ -108,10 +108,13 @@ Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayUkuran);
 });
 
-kategori.addEventListener("keydown", function(e) {
+kategori.addEventListener("keyup", function(e) {
   @foreach($jenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeJenis.value = '{{ $j->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeJenis.value = '';
     }
   @endforeach
 });

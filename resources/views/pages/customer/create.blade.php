@@ -109,7 +109,7 @@ const telepon = document.getElementById("telepon");
 const npwp = document.getElementById("npwp");
 const limit = document.getElementById("limit");
 
-namaSales.addEventListener("change", displayKode);
+namaSales.addEventListener("keyup", displayKode);
 telepon.addEventListener("keyup", formatPhone);
 limit.addEventListener("keyup", formatNominal);
 
@@ -171,6 +171,9 @@ function displayKode(e) {
     if('{{ $s->nama }}' == e.target.value) {
       kodeSales.value = '{{ $s->id }}';
     }
+    else if(e.target.value == '') {
+      kodeSales.value = '';
+    }
   @endforeach
 }
 
@@ -200,35 +203,6 @@ $(function() {
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
       response($.ui.autocomplete.filter(sales, extractLast(request.term)));
-    },
-    focus: function() {
-      // prevent value inserted on focus
-      return false;
-    },
-    select: function(event, ui) {
-      var terms = split(this.value);
-      // remove the current input
-      terms.pop();
-      // add the selected item
-      terms.push(ui.item.value);
-      // add placeholder to get the comma-and-space at the end
-      terms.push("");
-      this.value = terms.join("");
-      return false;
-    }
-  });
-
-  /*-- Autocomplete Input Supplier --*/
-  $(namaSupplier).on("keydown", function(event) {
-    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-      event.preventDefault();
-    }
-  })
-  .autocomplete({
-    minLength: 0,
-    source: function(request, response) {
-      // delegate back to autocomplete, but extract the last term
-      response($.ui.autocomplete.filter(supplier, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus

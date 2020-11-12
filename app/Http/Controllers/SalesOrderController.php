@@ -148,10 +148,10 @@ class SalesOrderController extends Controller
             NeedApproval::create([
                 'id' => $newcode,
                 'tanggal' => Carbon::now()->toDateString(),
-                'status' => 'PENDING_LIMIT',
+                'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
                 'id_dokumen' => $id,
-                'tipe' => 'Limit'
+                'tipe' => 'Faktur'
             ]);
         }
 

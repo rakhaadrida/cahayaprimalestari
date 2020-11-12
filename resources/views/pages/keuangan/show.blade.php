@@ -47,17 +47,6 @@
                     <button type="submit" formaction="{{ route('lap-keu-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>   
-                {{-- <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" >
-                  </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
-                  <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAkhir" >
-                  </div>
-                </div>   --}}
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
@@ -91,7 +80,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $no = 1 @endphp
+                  @php $no = 1; $ret = 0; @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
                       <td rowspan="4" align="center" class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $no }}</td>
@@ -141,7 +130,11 @@
                       @endforeach
                       <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
-                        {{ number_format($retur[$no-1]->total, 0, "", ",") }}
+                        @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
+                          {{ number_format($retur[$ret]->total, 0, "", ",") }}
+                        @else
+                          0
+                        @endif
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="background-color: yellow">
@@ -159,7 +152,12 @@
                       @endforeach
                       <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
-                        {{ number_format($laba - $retur[$no-1]->total, 0, "", ",") }}
+                        @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
+                          {{ number_format($laba - $retur[$ret]->total, 0, "", ",") }}
+                          @php $ret++; @endphp
+                        @else
+                          {{ number_format($laba, 0, "", ",") }}
+                        @endif
                       </td>
                     </tr>
                     @php $no++ @endphp
