@@ -250,12 +250,14 @@ class SalesOrderController extends Controller
             $isi = 2;
 
         if($isi == 1) {
-            $items = SalesOrder::with('customer')->where('id', $request->id)
+            $items = SalesOrder::with(['customer', 'need_approval'])
+                    ->where('id', $request->id)
                     ->orWhere('id_customer', $request->kode)
                     ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir])
                     ->orderBy('id', 'asc')->get();
         } else {
-            $items = SalesOrder::with('customer')->where('id_customer', $request->kode)
+            $items = SalesOrder::with(['customer', 'need_approval'])
+                    ->where('id_customer', $request->kode)
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
                     ->orWhere('id', $request->id)
                     ->orderBy('id', 'asc')->get();
@@ -313,6 +315,7 @@ class SalesOrderController extends Controller
         $barang = Barang::All();
         $harga = HargaBarang::All();
         $gudang = Gudang::All();
+        $stok = StokBarang::All();
 
         $data = [
             'items' => $items,
@@ -321,6 +324,7 @@ class SalesOrderController extends Controller
             'barang' => $barang,
             'harga' => $harga,
             'gudang' => $gudang,
+            'stok' => $stok,
             'id' => $request->id,
             'nama' => $request->nama,
             'tglAwal' => $request->tglAwal,
@@ -354,13 +358,21 @@ class SalesOrderController extends Controller
         ]);
 
         for($i = 0; $i < $jumlah; $i++) {
-            NeedAppDetil::create([
-                'id_app' => $newcode,
-                'id_barang' => $request->kodeBarang[$i],
-                'harga' => str_replace(".", "", $request->harga[$i]),
-                'qty' => $request->qty[$i],
-                'diskon' => $request->diskon[$i],
-            ]);
+            $arrGudang = explode(",", $request->kodeGudang[$i]);
+            $arrStok = explode(",", $request->qtyGudang[$i]);
+            $diskonRp = str_replace(".", "", $request->diskonRp[$i]) / sizeof($arrGudang);
+
+            for($j = 0; $j < sizeof($arrGudang); $j++) {
+                NeedAppDetil::create([
+                    'id_app' => $newcode,
+                    'id_barang' => $request->kodeBarang[$i],
+                    'id_gudang' => $arrGudang[$j],
+                    'harga' => str_replace(".", "", $request->harga[$i]),
+                    'qty' => $arrStok[$j],
+                    'diskon' => $request->diskon[$i],
+                    'diskonRp' => $diskonRp
+                ]);
+            }
         }
 
         $data = [

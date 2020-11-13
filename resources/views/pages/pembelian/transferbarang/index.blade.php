@@ -273,30 +273,30 @@ function displayRow(e) {
   var newNum = +lastRow + 1;
   var newNo = +lastNo + 1;
   const newTr = `
-    <tr class="text-bold text-dark" id="${newNum}">
+    <tr class="text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
+        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-dark kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold nmBrgRow">
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-bold text-dark gdgAsalRow" >
+        <input type="text" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-dark gdgAsalRow" >
         <input type="hidden" name="kodeAsal[]" id="kodeAsal${newNum}" class="kodeAsalRow">
       </td>
       <td> 
-        <input type="text" name="stokAsal[]" id="stokAsal${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokAsalRow">
+        <input type="text" name="stokAsal[]" id="stokAsal${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-center stokAsalRow">
       </td>
       <td> 
-        <input type="text" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-bold text-dark gdgTujuanRow" >
+        <input type="text" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-dark gdgTujuanRow" >
         <input type="hidden" name="kodeTujuan[]" id="kodeTujuan${newNum}" class="kodeTujuanRow">
       </td>
       <td> 
-        <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark stokTujuanRow">
+        <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuanRow">
       </td>
       <td> 
-        <input type="text" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-bold text-dark qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -321,7 +321,7 @@ function displayRow(e) {
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keydown", function (e) {   
+  brgRow.addEventListener("keyup", function (e) {   
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsalRow.removeAttribute('required');
@@ -337,7 +337,7 @@ function displayRow(e) {
     @endforeach
   });
 
-  kodeRow.addEventListener("keydown", function (e) {
+  kodeRow.addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsalRow.removeAttribute('required');
@@ -353,7 +353,7 @@ function displayRow(e) {
     @endforeach
   });
 
-  gdgAsalRow.addEventListener("keydown", function (e) {
+  gdgAsalRow.addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       kodeAsalRow.value = "";
       stokAsalRow.value = "";
@@ -367,7 +367,7 @@ function displayRow(e) {
     displayStokRow(kodeAsalRow.value, stokAsalRow);
   });
 
-  gdgTujuanRow.addEventListener("keydown", function (e) {
+  gdgTujuanRow.addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       kodeTujuanRow.value = "";
       stokTujuanRow.value = "";
@@ -545,7 +545,7 @@ function displayRow(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("keydown", function (e) {
+  brgNama[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsal[i].removeAttribute('required');
@@ -563,7 +563,7 @@ for(let i = 0; i < brgNama.length; i++) {
     @endforeach
   });
 
-  kodeBarang[i].addEventListener("keydown", function (e) {
+  kodeBarang[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsal[i].removeAttribute('required');
@@ -584,7 +584,7 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Stok Gudang **/
 for(let i = 0; i < gdgAsal.length; i++) {
-  gdgAsal[i].addEventListener("keydown", function (e) {
+  gdgAsal[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       kodeAsal[i].value = "";
       stokAsal[i].value = "";
@@ -598,7 +598,7 @@ for(let i = 0; i < gdgAsal.length; i++) {
     displayStok(kodeAsal[i].value, stokAsal[i]);
   });
 
-  gdgTujuan[i].addEventListener("keydown", function (e) {
+  gdgTujuan[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       kodeTujuan[i].value = "";
       stokTujuan[i].value = "";

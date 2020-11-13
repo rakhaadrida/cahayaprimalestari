@@ -12,7 +12,8 @@ class Approval extends Model
     protected $table = "approval";
     protected $primaryKey = ['id', 'id_dokumen'];
     protected $keyType = "string";
-    protected $fillable = ['id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe'];
+    protected $fillable = ['id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe',
+                            'baca'];
 
     public $incrementing = false;
 

@@ -7,26 +7,29 @@ use App\Models\SalesOrder;
 use App\Models\BarangMasuk;
 use App\Models\AccReceivable;
 use App\Models\DetilAR;
+use App\Models\Approval;
 use Illuminate\Support\Facades\DB;
 
 class NotifController extends Controller
 {
     public function index() {
-        $so = SalesOrder::has('approval')->with(['customer'])
+        $so = SalesOrder::with(['customer'])
                 ->select('id', 'status', 'id_customer')
                 ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT'])
-                ->get();
-        $bm = BarangMasuk::has('approval')->with(['supplier'])
+                ->whereHas('approval', function($q) {
+                    $q->where('baca', 'F');
+                })->get();
+        $bm = BarangMasuk::with(['supplier'])
                 ->select('id', 'id_supplier', 'status')
                 ->whereIn('status', ['UPDATE', 'BATAL'])
-                ->get();
+                ->whereHas('approval', function($q) {
+                    $q->where('baca', 'F');
+                })->get();
 
         $items = $so->merge($bm);
         $items = $items->sortBy(function($sort) {
             return $sort->approval[0]->created_at;
         });
-        
-        // return response()->json($items);
 
         $data = [
             'items' => $items
@@ -36,14 +39,18 @@ class NotifController extends Controller
     }
 
     public function show($id) {
-        $so = SalesOrder::has('approval')->with(['customer'])
+        $so = SalesOrder::with(['customer'])
                 ->select('id', 'tgl_so', 'id_customer', 'status', 'kategori')
                 ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT'])
-                ->get();
-        $bm = BarangMasuk::has('approval')->with(['supplier', 'gudang'])
+                ->whereHas('approval', function($q) {
+                    $q->where('baca', 'F');
+                })->get();
+        $bm = BarangMasuk::with(['supplier', 'gudang'])
                 ->select('id', 'tanggal', 'id_supplier', 'status', 'id_gudang')
                 ->whereIn('status', ['UPDATE', 'BATAL'])
-                ->get();
+                ->whereHas('approval', function($q) {
+                    $q->where('baca', 'F');
+                })->get();
 
         $items = $so->merge($bm);
         $items = $items->sortBy(function($sort) {
@@ -78,5 +85,13 @@ class NotifController extends Controller
         ];
 
         return view('pages.notif.show', $data);
+    }
+
+    public function markAsRead($id) {
+        $item = Approval::where('id', $id)->first();
+        $item->{'baca'} = 'T';
+        $item->save();
+
+        return redirect()->route('notif');
     }
 }

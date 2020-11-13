@@ -199,8 +199,8 @@ const jumBaris = document.getElementById('jumBaris');
 
 /** Tampil Nama dan Kode Barang Otomatis **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("change", displayHarga) ;
-  kodeBarang[i].addEventListener("change", displayHarga);
+  brgNama[i].addEventListener("keyup", displayHarga) ;
+  kodeBarang[i].addEventListener("keyup", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
@@ -227,7 +227,7 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("change", function (e) {
+  qty[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
@@ -391,7 +391,6 @@ $(function() {
     });
   }
 });
-
 
 </script>
 @endpush

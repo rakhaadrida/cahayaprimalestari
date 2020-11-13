@@ -408,9 +408,24 @@
                           @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{number_format($subtotalUpdate, 0, "", ".")}}" />
                         </div>
                       </div>
-                      <br>
+                      <hr>
                       <!-- End Tabel Data Update SO -->
                     @endif
+
+                    <!-- Button Submit dan Reset -->
+                    <div class="form-row justify-content-center">
+                      <div class="col-3">
+                        @if(($item->approval[0]->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
+                          <button type="submit" formaction="" formmethod="POST" class="btn btn-primary btn-block text-bold">Cetak</button>
+                        @else
+                          <button type="submit" formaction="{{ route('notif-read', $item->approval[0]->id) }}" formmethod="GET" class="btn btn-info btn-block text-bold">Tandai Sudah Dibaca</button>
+                        @endif
+                      </div>
+                      <div class="col-3">
+                        <button type="submit" formaction="{{ route('notif') }}" formmethod="GET" class="btn btn-outline-secondary btn-block text-bold">Kembali</button>
+                      </div>
+                    </div>
+                    <!-- End Button Submit dan Reset -->
 
                   </div>
                   @endforeach

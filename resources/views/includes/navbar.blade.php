@@ -53,13 +53,23 @@
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
           @php 
-            $so = \App\Models\SalesOrder::has('approval')
-                  ->select('id', 'status')
-                  ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT']);
-            $items = \App\Models\BarangMasuk::has('approval')
-                    ->select('id', 'status')
-                    ->whereIn('status', ['UPDATE', 'BATAL'])
-                    ->union($so)->get();
+            $so = \App\Models\SalesOrder::with(['customer'])
+                ->select('id', 'status', 'id_customer')
+                ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT'])
+                ->whereHas('approval', function($q) {
+                    $q->where('baca', 'F');
+                })->get();
+          $bm = \App\Models\BarangMasuk::with(['supplier'])
+                  ->select('id', 'id_supplier', 'status')
+                  ->whereIn('status', ['UPDATE', 'BATAL'])
+                  ->whereHas('approval', function($q) {
+                      $q->where('baca', 'F');
+                  })->get();
+
+          $items = $so->merge($bm);
+          $items = $items->sortBy(function($sort) {
+              return $sort->approval[0]->created_at;
+          });
           @endphp 
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @endif
@@ -105,11 +115,11 @@
                     </div>
                     @if($item->status != "APPROVE_LIMIT")
                       <span class="font-weight-bold">
-                        Perubahan @if($item->status == "UPDATE") <b>detail</b> @elseif($item->status == "BATAL") <b>status BATAL</b> pada @endif faktur <b>{{ $item->id }}</b> telah di disetujui. Silahkan cetak faktur.
+                        Perubahan @if($item->status == "UPDATE") <b>detail</b> @elseif($item->status == "BATAL") <b>status BATAL</b> pada @endif {{ $item->approval[0]->tipe }} <b>{{ $item->id }}</b> telah di disetujui.@if(($item->approval[0]->tipe == 'Faktur') && ($item->status != 'BATAL')) Silahkan cetak faktur. @endif
                       </span>
                     @else
                       <span class="font-weight-bold">
-                        Kelebihan limit pada faktur <b>{{ $item->id_dokumen }}</b> telah disetujui. Silahkan cetak faktur.
+                        Kelebihan limit pada Faktur <b>{{ $item->id }}</b> telah disetujui. Silahkan cetak faktur.
                       </span>
                     @endif
                   @endif

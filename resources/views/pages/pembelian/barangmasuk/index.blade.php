@@ -338,19 +338,19 @@ function displayRow(e) {
     <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
+        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold nmBrgRow">
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td>
-        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right hargaRow">
+        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow">
       </td>
       <td>
-        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right jumlahRow">
+        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -371,7 +371,7 @@ function displayRow(e) {
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keydown", function (e) {   
+  brgRow.addEventListener("keyup", function (e) {   
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
@@ -385,7 +385,7 @@ function displayRow(e) {
     displayHargaRow(kodeRow.value);
   });
 
-  kodeRow.addEventListener("keydown", function (e) {
+  kodeRow.addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
@@ -402,7 +402,7 @@ function displayRow(e) {
   function displayHargaRow(kode) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-        hargaRow.value = addCommas('{{ $hb->harga }}');
+        hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
         qtyRow.setAttribute('required', true);
       }
     @endforeach
@@ -422,19 +422,28 @@ function displayRow(e) {
   });
 
   /** Tampil Jumlah **/
-  qtyRow.addEventListener("keydown", function (e) {
+  qtyRow.addEventListener("keyup", function (e) {
     if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
       jumlahRow.value = "";
     }
-    else {
+    else {  
+      netPast = +jumlahRow.value.replace(/\./g, "");
       jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
+      checkSubtotal(netPast, +jumlahRow.value.replace(/\./g, ""));
     }
+    total_ppn(subtotal.value.replace(/\./g, ""));
   });
   
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
+    if(qtyRow.value != "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
+      total_ppn(subtotal.value.replace(/\./g, ""));
+    }
+
     if(+curNum < +lastNum) {
       $(newRow).remove();
       for(let i = +curNum; i < +lastNum; i++) {
@@ -551,7 +560,7 @@ function displaySupp(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("keydown", function (e) {
+  brgNama[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
@@ -566,7 +575,7 @@ for(let i = 0; i < brgNama.length; i++) {
     displayHarga(kodeBarang[i].value);
   });
 
-  kodeBarang[i].addEventListener("keydown", function (e) {
+  kodeBarang[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
@@ -593,7 +602,7 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("keydown", function (e) {
+  qty[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       jumlah[i].value = "";

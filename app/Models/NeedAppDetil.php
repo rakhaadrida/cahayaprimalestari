@@ -12,7 +12,7 @@ class NeedAppDetil extends Model
     protected $table = "need_appdetil";
     protected $primaryKey = ['id_app', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_app', 'id_barang', 'qty', 'harga', 'diskon'];
+    protected $fillable = ['id_app', 'id_barang', 'id_gudang', 'qty', 'harga', 'diskon', 'diskonRp'];
     public $incrementing = false;
 
     public function barang() {

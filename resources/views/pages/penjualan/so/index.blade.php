@@ -93,7 +93,7 @@
                               @endif
                             @endif --}}
                           >
-                          <label class="form-check-label text-bold" for="pkp1">Ya</label>
+                          <label class="form-check-label text-bold text-dark" for="pkp1">Ya</label>
                         </div>
                         <div class="form-check">
                           <input class="form-check-input" type="radio" name="pkp"  value="0"
@@ -103,7 +103,7 @@
                               @endif
                             @endif --}}
                           >
-                          <label class="form-check-label text-bold" for="pkp2">Tidak</label>
+                          <label class="form-check-label text-bold text-dark" for="pkp2">Tidak</label>
                         </div>
                       </div>
                     </div>
@@ -139,15 +139,15 @@
                   <div class="col-3">
                     <div class="form-check mt-2">
                       <input class="form-check-input" type="radio" name="kategori"  value="Cash" id="kategori" required>
-                      <label class="form-check-label text-bold" for="kat1">Cash</label>
+                      <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
                     </div>
                     <div class="form-check">
                       <input class="form-check-input" type="radio" name="kategori"  value="Prime">
-                      <label class="form-check-label text-bold" for="kat2">Prime</label>
+                      <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
                     </div>
                     <div class="form-check">
                       <input class="form-check-input" type="radio" name="kategori"  value="Extrana">
-                      <label class="form-check-label text-bold" for="kat3">Extrana</label>
+                      <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
                     </div>
                   </div>
                 </div>
@@ -296,22 +296,31 @@
                               <label for="kode" class="col-4 col-form-label text-bold">Qty Order</label>
                               <span class="col-auto col-form-label text-bold">:</span>
                               <span class="col-form-label text-bold qtyOrder"></span>
+                              <span class="col-form-label text-bold qtySatuan"></span>
+                              <span class="col-form-label text-bold qtyOrderUkuran"></span>
+                              <span class="col-form-label text-bold qtyUkuran"></span>
                             </div>
                             <div class="form-group row" style="margin-top: -30px">
                               <label for="kode" class="col-4 col-form-label text-bold">Stok {{ $gudang[0]->nama }}</label>
                               <span class="col-auto col-form-label text-bold">:</span>
                               <span class="col-form-label text-bold stokJohar"></span>
+                              <span class="col-form-label text-bold stokSatuan"></span>
+                              <span class="col-form-label text-bold stokJoharUkuran"></span>
+                              <span class="col-form-label text-bold stokUkuran"></span>
                             </div>
                             <div class="form-group row" style="margin-top: -20px">
                               <label for="kode" class="col-4 col-form-label text-bold">Sisa Qty Order</label>
                               <span class="col-auto col-form-label text-bold">:</span>
                               <span class="col-form-label text-bold sisaQty"></span>
+                              <span class="col-form-label text-bold sisaSatuan"></span>
+                              <span class="col-form-label text-bold sisaQtyUkuran"></span>
+                              <span class="col-form-label text-bold sisaUkuran"></span>
                             </div>
                             <label for="pilih" style="margin-bottom: -5px">Pilih Gudang Tambahan</label>
                             @foreach($gudang as $g)
                               @if($g->id != "GDG01")
                                 <div class="row">
-                                <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudang{{$i-1}}"></span>)</label>
+                                <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudang{{$i-1}}"></span><span class="col-form-label text-bold gudangSatuan{{$i-1}}"></span><span class="col-form-label text-bold stokGudangUkuran{{$i-1}}"></span><span class="col-form-label text-bold gudangUkuran{{$i-1}}"></span>)</label>
                                   <input type="hidden" class="kodeGud{{$i-1}}" value="{{$g->id}}">
                                   <div class="col-3">
                                     <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih{{$i-1}}">Pilih</button>
@@ -642,8 +651,17 @@ const grandtotal = document.getElementById('grandtotal');
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
 const teksJohar = document.querySelectorAll('.stokJohar');
+const teksSatuan = document.querySelectorAll('.stokSatuan');
+const teksJoharUkuran = document.querySelectorAll('.stokJoharUkuran');
+const teksUkuran = document.querySelectorAll('.stokUkuran');
 const qtyOrder = document.querySelectorAll('.qtyOrder');
+const qtySatuan = document.querySelectorAll('.qtySatuan');
+const qtyOrderUkuran = document.querySelectorAll('.qtyOrderUkuran');
+const qtyUkuran = document.querySelectorAll('.qtyUkuran');
 const sisaQty = document.querySelectorAll('.sisaQty');
+const sisaSatuan = document.querySelectorAll('.sisaSatuan');
+const sisaQtyUkuran = document.querySelectorAll('.sisaQtyUkuran');
+const sisaUkuran = document.querySelectorAll('.sisaUkuran');
 const modalGudang = document.querySelectorAll(".modalGudang");
 const totalstok = document.querySelectorAll(".totalstok");
 const totalsatuan = document.querySelectorAll(".totalsatuan");
@@ -656,7 +674,7 @@ const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
 var netPast; var ukuran;
 var kodeModal;
-var totTemp;
+var totPast;
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
@@ -723,23 +741,32 @@ function displayRow(e) {
     <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold kdBrgRow">
+        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold nmBrgRow">
-      </td>
-      <td> 
-        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td>
-        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right hargaRow">
+        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="hidden" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
+        <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
+      <td>
+        <input type="text" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
+        value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td>
-        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right jumlahRow">
+        <input type="text" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow" 
+        value="{{ old('tipe[]') }}">
+      </td>
+      <td>
+        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow">
+      </td>
+      <td>
+        <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
       </td>
       <td style="width: 60px">
         <input type="text" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
-        value="{{ old('diskon[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
+        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
       </td>
       <td style="width: 120px">
         <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRpRow" 
@@ -756,26 +783,121 @@ function displayRow(e) {
     </tr>
   `; 
 
+  const newModal = `
+    <div class="modal modalGudangRow" id="gud${newNum}" tabindex="-1" role="dialog" aria-labelledby="${newNum}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true" class="h2 text-bold">&times;</span>
+            </button>
+            <h4 class="modal-title text-bold">Pilih Gudang</h4>
+          </div>
+          <div class="modal-body text-dark">
+            <p>Qty order melebihi stok pada gudang <strong>{{ $stok[0]->gudang->nama }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
+            <input type="hidden" id="kodeModal${newNum}" value="${newNum}">
+            <div class="form-group row" style="margin-top: -10px">
+              <label for="kode" class="col-4 col-form-label text-bold">Qty Order</label>
+              <span class="col-auto col-form-label text-bold">:</span>
+              <span id="qtyOrder${newNum}" class="col-form-label text-bold"></span>
+              <span id="qtySatuan${newNum}" class="col-form-label text-bold"></span>
+              <span id="qtyOrderUkuran${newNum}" class="col-form-label text-bold"></span>
+              <span id="qtyUkuran${newNum}" class="col-form-label text-bold qtyUkuran"></span>
+            </div>
+            <div class="form-group row" style="margin-top: -30px">
+              <label for="kode" class="col-4 col-form-label text-bold">Stok {{ $gudang[0]->nama }}</label>
+              <span class="col-auto col-form-label text-bold">:</span>
+              <span id="stokJohar${newNum}" class="col-form-label text-bold"></span>
+              <span id="stokSatuan${newNum}" class="col-form-label text-bold"></span>
+              <span id="stokJoharUkuran${newNum}" class="col-form-label text-bold"></span>
+              <span id="stokUkuran${newNum}" class="col-form-label text-bold"></span>
+            </div>
+            <div class="form-group row" style="margin-top: -20px">
+              <label for="kode" class="col-4 col-form-label text-bold">Sisa Qty Order</label>
+              <span class="col-auto col-form-label text-bold">:</span>
+              <span class="col-form-label text-bold" id="sisaQty${newNum}"></span>
+              <span class="col-form-label text-bold" id="sisaSatuan${newNum}"></span>
+              <span class="col-form-label text-bold" id="sisaQtyUkuran${newNum}"></span>
+              <span class="col-form-label text-bold" id="sisaUkuran${newNum}"></span>
+            </div>
+            <label for="pilih" style="margin-bottom: -5px">Pilih Gudang Tambahan</label>
+            @foreach($gudang as $g)
+              @if($g->id != "GDG01")
+                <div class="row">
+                <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudangRow${newNum}"></span>)</label>
+                  <input type="hidden" class="kodeGudRow${newNum}" value="{{$g->id}}">
+                  <div class="col-3">
+                    <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilihRow${newNum}">Pilih</button>
+                  </div>
+                </div>
+              @endif
+            @endforeach
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="notif${newNum}" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" class="h2 text-bold">&times;</span>
+            </button>
+            <h4 class="modal-title text-bold">Notifikasi Stok Barang</h4>
+          </div>
+          <div class="modal-body text-dark">
+            <h5>Qty input tidak bisa melebihi total stok. Total stok untuk barang <span class="col-form-label text-bold nmbrgRow" id="nmbrgRow${newNum}"></span> adalah <span class="col-form-label text-bold totalstokRow" id="totalstokRow${newNum}"></span> atau <span class="col-form-label text-bold totalsatuanRow" id="totalsatuanRow${newNum}"></span></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
   $(tablePO).append(newTr);
+  $(tablePO).append(newModal);
   jumBaris.value = newNum;
   const newRow = document.getElementById(newNum);
+  const newMod = document.getElementById("gud"+newNum);
+  const newModNotif = document.getElementById("notif"+newNum);
   const brgRow = document.getElementById("nmBrgRow"+newNum);
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
   const qtyRow = document.getElementById("qtyRow"+newNum);
+  const satuanRow = document.getElementById("satuanRow"+newNum);
+  const kodeGudangRow = document.getElementById("kodeGudangRow"+newNum);
+  const qtyGudangRow = document.getElementById("qtyGudangRow"+newNum);
+  const tipeRow = document.getElementById("tipeRow"+newNum);
   const hargaRow = document.getElementById("hargaRow"+newNum);
   const jumlahRow = document.getElementById("jumlahRow"+newNum);
   const diskonRow = document.getElementById("diskonRow"+newNum);
   const diskonRpRow = document.getElementById("diskonRpRow"+newNum);
   const nettoRow = document.getElementById("nettoRow"+newNum);
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
+  const teksJoharRow = document.getElementById("stokJohar"+newNum);
+  const teksSatuanRow = document.getElementById("stokSatuan"+newNum);
+  const teksJoharUkuranRow = document.getElementById("stokJoharUkuran"+newNum);
+  const teksUkuranRow = document.getElementById("stokUkuran"+newNum);
+  const qtyOrderRow = document.getElementById("qtyOrder"+newNum);
+  const qtySatuanRow = document.getElementById("qtySatuan"+newNum);
+  const qtyOrderUkuranRow = document.getElementById("qtyOrderUkuran"+newNum);
+  const qtyUkuranRow = document.getElementById("qtyUkuran"+newNum);
+  const sisaQtyRow = document.getElementById("sisaQty"+newNum);
+  const sisaSatuanRow = document.getElementById("sisaSatuan"+newNum);
+  const sisaQtyUkuranRow = document.getElementById("sisaQtyUkuran"+newNum);
+  const sisaUkuranRow = document.getElementById("sisaUkuran"+newNum);
+  const totalstokRow = document.getElementById("totalstokRow"+newNum);
+  const totalsatuanRow = document.getElementById("totalsatuanRow"+newNum);
+  const nmbrgRow = document.getElementById("nmbrgRow"+newNum);
+  var ukuranRow;
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keydown", displayHargaRow); 
-  kodeRow.addEventListener("keydown", displayHargaRow);
+  brgRow.addEventListener("keyup", displayHargaRow); 
+  kodeRow.addEventListener("keyup", displayHargaRow);
   
   function displayHargaRow(e) {
     if(e.target.value == "") {
-      subtotal.value = addCommas(+subtotal.value.replace(".", "") - +jumlahRow.value.replace(".", ""));
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      grandtotal.value = subtotal.value;
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
     } 
@@ -787,12 +909,30 @@ function displayRow(e) {
       }
     @endforeach
 
+    @foreach($barang as $br)
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+        kodeRow.value = '{{ $br->id }}';
+        brgRow.value = '{{ $br->nama }}';
+        satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
+        if(satuanUkuran.innerHTML == 'Dus')
+          pcs.innerHTML = 'Pcs';
+        else
+          pcs.innerHTML = 'Meter';
+        ukuranRow = '{{ $br->ukuran }}';
+      }
+    @endforeach
+
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeRow.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        tipeRow.value = '{{ $hb->hargaBarang->tipe }}';
         hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
         qtyRow.setAttribute('required', true);
       }
     @endforeach
+
+    kodeGudangRow.value = 'GDG01';
+    qtyRow.value = '';
+    satuanRow.value = '';
   } 
 
   /** Inputan hanya bisa angka **/
@@ -809,23 +949,126 @@ function displayRow(e) {
   });  
 
   /** Tampil Jumlah **/
-  qtyRow.addEventListener("keydown", function (e) {
+  qtyRow.addEventListener("change", displayQtyRow);
+  satuanRow.addEventListener("change", displayQtyRow);
+
+  function displayQtyRow(e) {
+    stokJohar = 0;
+    stokLain = [];
+    totStok = 0;
+    @foreach($stok as $s)
+      if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
+        stokJohar = '{{ $s->stok }}';
+        totStok = +totStok + +stokJohar;
+      }
+      else if('{{ $s->id_barang }}' == kodeRow.value){
+        stokLain.push('{{ $s->stok }}');
+        totStok = +totStok + +'{{ $s->stok }}';
+      }
+    @endforeach
+
+    hitungQtyRow(e.target.id, e.target.value);
+
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
       jumlahRow.value = "";
       nettoRow.value = "";
+      kodeGudangRow.value = "GDG01";
+      qtyGudangRow.value = "";
+      qtyRow.value = "";
+      satuanRow.value = "";
+    }
+    else if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > totStok)) || ((e.target.id == `satuanRow${newNum}`) && (+e.target.value * +ukuranRow) > totStok)) {
+      $('#notif'+newNum).modal("show");
+      nmbrgRow.textContent = brgRow.value;
+      totalstokRow.textContent = `${totStok} ${pcs.innerHTML}`;
+      totalsatuanRow.textContent = `${totStok / ukuranRow} ${satuanUkuran.innerHTML}`;
+
+      qtyRow.value = "";
+      satuanRow.value = "";
+      jumlahRow.value = "";
+      nettoRow.value = "";
+
+      return false;
     }
     else {
+      if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (+e.target.value * +ukuranRow) > stokJohar)) {
+        $('#gud'+newNum).modal("show");
+        kodeModal = newNum;
+        teksJoharRow.textContent = `${stokJohar}`;
+        teksSatuanRow.textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
+        teksJoharUkuranRow.textContent = `${stokJohar / ukuranRow}`;
+        teksUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+
+        qtyOrderRow.textContent = `${qtyRow.value}`;
+        qtySatuanRow.textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
+        qtyOrderUkuranRow.textContent = `${qtyRow.value / ukuranRow}`;
+        qtyUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+
+        sisaQtyRow.textContent = `${+qtyRow.value - +stokJohar}`;
+        sisaSatuanRow.textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
+        sisaQtyUkuranRow.textContent = `${(qtyRow.value - +stokJohar) / ukuranRow}`;
+        sisaUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
+        for(let i = 0; i < stokGudangRow.length; i++) {
+          stokGudangRow[i].textContent = `${stokLain[i]} ${pcs.innerHTML} / ${stokLain[i] / ukuranRow} ${satuanUkuran.innerHTML}`;
+        }
+        qtyGudangRow.value = stokJohar;
+      }
+      else {
+        kodeGudangRow.value = "GDG01";
+        qtyGudangRow.value = e.target.value;
+      }
+
       netPast = +nettoRow.value.replace(/\./g, "");
       jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
       if(diskonRow.value != "") {
-        diskonRpRow.value = addCommas(diskonRow.value * jumlahRow.value.replace(/\./g, "") / 100);
+        var angkaDiskon = hitungDiskon(diskonRow.value)
+        diskonRpRow.value = addCommas(angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100);
       }
 
       nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
       checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
-    total_ppn(subtotal.value.replace(/\./g, ""));
+    // total_ppn(subtotal.value.replace(/\./g, ""));
+    ppn.value = 0;
+    grandtotal.value = subtotal.value;
+  }
+
+  function hitungQtyRow(kode, angka) {
+    if(kode == `qtyRow${newNum}`)
+      satuanRow.value = +angka / +ukuranRow;
+    else if(kode == `satuanRow${newNum}`) 
+      qtyRow.value = +angka * +ukuranRow;
+  }
+
+  $('#gud'+newNum).on('shown.bs.modal', function(e) {
+    const kodeGudRow = document.querySelectorAll(".kodeGudRow"+newNum);
+    const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
+    const btnPilihRow = document.querySelectorAll(".btnPilihRow"+newNum);
+    for(let i = 0; i < btnPilihRow.length; i++) {
+      btnPilihRow[i].addEventListener("click", function (e) {
+        kodeGudangRow.value = 'GDG01';
+        qtyGudangRow.value = stokJohar;
+        totPast = +qtyGudangRow.value + +stokGudangRow[i].textContent;
+        if(totPast < qtyOrderRow.textContent) {
+          sisa = +sisaQtyRow.textContent - +stokGudangRow[i].textContent;
+          qtyGudangRow.value = qtyGudangRow.value.concat(`,${stokGudangRow[i].textContent}`);
+          qtyGudangRow.value = qtyGudangRow.value.concat(`,${sisa}`);
+          kodeGudangRow.value = kodeGudangRow.value.concat(`,${kodeGudRow[i].value}`);
+          @foreach($gudang as $g)
+            if(('{{ $g->id }}' != kodeGudRow.value) && ('{{ $g->id }}' != 'GDG01')) {
+              kodeGudangRow.value = kodeGudangRow.value.concat(`,{{ $g->id }}`);
+            }
+          @endforeach
+        }
+        else {
+          qtyGudangRow.value = qtyGudangRow.value.concat(`,${sisaQtyRow.textContent}`);
+          kodeGudangRow.value = kodeGudangRow.value.concat(`,${kodeGudRow[i].value}`);
+        }
+        $('#gud'+newNum).modal("hide");
+      });
+    }
   });
 
   /** Inputan hanya bisa angka **/
@@ -842,7 +1085,7 @@ function displayRow(e) {
   });
 
   /** Tampil Diskon Rp **/
-  diskonRow.addEventListener("keydown", function (e) {
+  diskonRow.addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       netPast = nettoRow.value.replace(/\./g, "");
       nettoRow.value = addCommas(+nettoRow.value.replace(/\./g, "") + +diskonRpRow.value.replace(/\./g, ""))
@@ -850,25 +1093,35 @@ function displayRow(e) {
       diskonRpRow.value = "";
     }
     else {
+      var angkaDiskon = hitungDiskon(e.target.value);
       netPast = +nettoRow.value.replace(/\./g, "")
-      diskonRpRow.value = addCommas(e.target.value * jumlahRow.value.replace(/\./g, "") / 100);
+      diskonRpRow.value = addCommas((angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100).toFixed(0));
       nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""))
       checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
-    total_ppn(subtotal.value.replace(/\./g, ""));
+    // total_ppn(subtotal.value.replace(/\./g, ""));
+    ppn.value = 0;
+    grandtotal.value = subtotal.value;
   });
   
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     if(qtyRow.value != "") {
        subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
-      total_ppn(subtotal.value.replace(/\./g, ""));
+       grandtotal.value = subtotal.value;
     }
     
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
+    console.log(curNum);
+    console.log(lastNum);
     if(+curNum < +lastNum) {
       $(newRow).remove();
+      $(newMod).remove();
+      $(newModNotif).remove();
+      var j = curNum;
+      console.log(tablePO);
+      var selisih = +lastNum - +curNum;
       for(let i = +curNum; i < +lastNum; i++) {
         $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
       }
@@ -877,7 +1130,7 @@ function displayRow(e) {
       $(newRow).remove();
     }
     jumBaris.value -= 1;
-  });
+  })
 
   /** Autocomplete Nama  Barang **/
   $(function() {
@@ -946,12 +1199,13 @@ function displayRow(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("keydown", displayHarga) ;
-  kodeBarang[i].addEventListener("keydown", displayHarga);
+  brgNama[i].addEventListener("keyup", displayHarga) ;
+  kodeBarang[i].addEventListener("keyup", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
-      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      grandtotal.value = subtotal.value;
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
     }
@@ -1031,12 +1285,29 @@ for(let i = 0; i < qty.length; i++) {
       if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (+e.target.value * +ukuran) > stokJohar)) {
         $('#'+i).modal("show");
         kodeModal = i;
-        teksJohar[i].textContent = `${stokJohar} ${pcs.innerHTML} / ${stokJohar / ukuran} ${satuanUkuran.innerHTML}`;
-        qtyOrder[i].textContent = `${qty[i].value} ${pcs.innerHTML} / ${qty[i].value / ukuran} ${satuanUkuran.innerHTML}`;
-        sisaQty[i].textContent = `${+qty[i].value - +stokJohar} ${pcs.innerHTML} / ${(qty[i].value - +stokJohar) / ukuran} ${satuanUkuran.innerHTML}`;
+        teksJohar[i].textContent = `${stokJohar}`;
+        teksSatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
+        teksJoharUkuran[i].textContent = `${stokJohar / ukuran}`;
+        teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        // qtyOrder[i].textContent = `${qty[i].value} ${pcs.innerHTML} / ${qty[i].value / ukuran} ${satuanUkuran.innerHTML}`;
+        qtyOrder[i].textContent = `${qty[i].value}`;
+        qtySatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
+        qtyOrderUkuran[i].textContent = `${qty[i].value / ukuran}`;
+        qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+
+        sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
+        sisaSatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
+        sisaQtyUkuran[i].textContent = `${(qty[i].value - +stokJohar) / ukuran}`;
+        sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
         const stokGudang = document.querySelectorAll('.stokGudang'+i);
+        const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
+        const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
+        const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
         for(let i = 0; i < stokGudang.length; i++) {
-          stokGudang[i].textContent = `${stokLain[i]} ${pcs.innerHTML} / ${stokLain[i] / ukuran} ${satuanUkuran.innerHTML}`;
+          stokGudang[i].textContent = `${stokLain[i]}`;
+          gudangSatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
+          stokGudangUkuran[i].textContent = `${stokLain[i] / ukuran}`;
+          gudangUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
         }
         qtyGudang[i].value = stokJohar;
       }
@@ -1063,7 +1334,7 @@ for(let i = 0; i < qty.length; i++) {
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
-  diskon[i].addEventListener("change", function (e) {
+  diskon[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       netPast = netto[i].value.replace(/\./g, "");
       netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
@@ -1087,6 +1358,7 @@ for(let j = 0; j < modalGudang.length; j++) {
   $('#'+j).on('shown.bs.modal', function(e) {
     const kodeGud = document.querySelectorAll(".kodeGud"+j);
     const stokGudang = document.querySelectorAll('.stokGudang'+j);
+    
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
     for(let i = 0; i < btnPilih.length; i++) {
       btnPilih[i].addEventListener("click", function (e) {
@@ -1223,6 +1495,8 @@ for(let i = 0; i < hapusBaris.length; i++) {
     diskon[i].value = diskon[i+1].value;
     jumlah[i].value = jumlah[i+1].value;
     harga[i].value = harga[i+1].value;
+    tipe[i].value = tipe[i+1].value;
+    satuan[i].value = satuan[i+1].value;
     qty[i].value = qty[i+1].value;
     brgNama[i].value = brgNama[i+1].value;
     kodeBarang[i].value = kodeBarang[i+1].value;

@@ -214,6 +214,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Notif
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
+        Route::get('notif/read/{id}', 'NotifController@markAsRead')->name('notif-read');
     });
 
     Route::group(['roles'=>['FINANCE', 'SUPER']], function() {

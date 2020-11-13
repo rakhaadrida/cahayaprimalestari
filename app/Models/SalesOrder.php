@@ -24,7 +24,7 @@ class SalesOrder extends Model
     }
 
     public function need_approval() {
-        return $this->hasMany('App\Models\NeedApproval', 'id_so', 'id');
+        return $this->hasMany('App\Models\NeedApproval', 'id_dokumen', 'id');
     }
 
     public function approval() {

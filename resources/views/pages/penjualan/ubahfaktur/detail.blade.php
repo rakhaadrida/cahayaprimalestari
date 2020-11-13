@@ -195,12 +195,21 @@
                         @if($items->count() != 0)
                           @php 
                             $i = 1; $subtotal = 0;
-                            $itemsDetail = \App\Models\DetilSO::with(['barang'])
-                                      ->select('id_barang', 'diskon')
-                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                                      ->where('id_so', $item->id)
-                                      ->groupBy('id_barang', 'diskon')
-                                      ->get();
+                            if($item->status != 'PENDING_UPDATE') {
+                              $itemsDetail = \App\Models\DetilSO::with(['barang'])
+                                        ->select('id_barang', 'diskon')
+                                        ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                        ->where('id_so', $item->id)
+                                        ->groupBy('id_barang', 'diskon')
+                                        ->get();
+                            } else {
+                              $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
+                                        ->select('id_barang', 'diskon')
+                                        ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                        ->where('id_app', $item->need_approval[0]->id)
+                                        ->groupBy('id_barang', 'diskon')
+                                        ->get();
+                            }
                           @endphp
                           @foreach($itemsDetail as $itemDet)
                             <tr class="text-dark">
@@ -210,9 +219,16 @@
                               <td align="right">{{ $itemDet->qty }}</td>
                               @foreach($gudang as $g)
                                 @php
-                                  $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
+                                  if($item->status != 'PENDING_UPDATE') {
+                                    $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
                                             ->where('id_barang', $itemDet->id_barang)
                                             ->where('id_gudang', $g->id)->get();
+                                  } else {
+                                    $itemGud = \App\Models\NeedAppDetil::where('id_app',
+                                            $item->need_approval[0]->id)
+                                            ->where('id_barang', $itemDet->id_barang)
+                                            ->where('id_gudang', $g->id)->get();
+                                  }
                                 @endphp
                                 @if($itemGud->count() != 0)
                                   <td align="right">{{ $itemGud[0]->qty }}</td>

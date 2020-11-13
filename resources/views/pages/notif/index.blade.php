@@ -20,13 +20,14 @@
         <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
           <thead class="text-center text-bold text-dark">
             <tr align="center">
-              <th>No</th>
-              <th>No. Transaksi</th>
-              <th>Tgl Approve</th>
+              <th style="width: 30px">No</th>
+              <th style="width: 70px">No. Transaksi</th>
+              <th style="width: 80px">Tgl Approve</th>
               <th>Customer / Supplier</th>
-              <th>Status</th>
+              <th style="width: 70px">Status</th>
               <th>Keterangan</th>
-              <th>Detail</th>
+              <th style="width: 50px">Detail</th>
+              <th style="width: 130px">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -49,6 +50,13 @@
                   <a href="{{ route('notif-show', $item->id) }}" class="btn btn-success btn-sm">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
+                </td>
+                <td class="align-middle" align="center">
+                  @if(($item->approval[0]->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
+                    <a href="{{ route('notif-show', $item->id) }}" class="btn btn-primary btn-sm" style="width: 150px">Cetak</a>
+                  @else
+                    <a href="{{ route('notif-read', $item->approval[0]->id) }}" class="btn btn-info btn-sm">Tandai Sudah Dibaca</a>
+                  @endif
                 </td>
               </tr>
               @php $i++; @endphp

@@ -95,7 +95,8 @@ class ApprovalController extends Controller
             'tanggal' => Carbon::now()->toDateString(),
             'status' => $item->{'status'},
             'keterangan' => $needApp[0]->keterangan,
-            'tipe' => $request->tipe
+            'tipe' => $request->tipe,
+            'baca' => 'F'
         ]);
 
         if($request->tipe == 'Faktur')
