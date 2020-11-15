@@ -309,7 +309,7 @@ class SalesOrderController extends Controller
 
     public function edit(Request $request, $id) {
         $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
-        $itemsRow = DetilSO::where('id_so', $id)->count();
+        $itemsRow = DetilSO::where('id_so', $id)->distinct('id_barang')->count();
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
         $barang = Barang::All();
@@ -372,6 +372,23 @@ class SalesOrderController extends Controller
                     'diskon' => $request->diskon[$i],
                     'diskonRp' => $diskonRp
                 ]);
+
+                $stokAwal = DetilSO::where('id_so', $request->kode)
+                            ->where('id_barang', $request->kodeBarang[$i])
+                            ->where('id_gudang', $arrGudang[$j])->first();
+                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                            ->where('id_gudang', $arrGudang[$j])->first();
+
+                if($stokAwal != NULL) {
+                    if($stokAwal->{'qty'} > $arrStok[$j])
+                        $updateStok->{'stok'} += ($stokAwal->{'qty'} - $arrStok[$j]);
+                    else 
+                        $updateStok->{'stok'} -= ($arrStok[$j] - $stokAwal->{'qty'});
+                } else {
+                    $updateStok->{'stok'} -= $arrStok[$j];
+                }
+                
+                $updateStok->save();
             }
         }
 

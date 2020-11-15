@@ -12,8 +12,10 @@ use App\Models\NeedAppDetil;
 use App\Models\Approval;
 use App\Models\DetilApproval;
 use App\Models\AccReceivable;
+use App\Models\AccPayable;
 use App\Models\DetilAR;
 use App\Models\StokBarang;
+use App\Models\Gudang;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +34,7 @@ class ApprovalController extends Controller
 
     public function show($id) {
         $approval = NeedApproval::All();
+        $gudang = Gudang::All();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
                         ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
@@ -55,6 +58,7 @@ class ApprovalController extends Controller
 
         $data = [
             'approval' => $approval,
+            'gudang' => $gudang,
             'kode' => $id,
             'total' => $totalPerCust
         ];
@@ -76,6 +80,10 @@ class ApprovalController extends Controller
         }
         elseif($item->{'status'} == 'PENDING_BATAL') {
             $item->{'status'} = "BATAL";
+            if($request->tipe == 'Faktur')
+                $ar = AccReceivable::where('id_so', $id)->delete();
+            else
+                $ap = AccPayable::where('id_bm', $id)->delete();
         }
         elseif($item->{'status'} == 'LIMIT') {
             $item->{'status'} = "APPROVE_LIMIT";

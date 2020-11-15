@@ -1402,7 +1402,7 @@ function hitungDiskon(angka) {
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
-  totDiskon = ((totDiskon - 100) * -1).toFixed(2);
+  totDiskon =  Math.floor(((totDiskon - 100) * -1).toFixed(2));
   return totDiskon;
 }
 

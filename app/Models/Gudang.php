@@ -16,4 +16,8 @@ class Gudang extends Model
     public function stokBarang() {
         return $this->hasMany('App\Models\StokBarang', 'id_gudang', 'id');
     }
+
+    public function detil_approval() {
+        return $this->hasMany('App\Models\DetilApproval', 'id_gudang', 'id');
+    }
 }

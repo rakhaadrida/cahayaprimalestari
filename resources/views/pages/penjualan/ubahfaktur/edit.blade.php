@@ -78,7 +78,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
                     <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
-                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
+                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
@@ -127,6 +127,7 @@
                       </td>
                       <td>
                         <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
+                        <input type="hidden" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
                       </td>
                       <td> 
                         <input type="text" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
@@ -147,6 +148,8 @@
                             }
                           @endphp
                         @endforeach
+                        <input type="hidden" name="KodeGudangArr[]" class="text-bold text-dark kodeGudangArr" value="{{ $arrKode }}">
+                        <input type="hidden" name="qtyAwalArr[]" class="text-bold text-dark qtyAwalArr" value="{{ $arrQty }}">
                         <input type="text" name="kodeGudang[]" class="kodeGudang" 
                         value="{{ $arrKode }}">
                         <input type="text" name="qtyGudang[]" class="qtyGudang"
@@ -160,12 +163,12 @@
                         @endphp
                         @if($itemGud->count() != 0)
                           <td>
-                            <input type="text" name="{{$g->id}}[]" class="form-control form-control-sm text-bold text-right text-dark {{$g->id}}" 
+                            <input type="text" name="{{$g->id}}[]" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark {{$g->id}}" 
                             value="{{ $itemGud[0]->qty }}">
                           </td>
                         @else
                           <td>
-                            <input type="text" name="{{$g->id}}[]" class="form-control form-control-sm text-bold text-right text-dark {{$g->id}}" 
+                            <input type="text" name="{{$g->id}}[]" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark {{$g->id}}" 
                             value="">
                           </td>
                         @endif
@@ -364,7 +367,10 @@
 <script type="text/javascript">
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
+const qtyAwal = document.querySelectorAll(".qtyAwal");
 const qty = document.querySelectorAll(".qty");
+const kodeGudangArr = document.querySelectorAll(".kodeGudangArr");
+const qtyAwalArr = document.querySelectorAll(".qtyAwalArr");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
 const qtyGudang = document.querySelectorAll(".qtyGudang");
 const tipe = document.querySelectorAll(".tipe");
@@ -395,8 +401,8 @@ const totalstok = document.querySelectorAll(".totalstok");
 const totalsatuan = document.querySelectorAll(".totalsatuan");
 const nmbrg = document.querySelectorAll(".nmbrg");
 var ukuran; var satuanUkuran; var pcs;
-var netPast; var cek;
-var kodeModal;
+var netPast; var cek; var stokTambah;
+var kodeModal; var arrKodeGud; var arrQtyAwal; var arrQtyGud;
 var totTemp;
 var sisa; var stokJohar; var stokLain; var totStok;
 
@@ -454,6 +460,9 @@ for(let i = 0; i < qty.length; i++) {
       }
     @endforeach
 
+    arrKodeGud = kodeGudangArr[i].value.split(',');
+    arrQtyAwal = qtyAwalArr[i].value.split(',');
+
     @foreach($barang as $br)
       if('{{ $br->id }}' == kodeBarang[i].value) {
         satuanUkuran = '{{ substr($br->satuan, -3) }}';
@@ -473,7 +482,7 @@ for(let i = 0; i < qty.length; i++) {
       qtyGudang[i].value = "";
       qty[i].value = "";
     }
-    else if(+e.target.value > totStok) {
+    else if((+e.target.value - +qtyAwal[i].value) > totStok) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
       totalstok[i].textContent = `${totStok} ${pcs}`;
@@ -486,12 +495,12 @@ for(let i = 0; i < qty.length; i++) {
       return false;
     }
     else {
-      if(+e.target.value > stokJohar) {
+      if((+e.target.value - +arrQtyAwal[0]) > stokJohar) {
         $('#'+i).modal("show");
         kodeModal = i;
-        teksJohar[i].textContent = `${stokJohar}`;
+        teksJohar[i].textContent = `${+stokJohar + +arrQtyAwal[0]}`;
         teksSatuan[i].textContent = `\u00A0${pcs} /\u00A0`;
-        teksJoharUkuran[i].textContent = `${stokJohar / ukuran}`;
+        teksJoharUkuran[i].textContent = `${(+stokJohar + +arrQtyAwal[0]) / ukuran}`;
         teksUkuran[i].textContent = `\u00A0${satuanUkuran}`;
         // qtyOrder[i].textContent = `${qty[i].value} ${pcs.innerHTML} / ${qty[i].value / ukuran} ${satuanUkuran.innerHTML}`;
         qtyOrder[i].textContent = `${qty[i].value}`;
@@ -499,18 +508,28 @@ for(let i = 0; i < qty.length; i++) {
         qtyOrderUkuran[i].textContent = `${qty[i].value / ukuran}`;
         qtyUkuran[i].textContent = `\u00A0${satuanUkuran}`;
 
-        sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
+        sisaQty[i].textContent = `${+qty[i].value - (+stokJohar + +arrQtyAwal[0])}`;
         sisaSatuan[i].textContent = `\u00A0${pcs} /\u00A0`;
-        sisaQtyUkuran[i].textContent = `${(qty[i].value - +stokJohar) / ukuran}`;
+        sisaQtyUkuran[i].textContent = `${(qty[i].value - (+stokJohar + +arrQtyAwal[0])) / ukuran}`;
         sisaUkuran[i].textContent = `\u00A0${satuanUkuran}`;
+        const kodeGud = document.querySelectorAll(".kodeGud"+i);
         const stokGudang = document.querySelectorAll('.stokGudang'+i);
         const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
         const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
         const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
+        cek = 0;
         for(let i = 0; i < stokGudang.length; i++) {
-          stokGudang[i].textContent = `${stokLain[i]}`;
+          console.log(arrKodeGud[cek+1]);
+          if(kodeGud[i].value == arrKodeGud[cek+1]) {
+            stokTambah = +stokLain[i] + +arrQtyAwal[cek+1];
+            cek++;
+          } else {
+            stokTambah = stokLain[i];
+          }
+
+          stokGudang[i].textContent = `${stokTambah}`;
           gudangSatuan[i].textContent = `\u00A0${pcs} /\u00A0`;
-          stokGudangUkuran[i].textContent = `${stokLain[i] / ukuran}`;
+          stokGudangUkuran[i].textContent = `${stokTambah / ukuran}`;
           gudangUkuran[i].textContent = `\u00A0${satuanUkuran}`;
         }
         qtyGudang[i].value = stokJohar;
@@ -559,7 +578,7 @@ for(let j = 0; j < modalGudang.length; j++) {
     for(let i = 0; i < btnPilih.length; i++) {
       btnPilih[i].addEventListener("click", function (e) {
         kodeGudang[j].value = 'GDG01';
-        qtyGudang[j].value = stokJohar;
+        qtyGudang[j].value = +stokJohar + +arrQtyAwal[0];
         totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
         if(totPast < qtyOrder[j].textContent) {
           sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
@@ -577,18 +596,19 @@ for(let j = 0; j < modalGudang.length; j++) {
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
         }
 
-        cek = 0;
         @foreach($gudang as $g)
           arrKodeGud = kodeGudang[j].value.split(',');
           arrQtyGud = qtyGudang[j].value.split(',');
           var kode = '{{ $g->id }}';
-          if('{{ $g->id }}' == arrKodeGud[cek]) {
-            const qtyGudangDetil = document.querySelectorAll('.'+kode)[j];
-            qtyGudangDetil.value = arrQtyGud[cek];
-            cek++;
-          } else {
-            const qtyGudangDetil = document.querySelectorAll('.'+kode)[j];
-            qtyGudangDetil.value = '';
+          for(k = 0; k < arrKodeGud.length; k++) {
+            if('{{ $g->id }}' == arrKodeGud[k]) {
+              const qtyGudangDetil = document.querySelectorAll('.'+kode)[j];
+              qtyGudangDetil.value = arrQtyGud[k];
+              break;
+            } else {
+              const qtyGudangDetil = document.querySelectorAll('.'+kode)[j];
+              qtyGudangDetil.value = '';
+            }
           }
         @endforeach
 
@@ -635,7 +655,7 @@ function hitungDiskon(angka) {
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
-  totDiskon = ((totDiskon - 100) * -1).toFixed(2);
+  totDiskon =  Math.floor(((totDiskon - 100) * -1).toFixed(2));
   return totDiskon;
 }
 

@@ -12,12 +12,16 @@ class DetilApproval extends Model
     protected $table = "detil_approval";
     protected $primaryKey = ['id_app', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_app', 'id_barang', 'harga', 'qty', 'diskon'];
+    protected $fillable = ['id_app', 'id_barang', 'id_gudang', 'harga', 'qty', 'diskon'];
 
     public $incrementing = false;
 
     public function barang() {
         return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
+    }
+
+    public function gudang() {
+        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id');
     }
 
     // public function so() {
