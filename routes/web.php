@@ -193,7 +193,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('approval', 'ApprovalController@index')->name('approval');
         Route::get('approval/show/{id}', 'ApprovalController@show')->name('app-show');
         Route::post('approval/process/{id}', 'ApprovalController@process')->name('app-process');
-        Route::post('approval/batal/{id}', 'ApprovalController@batal')->name('app-batal');
+        Route::post('approval/batal/{id}/{kode}', 'ApprovalController@batal')->name('app-batal');
         Route::get('approval/histori', 'ApprovalController@histori')->name('app-histori');
         Route::get('approval/histori/{id}', 'ApprovalController@detail')->name('app-detail');
 

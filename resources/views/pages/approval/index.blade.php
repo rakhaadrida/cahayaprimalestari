@@ -22,7 +22,7 @@
             <tr align="center">
               <th>No</th>
               <th>No. Transaksi</th>
-              <th>Tanggal</th>
+              <th>Tanggal Ubah</th>
               <th>Customer</th>
               <th>Status</th>
               <th>Keterangan</th>
@@ -35,11 +35,10 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
-                @if($item->tipe != 'Dokumen')
-                  <td class="align-middle" align="center">{{ $item->so->tgl_so }}</td>
+                <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</td>
+                @if($item->tipe != 'Dokumen') 
                   <td class="align-middle" align="center">{{ $item->so->customer->nama }}</td>
                 @else
-                  <td class="align-middle" align="center">{{ $item->bm->tanggal }}</td>
                   <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
                 @endif
                 <td class="align-middle" align="center">{{ $item->status }}</td>

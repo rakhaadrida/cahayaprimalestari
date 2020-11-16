@@ -56,7 +56,7 @@
                             <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor @if($item->tipe == 'Faktur') SO @else BM @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id_dokumen }}" >
+                              <input type="text" name="kode" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id_dokumen }}" >
                             </div>
                           </div>
                         </div> 
@@ -109,7 +109,7 @@
                               <div class="col-4">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
                                 value="{{ $item->bm->gudang->nama }}" >
-                                <input type="hidden" name="kodeGudang" value="{{ $item->bm->id_gudang }}">
+                                <input type="hidden" name="{{$item->id}}" value="{{ $item->bm->id_gudang }}">
                               </div>
                             </div>
                           </div>
@@ -121,8 +121,8 @@
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" name="status" readonly class="form-control-plaintext col-form-label-sm text-bold @if($item->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" value="{{ $item->status }}">
-                              <input type="hidden" name="tipe" value="{{ $item->tipe }}">
+                              <input type="text" name="status{{$item->id_dokumen}}" readonly class="form-control-plaintext col-form-label-sm text-bold @if($item->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" value="@if($item->status == 'PENDING_UPDATE')@if($item->tipe == 'Faktur'){{ $item->so->status }}@else{{ $item->bm->status }} @endif @else {{ $item->status }} @endif">
+                              <input type="hidden" name="tipe{{$item->id_dokumen}}" value="{{ $item->tipe }}">
                             </div>
                           </div>
                         </div>
@@ -265,7 +265,7 @@
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">@if($item->status != 'LIMIT') Total Tagihan @else Total SO @endif</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($item->status != 'LIMIT') && ($item->tipe != 'Batal')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
+                        <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($item->status != 'LIMIT') && ($item->tipe != 'Batal')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
                       </div>
                     </div>
                     @if($item->status == 'LIMIT')
@@ -328,7 +328,7 @@
                                 <label for="keterangan" class="col-2 form-control-sm text-bold mt-1">Status</label>
                                 <span class="col-form-label text-bold">:</span>
                                 <div class="col-5">
-                                  <input type="text" name="keterangan" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $iu->status }}" >
+                                  <input type="text" name="statusApp{{$item->id_dokumen}}" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $iu->status }}" >
                                 </div>
                               </div>
                             </div>
@@ -434,8 +434,13 @@
                                     ((($detItem->qty * $detItem->harga) * $diskon) / 100), 0, "", ".") }}
                                   </td>
                                 @endif
-                                @php $subtotalUpdate += ($detItem->qty * $detItem->harga) - 
-                                  ((($detItem->qty * $detItem->harga) * $diskon) / 100); 
+                                @php 
+                                  if($item->tipe != 'Dokumen') {
+                                    $subtotalUpdate += ($detItem->qty * $detItem->harga) - 
+                                    ((($detItem->qty * $detItem->harga) * $diskon) / 100); 
+                                  } else {
+                                    $subtotalUpdate += ($detItem->qty * $detItem->harga);
+                                  }
                                 @endphp
                               </tr>
                               @php $i++; @endphp
@@ -461,7 +466,7 @@
                           <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-2 mr-1">
-                            <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right
+                            <input type="text" name="grandtotal{{$item->id_dokumen}}" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right
                             @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{number_format($subtotalUpdate, 0, "", ".")}}" />
                           </div>
                         </div>
@@ -481,7 +486,7 @@
                         <button type="submit" formaction="{{route('app-process', $item->id_dokumen)}}" formmethod="POST" class="btn btn-success btn-block text-bold">Approve</button>
                       </div>
                       <div class="col-2">
-                        <button type="submit" formaction="{{route('app-batal', $item->id_dokumen)}}" formmethod="POST" class="btn btn-danger btn-block text-bold">Batal Ubah</button>
+                        <button type="submit" formaction="{{route('app-batal', ['id' => $item->id, 'kode' => $item->id_dokumen])}}" formmethod="POST" class="btn btn-danger btn-block text-bold">Batal Ubah</button>
                       </div>
                     </div>
                     <!-- End Button Submit dan Reset -->

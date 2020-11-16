@@ -35,11 +35,10 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
+                <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</td>
                 @if($item->tipe != 'Dokumen')
-                  <td class="align-middle" align="center">{{ $item->so->tgl_so }}</td>
                   <td class="align-middle" align="center">{{ $item->so->customer->nama }}</td>
                 @else
-                  <td class="align-middle" align="center">{{ $item->bm->tanggal }}</td>
                   <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
                 @endif
                 <td class="align-middle" align="center">{{ $item->status }}</td>

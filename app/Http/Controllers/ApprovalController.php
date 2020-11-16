@@ -24,7 +24,9 @@ use Carbon\Carbon;
 class ApprovalController extends Controller
 {
     public function index() {
-        $items = NeedApproval::with(['so', 'bm'])->get();
+        $items = NeedApproval::with(['so', 'bm'])
+                ->select('id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
+                ->groupBy('id_dokumen')->get();
         $data = [
             'items' => $items
         ];
@@ -33,7 +35,9 @@ class ApprovalController extends Controller
     }
 
     public function show($id) {
-        $approval = NeedApproval::All();
+        $approval = NeedApproval::with(['so', 'bm'])
+                ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
+                ->groupBy('id_dokumen')->get();
         $gudang = Gudang::All();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
@@ -67,29 +71,31 @@ class ApprovalController extends Controller
     }
 
     public function process(Request $request, $id) {
-        $status = $request->status;
+        $statusApp = $request->input("statusApp".$id);
+        $status = $request->input("status".$id);
+        $tipe = $request->input("tipe".$id);
 
-        if($request->tipe == 'Faktur')
+        if($tipe == 'Faktur')
             $item = SalesOrder::where('id', $id)->first();
         else
             $item = BarangMasuk::where('id', $id)->first();
 
-        if($item->{'status'} == 'PENDING_UPDATE') {
+        if($statusApp == 'PENDING_UPDATE') {
             $item->{'status'} = "UPDATE";
-            $item->{'total'} = str_replace(".", "", $request->grandtotal);
+            $item->{'total'} = str_replace(".", "", $request->input("grandtotal".$id));
         }
-        elseif($item->{'status'} == 'PENDING_BATAL') {
+        elseif($status == 'PENDING_BATAL') {
             $item->{'status'} = "BATAL";
-            if($request->tipe == 'Faktur')
+            if($tipe == 'Faktur')
                 $ar = AccReceivable::where('id_so', $id)->delete();
             else
                 $ap = AccPayable::where('id_bm', $id)->delete();
         }
-        elseif($item->{'status'} == 'LIMIT') {
+        elseif($status == 'LIMIT') {
             $item->{'status'} = "APPROVE_LIMIT";
         }
 
-        $item->save();
+        $item->save(); 
 
         $lastcode = Approval::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
@@ -103,47 +109,53 @@ class ApprovalController extends Controller
             'tanggal' => Carbon::now()->toDateString(),
             'status' => $item->{'status'},
             'keterangan' => $needApp[0]->keterangan,
-            'tipe' => $request->tipe,
+            'tipe' => $tipe,
             'baca' => 'F'
         ]);
 
-        if($request->tipe == 'Faktur')
+        if($tipe == 'Faktur')
             $detil = DetilSO::where('id_so', $id)->get();
         else
-            $detil = DetilBM::where('id_bm', $id)->get();
+            $detil = DetilBM::with(['bm'])->where('id_bm', $id)->get();
 
         foreach($detil as $d) {
+            if($tipe == 'Faktur')
+                $gudang = $d->id_gudang;
+            else
+                $gudang = $d->bm->id_gudang;
+
             DetilApproval::create([
                 'id_app' => $newcode,
                 'id_barang' => $d->id_barang,
+                'id_gudang' => $gudang,
                 'harga' => $d->harga,
                 'qty' => $d->qty,
                 'diskon' => $d->diskon
             ]);
         }
 
-        if(($request->tipe == 'Faktur') && ($status == 'PENDING_UPDATE'))
+        if(($tipe == 'Faktur') && ($statusApp == 'PENDING_UPDATE'))
             DetilSO::where('id_so', $id)->delete();
-        elseif(($request->tipe == 'Dokumen') && ($status == 'PENDING_UPDATE'))
+        elseif(($tipe == 'Dokumen') && ($statusApp == 'PENDING_UPDATE'))
             DetilBM::where('id_bm', $id)->delete();
 
-        if($status == 'PENDING_UPDATE')
+        if($statusApp == 'PENDING_UPDATE')
             $items = NeedAppDetil::where('id_app', $needApp[0]->id)->get();
         else
             $items = DetilApproval::where('id_app', $newcode)->get();
 
         foreach($items as $item) {
-            if(($request->tipe == 'Faktur') && ($status == 'PENDING_UPDATE')) {
+            if(($tipe == 'Faktur') && ($statusApp == 'PENDING_UPDATE')) {
                 DetilSO::create([
                     'id_so' => $id,
                     'id_barang' => $item->id_barang,
-                    'id_gudang' => 'GDG01',
+                    'id_gudang' => $item->id_gudang,
                     'harga' => $item->harga,
                     'qty' => $item->qty,
                     'diskon' => $item->diskon
                 ]);
             }
-            elseif(($request->tipe == 'Dokumen') && ($status == 'PENDING_UPDATE')) {
+            elseif(($tipe == 'Dokumen') && ($statusApp == 'PENDING_UPDATE')) {
                 DetilBM::create([
                     'id_bm' => $id,
                     'id_barang' => $item->id_barang,
@@ -154,64 +166,129 @@ class ApprovalController extends Controller
                     'hpp' => NULL
                 ]);
             }
-
-            $stokAwal = DetilApproval::where('id_app', $newcode)
-                        ->where('id_barang', $item->id_barang)->first();
-            if($request->tipe == 'Dokumen') {
-                $updateStok = StokBarang::where('id_barang', $item->id_barang)
-                            ->where('id_gudang', $request->kodeGudang)->first();
-            }
-            elseif($request->tipe == 'Faktur') {
-                $updateStok = StokBarang::where('id_barang', $item->id_barang)
-                            ->where('id_gudang', 'GDG01')->first();
-            }
-
-            if($status == 'PENDING_BATAL') {
-                if($request->tipe == 'Dokumen')
-                    $updateStok->{'stok'} -= $item->qty;
-                elseif($request->tipe == 'Faktur')
-                    $updateStok->{'stok'} += $item->qty;
-            }
-            elseif($status == 'PENDING_UPDATE') {
-                if($stokAwal->{'qty'} > $item->qty) {
-                    if($request->tipe == 'Dokumen')
-                        $updateStok->{'stok'} -= ($stokAwal->{'qty'} - $item->qty);
-                    elseif($request->tipe == 'Faktur')
-                        $updateStok->{'stok'} += ($stokAwal->{'qty'} - $item->qty);
-                }
-                else {
-                    if($request->tipe == 'Dokumen')
-                        $updateStok->{'stok'} += ($item->qty - $stokAwal->{'qty'});
-                    elseif($request->tipe == 'Faktur')
-                        $updateStok->{'stok'} -= ($item->qty - $stokAwal->{'qty'});
-                }
-            }
-
-            $updateStok->save();
         } 
 
         foreach($needApp as $need) {
             NeedAppDetil::where('id_app', $need->id)->delete();
         }
-        NeedApproval::where('id_dokumen', $id)->delete();
+        NeedApproval::where('id_dokumen', $id)->delete(); 
 
         return redirect()->route('approval');
     } 
 
-    public function batal($id) {
-        $item = SalesOrder::where('id', $id)->first();
-        $item->{'status'} = "CETAK";
-        $item->save();
+    public function batal(Request $request, $id, $kode) {
+        $status = $request->input("status".$kode);
+        $statusApp = $request->input("statusApp".$kode);
+        $tipe = $request->input("tipe".$kode);
 
-        $ar = AccReceivable::where('id_so', $id)->delete();
+        if($statusApp == 'PENDING_UPDATE') {
+            $items = NeedAppDetil::with(['need_app'])
+                    ->whereHas('need_app', function($q) use($kode) {
+                        $q->where('id_dokumen', $kode);
+                    })->get();
+            if($tipe == 'Faktur')
+                $detil = DetilSO::where('id_so', $kode)->get();
+            else
+                $detil = DetilBM::where('id_bm', $kode)->get();
 
-        session()->put('url.intended', URL::previous());
-        return Redirect::intended('/');  
+            if($items->count() != $detil->count()) {
+                foreach($detil as $d) {
+                    $cek = 0;
+                    foreach($items as $item) {
+                        if($d->id_barang == $item->id_barang) {
+                            $cek = 1; 
+                            break;
+                        }
+                    }
+
+                    if($tipe == 'Faktur')
+                        $gudang = $d->id_gudang;
+                    else
+                        $gudang = $request->$id;
+
+                    if($cek == 0) {
+                        $updateStok = StokBarang::where('id_barang', $d->id_barang)
+                            ->where('id_gudang', $gudang)->first();
+                        if($tipe == 'Faktur')
+                            $updateStok->{'stok'} -= $d->qty;
+                        else
+                            $updateStok->{'stok'} += $d->qty;
+                            
+                        $updateStok->save();
+                    }
+                }
+            }
+
+            foreach($items as $item) {
+                if($tipe == 'Faktur') {
+                    $stokAwal = DetilSO::where('id_so', $kode)
+                                ->where('id_barang', $item->id_barang)
+                                ->where('id_gudang', $item->id_gudang)->first();
+                } else {
+                    $stokAwal = DetilBM::where('id_bm', $kode)
+                                ->where('id_barang', $item->id_barang)->first();
+                }
+            
+                $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                            ->where('id_gudang', $item->id_gudang)->first();
+                
+                if($stokAwal != NULL) {
+                    if($stokAwal->{'qty'} > $item->qty) {
+                        if($tipe == 'Faktur') 
+                            $updateStok->{'stok'} -= ($stokAwal->{'qty'} - $item->qty);
+                        else 
+                            $updateStok->{'stok'} += ($stokAwal->{'qty'} - $item->qty);
+                    }
+                    elseif($stokAwal->{'qty'} < $item->qty) {
+                        if($tipe == 'Faktur')
+                            $updateStok->{'stok'} += ($item->qty - $stokAwal->{'qty'});
+                        else
+                            $updateStok->{'stok'} -= ($item->qty - $stokAwal->{'qty'});
+                    }
+                } else {
+                    $updateStok->{'stok'} += $item->qty;
+                } 
+
+                $updateStok->save(); 
+                $item = NeedAppDetil::where('id_app', $item->need_app->id)
+                        ->where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $item->id_gudang)->delete();
+            } 
+        }
+        elseif($status == 'PENDING_BATAL') {
+            if($tipe == 'Faktur') 
+                $items = DetilSO::where('id_so', $kode)->get();
+            else
+                $items = DetilBM::with(['bm'])->where('id_bm', $kode)->get();
+
+            foreach($items as $item) {
+                if($tipe == 'Faktur') 
+                    $gudang = $item->id_gudang;
+                else
+                    $gudang = $item->bm->id_gudang;
+
+                $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $gudang)->first();
+
+                if($tipe == 'Faktur') 
+                    $updateStok->{'stok'} -= $item->qty;
+                else
+                    $updateStok->{'stok'} += $item->qty;
+                    
+                $updateStok->save();
+            }
+        } 
+
+        $item = NeedApproval::where('id_dokumen', $kode)->delete();
+
+        // $ar = AccReceivable::where('id_so', $id)->delete();
+
+        return redirect()->route('approval'); 
     }
 
     public function histori() {
         $items = Approval::with(['so', 'bm'])->get();
-        // var_dump($items);
+        
         $data = [
             'items' => $items
         ];

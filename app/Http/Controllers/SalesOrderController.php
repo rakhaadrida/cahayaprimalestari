@@ -285,10 +285,6 @@ class SalesOrderController extends Controller
     }
 
     public function status(Request $request, $id) {
-        $item = SalesOrder::where('id', $id)->first();
-        $item->{'status'} = 'PENDING_BATAL';
-        $item->save();
-
         $lastcode = NeedApproval::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
@@ -303,15 +299,24 @@ class SalesOrderController extends Controller
             'tipe' => 'Faktur'
         ]);
 
+        $items = DetilSO::where('id_so', $id)->get();
+        foreach($items as $item) {
+            $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                    ->where('id_gudang', $item->id_gudang)->first();
+
+            $updateStok->{'stok'} += $item->qty;
+            $updateStok->save();
+        }
+
         session()->put('url.intended', URL::previous());
         return Redirect::intended('/');  
     }
 
     public function edit(Request $request, $id) {
-        $items = DetilSO::with(['so', 'barang'])->where('id_so', $id)->get();
+        $items = SalesOrder::with(['customer', 'need_approval'])->where('id', $id)->get();
         $itemsRow = DetilSO::where('id_so', $id)->distinct('id_barang')->count();
         $tanggal = Carbon::now()->toDateString();
-        $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
+        $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         $barang = Barang::All();
         $harga = HargaBarang::All();
         $gudang = Gudang::All();
@@ -344,9 +349,10 @@ class SalesOrderController extends Controller
         $lastnumber++;
         $newcode = 'APP'.sprintf('%04s', $lastnumber);
 
-        $items = SalesOrder::where('id', $request->kode)->first();
-        $items->{'status'} = 'PENDING_UPDATE';
-        $items->save();
+        $items = SalesOrder::with(['customer', 'need_approval'])
+                ->where('id', $request->kode)->get();
+        if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE'))
+            $kode = $items[0]->need_approval->last()->id;
 
         NeedApproval::create([
             'id' => $newcode,
@@ -373,9 +379,17 @@ class SalesOrderController extends Controller
                     'diskonRp' => $diskonRp
                 ]);
 
-                $stokAwal = DetilSO::where('id_so', $request->kode)
+                if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                    $stokAwal = NeedAppDetil::where('id_app', $kode)
+                                    ->where('id_barang', $request->kodeBarang[$i])
+                                    ->where('id_gudang', $arrGudang[$j])->first();
+                } else {
+                    $stokAwal = DetilSO::where('id_so', $request->kode)
                             ->where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $arrGudang[$j])->first();
+                }
+                // var_dump($stokAwal);
+                
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $arrGudang[$j])->first();
 
@@ -389,6 +403,28 @@ class SalesOrderController extends Controller
                 }
                 
                 $updateStok->save();
+            }
+        }
+
+        $items = DetilSO::where('id_so', $request->kode)->get();
+        $detil = NeedAppDetil::where('id_app', $newcode)->get();
+
+        if($items->count() != $detil->count()) {
+            foreach($items as $item) {
+                $cek = 0;
+                foreach($detil as $d) {
+                    if($item->id_barang == $d->id_barang) {
+                        $cek = 1; 
+                        break;
+                    }
+                }
+
+                if($cek == 0) {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $item->id_gudang)->first();
+                    $updateStok->{'stok'} += $item->qty;
+                    $updateStok->save();
+                }
             }
         }
 

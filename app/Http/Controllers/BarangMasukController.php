@@ -214,9 +214,9 @@ class BarangMasukController extends Controller
     }
 
     public function status(Request $request, $id) {
-        $item = BarangMasuk::where('id', $id)->first();
-        $item->{'status'} = 'PENDING_BATAL';
-        $item->save();
+        // $item = BarangMasuk::where('id', $id)->first();
+        // $item->{'status'} = 'PENDING_BATAL';
+        // $item->save();
 
         $lastcode = NeedApproval::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
@@ -231,6 +231,15 @@ class BarangMasukController extends Controller
             'id_dokumen' => $id,
             'tipe' => 'Dokumen'
         ]);
+
+        $items = DetilBM::with(['bm'])->where('id_bm', $id)->get();
+        foreach($items as $item) {
+            $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                    ->where('id_gudang', $item->bm->id_gudang)->first();
+
+            $updateStok->{'stok'} -= $item->qty;
+            $updateStok->save();
+        }
 
         session()->put('url.intended', URL::previous());
         return Redirect::intended('/');  
@@ -267,10 +276,6 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcode = 'APP'.sprintf('%04s', $lastnumber);
 
-        $items = BarangMasuk::where('id', $request->kode)->first();
-        $items->{'status'} = 'PENDING_UPDATE';
-        $items->save();
-
         NeedApproval::create([
             'id' => $newcode,
             'tanggal' => Carbon::now(),
@@ -284,10 +289,45 @@ class BarangMasukController extends Controller
             NeedAppDetil::create([
                 'id_app' => $newcode,
                 'id_barang' => $request->kodeBarang[$i],
+                'id_gudang' => $request->kodeGudang,
                 'harga' => str_replace(".", "", $request->harga[$i]),
                 'qty' => $request->qty[$i],
                 'diskon' => NULL,
             ]);
+
+            $stokAwal = DetilBM::where('id_bm', $request->kode)
+                        ->where('id_barang', $request->kodeBarang[$i])->first();
+            $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                        ->where('id_gudang', $request->kodeGudang)->first();
+
+            if($stokAwal->{'qty'} > $request->qty[$i])
+                $updateStok->{'stok'} -= ($stokAwal->{'qty'} - $request->qty[$i]);
+            else 
+                $updateStok->{'stok'} += ($request->qty[$i] - $stokAwal->{'qty'});
+            
+            $updateStok->save();
+        }
+
+        $items = DetilBM::where('id_bm', $request->kode)->get();
+        $detil = NeedAppDetil::where('id_app', $newcode)->get();
+
+        if($items->count() != $detil->count()) {
+            foreach($items as $item) {
+                $cek = 0;
+                foreach($detil as $d) {
+                    if($item->id_barang == $d->id_barang) {
+                        $cek = 1; 
+                        break;
+                    }
+                }
+
+                if($cek == 0) {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $request->kodeGudang)->first();
+                    $updateStok->{'stok'} -= $item->qty;
+                    $updateStok->save();
+                }
+            }
         }
 
         $data = [

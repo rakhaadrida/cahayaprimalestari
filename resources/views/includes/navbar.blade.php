@@ -128,7 +128,7 @@
               @php $row++; @endphp
             @endif
           @endforeach
-          <a class="dropdown-item text-center medium text-dark-600" href="{{ route('notif') }}">Tampilkan Semua  Notifikasi</a>
+          <a class="dropdown-item text-center medium text-dark-600" href="@if(Auth::user()->roles == 'SUPER') {{ route('approval') }} @else {{ route('notif') }} @endif">Tampilkan Semua  Notifikasi</a>
         @else
           <a class="dropdown-item text-center medium text-dark-600" href="#">Tidak Ada Notifikasi</a>
         @endif

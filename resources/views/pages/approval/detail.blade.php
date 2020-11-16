@@ -35,12 +35,12 @@
                       if($item->tipe != 'Dokumen') {
                         $items = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so', $item->id_dokumen)->get();
 
-                        $itemsUpdate = \App\Models\NeedApproval::with(['so'])->where('id_dokumen', $item->id_dokumen)->get();
+                        $itemsUpdate = \App\Models\DetilApproval::with(['approval'])->where('id_app', $item->id)->get();
                       } 
                       else {
                         $items = \App\Models\DetilBM::with(['bm', 'barang'])->where('id_bm', $item->id_dokumen)->get();
 
-                        $itemsUpdate = \App\Models\NeedApproval::with(['bm'])->where('id_dokumen', $item->id_dokumen)->get();
+                        $itemsUpdate = \App\Models\DetilApproval::with(['approval'])->where('id_app', $item->id)->get();
                       }
                     @endphp
                     <div class="container so-update-container text-dark">
@@ -132,7 +132,7 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($items[0]->so->tgl_so)->add($items[0]->so->tempo, 'days')->format('d-m-Y') }}" >
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')->format('d-m-Y') }}" >
                               </div>
                             </div>
                           </div>

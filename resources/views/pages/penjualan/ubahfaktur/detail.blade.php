@@ -137,7 +137,9 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($items->count() != 0)
+                              @if($item->need_approval->count() != 0)
+                                value="{{ $item->need_approval[0]->status }}"
+                              @else
                                 value="{{ $item->status }}"
                               @endif
                               >
@@ -195,18 +197,18 @@
                         @if($items->count() != 0)
                           @php 
                             $i = 1; $subtotal = 0;
-                            if($item->status != 'PENDING_UPDATE') {
+                            if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
+                              $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
+                                        ->select('id_barang', 'diskon')
+                                        ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                        ->where('id_app', $item->need_approval->last()->id)
+                                        ->groupBy('id_barang', 'diskon')
+                                        ->get();
+                            } else {
                               $itemsDetail = \App\Models\DetilSO::with(['barang'])
                                         ->select('id_barang', 'diskon')
                                         ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
                                         ->where('id_so', $item->id)
-                                        ->groupBy('id_barang', 'diskon')
-                                        ->get();
-                            } else {
-                              $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
-                                        ->select('id_barang', 'diskon')
-                                        ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                                        ->where('id_app', $item->need_approval[0]->id)
                                         ->groupBy('id_barang', 'diskon')
                                         ->get();
                             }
@@ -219,13 +221,13 @@
                               <td align="right">{{ $itemDet->qty }}</td>
                               @foreach($gudang as $g)
                                 @php
-                                  if($item->status != 'PENDING_UPDATE') {
-                                    $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
+                                  if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
+                                    $itemGud = \App\Models\NeedAppDetil::where('id_app',
+                                            $item->need_approval->last()->id)
                                             ->where('id_barang', $itemDet->id_barang)
                                             ->where('id_gudang', $g->id)->get();
                                   } else {
-                                    $itemGud = \App\Models\NeedAppDetil::where('id_app',
-                                            $item->need_approval[0]->id)
+                                    $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
                                             ->where('id_barang', $itemDet->id_barang)
                                             ->where('id_gudang', $g->id)->get();
                                   }

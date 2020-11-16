@@ -62,6 +62,7 @@
                       <div class="col-5">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
                         value="{{ $items[0]->bm->gudang->nama }}">
+                        <input type="hidden" name="kodeGudang" value="{{ $items[0]->bm->id_gudang }}">
                       </div>
                     </div>
                   </div>

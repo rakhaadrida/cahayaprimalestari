@@ -33,7 +33,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold text-dark">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id_so }}">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id }}">
                       </div>
                     </div>  
                   </div>
@@ -43,7 +43,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-4">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tglSO" 
-                        value="{{ \Carbon\Carbon::parse($items[0]->so->tgl_so)->format('d-M-y') }}">
+                        value="{{ \Carbon\Carbon::parse($items[0]->tgl_so)->format('d-M-y') }}">
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
@@ -51,9 +51,9 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-6">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaCust"
-                        value="{{ $items[0]->so->customer->nama }}">
+                        value="{{ $items[0]->customer->nama }}">
                         <input type="hidden" name="kodeCust" 
-                        value="{{ $items[0]->so->id_customer }}">
+                        value="{{ $items[0]->id_customer }}">
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
@@ -61,7 +61,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-5">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSales"
-                        value="{{ $items[0]->so->customer->sales->nama }}">
+                        value="{{ $items[0]->customer->sales->nama }}">
                       </div>
                     </div>
                   </div>
@@ -78,7 +78,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
                     <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
-                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
+                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
@@ -112,12 +112,21 @@
                 <tbody id="tablePO">
                   @php 
                     $i = 1; $subtotal = 0;
-                    $itemsDetail = \App\Models\DetilSO::with(['barang'])
-                                    ->select('id_barang', 'diskon')
-                                    ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                                    ->where('id_so', $items[0]->id_so)
-                                    ->groupBy('id_barang', 'diskon')
-                                    ->get();
+                    if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                      $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
+                                  ->select('id_barang', 'diskon')
+                                  ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                  ->where('id_app', $items[0]->need_approval->last()->id)
+                                  ->groupBy('id_barang', 'diskon')
+                                  ->get();
+                    } else {
+                      $itemsDetail = \App\Models\DetilSO::with(['barang'])
+                                  ->select('id_barang', 'diskon')
+                                  ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                  ->where('id_so', $items[0]->id)
+                                  ->groupBy('id_barang', 'diskon')
+                                  ->get();
+                    }
                   @endphp
                   @foreach($itemsDetail as $item)
                     <tr class="text-dark" id="{{ $i }}">
@@ -134,9 +143,16 @@
                         @php $arrKode = ''; $arrQty = ''; @endphp
                         @foreach($gudang as $g)
                           @php
-                            $itemGud = \App\Models\DetilSO::where('id_so', $items[0]->id_so)
+                            if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                              $itemGud = \App\Models\NeedAppDetil::where('id_app',
+                                      $items[0]->need_approval->last()->id)
                                       ->where('id_barang', $item->id_barang)
                                       ->where('id_gudang', $g->id)->get();
+                            } else {
+                              $itemGud = \App\Models\DetilSO::where('id_so', $items[0]->id)
+                                      ->where('id_barang', $item->id_barang)
+                                      ->where('id_gudang', $g->id)->get();
+                            }
                             if($itemGud->count() != 0) {
                               if($arrKode == '') {
                                 $arrKode = $itemGud[0]->id_gudang;
@@ -150,16 +166,23 @@
                         @endforeach
                         <input type="hidden" name="KodeGudangArr[]" class="text-bold text-dark kodeGudangArr" value="{{ $arrKode }}">
                         <input type="hidden" name="qtyAwalArr[]" class="text-bold text-dark qtyAwalArr" value="{{ $arrQty }}">
-                        <input type="text" name="kodeGudang[]" class="kodeGudang" 
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang" 
                         value="{{ $arrKode }}">
-                        <input type="text" name="qtyGudang[]" class="qtyGudang"
+                        <input type="hidden" name="qtyGudang[]" class="qtyGudang"
                         value="{{ $arrQty }}">
                       </td>
                       @foreach($gudang as $g)
                         @php
-                          $itemGud = \App\Models\DetilSO::where('id_so', $items[0]->id_so)
+                          if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                            $itemGud = \App\Models\NeedAppDetil::where('id_app',
+                                    $items[0]->need_approval->last()->id)
                                     ->where('id_barang', $item->id_barang)
                                     ->where('id_gudang', $g->id)->get();
+                          } else {
+                            $itemGud = \App\Models\DetilSO::where('id_so', $items[0]->id)
+                                    ->where('id_barang', $item->id_barang)
+                                    ->where('id_gudang', $g->id)->get();
+                          }
                         @endphp
                         @if($itemGud->count() != 0)
                           <td>
