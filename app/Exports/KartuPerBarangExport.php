@@ -38,7 +38,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $gudang = Gudang::All();
         $tglAwal = $this->awal;
         $tglAkhir = $this->akhir;
-        $tahun = Carbon::now();
+        $tahun = Carbon::now('+07:00');
         $sejak = '2020';
 
         $rowBM = DetilBM::with(['bm', 'barang'])

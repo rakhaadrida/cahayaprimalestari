@@ -20,7 +20,7 @@ class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
 {
     public function view(): View
     {
-        $waktu = Carbon::now();
+        $waktu = Carbon::now('+07:00');
         $waktu = $waktu->format('d F Y, H:i:s');
         
         return view('pages.laporan.rekapstok.excel', [

@@ -54,7 +54,7 @@
                   </h5>
                 </div>
                 <div class="row justify-content-center">
-                  <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now()->format('d F Y, H:i:s') }}</h6>
+                  <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->format('d F Y, H:i:s') }}</h6>
                 </div>
               </div>
 

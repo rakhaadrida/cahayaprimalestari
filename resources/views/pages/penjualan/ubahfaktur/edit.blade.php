@@ -78,7 +78,14 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
                     <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
-                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
+                    @php
+                      if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                        $itemsApp = \App\Models\NeedApproval::where('id_dokumen', $items[0]->id)
+                                    ->latest()->get();
+                        $itemsRow = $itemsApp[0]->need_appdetil->count();
+                      }
+                    @endphp
+                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
@@ -748,7 +755,12 @@ for(let i = 0; i < hapusBaris.length; i++) {
         diskon[j].value = diskon[j+1].value;
         jumlah[j].value = jumlah[j+1].value;
         harga[j].value = harga[j+1].value;
+        qtyGudang[j].value = qtyGudang[j+1].value;
+        kodeGudang[j].value = kodeGudang[j+1].value;
+        qtyAwalArr[j].value = qtyAwalArr[j+1].value;
+        kodeGudangArr[j].value = kodeGudangArr[j+1].value;
         qty[j].value = qty[j+1].value;
+        qtyAwal[j].value = qtyAwal[j+1].value;
         brgNama[j].value = brgNama[j+1].value;
         kodeBarang[j].value = kodeBarang[j+1].value;
         if(kodeBarang[j+1].value == "")

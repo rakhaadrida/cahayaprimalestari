@@ -133,7 +133,9 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($items->count() != 0)
+                              @if($item->need_approval->count() != 0)
+                                value="{{ $item->need_approval[0]->status }}"
+                              @else
                                 value="{{ $item->status }}"
                               @endif
                               >
@@ -157,8 +159,14 @@
                         @if($items->count() != 0)
                           @php 
                             $i = 1; $subtotal = 0;
-                            $itemsDetail = \App\Models\DetilBM::with(['barang'])
+                            if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
+                              $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
+                                        ->where('id_app', $item->need_approval->last()->id)
+                                        ->get();
+                            } else {
+                              $itemsDetail = \App\Models\DetilBM::with(['barang'])
                                       ->where('id_bm', $item->id)->get();
+                            }
                           @endphp
                           @foreach($itemsDetail as $itemDet)
                             <tr class="text-dark">
@@ -212,18 +220,20 @@
                     <hr>
                     <!-- End Tabel Data Detil PO -->
 
-                    <!-- Button Submit dan Reset -->
-                    <div class="form-row justify-content-center">
-                      <div class="col-2">
-                        <a href="" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold"> Ganti Status
-                        </a>
-                        {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
+                    @if($item->status != 'BATAL')
+                      <!-- Button Submit dan Reset -->
+                      <div class="form-row justify-content-center">
+                        <div class="col-2">
+                          <a href="" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold"> Ganti Status
+                          </a>
+                          {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
+                        </div>
+                        <div class="col-2">
+                          <button type="submit" formaction="{{ route('bm-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi BM</button>
+                        </div>
                       </div>
-                      <div class="col-2">
-                        <button type="submit" formaction="{{ route('bm-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi BM</button>
-                      </div>
-                    </div>
-                    <!-- End Button Submit dan Reset -->
+                      <!-- End Button Submit dan Reset -->
+                    @endif
                   </div>
 
                   <!-- Modal Ganti Status -->

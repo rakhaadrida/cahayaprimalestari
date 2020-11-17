@@ -100,7 +100,9 @@ class KartuStokController extends Controller
 
     public function cetak_excel(Request $request) {
         $awal = $request->tglAwal;
+        $awal = $this->formatTanggal($awal, 'Y-m-d');
         $akhir = $request->tglAkhir;
+        $akhir = $this->formatTanggal($akhir, 'Y-m-d');
         $kodeAwal = $request->kodeAwal;
         $kodeAkhir = $request->kodeAkhir;
 

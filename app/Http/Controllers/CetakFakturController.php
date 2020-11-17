@@ -74,6 +74,6 @@ class CetakFakturController extends Controller
             'akhir' => 0
         ];
 
-        return view('pages.penjualan.cetakfaktur.index', $data);
+        return redirect()->route('cetak-faktur', $data);
     }
 }

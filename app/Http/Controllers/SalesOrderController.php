@@ -388,7 +388,6 @@ class SalesOrderController extends Controller
                             ->where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $arrGudang[$j])->first();
                 }
-                // var_dump($stokAwal);
                 
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $arrGudang[$j])->first();
@@ -405,9 +404,18 @@ class SalesOrderController extends Controller
                 $updateStok->save();
             }
         }
+        
+        if(($items[0]->need_approval->count() > 1) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+            $itemsApp = NeedApproval::where('id_dokumen', $request->kode)
+                        ->latest()->skip(1)->take(1)->get();
+            $items = $itemsApp->last()->need_appdetil;
 
-        $items = DetilSO::where('id_so', $request->kode)->get();
-        $detil = NeedAppDetil::where('id_app', $newcode)->get();
+            $detilApp = NeedApproval::where('id_dokumen', $request->kode)->latest()->get();
+            $detil = $detilApp->first()->need_appdetil;
+        } else { 
+            $items = DetilSO::where('id_so', $request->kode)->get();
+            $detil = NeedAppDetil::where('id_app', $newcode)->get();
+        }
 
         if($items->count() != $detil->count()) {
             foreach($items as $item) {

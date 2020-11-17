@@ -33,7 +33,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold text-dark">Nomor BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id_bm }}">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id }}">
                       </div>
                     </div>  
                   </div>
@@ -43,7 +43,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-4">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tglBM" 
-                        value="{{ \Carbon\Carbon::parse($items[0]->bm->tanggal)->format('d-M-y') }}">
+                        value="{{ \Carbon\Carbon::parse($items[0]->tanggal)->format('d-M-y') }}">
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
@@ -51,9 +51,9 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-6">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSupp"
-                        value="{{ $items[0]->bm->supplier->nama }}">
+                        value="{{ $items[0]->supplier->nama }}">
                         <input type="hidden" name="kodeSupp" 
-                        value="{{ $items[0]->bm->id_supplier }}">
+                        value="{{ $items[0]->id_supplier }}">
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
@@ -61,8 +61,8 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-5">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
-                        value="{{ $items[0]->bm->gudang->nama }}">
-                        <input type="hidden" name="kodeGudang" value="{{ $items[0]->bm->id_gudang }}">
+                        value="{{ $items[0]->gudang->nama }}">
+                        <input type="hidden" name="kodeGudang" value="{{ $items[0]->id_gudang }}">
                       </div>
                     </div>
                   </div>
@@ -79,7 +79,16 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
                     <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
-                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $items->count() }}">
+                    @php
+                      if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                        $itemsApp = \App\Models\NeedApproval::where('id_dokumen', $items[0]->id)
+                                    ->latest()->get();
+                        $itemsRow = $itemsApp[0]->need_appdetil->count();
+                      } else {
+                        $itemsRow = $items[0]->detilbm->count();
+                      }
+                    @endphp
+                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
@@ -104,8 +113,16 @@
                 <tbody id="tablePO">
                   @php 
                     $i = 1; $subtotal = 0;
+                    if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                      $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
+                                  ->where('id_app', $items[0]->need_approval->last()->id)
+                                  ->get();
+                    } else {
+                      $itemsDetail = \App\Models\DetilBM::with(['barang'])
+                                    ->where('id_bm', $items[0]->id)->get();
+                    }
                   @endphp
-                  @foreach($items as $item)
+                  @foreach($itemsDetail as $item)
                     <tr class="text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>

@@ -180,12 +180,13 @@ class ApprovalController extends Controller
         $status = $request->input("status".$kode);
         $statusApp = $request->input("statusApp".$kode);
         $tipe = $request->input("tipe".$kode);
+        // return response()->json($items);
 
         if($statusApp == 'PENDING_UPDATE') {
             $items = NeedAppDetil::with(['need_app'])
                     ->whereHas('need_app', function($q) use($kode) {
                         $q->where('id_dokumen', $kode);
-                    })->get();
+                    })->latest()->take(1)->get();
             if($tipe == 'Faktur')
                 $detil = DetilSO::where('id_so', $kode)->get();
             else
@@ -250,11 +251,12 @@ class ApprovalController extends Controller
                 } 
 
                 $updateStok->save(); 
-                $item = NeedAppDetil::where('id_app', $item->need_app->id)
-                        ->where('id_barang', $item->id_barang)
+                $item = NeedAppDetil::whereHas('need_app', function($q) use($kode) {
+                            $q->where('id_dokumen', $kode);
+                        })->where('id_barang', $item->id_barang)
                         ->where('id_gudang', $item->id_gudang)->delete();
             } 
-        }
+        } 
         elseif($status == 'PENDING_BATAL') {
             if($tipe == 'Faktur') 
                 $items = DetilSO::where('id_so', $kode)->get();
@@ -281,8 +283,6 @@ class ApprovalController extends Controller
 
         $item = NeedApproval::where('id_dokumen', $kode)->delete();
 
-        // $ar = AccReceivable::where('id_so', $id)->delete();
-
         return redirect()->route('approval'); 
     }
 
@@ -296,11 +296,34 @@ class ApprovalController extends Controller
     }
 
     public function detail($id) {
-        $approval = Approval::All();
+        $approval = Approval::with(['so', 'bm'])->get();
+        $gudang = Gudang::All();
+        $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(total- retur) as totKredit'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        foreach($totalPerCust as $q) {
+            foreach($cicilPerCust as $h) {
+                if($q->id_customer == $h->id_customer) {
+                    $q['total'] = $q->totKredit - $h->totCicil;
+                }
+            }
+        }
 
         $data = [
             'approval' => $approval,
-            'kode' => $id
+            'gudang' => $gudang,
+            'kode' => $id,
+            'total' => $totalPerCust
         ];
         
         return view('pages.approval.detail', $data);

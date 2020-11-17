@@ -35,7 +35,7 @@ class RekapStokController extends Controller
 
     public function show(Request $request) {
         $awal = $request->tanggal;
-        $akhir = Carbon::now()->format('Y-m-d');
+        $akhir = Carbon::now('+07:00')->format('Y-m-d');
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
@@ -78,7 +78,7 @@ class RekapStokController extends Controller
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
-        $waktu = Carbon::now();
+        $waktu = Carbon::now('+07:00');
         $waktu = $waktu->format('d F Y, H:i:s');
 
         $data = [
@@ -96,7 +96,7 @@ class RekapStokController extends Controller
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
-        $waktu = Carbon::now();
+        $waktu = Carbon::now('+07:00');
         $waktu = $waktu->format('d F Y, H:i:s');
 
         $data = [

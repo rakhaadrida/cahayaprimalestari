@@ -265,7 +265,7 @@
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">@if($item->status != 'LIMIT') Total Tagihan @else Total SO @endif</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($item->status != 'LIMIT') && ($item->tipe != 'Batal')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
+                        <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($item->status != 'LIMIT') && ($item->status != 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
                       </div>
                     </div>
                     @if($item->status == 'LIMIT')

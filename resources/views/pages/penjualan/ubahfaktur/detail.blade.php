@@ -301,7 +301,7 @@
                     <hr>
                     <!-- End Tabel Data Detil PO -->
 
-                    @if(Auth::user()->roles != 'FINANCE')
+                    @if((Auth::user()->roles != 'FINANCE') && (($item->status != 'BATAL') && ($item->status != 'LIMIT')))
                       <!-- Button Submit dan Reset -->
                       <div class="form-row justify-content-center">
                         <div class="col-2">

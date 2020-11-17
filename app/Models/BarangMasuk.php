@@ -25,6 +25,10 @@ class BarangMasuk extends Model
         return $this->hasMany('App\Models\DetilBM', 'id_bm', 'id');
     }
 
+    public function need_approval() {
+        return $this->hasMany('App\Models\NeedApproval', 'id_dokumen', 'id');
+    }
+
     public function ap() {
         return $this->hasOne('App\Models\AccPayable', 'id_bm', 'id');
     }
