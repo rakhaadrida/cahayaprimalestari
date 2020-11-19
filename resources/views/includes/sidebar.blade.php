@@ -57,7 +57,7 @@
       <span>Master</span>
     </a>
     <div id="collapseMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
+      <div class="py-2 collapse-inner rounded">
         @if(Auth::user()->roles == 'SUPER')
           <a class="collapse-item" href="{{ route('user.index') }}">User</a>
         @endif
@@ -65,6 +65,7 @@
         <a class="collapse-item" href="{{ route('sales.index') }}">Sales</a>
         <a class="collapse-item" href="{{ route('customer.index') }}">Customer</a>
         <a class="collapse-item" href="{{ route('jenis.index') }}">Jenis Barang</a>
+        <a class="collapse-item" href="{{ route('subjenis.index') }}">Sub Jenis Barang</a>
         <a class="collapse-item" href="{{ route('barang.index') }}">Barang</a>
         <a class="collapse-item" href="{{ route('harga.index') }}">Harga</a>
         <a class="collapse-item" href="{{ route('gudang.index') }}">Gudang</a>
@@ -79,7 +80,7 @@
       <span>Pembelian</span>
     </a>
     <div id="collapsePembelian" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
+      <div class="py-2 collapse-inner rounded">
         {{-- <a class="collapse-item" href="{{ route('po') }}">Purchase Order</a> --}}
         <a class="collapse-item" href="{{ route('barangMasuk')}}">Penerimaan Barang</a>
         <a class="collapse-item" href="{{ route('bm-change')}}">Ubah Barang Masuk</a>
@@ -95,7 +96,7 @@
       <span>Penjualan</span>
     </a>
     <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
+      <div class="py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('so', 'false') }}">Sales Order</a>
         <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
         <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
@@ -112,7 +113,7 @@
       <span>Laporan</span>
     </a>
     <div id="collapseLaporan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
+      <div class="py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('kartu') }}">Kartu Stok</a>
         <a class="collapse-item" href="{{ route('rekap') }}">Rekap Stok</a>
       </div>
@@ -136,7 +137,7 @@
       <span>Account Receivable</span>
     </a>
     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
+      <div class="py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('ar') }}">Data AR</a>
         <a class="collapse-item" href="{{ route('so-change') }}">Cek Faktur</a>
       </div>

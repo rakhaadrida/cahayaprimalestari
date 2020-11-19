@@ -65,7 +65,7 @@
       }
 
       .text-dark {
-          color: #5a5c69 !important;
+          color: #292a2b !important;
       }
       
       .text-right {
@@ -90,7 +90,7 @@
 
       .table {
           width: 100%;
-          margin-bottom: 1rem;
+          margin-bottom: 0rem;
           color: #858796;
       }
 
@@ -129,81 +129,212 @@
           border-bottom-width: 2px;
       }
 
-      .table-striped tbody tr:nth-of-type(odd) {
-          background-color: rgba(0, 0, 0, 0.05);
-      }
-
-      .table-hover tbody tr:hover {
-          color: #858796;
-          background-color: rgba(59, 57, 57, 0.075);
-      }
-
       .kode-cetak-stok {
           margin-top: -8px;
       }
 
+      .title-rekap {
+        margin-top: 5px;
+      }
+
       .waktu-cetak {
-          font-size: 12px;
-          margin-top: -8px;
+        font-size: 12px !important;
+        margin-top: -10px !important;
       }
 
       .table-cetak {
-          font-size: 11px;
-          height: 200px;
-          margin-left: 31px;
-          margin-right: 31px;
-          margin-top: -13px;
+        left: 0%;
+        width: 48.5%;
+        font-size: 9px;
+        margin-left: 10px;
+        margin-right: 3px;
+        margin-top: -25px;
+        position: absolute;
+        border: 0.5px solid #292a2b !important;
+        border-width: thin !important;
+      }
+
+      .table-cetak th,
+      .table-cetak td {
+        padding-top: 0.05rem !important;
+        padding-bottom: 0.15rem !important;
+        border: 0.5px solid #292a2b !important;
+        border-width: thin !important;
+      }
+
+      .table-cetak-right {
+        left: 48.5%;
+        width: 48.5%;
+        font-size: 9px;
+        margin-left: 15px;
+        margin-right: 0px;
+        margin-top: -25px;
+        position: absolute;
+        border: 0.5px solid #292a2b !important;
+        border-width: thin !important;
+      }
+
+      .table-cetak-right th,
+      .table-cetak-right td {
+        padding-top: 0.05rem !important;
+        padding-bottom: 0.15rem !important;
+        border: 0.5px solid #292a2b !important;
+        border-width: thin !important;
       }
     </style>
   </head>
   <body>
-    <center>
-      <h5 class="text-bold text-dark">Rekap Stok Barang</h5>
-      <h6 class="text-dark kode-cetak-stok">
-        Dari Kode {{$stok[0]->id_barang}} s/d {{ $stok[$stok->count() - 1]->id_barang}}
-      </h6>
-      <p class="waktu-cetak">Waktu Cetak : {{$waktu}}</p>
-    </center>
-    <br>
-
-    <!-- Tabel Data Detil BM-->
-    <table class="table table-sm table-bordered table-striped table-responsive-sm table-cetak" style="border: none">
-      <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
-        <tr>
-          <td style="width: 30px" class="align-middle">No</td>
-          {{-- <td style="width: 90px" class="align-middle">Kode Barang</td> --}}
-          <td style="width: 130px" class="align-middle">Nama Barang</td>
-          <td style="width: 40px" class="align-middle total-stok">Total Stok</td>
-          @foreach($gudang as $g)
-            <td style="width: 40px" class="align-middle">{{ $g->nama }}</td>
-          @endforeach
-        </tr>
-      </thead>
-      <tbody>
-        @php $i = 1; @endphp
-        @foreach($jenis as $j)
-          <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-            <td colspan="6" align="center">{{ $j->nama }}</td>
-          </tr>
-          @foreach($stok as $s)
-            @if($s->barang->id_kategori == $j->id)
-              <tr class="text-dark ">
-                <td align="center">{{ $i }}</td>
-                {{-- <td>{{ $s->id_barang }}</td> --}}
-                <td>{{ $s->barang->nama }}</td>
-                <td align="right" style="background-color: yellow; width: 40px">{{ $s->total }}</td>
-                @php
-                  $stokGd = \App\Models\StokBarang::where('id_barang', $s->id_barang)->get();
-                @endphp
-                @foreach($stokGd as $sg)
-                  <td align="right" style="width: 40px">{{ $sg->stok }}</td>
+    @foreach($jenis as $item)
+      <div class="cetak-rekap-all" @if($jenis[$jenis->count()-1]->id != $item->id) style="page-break-after: always" @endif>
+        <center>
+          <div class="title-rekap-all">
+            <h5 class="text-bold text-dark title-rekap">REKAP STOK {{$item->nama}}</h5>
+            <h6 class="text-dark waktu-cetak">Waktu Cetak : {{$waktu}}</h6>
+          </div>
+        </center>
+        <br>
+        
+        <div class="row rekap-split">
+          <!-- Tabel Data Detil BM-->
+          <table class="table table-sm table-bordered table-cetak">
+            <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
+              <tr>
+                <td style="width: 8px" class="align-middle">No</td>
+                <td class="align-middle" class="align-middle">Nama Barang</td>
+                <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
+                @foreach($gudang as $g)
+                  <td style="width: 20px" class="align-middle">{{ $g->nama }}</td>
                 @endforeach
               </tr>
-              @php $i++ @endphp
-            @endif
-          @endforeach
-        @endforeach
-      </tbody>
-    </table>
+            </thead>
+            <tbody id="tablePO">
+              @php 
+                $i = 1; $baris = 1; $kode = []; $status = 0;
+                $sub = \App\Models\Subjenis::where('id_kategori', $item->id)->get();
+              @endphp
+              {{-- @for($j = 1; $j <= 66; $j++)
+                @if($baris <= 66)
+                  <tr class="text-dark ">
+                    <td align="center">{{ $j }}</td>
+                    <td>Phillips</td>
+                    <td>300</td>
+                    <td>100</td>
+                    <td>100</td>
+                    <td>100</td>
+                  </tr>
+                  @php $baris++ @endphp
+                @endif
+              @endfor --}}
+              @foreach($sub as $s)
+                @if($status != 1)
+                  @php
+                    $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                  @endphp 
+                  @if(($barang->count() + 1) <= 65)
+                    <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+                      <td colspan="6" align="center">{{ $s->nama }}</td>
+                    </tr>
+                    @php $baris++; array_push($kode, $s->id); @endphp
+                    @foreach($barang as $b)
+                      @php
+                        $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                                  DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                                  ->groupBy('id_barang')->get();
+                      @endphp
+                      <tr class="text-dark ">
+                        <td align="center">{{ $i }}</td>
+                        <td>{{ $b->nama }}</td>
+                        @if($stok->count() != 0)
+                          <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
+                        @else
+                          <td>0</td>
+                        @endif
+                        @foreach($gudang as $sg)
+                          @php
+                            $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                    ->where('id_gudang', $sg->id)->get();
+                          @endphp
+                          @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
+                            <td align="right">{{$stokGd[0]->stok}}</td>
+                          @else
+                            <td></td>
+                          @endif
+                        @endforeach
+                      </tr>
+                      @php $i++; $baris++; @endphp
+                    @endforeach
+                  @else
+                    @php $status = 1; @endphp
+                  @endif
+                @endif
+              @endforeach
+            </tbody>
+          </table>
+          <table class="table table-sm table-bordered table-cetak-right">
+            <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
+              <tr>
+                <td style="width: 8px" class="align-middle">No</td>
+                <td class="align-middle" class="align-middle">Nama Barang</td>
+                <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
+                @foreach($gudang as $g)
+                  <td style="width: 20px" class="align-middle">{{ $g->nama }}</td>
+                @endforeach
+              </tr>
+            </thead>
+            <tbody id="tablePO">
+              @php $j = $i; $status = 0;
+                  $sub = \App\Models\Subjenis::where('id_kategori', $item->id)
+                        ->whereNotIn('id', $kode)->get();
+              @endphp
+              @if($baris <= 130)
+                @foreach($sub as $s)
+                @if($status != 1)
+                  @php
+                    $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                  @endphp 
+                  @if(($barang->count() + 1) <= 130)
+                    <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+                      <td colspan="6" align="center">{{ $s->nama }}</td>
+                    </tr>
+                    @php $baris++; @endphp
+                    @foreach($barang as $b)
+                      @php
+                        $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                                  DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                                  ->groupBy('id_barang')->get();
+                      @endphp
+                      <tr class="text-dark ">
+                        <td align="center">{{ $j }}</td>
+                        <td>{{ $b->nama }}</td>
+                        @if($stok->count() != 0)
+                          <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
+                        @else
+                          <td>0</td>
+                        @endif
+                        @foreach($gudang as $sg)
+                          @php
+                            $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                    ->where('id_gudang', $sg->id)->get();
+                          @endphp
+                          @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
+                            <td align="right">{{$stokGd[0]->stok}}</td>
+                          @else
+                            <td></td>
+                          @endif
+                        @endforeach
+                      </tr>
+                      @php $j++; $baris++; @endphp
+                    @endforeach
+                  @else
+                    @php $status = 1; @endphp
+                  @endif
+                @endif
+              @endforeach
+              @endif
+            </tbody>
+          </table>
+        </div>
+      </div>
+    @endforeach
   </body>
 </html>

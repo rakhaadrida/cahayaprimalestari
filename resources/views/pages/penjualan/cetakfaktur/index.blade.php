@@ -84,11 +84,7 @@
               </table>
               <!-- End Tabel Detil Transaksi Harian -->
 
-              @if($status == "true")
-                <!-- Tampilan Cetak -->
-                <iframe src="{{url('cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" frameborder="0" onafterprint="afterPrint()" hidden></iframe>
-                <button type="submit" id="updateCetak" formmethod="GET" formaction="{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}" hidden></button>
-              @endif
+              
             </form>
           </div>
         </div>
@@ -96,6 +92,11 @@
     </div>
   </div>
 </div>
+@if($status == "true")
+  <!-- Tampilan Cetak -->
+  <iframe src="{{url('cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+  <button type="submit" id="updateCetak" formmethod="GET" formaction="{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}" hidden></button>
+@endif
 <!-- /.container-fluid -->
 @endsection
 
@@ -106,25 +107,63 @@
 {{-- <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script> --}}
 <script type="text/javascript">
 @if($status == "true")
-  const printFrame = document.getElementById("frameCetak");
+  const printFrame = document.getElementById("frameCetak").contentWindow;
   const kodeAwal = document.querySelectorAll(".kodeAwal");
   const kodeAkhir = document.querySelectorAll(".kodeAkhir");
 
-  var afterPrint = function(e) {
-    // alert('ok');
-    window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+  /** Cara 1 **/
+  // const printFrame = document.createElement('iframe');
+  // printFrame.src = "{{url('cetak/'.$awal.'/'.$akhir)}}";
+  // printFrame.id = 'print_pdf';
+  // printFrame.name = 'print_pdf';
+
+  // printFrame.onload = () => {
+  //   printFrame.contentWindow.onafterprint = function(e) {
+  //     alert('ok');
+  //   }
+    // printFrame.focus();
+    // printFrame.print();
+  // };
+
+  // document.body.appendChild(printFrame);
+  // window.frames['print_pdf'].focus();
+  // window.frames['print_pdf'].print();
+  /** End Cara 1 **/
+
+
+  /** Cara 2 **/
+  // printFrame.window.onafterprint = function(e) {
+  //   alert('ok');
+  //   window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+  // }
+
+  // window.print();
+  // window.frames["frameCetak"].window.print();
+  // printFrame.window.print();
+  /** End Cara 2 **/
+
+
+  /** Cara 3 **/
+  /* var afterPrint = function(e) {
+    // clearTimeout(timer);
+    // window.focus();
+    kodeAwal[0].focus();
+    window.onfocus = function() {
+      window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+    }
     // kodeAwal[0].removeAttribute("required");
     // kodeAkhir[0].removeAttribute("required");
     // document.getElementById("updateCetak").click();
-  }
-
-  printFrame.contentWindow.print();
-  if(printFrame.onafterprint) { 
-    $(printFrame).on("afterprint", afterPrint);
-  }
-  else { 
-      setTimeout(afterPrint, 15000);
-  }
+  } */
+  
+  // if(printFrame.contentWindow.onafterprint) { 
+  //   $(printFrame).contentWindow.on("afterprint", afterPrint);  
+  // }
+  // else { 
+  //   // var timer = setTimeout(afterPrint, 5000);
+  //   setTimeout(afterPrint, 0);
+  // }
+  /** End Cara 3 **/
 @endif
 
 /** Autocomplete Input Text **/

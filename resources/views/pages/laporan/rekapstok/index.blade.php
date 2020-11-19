@@ -44,16 +44,11 @@
               </div>
               <hr>
 
-              <div class="container" style="margin-bottom: 5px">
+              <div class="container" style="margin-bottom: 0px">
                 <div class="row justify-content-center">
                   <h4 class="text-bold text-dark">Rekap Stok Barang</h4>
                 </div>
-                <div class="row justify-content-center">
-                  <h5 class="text-dark kode-cetak-stok">
-                    Dari Kode {{$stok[0]->id_barang}} s/d {{ $stok[$stok->count() - 1]->id_barang}}
-                  </h5>
-                </div>
-                <div class="row justify-content-center">
+                <div class="row justify-content-center" style="margin-top: -5px">
                   <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->format('d F Y, H:i:s') }}</h6>
                 </div>
               </div>

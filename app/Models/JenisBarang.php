@@ -18,4 +18,8 @@ class JenisBarang extends Model
     public function barang() {
         return $this->hasMany('App\Models\Barang', 'id_kategori', 'id');
     }
+
+    public function subjenis() {
+        return $this->hasMany('App\Models\Subjenis', 'id_kategori', 'id');
+    }
 }

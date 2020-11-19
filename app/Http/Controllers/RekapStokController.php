@@ -7,6 +7,7 @@ use App\Models\StokBarang;
 use App\Models\Gudang;
 use App\Models\Barang;
 use App\Models\JenisBarang;
+use App\Models\Subjenis;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
@@ -98,6 +99,22 @@ class RekapStokController extends Controller
                         ->groupBy('id_barang')->get();
         $waktu = Carbon::now('+07:00');
         $waktu = $waktu->format('d F Y, H:i:s');
+
+        /* $kode = []; $baris = 1;
+        $sub = Subjenis::All();
+        foreach($sub as $s) {
+            if($baris <= 3) {
+                $barang = Barang::where('id_sub', $s->id)->get();
+                if(($barang->count() + 1) <= 3) {
+                    $baris++;
+                    array_push($kode, $s->id);
+                    foreach($barang as $b) {
+                        $baris++;
+                    }
+                }
+            }
+        }
+        $subRest = Subjenis::whereNotIn('id', $kode)->get(); */
 
         $data = [
             'jenis' => $jenis,

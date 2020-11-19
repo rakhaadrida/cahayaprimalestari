@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\JenisBarang;
+use App\Models\Subjenis;
 use App\Models\Barang;
 
 class JenisBarangController extends Controller
@@ -65,6 +66,12 @@ class JenisBarangController extends Controller
         $item->delete();
 
         $item = Barang::where('id_kategori', $id)->get();
+        foreach($item as $i) {
+            $i->id_kategori = '';
+            $i->save();
+        }
+
+        $item = Subjenis::where('id_kategori', $id)->get();
         foreach($item as $i) {
             $i->id_kategori = '';
             $i->save();

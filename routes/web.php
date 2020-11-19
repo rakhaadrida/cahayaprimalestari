@@ -25,6 +25,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::resource('sales', 'SalesController');
         Route::resource('customer', 'CustomerController');
         Route::resource('jenis', 'JenisBarangController');
+        Route::resource('subjenis', 'SubjenisController');
         Route::resource('barang', 'BarangController');
         Route::resource('gudang', 'GudangController');
         Route::resource('harga', 'HargaController');
@@ -66,6 +67,16 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('jenisbarang/hapus/{id}', 'JenisBarangController@hapus')->name('jb-hapus');
         Route::get('jenisbarang/hapus-all/all', 'JenisBarangController@hapusAll')
             ->name('jb-hapusAll');
+
+        // Soft Deletes Sub Jenis Barang
+        Route::get('subjenis/trash/all', 'SubjenisController@trash')->name('sub-trash');
+        Route::get('subjenis/restore/{id}', 'SubjenisController@restore')
+            ->name('sub-restore');
+        Route::get('subjenis/restore-all/all', 'SubjenisController@restoreAll')
+            ->name('sub-restoreAll');
+        Route::get('subjenis/hapus/{id}', 'SubjenisController@hapus')->name('sub-hapus');
+        Route::get('subjenis/hapus-all/all', 'SubjenisController@hapusAll')
+            ->name('sub-hapusAll');
 
         // Soft Deletes Barang
         Route::get('barang/trash/all', 'BarangController@trash')->name('barang-trash');

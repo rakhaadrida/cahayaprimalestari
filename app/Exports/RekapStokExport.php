@@ -49,21 +49,20 @@ class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
         $stok = StokBarang::with(['barang'])
                         ->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
-        $range = 5 + $stok->count() + $jenis->count();
+        $range = 4 + $stok->count() + $jenis->count();
         $rangeStr = strval($range);
         $rangeTot = 'D'.$rangeStr;
         $rangeTab = 'F'.$rangeStr;
 
-        $header = 'A5:F5';
+        $header = 'A4:F4';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
         
         $sheet->mergeCells('A1:F1');
         $sheet->mergeCells('A2:F2');
-        $sheet->mergeCells('A3:F3');
-        $title = 'A1:F3';
+        $title = 'A1:F2';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A3:F3')->getFont()->setBold(false)->setSize(12);
+        $sheet->getStyle('A2:F2')->getFont()->setBold(false)->setSize(12);
 
         $styleArray = [
             'borders' => [
@@ -74,25 +73,25 @@ class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
-        $rangeTable = 'A5:'.$rangeTab;
+        $rangeTable = 'A4:'.$rangeTab;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 
-        $rangeIsiTable = 'A6:'.$rangeTab;
+        $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
-        for($i = 6; $i <= $range; $i+=2) {
+        for($i = 5; $i <= $range; $i+=2) {
             $rangeRow = 'A'.$i.':F'.$i;
             $sheet->getStyle($rangeRow)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('d6d7e2');
         }
 
-        $rangeBarang = 'D5:'.$rangeTot;
+        $rangeBarang = 'D4:'.$rangeTot;
         $sheet->getStyle($rangeBarang)->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFF00');
         
-        $namaJenis = 'A6:F6';
+        $namaJenis = 'A5:F5';
         $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
         $sheet->getStyle($namaJenis)->getFill()
@@ -100,7 +99,7 @@ class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
                 ->getStartColor()->setARGB('ffddb5');
 
         $no = 0;
-        $rangeJenis = 7;
+        $rangeJenis = 6;
         foreach($jenis as $j) {
             $barang = Barang::where('id_kategori', $j->id)->get();
             if($no != 0) 

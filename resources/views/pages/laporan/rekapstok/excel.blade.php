@@ -2,16 +2,13 @@
   <body>
     <center>
       <h2 class="text-bold text-dark">Rekap Stok Barang</h2>
-      <h3 class="text-dark">
-        Dari Kode {{$stok[0]->id_barang}} s/d {{ $stok[$stok->count() - 1]->id_barang}}
-      </h3>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
     </center>
     <br>
 
     <!-- Tabel Data Detil BM-->
-    <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover table-cetak">
+    <table class="table table-sm table-bordered table-cetak">
       <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
           <td>No</td>

@@ -1818,7 +1818,7 @@ pre code {
 
 .table th,
 .table td {
-    padding: 0.75rem;
+    padding: 0.7s5rem;
     vertical-align: top;
     border-top: 1px solid #afbbc5;
 }
@@ -1834,7 +1834,7 @@ pre code {
 
 .table-sm th,
 .table-sm td {
-    padding: 0.3rem;
+    padding: 0.2rem;
 }
 
 .table-bordered {
@@ -11558,7 +11558,7 @@ a:focus {
 .sidebar .nav-item .collapse .collapse-inner {
     border-radius: 0.35rem;
     box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-    background-color: #7bdaff;
+    background-color: #34f885;
 }
 
 .sidebar .nav-item .collapsing {
@@ -11571,6 +11571,7 @@ a:focus {
     padding: .5rem 0;
     min-width: 10rem;
     font-size: 0.85rem;
+    font-weight: 600;
     margin: 0 0 1rem 0;
 }
 

@@ -52,14 +52,16 @@
                   </td>
                 </tr>
                 <tr>
-                  <td width="150px" class="text-bold">Satuan</td>
+                  <td width="150px" class="text-bold">Sub Kategori</td>
                   <td>:</td>
-                  <td>{{ $item->satuan }}</td>
+                  <td>
+                    @if($item->id_sub != '') {{ $item->subjenis->nama }} @endif
+                  </td>
                 </tr>
                 <tr>
-                  <td width="150px" class="text-bold">Ukuran</td>
+                  <td width="150px" class="text-bold">Ukuran / Satuan</td>
                   <td>:</td>
-                  <td>{{ $item->ukuran }}  {{ $item->satuan }}</td>
+                  <td>{{ $item->ukuran }} {{ $item->satuan }}</td>
                 </tr>
                 <tr>
                   <td colspan="3" class="text-bold text-center bg-success text-white">Data Harga</td>
