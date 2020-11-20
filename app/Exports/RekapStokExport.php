@@ -7,117 +7,33 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Contracts\View\View;
 use App\Models\StokBarang;
-use App\Models\Gudang;
 use App\Models\JenisBarang;
 use App\Models\Barang;
+use App\Models\DetilBM;
+use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class RekapStokExport implements FromView, ShouldAutoSize, WithStyles
+class RekapStokExport implements WithMultipleSheets
 {
-    public function view(): View
-    {
-        $waktu = Carbon::now('+07:00');
-        $waktu = $waktu->format('d F Y, H:i:s');
-        
-        return view('pages.laporan.rekapstok.excel', [
-            'jenis' => JenisBarang::All(),
-            'gudang' => Gudang::all(),
-            'stok' => StokBarang::with(['barang'])
-                        ->select('id_barang', DB::raw('sum(stok) as total'))
-                        ->groupBy('id_barang')->get(),
-            'waktu' => $waktu
-        ]);
-    }
+    use Exportable;
 
-    public function styles(Worksheet $sheet)
+    public function sheets(): array
     {
-        $sheet->setTitle('Rekap-Stok');
+        $sheets = [];
 
-        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-        $drawing->setName('Logo');
-        $drawing->setPath(public_path('/backend/img/Logo_CPL.jpg'));
-        $drawing->setHeight(50);
-        $drawing->setCoordinates('A1');
-        $drawing->setWorksheet($sheet);
-        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
-        
         $jenis = JenisBarang::All();
-        $stok = StokBarang::with(['barang'])
-                        ->select('id_barang', DB::raw('sum(stok) as total'))
-                        ->groupBy('id_barang')->get();
-        $range = 4 + $stok->count() + $jenis->count();
-        $rangeStr = strval($range);
-        $rangeTot = 'D'.$rangeStr;
-        $rangeTab = 'F'.$rangeStr;
 
-        $header = 'A4:F4';
-        $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
-        $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
-        
-        $sheet->mergeCells('A1:F1');
-        $sheet->mergeCells('A2:F2');
-        $title = 'A1:F2';
-        $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A2:F2')->getFont()->setBold(false)->setSize(12);
-
-        $styleArray = [
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    'color' => ['argb' => 'FFFF0000'],
-                ],
-            ],
-        ];
-
-        $rangeTable = 'A4:'.$rangeTab;
-        $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
-
-        $rangeIsiTable = 'A5:'.$rangeTab;
-        $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
-
-        for($i = 5; $i <= $range; $i+=2) {
-            $rangeRow = 'A'.$i.':F'.$i;
-            $sheet->getStyle($rangeRow)->getFill()
-                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('d6d7e2');
+        foreach($jenis as $item) {
+            $sheets[] = new RekapPerBarangExport($item->id, $item->nama);
         }
 
-        $rangeBarang = 'D4:'.$rangeTot;
-        $sheet->getStyle($rangeBarang)->getFill()
-            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('FFFF00');
-        
-        $namaJenis = 'A5:F5';
-        $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
-        $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle($namaJenis)->getFill()
-                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('ffddb5');
-
-        $no = 0;
-        $rangeJenis = 6;
-        foreach($jenis as $j) {
-            $barang = Barang::where('id_kategori', $j->id)->get();
-            if($no != 0) 
-                $rangeJenis++;
-
-            
-            $rangeJenis += $barang->count();
-            $rangeJen = strval($rangeJenis);
-            $rangeBar = 'A'.$rangeJenis.':F'.$rangeJenis;
-
-            if($no != $jenis->count() - 1) {
-                $sheet->getStyle($rangeBar)->getFont()->setBold(true)->setSize(12);
-                $sheet->getStyle($rangeBar)->getAlignment()->setHorizontal('center');
-                $sheet->getStyle($rangeBar)->getFill()
-                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                    ->getStartColor()->setARGB('ffddb5');
-            }
-            $no++;
-        }
-    } 
+        return $sheets;
+    }
 }

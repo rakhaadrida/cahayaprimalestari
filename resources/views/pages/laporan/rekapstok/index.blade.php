@@ -41,17 +41,7 @@
                     <button type="submit" formaction="{{ route('rs-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
-              </div>
-              <hr>
-
-              <div class="container" style="margin-bottom: 0px">
-                <div class="row justify-content-center">
-                  <h4 class="text-bold text-dark">Rekap Stok Barang</h4>
-                </div>
-                <div class="row justify-content-center" style="margin-top: -5px">
-                  <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->format('d F Y, H:i:s') }}</h6>
-                </div>
-              </div>
+              </div>  
 
               <div class="row justify-content-center" style="margin-bottom: 15px">
                 <div class="col-2">
@@ -64,40 +54,92 @@
                   <button type="submit" formaction="{{ route('rs-excel') }}" formmethod="POST"  class="btn btn-danger btn-block text-bold">Download Excel</>
                 </div>
               </div>
-
-              <!-- Tabel Data Detil BM-->
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
-                <thead class="text-center text-dark text-bold">
-                  <td style="width: 40px" class="align-middle">No</td>
-                  <td style="width: 100px">Kode Barang</td>
-                  <td class="align-middle">Nama Barang</td>
-                  <td style="width: 110px; background-color: yellow" class="align-middle">Total Stok</td>
-                  @foreach($gudang as $g)
-                    <td style="width: 110px" class="align-middle">{{ $g->nama }}</td>
-                  @endforeach
-                </thead>
-                <tbody id="tablePO">
-                  @php $i = 1; @endphp
-                  @foreach($stok as $s)
-                    <tr class="text-dark text-bold">
-                      <td align="center">{{ $i }}</td>
-                      <td>{{ $s->id_barang }}</td>
-                      <td>{{ $s->barang->nama }}</td>
-                      <td align="right" style="background-color: yellow">{{ $s->total }}</td>
-                      @php
-                        $stokGd = \App\Models\StokBarang::where('id_barang', $s->id_barang)->get();
-                      @endphp
-                      @foreach($stokGd as $sg)
-                        <td align="right">{{ $sg->stok }}</td>
-                      @endforeach
-                    </tr>
-                    @php $i++ @endphp
-                  @endforeach
-                </tbody>
-              </table>
               <hr>
-              <!-- End Tabel Data Detil PO -->
 
+              <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
+                <div class="carousel-inner">
+                  @foreach($jenis as $item)
+                  <div class="carousel-item @if($item->id == $jenis[0]->id) active @endif"/>
+                    <div class="container" style="margin-bottom: 0px">
+                      <div class="row justify-content-center">
+                        <h4 class="text-bold text-dark">Rekap Stok {{ $item->nama }}</h4>
+                      </div>
+                      <div class="row justify-content-center" style="margin-top: -5px">
+                        <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->format('d F Y, H:i:s') }}</h6>
+                      </div>
+                    </div>
+
+                    <!-- Tabel Data Detil BM-->
+                    <table class="table table-sm table-bordered table-responsive-sm table-hover">
+                      <thead class="text-center text-dark text-bold">
+                        <td style="width: 40px" class="align-middle">No</td>
+                        <td style="width: 80px">Kode Barang</td>
+                        <td class="align-middle">Nama Barang</td>
+                        <td style="width: 110px; background-color: yellow" class="align-middle">Total Stok</td>
+                        @foreach($gudang as $g)
+                          <td style="width: 110px" class="align-middle">{{ $g->nama }}</td>
+                        @endforeach
+                      </thead>
+                      <tbody id="tablePO">
+                        @php $i = 1; 
+                            $sub = \App\Models\Subjenis::where('id_kategori', $item->id)->get();
+                        @endphp
+                        @foreach($sub as $s)
+                          @php
+                            $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                          @endphp
+                          <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+                            <td colspan="7" align="center">
+                              <button type="button" class="btn btn-link btn-sm text-dark text-bold" data-toggle="collapse" data-target="#collapseSub{{$s->id}}" aria-expanded="false" aria-controls="collapseSub{{$s->id}}" style="padding: 0; font-size: 15px; width: 100%">{{ $s->nama }}</button>
+                            </td>
+                          </tr>
+                          @foreach($barang as $b)
+                            @php
+                              $stok = \App\Models\StokBarang::with(['barang'])
+                                  ->select('id_barang', DB::raw('sum(stok) as total'))
+                                  ->where('id_barang', $b->id)->groupBy('id_barang')->get();
+                            @endphp
+                            <tr class="text-dark text-bold collapse show" id="collapseSub{{$s->id}}">
+                              <td align="center">{{ $i }}</td>
+                              <td align="center">{{ $b->id }}</td>
+                              <td>{{ $b->nama }}</td>
+                              @if($stok->count() != 0)
+                                <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
+                              @else
+                                <td>0</td>
+                              @endif
+                              @foreach($gudang as $g)
+                                @php
+                                  $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                          ->where('id_gudang', $g->id)->get();
+                                @endphp
+                                @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
+                                  <td align="right">{{$stokGd[0]->stok}}</td>
+                                @else
+                                  <td></td>
+                                @endif
+                              @endforeach
+                            </tr>
+                            @php $i++; @endphp
+                          @endforeach
+                      @endforeach
+                      </tbody>
+                    </table>
+                    <!-- End Tabel Data Detil PO -->
+                  </div>
+                  @endforeach
+                </div>
+                @if(($jenis->count() > 0) && ($jenis->count() != 1))
+                  <a class="carousel-control-prev" href="#so-carousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="carousel-control-next " href="#so-carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                @endif
+              </div>
             </form>
           </div>
         </div>

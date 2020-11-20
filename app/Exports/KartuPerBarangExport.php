@@ -147,7 +147,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    'color' => ['argb' => 'FFFF0000'],
+                    'color' => ['argb' => '000000'],
                 ],
             ],
         ];

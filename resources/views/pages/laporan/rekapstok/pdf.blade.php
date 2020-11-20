@@ -249,10 +249,10 @@
                         @else
                           <td>0</td>
                         @endif
-                        @foreach($gudang as $sg)
+                        @foreach($gudang as $g)
                           @php
                             $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                    ->where('id_gudang', $sg->id)->get();
+                                    ->where('id_gudang', $g->id)->get();
                           @endphp
                           @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
                             <td align="right">{{$stokGd[0]->stok}}</td>

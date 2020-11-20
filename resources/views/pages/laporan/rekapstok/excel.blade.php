@@ -1,7 +1,7 @@
 <html>
   <body>
     <center>
-      <h2 class="text-bold text-dark">Rekap Stok Barang</h2>
+      <h2 class="text-bold text-dark">REKAP STOK {{$nama}}</h2>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
     </center>
@@ -12,8 +12,7 @@
       <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
           <td>No</td>
-          {{-- <td>Kode Barang</td> --}}
-          <td >Nama Barang</td>
+          <td>Nama Barang</td>
           <td>Total Stok</td>
           @foreach($gudang as $g)
             <td>{{ $g->nama }}</td>
@@ -22,26 +21,40 @@
       </thead>
       <tbody id="tablePO">
         @php $i = 1; @endphp
-        @foreach($jenis as $j)
+        @foreach($sub as $s)
+          @php
+            $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+          @endphp 
           <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-            <td colspan="6" align="center">{{ $j->nama }}</td>
+            <td colspan="6" align="center">{{ $s->nama }}</td>
           </tr>
-          @foreach($stok as $s)
-            @if($s->barang->id_kategori == $j->id)
-              <tr class="text-dark ">
-                <td align="center">{{ $i }}</td>
-                {{-- <td>{{ $s->id_barang }}</td> --}}
-                <td>{{ $s->barang->nama }}</td>
-                <td align="right" style="background-color: yellow">{{ $s->total }}</td>
+          @foreach($barang as $b)
+            @php
+              $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                        DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                        ->groupBy('id_barang')->get();
+            @endphp
+            <tr class="text-dark ">
+              <td align="center">{{ $i }}</td>
+              <td>{{ $b->nama }}</td>
+              @if($stok->count() != 0)
+                <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
+              @else
+                <td>0</td>
+              @endif
+              @foreach($gudang as $g)
                 @php
-                  $stokGd = \App\Models\StokBarang::where('id_barang', $s->id_barang)->get();
+                  $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                          ->where('id_gudang', $g->id)->get();
                 @endphp
-                @foreach($stokGd as $sg)
-                  <td align="right">{{ $sg->stok }}</td>
-                @endforeach
-              </tr>
-              @php $i++ @endphp
-            @endif
+                @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
+                  <td align="right">{{$stokGd[0]->stok}}</td>
+                @else
+                  <td></td>
+                @endif
+              @endforeach
+            </tr>
+            @php $i++ @endphp
           @endforeach
         @endforeach
       </tbody>
