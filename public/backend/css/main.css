@@ -19,6 +19,25 @@
     height: 25px !important;
 }
 
+.table-stats table th,
+.table-stats table td {
+    border: none;
+    border-bottom: 1px solid #e8e9ef;
+    color: #0c0c0c;
+    font-size: 14px;
+    font-weight: bold;
+    padding: .75em .75em;
+    text-transform: uppercase;
+}
+
+.table-stats table td {
+    color: #343a40;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: capitalize;
+    vertical-align: middle;
+}
+
 .table-modal {
     color: #5a5c69;
     margin-top: -15px;

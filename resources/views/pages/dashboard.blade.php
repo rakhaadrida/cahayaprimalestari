@@ -137,7 +137,40 @@
         <!-- Card Body -->
         <div class="card-body">
           <div class="chart-area">
-            <canvas id="myAreaChart"></canvas>
+            @if(Auth::user()->roles == 'SUPER')
+              <canvas id="myAreaChart"></canvas>
+            @elseif(Auth::user()->roles == 'ADMIN')
+              <div class="table-stats order-table">
+                <table class="table table-striped">
+                  <thead class="bg-info text-center">
+                    <tr>
+                      <th style="width: 20px">No</th>
+                      <th style="width: 40px">Kode</th>
+                      <th style="width: 110px">Tanggal</th>
+                      <th>Customer</th>
+                      <th style="width: 50px">Qty</th>
+                      <th style="width: 120px">Total</th>
+                      <th style="width: 60px">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @php $i = 1 @endphp
+                    @foreach($lastTrans as $l)
+                      <tr>
+                        <td align="center">{{ $i }}</td>
+                        <td align="center">{{ $l->id }}</td>
+                        <td align="center">{{ $l->tgl_so }}</td>
+                        <td>{{ $l->customer->nama }}</td>
+                        <td align="right">{{ $l->qty }}</td>
+                        <td align="right">{{ number_format($l->total, 0, "", ".") }}</td>
+                        <td align="center">{{ $l->status }}</td>
+                      </tr>
+                      @php $i++ @endphp
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            @endif
           </div>
         </div>
       </div>
@@ -156,20 +189,48 @@
         </div>
         <!-- Card Body -->
         <div class="card-body">
-          <div class="chart-pie pt-1 pb-1">
-            <canvas id="myPieChart"></canvas>
+          <div class="chart-pie pb-1">
+            @if(Auth::user()->roles == 'SUPER')
+              <canvas id="myPieChart"></canvas>
+            @elseif(Auth::user()->roles == 'ADMIN')
+              <canvas id="myPieChartAdmin"></canvas>
+            @endif
           </div>
-          <div class="mt-4 text-center small">
-            <span class="mr-2">
-              <i class="fas fa-circle text-primary"></i> Cash
-            </span>
-            <span class="mr-2">
-              <i class="fas fa-circle text-success"></i> Extrana
-            </span>
-            <span class="mr-2">
-              <i class="fas fa-circle text-info"></i> Prime
-            </span>
-          </div>
+          @if(Auth::user()->roles == 'SUPER')
+            <div class="mt-4 text-center small">
+              <span class="mr-2">
+                <i class="fas fa-circle text-primary"></i> Cash
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-success"></i> Extrana
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-info"></i> Prime
+              </span>
+            </div>
+          @elseif(Auth::user()->roles == 'ADMIN')
+            <div class="mt-2 text-center small">
+              <span class="mr-2">
+                <i class="fas fa-circle text-primary"></i> Input
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-success"></i> Cetak
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-info"></i> Update
+              </span>
+              <br>
+              <span class="mr-2">
+                <i class="fas fa-circle text-secondary"></i> Approve_Limit
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-warning"></i> Limit
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-danger"></i> Batal
+              </span>
+            </div>
+          @endif
         </div>
       </div>
     </div>
@@ -210,127 +271,163 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   return s.join(dec);
 }
 
-// Area Chart
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
-    datasets: [{
-      label: "Penjualan",
-      lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
-      borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
-      pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 10,
-      pointBorderWidth: 2,
-      data: ['{{$arrTotal[0]}}', '{{$arrTotal[1]}}', '{{$arrTotal[2]}}', '{{$arrTotal[3]}}', '{{$arrTotal[4]}}', '{{$arrTotal[5]}}', '{{$arrTotal[6]}}', '{{$arrTotal[7]}}', '{{$arrTotal[8]}}', '{{$arrTotal[9]}}', '{{$arrTotal[10]}}', '{{$arrTotal[11]}}'],
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: -5,
-        right: 25,
-        top: 0,
-        bottom: 0
-      }
-    },
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'date'
-        },
-        gridLines: {
-          display: false,
-          drawBorder: false
-        },
-        ticks: {
-          maxTicksLimit: 12
-        }
+@if(Auth::user()->roles == 'SUPER')
+  // Area Chart
+  var ctx = document.getElementById("myAreaChart");
+  var myLineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
+      datasets: [{
+        label: "Penjualan",
+        lineTension: 0.3,
+        backgroundColor: "rgba(78, 115, 223, 0.05)",
+        borderColor: "rgba(78, 115, 223, 1)",
+        pointRadius: 3,
+        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+        pointBorderColor: "rgba(78, 115, 223, 1)",
+        pointHoverRadius: 3,
+        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+        pointHitRadius: 10,
+        pointBorderWidth: 2,
+        data: ['{{$arrTotal[0]}}', '{{$arrTotal[1]}}', '{{$arrTotal[2]}}', '{{$arrTotal[3]}}', '{{$arrTotal[4]}}', '{{$arrTotal[5]}}', '{{$arrTotal[6]}}', '{{$arrTotal[7]}}', '{{$arrTotal[8]}}', '{{$arrTotal[9]}}', '{{$arrTotal[10]}}', '{{$arrTotal[11]}}'],
       }],
-      yAxes: [{
-        ticks: {
-          maxTicksLimit: 5,
-          padding: 10,
-          // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return 'Rp ' + number_format(value);
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: -5,
+          right: 25,
+          top: 0,
+          bottom: 0
+        }
+      },
+      scales: {
+        xAxes: [{
+          time: {
+            unit: 'date'
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          ticks: {
+            maxTicksLimit: 12
           }
-        },
-        gridLines: {
-          color: "rgb(0, 236, 244)",
-          zeroLineColor: "rgb(234, 236, 244)",
-          drawBorder: false,
-          borderDash: [2],
-          borderWidth: 2,
-          zeroLineBorderDash: [2]
-        }
-      }],
-    },
-    legend: {
-      display: false
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: '#6e707e',
-      titleFontSize: 14,
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: 'index',
-      caretPadding: 10,
-      callbacks: {
-        label: function(tooltipItem, chart) {
-          var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': Rp ' + number_format(tooltipItem.yLabel);
+        }],
+        yAxes: [{
+          ticks: {
+            maxTicksLimit: 5,
+            padding: 10,
+            // Include a dollar sign in the ticks
+            callback: function(value, index, values) {
+              return 'Rp ' + number_format(value);
+            }
+          },
+          gridLines: {
+            color: "rgb(0, 236, 244)",
+            zeroLineColor: "rgb(234, 236, 244)",
+            drawBorder: false,
+            borderDash: [2],
+            borderWidth: 2,
+            zeroLineBorderDash: [2]
+          }
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: '#6e707e',
+        titleFontSize: 14,
+        borderColor: '#dddfeb',
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: 'index',
+        caretPadding: 10,
+        callbacks: {
+          label: function(tooltipItem, chart) {
+            var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+            return datasetLabel + ': Rp ' + number_format(tooltipItem.yLabel);
+          }
         }
       }
     }
-  }
-});
+  });
+@endif
 
 // Pie Chart
-var ctx = document.getElementById("myPieChart");
-var myPieChart = new Chart(ctx, {
-  type: 'doughnut',
-  data: {
-    labels: ["Prime", "Extrana", "Cash"],
-    datasets: [{
-      data: ['{{$salesPerType[2]->total}}', '{{$salesPerType[1]->total}}', '{{$salesPerType[0]->total}}'],
-      backgroundColor: ['#36b9cc', '#1cc88a', '#4e73df'],
-      hoverBackgroundColor: ['#2c9faf', '#17a673', '#2e59d9'],
-      hoverBorderColor: "rgba(234, 236, 244, 1)",
-    }],
-  },
-  options: {
-    maintainAspectRatio: false,
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: '#dddfeb',
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10,
+@if(Auth::user()->roles == 'SUPER')
+  var ctx = document.getElementById("myPieChart");
+  var myPieChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ["Prime", "Extrana", "Cash"],
+      datasets: [{
+        data: ['{{$salesPerType[2]->total}}', '{{$salesPerType[1]->total}}', '{{$salesPerType[0]->total}}'],
+        backgroundColor: ['#36b9cc', '#1cc88a', '#4e73df'],
+        hoverBackgroundColor: ['#2c9faf', '#17a673', '#2e59d9'],
+        hoverBorderColor: "rgba(234, 236, 244, 1)",
+      }],
     },
-    legend: {
-      display: false,
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        borderColor: '#dddfeb',
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        caretPadding: 10,
+      },
+      legend: {
+        display: false,
+      },
+      cutoutPercentage: 80,
     },
-    cutoutPercentage: 80,
-  },
-});
+  });
+
+@elseif(Auth::user()->roles == 'ADMIN')
+  var ctxAd = document.getElementById("myPieChartAdmin");
+  var myPieChartAd = new Chart(ctxAd, {
+    type: 'doughnut',
+    data: {
+      labels: ["Batal", "Limit", "Approve_limit", "Update", "Cetak", "Input"],
+      datasets: [{
+        data: ['{{$fakturPerStatus[1]->total}}', '{{$fakturPerStatus[4]->total}}', '{{$fakturPerStatus[0]->total}}', '{{$fakturPerStatus[5]->total}}', '{{$fakturPerStatus[2]->total}}', '{{$fakturPerStatus[3]->total}}'],
+        backgroundColor: ['#e74a3b', '#f6c23e', '#858796', '#36b9cc', '#1cc88a', '#4e73df'],
+        hoverBackgroundColor: ['#e74a3b', '#f6c23e', '#858796', '#2c9faf', '#17a673', '#2e59d9'],
+        hoverBorderColor: "rgba(234, 236, 244, 1)",
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        borderColor: '#dddfeb',
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        caretPadding: 10,
+      },
+      legend: {
+        display: false,
+      },
+      cutoutPercentage: 80,
+    },
+  });
+@endif
 </script>
 @endpush
