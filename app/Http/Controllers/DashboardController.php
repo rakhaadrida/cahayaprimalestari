@@ -9,6 +9,7 @@ use App\Models\AccReceivable;
 use App\Models\DetilAR;
 use App\Models\NeedApproval;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -16,6 +17,7 @@ class DashboardController extends Controller
         $tanggal = Carbon::now();
         $tahun = $tanggal->year;
         $bulan = $tanggal->month;
+        $tanggal = $tanggal->toDateString();
         $salesAnnual = SalesOrder::selectRaw('sum(total) as sales')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
         $salesMonthly = SalesOrder::selectRaw('sum(total) as sales')
@@ -58,7 +60,39 @@ class DashboardController extends Controller
             $l->{'qty'} = $totalQty[0]->qty;
             $l->tgl_so = Carbon::parse($l->tgl_so)->format('d-M-y');
         }
-        // return response()->json($lastTrans);
+        
+        $receivCount = AccReceivable::where('keterangan', 'BELUM LUNAS')->count();
+        $receivTempo = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                        ->whereRaw('tgl_so + interval tempo day <= ?', [$tanggal])
+                        ->where('keterangan', 'BELUM LUNAS')->count();
+        
+        $q1 = 0; $q2 = 0; $q3 = 0; $q4 = 0;
+        $bigReceiv = [];
+        $receiv = SalesOrder::join('ar', 'ar.id_so', 'so.id') 
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('keterangan', 'BELUM LUNAS')->get();
+        foreach($receiv as $s) {
+            $detil = DetilAR::selectRaw('sum(cicil) as total')
+                    ->where('id_ar', $s->id)->get();
+            $s->{'cicil'} = $detil[0]->total;
+            $total = round(($detil[0]->total * 100) / ($s->total - $s->retur), 2);
+            if($total <= 25) {
+                $q1++;
+                $piutang = $s->total - $detil[0]->retur - $detil[0]->total;
+                array_push($bigReceiv, $piutang);
+            }
+            elseif(($total > 25) && ($total <= 50))
+                $q2++;
+            elseif(($total > 50) && ($total <= 75))
+                $q3++;
+            elseif(($total > 75) && ($total <= 100))
+                $q4++;
+        }
+
+        $barCicil = [$q1, $q2, $q3, $q4];
+        rsort($bigReceiv);
+        $bigReceiv = array_slice($bigReceiv, 0, 5);
+        // return response()->json($receivTempo);
 
         $data = [
             'salesAnnual' => $salesAnnual,
@@ -72,7 +106,12 @@ class DashboardController extends Controller
             'needPrint' => $needPrint,
             'stillPending' => $stillPending,
             'fakturPerStatus' => $fakturPerStatus,
-            'lastTrans' => $lastTrans
+            'lastTrans' => $lastTrans,
+            'receivCount' => $receivCount,
+            'receivTempo' => $receivTempo,
+            'receiv' => $receiv,
+            'barCicil' => $barCicil,
+            'bigReceiv' => $bigReceiv
         ];
 
         return view('pages.dashboard', $data);

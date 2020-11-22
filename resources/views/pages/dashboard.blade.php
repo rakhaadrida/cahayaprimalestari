@@ -22,7 +22,7 @@
               @if(Auth::user()->roles == 'SUPER')
                 <div class="text-md font-weight-bold text-primary text-uppercase mb-2">Penjualan (Tahun)</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($salesAnnual[0]->sales, 0, "", ".") }}</div>
-              @elseif(Auth::user()->roles == 'ADMIN')
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
                 <div class="text-md font-weight-bold text-primary text-uppercase mb-2">Transaksi (Total)</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $transMonthly }}
                 ({{ $transAnnual }})</div>
@@ -31,7 +31,7 @@
             <div class="col-auto">
               @if(Auth::user()->roles == 'SUPER')
                 <i class="fas fa-chart-line fa-2x text-gray-300"></i>
-              @elseif(Auth::user()->roles == 'ADMIN')
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
                 <i class="fas fa-check fa-2x text-gray-300"></i>
               @endif
             </div>
@@ -52,6 +52,9 @@
               @elseif(Auth::user()->roles == 'ADMIN') 
                 <div class="text-md font-weight-bold text-success text-uppercase mb-2">Faktur Belum Dicetak</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $needPrint }}</div>
+              @elseif(Auth::user()->roles == 'FINANCE') 
+                <div class="text-md font-weight-bold text-success text-uppercase mb-2">Jumlah Piutang</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $receivCount }}</div>
               @endif
             </div>
             <div class="col-auto">
@@ -59,6 +62,8 @@
                 <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
               @elseif(Auth::user()->roles == 'ADMIN')
                 <i class="fas fa-print fa-2x text-gray-300"></i>
+              @elseif(Auth::user()->roles == 'FINANCE')
+                <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
               @endif
             </div>
           </div>
@@ -79,6 +84,9 @@
               @elseif(Auth::user()->roles == 'ADMIN')
                 <div class="text-md font-weight-bold text-info text-uppercase mb-2">Faktur Pending</div>
                 <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $stillPending }}</div>
+              @elseif(Auth::user()->roles == 'FINANCE') 
+                <div class="text-md font-weight-bold text-info text-uppercase mb-2">Piutang Lewat Tempo</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $receivTempo }}</div>
               @endif
             </div>
             <div class="col-auto">
@@ -86,6 +94,8 @@
                 <i class="fas fa-check fa-2x text-gray-300"></i>
               @elseif(Auth::user()->roles == 'ADMIN')
                 <i class="fas fa-spinner fa-2x text-gray-300"></i>
+              @elseif(Auth::user()->roles == 'FINANCE')
+                <i class="fas fa-calendar-times fa-2x text-gray-300"></i>
               @endif
             </div>
           </div>
@@ -99,7 +109,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
-              @if(Auth::user()->roles == 'SUPER')
+              @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'FINANCE'))
                 <div class="text-md font-weight-bold text-warning text-uppercase mb-2">Total Piutang</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($receivable, 0, "", ".") }}</div>
               @elseif(Auth::user()->roles == 'ADMIN')
@@ -108,7 +118,7 @@
               @endif
             </div>
             <div class="col-auto">
-              @if(Auth::user()->roles == 'SUPER')
+              @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'FINANCE'))
                 <i class="fas fa-donate fa-2x text-gray-300"></i>
               @elseif(Auth::user()->roles == 'ADMIN')
                 <i class="fas fa-recycle fa-2x text-gray-300"></i>
@@ -132,6 +142,8 @@
             <h6 class="m-0 font-weight-bold text-dark">Grafik Penjualan</h6>
           @elseif(Auth::user()->roles == 'ADMIN')
             <h6 class="m-0 font-weight-bold text-dark">Transaksi Terakhir</h6>
+          @elseif(Auth::user()->roles == 'FINANCE')
+            <h6 class="m-0 font-weight-bold text-dark">Piutang Terbesar</h6>
           @endif
         </div>
         <!-- Card Body -->
@@ -170,6 +182,37 @@
                   </tbody>
                 </table>
               </div>
+            @elseif(Auth::user()->roles == 'FINANCE')
+              <div class="table-stats order-table">
+                <table class="table table-striped">
+                  <thead class="bg-info text-center">
+                    <tr>
+                      <th style="width: 20px">No</th>
+                      <th style="width: 40px">Kode</th>
+                      <th style="width: 110px">Tempo</th>
+                      <th>Customer</th>
+                      <th style="width: 50px">Total</th>
+                      <th style="width: 120px">Cicil</th>
+                      <th style="width: 60px">Piutang</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @php $i = 1 @endphp
+                    @foreach($lastTrans as $l)
+                      <tr>
+                        <td align="center">{{ $i }}</td>
+                        <td align="center">{{ $l->id }}</td>
+                        <td align="center">{{ $l->tgl_so }}</td>
+                        <td>{{ $l->customer->nama }}</td>
+                        <td align="right">{{ $l->qty }}</td>
+                        <td align="right">{{ number_format($l->total, 0, "", ".") }}</td>
+                        <td align="center">{{ $l->status }}</td>
+                      </tr>
+                      @php $i++ @endphp
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
             @endif
           </div>
         </div>
@@ -185,6 +228,8 @@
             <h6 class="m-0 font-weight-bold text-dark">Tipe Transaksi</h6>
           @elseif(Auth::user()->roles == 'ADMIN')
             <h6 class="m-0 font-weight-bold text-dark">Status Faktur</h6>
+          @elseif(Auth::user()->roles == 'FINANCE')
+            <h6 class="m-0 font-weight-bold text-dark">Progress Cicil Piutang</h6>
           @endif
         </div>
         <!-- Card Body -->
@@ -194,6 +239,8 @@
               <canvas id="myPieChart"></canvas>
             @elseif(Auth::user()->roles == 'ADMIN')
               <canvas id="myPieChartAdmin"></canvas>
+            @elseif(Auth::user()->roles == 'FINANCE')
+              <canvas id="myPieChartFinance"></canvas>
             @endif
           </div>
           @if(Auth::user()->roles == 'SUPER')
@@ -228,6 +275,21 @@
               </span>
               <span class="mr-2">
                 <i class="fas fa-circle text-danger"></i> Batal
+              </span>
+            </div>
+          @elseif(Auth::user()->roles == 'FINANCE')
+            <div class="mt-2 text-center small">
+              <span class="mr-2">
+                <i class="fas fa-circle text-danger"></i> 0-25%
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-warning"></i> 25-50%
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-primary"></i> 50-75%
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-success"></i> 75-100%
               </span>
             </div>
           @endif
@@ -393,7 +455,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
       legend: {
         display: false,
       },
-      cutoutPercentage: 80,
+      cutoutPercentage: 70,
     },
   });
 
@@ -406,7 +468,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
       datasets: [{
         data: ['{{$fakturPerStatus[1]->total}}', '{{$fakturPerStatus[4]->total}}', '{{$fakturPerStatus[0]->total}}', '{{$fakturPerStatus[5]->total}}', '{{$fakturPerStatus[2]->total}}', '{{$fakturPerStatus[3]->total}}'],
         backgroundColor: ['#e74a3b', '#f6c23e', '#858796', '#36b9cc', '#1cc88a', '#4e73df'],
-        hoverBackgroundColor: ['#e74a3b', '#f6c23e', '#858796', '#2c9faf', '#17a673', '#2e59d9'],
+        hoverBackgroundColor: ['#d13224', '#e0ab22', '#858796', '#2c9faf', '#17a673', '#2e59d9'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
       }],
     },
@@ -425,7 +487,38 @@ function number_format(number, decimals, dec_point, thousands_sep) {
       legend: {
         display: false,
       },
-      cutoutPercentage: 80,
+      cutoutPercentage: 70,
+    },
+  });
+@elseif(Auth::user()->roles == 'FINANCE')
+  var ctxFi = document.getElementById("myPieChartFinance");
+  var myPieChartFi = new Chart(ctxFi, {
+    type: 'doughnut',
+    data: {
+      labels: ["75-100% ", "50-75% ", "25-50% ", "0-25% "],
+      datasets: [{
+        data: ['{{$barCicil[3]}}', '{{$barCicil[2]}}', '{{$barCicil[1]}}', '{{$barCicil[0]}}'],
+        backgroundColor: ['#1cc88a', '#4e73df', '#f6c23e', '#e74a3b'],
+        hoverBackgroundColor: ['#17a673', '#2e59d9', '#e0ab22', '#d13224'],
+        hoverBorderColor: "rgba(234, 236, 244, 1)",
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        borderColor: '#dddfeb',
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        caretPadding: 10,
+      },
+      legend: {
+        display: false,
+      },
+      cutoutPercentage: 70,
     },
   });
 @endif
