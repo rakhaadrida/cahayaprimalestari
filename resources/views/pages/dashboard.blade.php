@@ -191,22 +191,29 @@
                       <th style="width: 40px">Kode</th>
                       <th style="width: 110px">Tempo</th>
                       <th>Customer</th>
-                      <th style="width: 50px">Total</th>
-                      <th style="width: 120px">Cicil</th>
-                      <th style="width: 60px">Piutang</th>
+                      <th style="width: 90px">Total</th>
+                      <th style="width: 70px">Cicil</th>
+                      <th style="width: 100px">Piutang</th>
                     </tr>
                   </thead>
                   <tbody>
                     @php $i = 1 @endphp
-                    @foreach($lastTrans as $l)
+                    @foreach($bigReceiv as $b)
                       <tr>
                         <td align="center">{{ $i }}</td>
-                        <td align="center">{{ $l->id }}</td>
-                        <td align="center">{{ $l->tgl_so }}</td>
-                        <td>{{ $l->customer->nama }}</td>
-                        <td align="right">{{ $l->qty }}</td>
-                        <td align="right">{{ number_format($l->total, 0, "", ".") }}</td>
-                        <td align="center">{{ $l->status }}</td>
+                        <td align="center">{{ $b->id_so }}</td>
+                        <td align="center">
+                          {{ \Carbon\Carbon::parse($b->tgl_so)->add($b->tempo, 'days')
+                          ->format('d-M-y') }}
+                        </td>
+                        <td>{{ $b->customer->nama }}</td>
+                        <td align="right">
+                          {{ number_format($b->total - $b->retur, 0, "", ".") }}
+                        </td>
+                        <td align="right">{{ number_format($b->cicil, 0, "", ".") }}</td>
+                        <td align="right" class="text-danger font-weight-bold">
+                          {{ number_format($b->piutang, 0, "", ".") }}
+                        </td>
                       </tr>
                       @php $i++ @endphp
                     @endforeach
@@ -278,7 +285,7 @@
               </span>
             </div>
           @elseif(Auth::user()->roles == 'FINANCE')
-            <div class="mt-2 text-center small">
+            <div class="mt-4 text-center small">
               <span class="mr-2">
                 <i class="fas fa-circle text-danger"></i> 0-25%
               </span>

@@ -24,8 +24,8 @@
       @endif
 
       <div class="modal-body">
-        <form method="POST" action="" enctype="multipart/form-data">
-          <table class="table table-responsive table-md table-modal" >
+        <form method="POST" action="">
+          <table class="table table-responsive table-md table-modal">
             <tbody>
               <tr class="table-modal-first-row">
                 <td width="200px" class="text-bold">Kode Customer</td>

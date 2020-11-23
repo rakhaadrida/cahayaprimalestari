@@ -67,7 +67,6 @@ class DashboardController extends Controller
                         ->where('keterangan', 'BELUM LUNAS')->count();
         
         $q1 = 0; $q2 = 0; $q3 = 0; $q4 = 0;
-        $bigReceiv = [];
         $receiv = SalesOrder::join('ar', 'ar.id_so', 'so.id') 
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])
                 ->where('keterangan', 'BELUM LUNAS')->get();
@@ -76,23 +75,25 @@ class DashboardController extends Controller
                     ->where('id_ar', $s->id)->get();
             $s->{'cicil'} = $detil[0]->total;
             $total = round(($detil[0]->total * 100) / ($s->total - $s->retur), 2);
+            $piutang = $s->total - $s->retur - $detil[0]->total;
+            $s->{'piutang'} = $piutang;
             if($total <= 25) {
                 $q1++;
-                $piutang = $s->total - $detil[0]->retur - $detil[0]->total;
-                array_push($bigReceiv, $piutang);
             }
-            elseif(($total > 25) && ($total <= 50))
+            elseif(($total > 25) && ($total <= 50)) {
                 $q2++;
-            elseif(($total > 50) && ($total <= 75))
+            }
+            elseif(($total > 50) && ($total <= 75)) {
                 $q3++;
-            elseif(($total > 75) && ($total <= 100))
+            }
+            elseif(($total > 75) && ($total <= 100)) {
                 $q4++;
+            }
         }
 
         $barCicil = [$q1, $q2, $q3, $q4];
-        rsort($bigReceiv);
-        $bigReceiv = array_slice($bigReceiv, 0, 5);
-        // return response()->json($receivTempo);
+        $bigReceiv = $receiv->sortByDesc('piutang')->take(6);
+        // return response()->json($br);
 
         $data = [
             'salesAnnual' => $salesAnnual,
@@ -111,7 +112,7 @@ class DashboardController extends Controller
             'receivTempo' => $receivTempo,
             'receiv' => $receiv,
             'barCicil' => $barCicil,
-            'bigReceiv' => $bigReceiv
+            'bigReceiv' => $bigReceiv,
         ];
 
         return view('pages.dashboard', $data);

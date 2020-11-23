@@ -6,4 +6,5 @@
 <link href="{{ url('backend/css/sb-admin-2.css') }}" rel="stylesheet">
 {{-- <link href="{{ url('backend/vendor/bootstrap/css/bootstrap.css') }}" rel="stylesheet"> --}}
 <link href="{{ url('backend/css/main.css') }}" rel="stylesheet">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link href="{{ url('backend/vendor/jquery-1.12.1.js') }}" rel="stylesheet">
+{{-- <link href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">  --}}

@@ -139,18 +139,14 @@ function formatPhone(e){
   if((kode == "021") || (kode == "022") || (kode == "061") || (kode == "024") || (kode == "031")) {
     if(value.length > 3 && value.length <= 6) 
       value = value.slice(0,3) + "-" + value.slice(3);
-    else if(value.length > 6 && value.length <= 9)
+    else if(value.length > 6)
       value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6);
-    else if(value.length > 9)
-      value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6,9) + "-" + value.slice(9);
   }
   else
     if(value.length > 4 && value.length <= 8) 
       value = value.slice(0,4) + "-" + value.slice(4);
-    else if(value.length > 8 && value.length <= 12)
+    else if(value.length > 8)
       value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8);
-    else if(value.length > 12)
-      value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8,12) + "-" + value.slice(12);
   
   telepon.value = value;
 }

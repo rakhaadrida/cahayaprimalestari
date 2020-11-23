@@ -29,11 +29,11 @@
         <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="dataTable" width="100%" cellspacing="0">
           <thead class="text-center text-bold text-dark">
             <tr align="center">
-              <th>No</th>
+              <th style="width: 20px">No</th>
               <th>Nama</th>
-              <th>Alamat</th>
-              <th>Telepon</th>
-              <th>Sales</th>
+              <th style="width: 340px">Alamat</th>
+              <th style="width: 110px">Telepon</th>
+              <th style="width: 65px">Sales</th>
               <th>Detail</th>
               <th>Edit</th>
               <th>Delete</th>

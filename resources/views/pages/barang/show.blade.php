@@ -32,7 +32,7 @@
               <div class="col-2">{{ $item->id }}</div>
             </div> --}}
             
-            <table class="table table-responsive table-md table-modal">
+            <table class="table table-responsive-md table-md table-modal">
               <tbody>
                 <tr class="table-modal-first-row">
                   <td width="150px" class="text-bold">Kode Barang</td>

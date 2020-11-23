@@ -12,6 +12,18 @@ class CustomerController extends Controller
     public function index()
     {
         $items = Customer::with(['sales'])->get();
+        /* foreach($items as $i) {
+            $i->telepon = str_replace("-", "", $i->telepon);
+            $kode = substr($i->telepon, 0, 3);
+            if(($kode == "021") || ($kode == "022") || ($kode == "061") || ($kode == "024") || ($kode == "031")) {
+                $telepon = substr($i->telepon, 0, 3).'-'.substr($i->telepon, 3, 3).'-'.substr($i->telepon, 6);
+                $i->telepon = $telepon;
+            } elseif($kode != '') {
+                $hp = substr($i->telepon, 0, 4).'-'.substr($i->telepon, 4, 4).'-'.substr($i->telepon, 8);
+                $i->telepon = $hp;
+            }
+            $i->save();
+        } */
 
         $data = [
             'items' => $items
