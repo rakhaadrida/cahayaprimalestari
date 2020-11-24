@@ -78,7 +78,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Gudang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" required>
+                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" required autofocus>
                     <input type="hidden" name="kodeGudang" id="kodeGudang"> 
                   </div>
                 </div>
@@ -326,6 +326,7 @@ var netPast;
 tanggal.addEventListener("keyup", formatTanggal);
 gudang.addEventListener("keyup", displayGud);
 namaSup.addEventListener("keyup", displaySupp);
+namaSup.addEventListener("focusout", focusTabel);
 newRow.addEventListener('click', displayRow);
 
 /** Add New Table Line **/
@@ -558,6 +559,10 @@ function displaySupp(e) {
   @endforeach
 }
 
+function focusTabel(e) {
+  kodeBarang[0].focus();
+}
+
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", function (e) {
@@ -614,6 +619,12 @@ for(let i = 0; i < qty.length; i++) {
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
   });
+
+  qty[i].addEventListener("focusout", focusKode);
+  
+  function focusKode(e) {
+    kodeBarang[i+1].focus();
+  }
 } 
 
 /** Tampil Diskon Rupiah Otomatis **/
@@ -698,15 +709,17 @@ for(let i = 0; i < hapusBaris.length; i++) {
       total_ppn(subtotal.value.replace(/\./g, ""));
     }
 
-    jumlah[i].value = jumlah[i+1].value;
-    harga[i].value = harga[i+1].value;
-    qty[i].value = qty[i+1].value;
-    brgNama[i].value = brgNama[i+1].value;
-    kodeBarang[i].value = kodeBarang[i+1].value;
-    if(kodeBarang[i+1].value == "")
-      qty[i].removeAttribute('required');
-    else
-      qty[i+1].removeAttribute('required');
+    for(let j = i; j < hapusBaris.length; j++) {
+      jumlah[j].value = jumlah[j+1].value;
+      harga[j].value = harga[j+1].value;
+      qty[j].value = qty[j+1].value;
+      brgNama[j].value = brgNama[j+1].value;
+      kodeBarang[j].value = kodeBarang[j+1].value;
+      if(kodeBarang[j+1].value == "")
+        qty[j].removeAttribute('required');
+      else
+        qty[j+1].removeAttribute('required');
+    }
     $(this).parents('tr').next().find('input').val('');
   });
 }

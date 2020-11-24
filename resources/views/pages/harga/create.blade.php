@@ -37,7 +37,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Harga" value="{{ old('nama') }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Harga" value="{{ old('nama') }}" required autofocus>
                 </div>
               </div>
               <div class="form-group row">

@@ -36,9 +36,9 @@ class CustomerController extends Controller
     {
         $sales = Sales::All();
         $lastcode = Customer::withTrashed()->max('id');
-        $lastnumber = (int) substr($lastcode, 3, 3);
+        $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
-        $newcode = 'CUS'.sprintf("%03s", $lastnumber);
+        $newcode = 'CUS'.sprintf("%04s", $lastnumber);
 
         $data = [
             'newcode' => $newcode,

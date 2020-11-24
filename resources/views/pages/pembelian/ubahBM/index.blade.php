@@ -35,7 +35,7 @@
                   <label for="kode" class="col-2 col-form-label text-bold">Nomor BM</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>

@@ -50,7 +50,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-1">
                     <input type="text" class="form-control col-form-label-sm text-right" 
-                    name="stok[]" required
+                    name="stok[]" required @if($g->id == $gudang[0]->id) autofocus @endif
                       @foreach($items as $item)
                         @if($item->id_gudang == $g->id)
                           value="{{ $item->stok }}" readonly

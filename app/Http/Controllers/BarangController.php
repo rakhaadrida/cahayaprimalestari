@@ -14,8 +14,7 @@ use App\Http\Requests\BarangRequest;
 
 class BarangController extends Controller
 {
-    public function index()
-    {
+    public function index() {
         $items = Barang::All();
         $gudang = Gudang::All();
         $stok = stokBarang::All();
@@ -33,12 +32,11 @@ class BarangController extends Controller
         return view('pages.barang.index', $data);
     }
 
-    public function create()
-    {
+    public function create() {
         $lastcode = Barang::withTrashed()->max('id');
-        $lastnumber = (int) substr($lastcode, 3, 3);
+        $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
-        $newcode = 'BRG'.sprintf("%03s", $lastnumber);
+        $newcode = 'BRG'.sprintf("%04s", $lastnumber);
         $jenis = JenisBarang::All();
         $subjenis = Subjenis::All();
 
@@ -64,8 +62,7 @@ class BarangController extends Controller
         return redirect()->route('barang.index');
     }
 
-    public function show($id)
-    {
+    public function show($id) {
         
     }
 

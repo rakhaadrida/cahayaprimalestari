@@ -36,7 +36,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold ">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Supplier" value="{{ old('nama') }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="nama" id="nama" placeholder="Nama Supplier" value="{{ old('nama') }}" required autofocus>
                 </div>
               </div>
               <hr>  

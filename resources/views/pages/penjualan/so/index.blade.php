@@ -113,7 +113,7 @@
                   <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required />
+                    <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
                     <input type="hidden" name="kodeCustomer" id="idCustomer">
                     <input type="hidden" name="limit" id="limit">
                   </div>

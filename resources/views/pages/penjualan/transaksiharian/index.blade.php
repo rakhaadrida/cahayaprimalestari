@@ -35,7 +35,7 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicke form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" required>
+                    <input type="text" class="form-control datepicke form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" required autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
                   <div class="col-2">

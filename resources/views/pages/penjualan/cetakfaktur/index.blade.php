@@ -35,7 +35,7 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Nomor Faktur</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm mt-1 kodeAwal" name="kodeAwal" id="kode" placeholder="Kode Awal" required>
+                    <input type="text" class="form-control form-control-sm mt-1 kodeAwal" name="kodeAwal" id="kode" placeholder="Kode Awal" required autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">

@@ -359,7 +359,7 @@
                             @endif
                             <td>Harga</td>
                             <td>Jumlah</td>
-                            @if($item->tipe == 'Faktur') 
+                            @if($item->tipe != 'Dokumen') 
                               <td style="width: 80px">Diskon(%)</td>
                               <td style="width: 110px">Diskon(Rp)</td>
                               <td style="width: 120px">Netto (Rp)</td>

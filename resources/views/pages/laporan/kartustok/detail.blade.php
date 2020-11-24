@@ -35,7 +35,7 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Kode Barang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal" value="{{ $itemsBRG[0]->id }}" required>
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAwal" id="kodeAwal" value="{{ $itemsBRG[0]->id }}" required autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
@@ -314,6 +314,18 @@ function formatTanggal(e) {
   else
     tglAkhir.value = value;
 }
+
+$(function() {
+  $("[autofocus]").on("focus", function() {
+    if (this.setSelectionRange) {
+      var len = this.value.length * 2;
+      this.setSelectionRange(len, len);
+    } else {
+      this.value = this.value;
+    }
+    this.scrollTop = 999999;
+  }).focus();
+});
 
 /** Autocomplete Input Text **/
 $(function() {

@@ -124,7 +124,7 @@
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
                         <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-dark kodeBarang"
-                        value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
+                        value="{{ old('kodeBarang[]') }}" @if($i == 1) required autofocus @endif >
                       </td>
                       <td>
                         <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-dark namaBarang"

@@ -78,7 +78,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold text-dark">Keterangan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
-                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
+                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required autofocus>
                     @php
                       if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
                         $itemsApp = \App\Models\NeedApproval::where('id_dokumen', $items[0]->id)

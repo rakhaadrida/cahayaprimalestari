@@ -39,7 +39,7 @@
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" required>
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" required autofocus>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -292,5 +292,17 @@ function formatTanggal(e) {
   else
     tglAkhir.value = value;
 }
+
+$(function() {
+  $("[autofocus]").on("focus", function() {
+    if (this.setSelectionRange) {
+      var len = this.value.length * 2;
+      this.setSelectionRange(len, len);
+    } else {
+      this.value = this.value;
+    }
+    this.scrollTop = 999999;
+  }).focus();
+});
 </script>
 @endpush

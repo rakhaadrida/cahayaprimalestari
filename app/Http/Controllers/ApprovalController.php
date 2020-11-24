@@ -180,22 +180,26 @@ class ApprovalController extends Controller
         $status = $request->input("status".$kode);
         $statusApp = $request->input("statusApp".$kode);
         $tipe = $request->input("tipe".$kode);
-        // return response()->json($items);
 
         if($statusApp == 'PENDING_UPDATE') {
-            $items = NeedAppDetil::with(['need_app'])
-                    ->whereHas('need_app', function($q) use($kode) {
-                        $q->where('id_dokumen', $kode);
-                    })->latest()->take(1)->get();
-            if($tipe == 'Faktur')
+            // $items = NeedAppDetil::with(['need_app'])
+            //         ->whereHas('need_app', function($q) use($kode) {
+            //             $q->where('id_dokumen', $kode);
+            //         })->latest()->get();
+            $items = NeedApproval::with(['need_appdetil'])
+                    ->where('id_dokumen', $kode)->latest()->get();
+            // return response()->json($items[0]->need_appdetil);
+            
+            if($tipe == 'Faktur') {
                 $detil = DetilSO::where('id_so', $kode)->get();
-            else
+            } else {
                 $detil = DetilBM::where('id_bm', $kode)->get();
+            }
 
-            if($items->count() != $detil->count()) {
+            if($items[0]->need_appdetil->count() != $detil->count()) {
                 foreach($detil as $d) {
                     $cek = 0;
-                    foreach($items as $item) {
+                    foreach($items[0]->need_appdetil as $item) {
                         if($d->id_barang == $item->id_barang) {
                             $cek = 1; 
                             break;
@@ -220,7 +224,7 @@ class ApprovalController extends Controller
                 }
             }
 
-            foreach($items as $item) {
+            foreach($items[0]->need_appdetil as $item) {
                 if($tipe == 'Faktur') {
                     $stokAwal = DetilSO::where('id_so', $kode)
                                 ->where('id_barang', $item->id_barang)
@@ -251,11 +255,18 @@ class ApprovalController extends Controller
                 } 
 
                 $updateStok->save(); 
-                $item = NeedAppDetil::whereHas('need_app', function($q) use($kode) {
-                            $q->where('id_dokumen', $kode);
-                        })->where('id_barang', $item->id_barang)
-                        ->where('id_gudang', $item->id_gudang)->delete();
+                $item = NeedAppDetil::where('id_app', $item->id_app)
+                        ->where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $item->id_gudang)->delete(); 
             } 
+
+            foreach($items as $item) {
+                foreach($item->need_appdetil as $n) {
+                    $item = NeedAppDetil::where('id_app', $n->id_app)
+                        ->where('id_barang', $n->id_barang)
+                        ->where('id_gudang', $n->id_gudang)->delete(); 
+                }
+            }
         } 
         elseif($status == 'PENDING_BATAL') {
             if($tipe == 'Faktur') 

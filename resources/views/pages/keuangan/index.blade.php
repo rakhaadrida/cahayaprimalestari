@@ -32,7 +32,7 @@
                   <label for="tahun" class="col-auto col-form-label text-bold">Tahun</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="tahun" id="tahun">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="tahun" id="tahun" autofocus>
                   </div>
                   <label for="bulan" class="col-auto col-form-label text-bold ">Bulan</label>
                   <span class="col-form-label text-bold">:</span>

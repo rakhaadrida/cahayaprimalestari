@@ -39,7 +39,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
                   <input type="text" class="form-control col-form-label-sm" name="nama" 
-                  value="{{ $item->nama }}" required>
+                  value="{{ $item->nama }}" required autofocus>
                 </div>
               </div>
               <div class="form-group row">
@@ -69,3 +69,19 @@
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+$(function() {
+  $("[autofocus]").on("focus", function() {
+    if (this.setSelectionRange) {
+      var len = this.value.length * 2;
+      this.setSelectionRange(len, len);
+    } else {
+      this.value = this.value;
+    }
+    this.scrollTop = 999999;
+  }).focus();
+});
+</script>
+@endpush

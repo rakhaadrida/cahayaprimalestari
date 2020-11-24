@@ -71,7 +71,7 @@
                   </div>
                   <div class="form-group col-2 ml-2">
                     <label for="hargaPPN" class="col-form-label text-bold">{{ $h->nama }}</label>
-                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required
+                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required autofocus
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ number_format($item->harga_ppn, 0, "", ".") }}" 
@@ -167,6 +167,18 @@ function addCommas(nStr) {
 	}
 	return x1 + x2;
 }
+
+$(function() {
+  $("[autofocus]").on("focus", function() {
+    if (this.setSelectionRange) {
+      var len = this.value.length * 2;
+      this.setSelectionRange(len, len);
+    } else {
+      this.value = this.value;
+    }
+    this.scrollTop = 999999;
+  }).focus();
+});
 
 </script>
 @endpush
