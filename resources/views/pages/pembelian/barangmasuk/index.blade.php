@@ -620,11 +620,11 @@ for(let i = 0; i < qty.length; i++) {
     total_ppn(subtotal.value.replace(/\./g, ""));
   });
 
-  qty[i].addEventListener("focusout", focusKode);
+  // qty[i].addEventListener("focusout", focusKode);
   
-  function focusKode(e) {
-    kodeBarang[i+1].focus();
-  }
+  // function focusKode(e) {
+  //   kodeBarang[i+1].focus();
+  // }
 } 
 
 /** Tampil Diskon Rupiah Otomatis **/

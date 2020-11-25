@@ -84,12 +84,12 @@
                             </div>
                           </div>
                         </div> 
-                        <div class="col" style="margin-left: -450px">
+                        <div class="col" style="margin-left: -480px">
                           <div class="form-group row">
-                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Supplier</label>
+                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Supplier</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
+                            <div class="col-8">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
                               @if($items->count() != 0)
                                 value="{{ $item->supplier->nama }} ({{ $item->id_supplier }})"
                               @endif
@@ -112,9 +112,9 @@
                             </div>
                           </div>
                         </div> 
-                        <div class="col" style="margin-left: -450px">
+                        <div class="col" style="margin-left: -480px">
                           <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Gudang</label>
+                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Gudang</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
@@ -134,9 +134,11 @@
                             <div class="col-3">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($item->need_approval->count() != 0)
-                                value="{{ $item->need_approval[0]->status }}"
+                                value="{{ $item->need_approval->last()->status }}"
+                                @php $status = $item->need_approval->last()->status; @endphp
                               @else
                                 value="{{ $item->status }}"
+                                @php $status = $item->status; @endphp
                               @endif
                               >
                             </div>
@@ -220,7 +222,7 @@
                     <hr>
                     <!-- End Tabel Data Detil PO -->
 
-                    @if($item->status != 'BATAL')
+                    @if(($status != 'BATAL') && ($status != 'PENDING_BATAL'))
                       <!-- Button Submit dan Reset -->
                       <div class="form-row justify-content-center">
                         <div class="col-2">

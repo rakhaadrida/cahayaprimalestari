@@ -30,7 +30,7 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              <div class="container so-container">
+              <div class="container so-container" style="margin-bottom: -20px">
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group row">
@@ -46,16 +46,67 @@
                       </div>
                     </div>   
                   </div>
-                  <div class="col" style="margin-left: -350px; margin-right:-40px">
+                </div>
+                <div class="form-group row" style="margin-top: -18px">
+                  <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-3">
+                    <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
+                    <input type="hidden" name="kodeCustomer" id="idCustomer">
+                    <input type="hidden" name="limit" id="limit">
+                    <input type="hidden" name="piutang" id="piutang">
+                  </div>
+                  <label for="customer" class="col-1 col-form-label text-bold">NPWP</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-2">
+                    <input type="text" name="npwp" id="npwp" class="form-control form-control-sm mt-1" readonly />
+                  </div>
+                </div>
+                <div class="form-group row sales-row">
+                  <label for="alamat" class="col-2 col-form-label text-bold">Nama Sales</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-2">
+                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly />
+                    <input type="hidden" name="kodeSales" id="idSales" 
+                      {{-- @if($itemsRow != 0) 
+                        value="{{ $items[0]->id_supplier }}"
+                      @endif --}}
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="form-group row" style="margin-top: -18px">
+                      <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-2">
+                        <input type="text" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" required />
+                        <input type="hidden" name="jumBaris" id="jumBaris" value="5">
+                      </div>
+                      <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
+                      <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
+                      <div class="col-3" style="margin-top: -35px">
+                        <div class="form-check mt-2">
+                          <input class="form-check-input" type="radio" name="kategori"  value="Cash" id="kategori" required>
+                          <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="kategori"  value="Prime">
+                          <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="kategori"  value="Extrana">
+                          <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col" style="margin-left: -350px; margin-right:-40px; margin-top: -120px">
                     <div class="form-group row subtotal-po">
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" readonly
-                          {{-- @if($itemsRow != 0) 
-                            value="{{ $items[$itemsRow - 1]->tempo }}"
-                          @endif --}}
-                        >
+                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" readonly >
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
@@ -86,77 +137,15 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3 pkp-check">
                         <div class="form-check mt-2">
-                          <input class="form-check-input" type="radio" name="pkp"  value="1"
-                            {{-- @if($itemsRow != 0) 
-                              @if($items[$itemsRow - 1]->pkp == 1)
-                                checked
-                              @endif
-                            @endif --}}
-                          >
+                          <input class="form-check-input" type="radio" name="pkp" id="pkp" value="1" >
                           <label class="form-check-label text-bold text-dark" for="pkp1">Ya</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="pkp"  value="0"
-                            {{-- @if($itemsRow != 0) 
-                              @if($items[$itemsRow - 1]->pkp == 0)
-                                checked
-                              @endif
-                            @endif --}}
-                          >
+                          <input class="form-check-input" type="radio" name="pkp" id="pkp" value="0" >
                           <label class="form-check-label text-bold text-dark" for="pkp2">Tidak</label>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="form-group row customer-row">
-                  <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-3">
-                    <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
-                    <input type="hidden" name="kodeCustomer" id="idCustomer">
-                    <input type="hidden" name="limit" id="limit">
-                  </div>
-                  <label for="customer" class="col-1 col-form-label text-bold">NPWP</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" name="npwp" id="npwp" class="form-control form-control-sm mt-1" readonly />
-                  </div>
-                </div>
-                <div class="form-group row sales-row">
-                  <label for="alamat" class="col-2 col-form-label text-bold">Nama Sales</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly />
-                    <input type="hidden" name="kodeSales" id="idSales" 
-                      {{-- @if($itemsRow != 0) 
-                        value="{{ $items[0]->id_supplier }}"
-                      @endif --}}
-                    />
-                  </div>
-                  <label for="kat" class="col-2 col-form-label text-bold text-right">Kategori</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-3">
-                    <div class="form-check mt-2">
-                      <input class="form-check-input" type="radio" name="kategori"  value="Cash" id="kategori" required>
-                      <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="kategori"  value="Prime">
-                      <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="kategori"  value="Extrana">
-                      <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group row" style="margin-top: -60px">
-                  <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" required />
-                    <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div>
                 </div>
               </div>
@@ -622,12 +611,14 @@ $('.datepicker').datepicker({
 const namaCust = document.getElementById('namaCustomer');
 const kodeCust = document.getElementById('idCustomer');
 const limit = document.getElementById('limit');
+const piutang = document.getElementById('piutang');
 const namaSales = document.getElementById('namaSales');
 const npwp = document.getElementById('npwp');
 const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
 const radios = document.querySelectorAll('input[type=radio][name="kategori"]');
 const kategori = document.getElementById('kategori');
+const pkp = document.getElementById('pkp');
 const pcs = document.getElementById("pcs");
 const satuanUkuran = document.getElementById("satuanUkuran");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
@@ -679,6 +670,7 @@ var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keyup', displayCust);
+namaCust.addEventListener('focusout', focusTanggal);
 tanggalKirim.addEventListener("keyup", formatTanggal);
 newRow.addEventListener("click", displayRow);
 diskonFaktur.addEventListener('keyup', formatNominal);
@@ -696,6 +688,12 @@ function displayCust(e) {
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
+
+      @foreach($totalKredit as $t)
+        if('{{ $t->id_customer }}' == kodeCust.value) {
+          piutang.value = '{{ $t->total }}';
+        }
+      @endforeach
     }
     else if(e.target.value == '') {
       kodeCust.value = '';
@@ -704,6 +702,10 @@ function displayCust(e) {
       npwp.value = '';
     }
   @endforeach
+}
+
+function focusTanggal(e) {
+  tanggalKirim.focus();
 }
 
 function formatTanggal(e) {
@@ -717,6 +719,10 @@ function formatTanggal(e) {
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
   
   tanggalKirim.value = value;
+}
+
+function focusKode(e) {
+  kodeBarang[0].focus();
 }
 
 /** Tampil Input Tempo **/
@@ -1377,7 +1383,6 @@ for(let j = 0; j < modalGudang.length; j++) {
           @endforeach
         }
         else {
-          console.log(j);
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisaQty[j].textContent}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
         }
@@ -1490,20 +1495,23 @@ for(let i = 0; i < hapusBaris.length; i++) {
       total_ppn(subtotal.value.replace(/\./g, ""));
     }
 
-    netto[i].value = netto[i+1].value;
-    diskonRp[i].value = diskonRp[i+1].value;
-    diskon[i].value = diskon[i+1].value;
-    jumlah[i].value = jumlah[i+1].value;
-    harga[i].value = harga[i+1].value;
-    tipe[i].value = tipe[i+1].value;
-    satuan[i].value = satuan[i+1].value;
-    qty[i].value = qty[i+1].value;
-    brgNama[i].value = brgNama[i+1].value;
-    kodeBarang[i].value = kodeBarang[i+1].value;
-    if(kodeBarang[i+1].value == "")
-      qty[i].removeAttribute('required');
-    else
-      qty[i+1].removeAttribute('required');
+    for(let j = i; j < hapusBaris.length; j++) {
+      netto[j].value = netto[j+1].value;
+      diskonRp[j].value = diskonRp[j+1].value;
+      diskon[j].value = diskon[j+1].value;
+      jumlah[j].value = jumlah[j+1].value;
+      harga[j].value = harga[j+1].value;
+      tipe[j].value = tipe[j+1].value;
+      satuan[j].value = satuan[j+1].value;
+      qty[j].value = qty[j+1].value;
+      brgNama[j].value = brgNama[j+1].value;
+      kodeBarang[j].value = kodeBarang[j+1].value;
+      if(kodeBarang[j+1].value == "")
+        qty[j].removeAttribute('required');
+      else
+        qty[j+1].removeAttribute('required');
+    }
+
     $(this).parents('tr').next().find('input').val('');
   });
 }
@@ -1514,19 +1522,26 @@ function checkRequired(e) {
     e.stopPropagation();
   }
   else {
-    if(grandtotal.value > limit.value) {
+    if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalLimit";
       limitTitle.textContent = namaCust.value;
       limitNama.textContent = namaCust.value;
       limitAngka.textContent = addCommas(limit.value);
       totalSO.textContent = grandtotal.value;
+      var cek = 0;
       @foreach($totalKredit as $t)
         if('{{ $t->id_customer }}' == kodeCust.value) {
           totalKredit.textContent = addCommas('{{ $t->total }}');
           totalTagihan.textContent = addCommas(+'{{ $t->total }}' + +grandtotal.value.replace(/\./g, ""));
+          cek = 1;
         }
       @endforeach
+
+      if(cek == 0) {
+        totalKredit.textContent = 0;
+        totalTagihan.textContent = addCommas(0 + +grandtotal.value.replace(/\./g, ""));
+      }
       
       return false;
     } 

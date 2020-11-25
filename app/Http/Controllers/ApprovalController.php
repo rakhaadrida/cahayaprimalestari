@@ -37,7 +37,9 @@ class ApprovalController extends Controller
     public function show($id) {
         $approval = NeedApproval::with(['so', 'bm'])
                 ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
-                ->groupBy('id_dokumen')->get();
+                ->latest()->take(1)->get();
+
+        // return response()->json($approval);
         $gudang = Gudang::All();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
@@ -290,7 +292,32 @@ class ApprovalController extends Controller
                     
                 $updateStok->save();
             }
+
+            $items = NeedApproval::with(['need_appdetil'])
+                    ->where('id_dokumen', $kode)->latest()->get();
+            foreach($items as $item) {
+                foreach($item->need_appdetil as $n) {
+                    $item = NeedAppDetil::where('id_app', $n->id_app)
+                        ->where('id_barang', $n->id_barang)
+                        ->where('id_gudang', $n->id_gudang)->delete(); 
+                }
+            }
         } 
+        elseif($status == 'LIMIT') {
+            $item = SalesOrder::where('id', $kode)->first();
+            $item->{'status'} = "BATAL";
+            $item->save();
+
+            $items = DetilSO::where('id_so', $kode)->get();
+
+            foreach($items as $item) {
+                $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $item->id_gudang)->first();
+
+                $updateStok->{'stok'} += $item->qty;
+                $updateStok->save();
+            }
+        }
 
         $item = NeedApproval::where('id_dokumen', $kode)->delete();
 

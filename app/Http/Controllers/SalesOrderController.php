@@ -47,7 +47,7 @@ class SalesOrderController extends Controller
                         ->get();
 
         $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-                        ->select('id_customer', DB::raw('sum(total- retur) as totKredit'))
+                        ->select('id_customer', DB::raw('sum(total - retur) as totKredit'))
                         ->where('keterangan', 'BELUM LUNAS')
                         ->groupBy('id_customer')
                         ->get();
@@ -56,9 +56,13 @@ class SalesOrderController extends Controller
             foreach($cicilPerCust as $h) {
                 if($q->id_customer == $h->id_customer) {
                     $q['total'] = $q->totKredit - $h->totCicil;
+                } else {
+                    $q['total'] = $q->totKredit - 0;
                 }
             }
         }
+
+        // return response()->json($totalPerCust);
 
         $data = [
             'customer' => $customer,
@@ -81,22 +85,6 @@ class SalesOrderController extends Controller
         $formatTanggal = Carbon::parse($tanggal)->format($format);
         return $formatTanggal;
     }
-
-    /* public function create(Request $request, $id) {
-        NeedApproval::create([
-            'id_so' => $id,
-            'id_barang' => $request->kodeBarang,
-            'harga' => $request->harga,
-            'qty' => $request->pcs,
-            'diskon' => $request->diskon,
-            'id_customer' => $request->kodeCustomer,
-            'tgl_kirim' => $request->tanggalKirim,
-            'tempo' => $request->tempo,
-            'pkp' => $request->pkp
-        ]);
-
-        return redirect()->route('so');
-    } */
 
     public function process(Request $request, $id, $status) {
         $tanggal = $request->tanggal;
@@ -132,15 +120,17 @@ class SalesOrderController extends Controller
             'id_customer' => $request->kodeCustomer
         ]);
 
-        AccReceivable::create([
-            'id' => $newcode,
-            'id_so' => $id,
-            'retur' => NULL,
-            'keterangan' => 'BELUM LUNAS'
-        ]);
+        if($status != 'LIMIT') {
+            AccReceivable::create([
+                'id' => $newcode,
+                'id_so' => $id,
+                'retur' => 0,
+                'keterangan' => 'BELUM LUNAS'
+            ]);
+        }
 
         $lastcode = NeedApproval::max('id');
-        $lastnumber = (int) substr($lastcode, 2, 4);
+        $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
         $newcode = 'APP'.sprintf('%04s', $lastnumber);
 
@@ -171,19 +161,20 @@ class SalesOrderController extends Controller
                         'diskonRp' => $diskonRp
                     ]);
 
-                    if($status == 'LIMIT') {
-                        NeedAppDetil::create([
-                            'id_app' => $newcode,
-                            'id_barang' => $request->kodeBarang[$i],
-                            'harga' => str_replace(".", "", $request->harga[$i]),
-                            'qty' => $arrStok[$j],
-                            'diskon' => $request->diskon[$i],
-                        ]);
-                    }
+                    // if($status == 'LIMIT') {
+                    //     NeedAppDetil::create([
+                    //         'id_app' => $newcode,
+                    //         'id_barang' => $request->kodeBarang[$i],
+                    //         'id_gudang' => $arrGudang[$j],
+                    //         'harga' => str_replace(".", "", $request->harga[$i]),
+                    //         'qty' => $arrStok[$j],
+                    //         'diskon' => $request->diskon[$i],
+                    //     ]);
+                    // }
 
                     $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                                 ->where('id_gudang', $arrGudang[$j])->first();
-                                var_dump($updateStok);
+                    // var_dump($updateStok);
                     $updateStok->{'stok'} -= $arrStok[$j];
                     $updateStok->save();
                     
