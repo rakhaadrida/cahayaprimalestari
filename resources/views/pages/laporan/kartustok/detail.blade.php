@@ -112,8 +112,7 @@
                         <td rowspan="3" style="width: 120px" class="align-middle">Keterangan</td>
                         <td colspan="3" class="align-middle">Pemasukan</td>
                         <td colspan="5">Pengeluaran</td>
-                        <td rowspan="3" style="width: 80px" class="align-middle">Pemakai</td>
-                        <td rowspan="3" style="width: 70px" class="align-middle">Waktu</td>
+                        <td rowspan="3" style="width: 120px" class="align-middle">Pemakai</td>
                       </tr>
                       <tr>
                         <td rowspan="2" style="width: 40px" class="align-middle">
@@ -179,8 +178,7 @@
                               <td></td>
                             @endforeach
                             <td class="align-middle" align="right"></td>
-                            <td class="align-middle" align="right"></td>
-                            <td class="align-middle" align="left">{{ \Carbon\Carbon::parse($ib->bm->updated_at)->format('H:i:s') }}</td>
+                            <td class="align-middle" align="left">{{ $ib->bm->user->name }} - {{ \Carbon\Carbon::parse($ib->bm->updated_at)->format('H:i:s') }}</td>
                             @php $totalBM += $ib->qty @endphp
                           </tr>
                           @php $i++; @endphp
@@ -212,8 +210,7 @@
                             <td class="align-middle" align="right">
                               {{ number_format($is->qty * $is->harga, 0, "", ".") }}
                             </td>
-                            <td class="align-middle" align="right"></td>
-                            <td class="align-middle" align="left">{{ \Carbon\Carbon::parse($is->so->updated_at)->format('H:i:s') }}</td>
+                            <td class="align-middle" align="left">{{ $is->so->user->name }} - {{ \Carbon\Carbon::parse($is->so->updated_at)->format('H:i:s') }}</td>
                             @php $totalSO += $is->qty @endphp
                           </tr>
                           @php $i++; @endphp

@@ -230,7 +230,7 @@
                   @php
                     $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                   @endphp 
-                  @if(($barang->count() + 1) <= 66)
+                  @if(($baris + ($barang->count() + 1)) <= 66)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                       <td colspan="6" align="center">{{ $s->nama }}</td>
                     </tr>
@@ -247,7 +247,7 @@
                         @if($stok->count() != 0)
                           <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
                         @else
-                          <td>0</td>
+                          <td align="right" style="background-color: yellow">0</td>
                         @endif
                         @foreach($gudang as $g)
                           @php
@@ -292,7 +292,7 @@
                   @php
                     $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                   @endphp 
-                  @if(($barang->count() + 1) <= 132)
+                  @if(($baris + ($barang->count() + 1)) <= 132)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                       <td colspan="6" align="center">{{ $s->nama }}</td>
                     </tr>
@@ -309,7 +309,7 @@
                         @if($stok->count() != 0)
                           <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
                         @else
-                          <td>0</td>
+                          <td align="right" style="background-color: yellow">0</td>
                         @endif
                         @foreach($gudang as $sg)
                           @php

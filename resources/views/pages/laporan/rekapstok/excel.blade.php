@@ -59,5 +59,8 @@
         @endforeach
       </tbody>
     </table>
+    <br>
+    <!-- End Tabel Data Detil PO -->
+    <h4>Copyright &copy; {{$sejak}} @if($tahun->year != $sejak) - {{$tahun->year}} @endif | rakhaadrida</h4>
   </body>
 </html>

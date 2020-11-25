@@ -34,12 +34,16 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $waktu = $waktu->format('d F Y, H:i:s');
         $sub = Subjenis::where('id_kategori', $this->kode)->get();
         $gudang = Gudang::All();
+        $tahun = Carbon::now('+07:00');
+        $sejak = '2020';
 
         $data = [
             'waktu' => $waktu,
             'sub' => $sub,
             'gudang' => $gudang,
-            'nama' => $this->nama
+            'nama' => $this->nama,
+            'tahun' => $tahun,
+            'sejak' => $sejak
         ];
         
         return view('pages.laporan.rekapstok.excel', $data);

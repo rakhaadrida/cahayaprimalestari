@@ -58,4 +58,12 @@ class User extends Authenticatable
     {
         return (strtolower($role)==strtolower($this->roles)) ? true : false;
     }
+
+    public function bm() {
+        return $this->hasMany('App\Models\BarangMasuk', 'id_user', 'id');
+    }
+
+    public function so() {
+        return $this->hasMany('App\Models\SalesOrder', 'id_user', 'id');
+    }
 }

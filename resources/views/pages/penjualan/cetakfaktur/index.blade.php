@@ -35,14 +35,15 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Nomor Faktur</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm mt-1 kodeAwal" name="kodeAwal" id="kode" placeholder="Kode Awal" required autofocus>
+                    <input type="text" class="form-control form-control-sm mt-1 kodeAwal" name="kodeAwal" id="kodeAwal" placeholder="Kode Awal" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi" autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm mt-1 kodeAkhir" name="kodeAkhir" id="kode" placeholder="Kode Akhir" required>
+                    <input type="text" class="form-control form-control-sm mt-1 kodeAkhir" name="kodeAkhir" id="kodeAkhir" placeholder="Kode Akhir" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('cetak-process') }}" formmethod="POST" id="btn-cetak" class="btn btn-success btn-sm btn-block text-bold btnCetak">Cetak</button>
+                    <button type="submit" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" onclick="return checkRequired(event)">Cetak</button>
+                    {{-- formaction="{{ route('cetak-process') }}" formmethod="POST" --}}
                   </div>
                 </div>  
               </div>
@@ -67,7 +68,7 @@
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $item->id }}</button></td>
-                      <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-m-Y')  }}</td>
+                      <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')  }}</td>
                       <td class="align-middle">{{ $item->customer->nama }}</td>
                       <td class="text-right align-middle">{{ number_format($item->total, 0, "", ",") }}</td>
                       <td class="text-center align-middle">{{ $item->kategori }}</td>
@@ -106,6 +107,10 @@
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
 {{-- <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script> --}}
 <script type="text/javascript">
+const kodeAwal = document.getElementById('kodeAwal');
+const kodeAkhir = document.getElementById('kodeAkhir');
+const btnCetak = document.getElementById('btnCetak');
+
 @if($status == "true")
   const printFrame = document.getElementById("frameCetak").contentWindow;
   const kodeAwal = document.querySelectorAll(".kodeAwal");
@@ -166,6 +171,17 @@
   /** End Cara 3 **/
 @endif
 
+function checkRequired(e) {
+  if((kodeAwal.value == '') || (kodeAkhir.value == '')) {
+    $(kodeAwal).tooltip('show');
+    $(kodeAkhir).tooltip('show');
+    return false;
+  } else {
+    document.getElementById('btnCetak').formMethod = "POST";
+    document.getElementById('btnCetak').formAction = "{{ route('cetak-process') }}";
+  }
+}
+
 /** Autocomplete Input Text **/
 $(function() {
   var kodeSO = [];
@@ -182,7 +198,35 @@ $(function() {
   }
 
   /*-- Autocomplete Input Kode SO --*/
-  $(kode).on("keydown", function(event) {
+  $(kodeAwal).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(kodeSO, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  $(kodeAkhir).on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();
     }

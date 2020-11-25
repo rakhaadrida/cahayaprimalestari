@@ -11,12 +11,16 @@ class SalesOrder extends Model
 
     protected $table = "so";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'kategori', 'tempo', 'pkp', 'status', 'id_customer'];
+    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'diskon', 'kategori', 'tempo', 'pkp', 'status', 'id_customer', 'id_user'];
 
     public $incrementing = false;
 
     public function customer() {
         return $this->belongsTo('App\Models\Customer', 'id_customer', 'id');
+    }
+
+    public function user() {
+        return $this->belongsTo('App\User', 'id_user', 'id');
     }
 
     public function detilso() {

@@ -138,9 +138,11 @@
                             <div class="col-3">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($item->need_approval->count() != 0)
-                                value="{{ $item->need_approval[0]->status }}"
+                                value="{{ $item->need_approval->last()->status }}"
+                                @php $status = $item->need_approval->last()->status; @endphp
                               @else
                                 value="{{ $item->status }}"
+                                @php $status = $item->status; @endphp
                               @endif
                               >
                             </div>
@@ -283,6 +285,20 @@
                       </div>
                     </div>
                     <div class="form-group row justify-content-end total-so">
+                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-2 mr-1">
+                        <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->diskon, 0, "", ".") }}" />
+                      </div>
+                    </div>
+                    <div class="form-group row justify-content-end total-so">
+                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-2 mr-1">
+                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->diskon, 0, "", ".") }}" />
+                      </div>
+                    </div>
+                    <div class="form-group row justify-content-end total-so">
                       <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
@@ -301,7 +317,7 @@
                     <hr>
                     <!-- End Tabel Data Detil PO -->
 
-                    @if((Auth::user()->roles != 'FINANCE') && (($item->status != 'BATAL') && ($item->status != 'LIMIT')))
+                    @if((Auth::user()->roles != 'FINANCE') && (($status != 'BATAL') && ($status != 'PENDING_BATAL') && ($status != 'LIMIT')))
                       <!-- Button Submit dan Reset -->
                       <div class="form-row justify-content-center">
                         <div class="col-2">

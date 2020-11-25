@@ -88,7 +88,7 @@
                         $itemsRow = $items[0]->detilbm->count();
                       }
                     @endphp
-                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
+                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">

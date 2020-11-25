@@ -101,21 +101,21 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setWorksheet($sheet);
         
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
-        $sheet->mergeCells('A1:O1');
-        $sheet->mergeCells('A2:O2');
-        $sheet->mergeCells('A3:O3');
-        $sheet->mergeCells('A5:O5');
-        $sheet->mergeCells('A6:O6');
+        $sheet->mergeCells('A1:N1');
+        $sheet->mergeCells('A2:N2');
+        $sheet->mergeCells('A3:N3');
+        $sheet->mergeCells('A5:N5');
+        $sheet->mergeCells('A6:N6');
 
-        $title = 'A1:O3';
+        $title = 'A1:N3';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A3:O3')->getFont()->setSize(12);
+        $sheet->getStyle('A3:N3')->getFont()->setSize(12);
 
-        $infoBrg = 'A5:O6';
+        $infoBrg = 'A5:N6';
         $sheet->getStyle($infoBrg)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($infoBrg)->getAlignment()->setHorizontal('left');
 
-        $header = 'A7:O9';
+        $header = 'A7:N9';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center')->setVertical('center');
         $sheet->getStyle($header)->getFill()
@@ -141,7 +141,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $range = 10 + $rowBM + $rowSO->count() + 2;
         $rangeStr = strval($range);
         $rangeMinOne = strval($range-1);
-        $rangeTab = 'O'.$rangeStr;
+        $rangeTab = 'N'.$rangeStr;
 
         $styleArray = [
             'borders' => [
@@ -152,7 +152,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
-        $rangeTable = 'A7:O'.$rangeStr;
+        $rangeTable = 'A7:N'.$rangeStr;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 
         $stokAwal = 'A10:E10';
@@ -165,10 +165,10 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($stokAkhir)->getFont()->setBold(true);
         $sheet->getStyle($stokAkhir)->getAlignment()->setHorizontal('center');
 
-        $awalRow = 'F10:O10';
-        $totalRow = 'F'.$rangeMinOne.':O'.$rangeMinOne;
-        $akhirRow = 'F'.$rangeStr.':O'.$rangeStr;
-        $akhirFull = 'A'.$rangeStr.':O'.$rangeStr;
+        $awalRow = 'F10:N10';
+        $totalRow = 'F'.$rangeMinOne.':N'.$rangeMinOne;
+        $akhirRow = 'F'.$rangeStr.':N'.$rangeStr;
+        $akhirFull = 'A'.$rangeStr.':N'.$rangeStr;
 
         $sheet->getStyle($awalRow)->getFont()->setBold(true);
         $sheet->getStyle($awalRow)->getAlignment()->setHorizontal('right');
@@ -184,7 +184,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
         for($i = 10; $i <= $range-1; $i+=2) {
-            $rangeRow = 'A'.$i.':O'.$i;
+            $rangeRow = 'A'.$i.':N'.$i;
             $sheet->getStyle($rangeRow)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('d6d7e2');

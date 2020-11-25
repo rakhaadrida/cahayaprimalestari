@@ -24,7 +24,6 @@
           <td colspan="3">Pemasukan</td>
           <td colspan="5">Pengeluaran</td>
           <td rowspan="3">Pemakai</td>
-          <td rowspan="3">Waktu</td>
         </tr>
         <tr>
           <td rowspan="2">
@@ -49,7 +48,7 @@
           <tr>
             <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
             <td class="text-bold text-dark text-right">{{ $stokAwal }}</td>
-            <td colspan="9"></td>
+            <td colspan="8"></td>
           </tr>
           @php 
             $i = 1; $totalBM = 0; $totalSO = 0;
@@ -73,8 +72,7 @@
                 <td></td>
               @endforeach
               <td align="right"></td>
-              <td align="right"></td>
-              <td align="left">{{ \Carbon\Carbon::parse($ib->updated_at)->format('H:i:s') }}</td>
+              <td align="left">{{ $ib->bm->user->name }} - {{ \Carbon\Carbon::parse($ib->bm->updated_at)->format('H:i:s') }}</td>
               @php $totalBM += $ib->qty @endphp
             </tr>
             @php $i++; @endphp
@@ -106,8 +104,7 @@
               <td align="right">
                 {{ number_format($is->qty * $is->harga, 0, "", ",") }}
               </td>
-              <td align="right"></td>
-              <td align="left">{{ \Carbon\Carbon::parse($is->updated_at)->format('H:i:s') }}</td>
+              <td align="left">{{ $is->so->user->name }} - {{ \Carbon\Carbon::parse($is->so->updated_at)->format('H:i:s') }}</td>
               @php $totalSO += $is->qty @endphp
             </tr>
             @php $i++; @endphp
@@ -119,12 +116,12 @@
             </td>
             <td colspan="2"></td>
             <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
-            <td colspan="6"></td>
+            <td colspan="5"></td>
           </tr>
           <tr style="background-color: yellow">
             <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
             <td class="text-bold text-dark text-right">{{ $stok[0]->total }}</td>
-            <td colspan="9"></td>
+            <td colspan="8"></td>
           </tr>
         @else 
           <tr>

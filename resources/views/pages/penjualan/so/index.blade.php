@@ -151,49 +151,6 @@
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-            
-              {{-- <div class="form-group row">
-                <label for="keterangan" class="col-1 col-form-label text-bold">Keterangan</label>
-                <div class="form-group col-2">
-                  <input type="text" class="form-control col-form-label-sm ml-1" name="keterangan" placeholder="Keterangan" 
-                    value="{{ old('keterangan') }}">
-                </div>
-              </div> --}}
-
-              <!-- Inputan Detil PO -->
-              {{-- <div class="form-row">
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Kode</label>
-                  <input type="text" name="kodeBarang" id="kodeBarang" placeholder="Kd Brg" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-sm-3">
-                  <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
-                  <input type="text" name="namaBarang" id="namaBarang" placeholder="Nama Barang" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Pcs</label>
-                  <input type="text" name="pcs" id="qty" placeholder="Qty (Pcs)" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Diskon</label>
-                  <input type="text" name="diskon" id="diskon" placeholder="Diskon" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Harga</label>
-                  <input type="text" name="harga" id="harga" placeholder="Harga Satuan" class="form-control form-control-sm text-bold" readonly>
-                  <input type="hidden" name="kodeHarga" id="idHarga" />
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Jumlah</label>
-                  <input type="text" name="jumlah" id="jumlah" placeholder="Jumlah Harga" class="form-control form-control-sm text-bold" readonly>
-                </div>
-                <div class="form-group col-auto">
-                  <label for="" class="col-form-label text-bold " ></label>
-                  <button type="submit" formaction="{{ route('so-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
-                </div>
-              </div>          
-              <hr> --}}
-              <!-- End Inputan Detil PO -->
               
               <!-- Tabel Data Detil PO -->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
@@ -903,7 +860,8 @@ function displayRow(e) {
   function displayHargaRow(e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
-      grandtotal.value = subtotal.value;
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
     } 
@@ -977,6 +935,7 @@ function displayRow(e) {
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
       jumlahRow.value = "";
       nettoRow.value = "";
       kodeGudangRow.value = "GDG01";
@@ -1038,7 +997,8 @@ function displayRow(e) {
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
     ppn.value = 0;
-    grandtotal.value = subtotal.value;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
   }
 
   function hitungQtyRow(kode, angka) {
@@ -1107,14 +1067,17 @@ function displayRow(e) {
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
     ppn.value = 0;
-    grandtotal.value = subtotal.value;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
   });
   
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     if(qtyRow.value != "") {
-       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
-       grandtotal.value = subtotal.value;
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
+      total_ppn(totalNotPPN.value.replace(/\./g, ""));
     }
     
     const curNum = $(this).closest('tr').find('td:first-child').text();
@@ -1211,7 +1174,8 @@ for(let i = 0; i < brgNama.length; i++) {
   function displayHarga(e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
-      grandtotal.value = subtotal.value;
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
     }
@@ -1267,6 +1231,7 @@ for(let i = 0; i < qty.length; i++) {
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
       netto[i].value = "";
       kodeGudang[i].value = "GDG01";
@@ -1334,7 +1299,8 @@ for(let i = 0; i < qty.length; i++) {
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
     ppn.value = 0;
-    grandtotal.value = subtotal.value;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
   }
 }  
 
@@ -1355,7 +1321,8 @@ for(let i = 0; i < diskon.length; i++) {
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
-    grandtotal.value = subtotal.value;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
   });
 }
 
@@ -1415,8 +1382,10 @@ function hitungDiskon(angka) {
 function checkSubtotal(Past, Now) {
   if(Past > Now) {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
+    totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - (+Past - +Now));
   } else {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + (+Now - +Past));
+    totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") + (+Now - +Past));
   }
 }
 
@@ -1491,8 +1460,10 @@ function addCommas(nStr) {
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
-       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
-      total_ppn(subtotal.value.replace(/\./g, ""));
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
+      total_ppn(totalNotPPN.value.replace(/\./g, ""));
     }
 
     for(let j = i; j < hapusBaris.length; j++) {

@@ -85,7 +85,7 @@
                         $itemsRow = $itemsApp[0]->need_appdetil->count();
                       }
                     @endphp
-                    <input type="text" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
+                    <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $itemsRow }}">
                     <input type="hidden" name="id" value="{{ $id }}">
                     <input type="hidden" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
@@ -349,6 +349,22 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" >
+                </div>
+              </div>
+              <div class="form-group row justify-content-end total-so so-info-total">
+                <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                <span class="col-form-label text-bold">:</span>
+                <span class="col-form-label text-bold ml-2">Rp</span>
+                <div class="col-2">
+                  <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($items[0]->diskon, 0, "", ".") }}" >
+                </div>
+              </div>
+              <div class="form-group row justify-content-end total-so so-info-total">
+                <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                <span class="col-form-label text-bold">:</span>
+                <span class="col-form-label text-bold ml-2">Rp</span>
+                <div class="col-2">
+                  <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $items[0]->diskon, 0, "", ".") }}" >
                 </div>
               </div>
               <div class="form-group row justify-content-end total-so so-info-total">

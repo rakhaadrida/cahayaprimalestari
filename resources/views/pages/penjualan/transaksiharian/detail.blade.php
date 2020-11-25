@@ -39,7 +39,7 @@
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" required autofocus>
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" required>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -66,7 +66,7 @@
                             </div>
                           </div>
                         </div> 
-                        <div class="col" style="margin-left: -450px">
+                        <div class="col" style="margin-left: -500px">
                           <div class="form-group row">
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Customer</label>
                             <span class="col-form-label text-bold">:</span>
@@ -86,7 +86,7 @@
                             </div>
                           </div>
                         </div> 
-                        <div class="col" style="margin-left: -450px">
+                        <div class="col" style="margin-left: -500px">
                           <div class="form-group row customer-detail">
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
                             <span class="col-form-label text-bold">:</span>
@@ -106,7 +106,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="col" style="margin-left: -450px">
+                        <div class="col" style="margin-left: -500px">
                           <div class="form-group row customer-detail">
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                             <span class="col-form-label text-bold">:</span>
@@ -201,6 +201,20 @@
                       </div>
                     </div>
                     <div class="form-group row justify-content-end total-so">
+                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-2 mr-1">
+                        <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($items[0]->diskon, 0, "", ".") }}" />
+                      </div>
+                    </div>
+                    <div class="form-group row justify-content-end total-so">
+                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-2 mr-1">
+                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $items[0]->diskon, 0, "", ".") }}" />
+                      </div>
+                    </div>
+                    <div class="form-group row justify-content-end total-so">
                       <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
@@ -211,7 +225,7 @@
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
+                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{number_format($subtotal - $items[0]->diskon, 0, "", ".")}}" />
                       </div>
                     </div>
                     <hr>

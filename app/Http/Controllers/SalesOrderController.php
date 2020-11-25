@@ -103,6 +103,11 @@ class SalesOrderController extends Controller
         else
             $pkp = $request->pkp;
 
+        if($request->diskonFaktur == "") 
+            $diskon = 0;
+        else
+            $diskon = $request->diskonFaktur;
+
         $lastcode = AccReceivable::max('id');
         $lastnumber = (int) substr($lastcode, 2, 4);
         $lastnumber++;
@@ -113,6 +118,7 @@ class SalesOrderController extends Controller
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
             'total' => str_replace(".", "", $request->grandtotal),
+            'diskon' => str_replace(".", "", $diskon),
             'kategori' => $request->kategori,
             'tempo' => $tempo,
             'pkp' => $pkp,
@@ -212,12 +218,6 @@ class SalesOrderController extends Controller
         return $pdf->stream('cetak-so.pdf');
     }
 
-    /* public function remove($id, $barang) {
-        $tempDetil = TempDetilSO::where('id_so', $id)->where('id_barang', $barang)->delete();
-
-        return redirect()->route('so');
-    } */
-
     public function change() {
         $so = SalesOrder::All();
         $customer = Customer::All();
@@ -232,9 +232,11 @@ class SalesOrderController extends Controller
 
     public function show(Request $request) {
         $tglAwal = $request->tglAwal;
-        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
         $tglAkhir = $request->tglAkhir;
-        $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
+        if(($tglAwal != NULL) && ($tglAkhir != NULL)) {
+            $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+            $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
+        }
 
         $isi = 1;
         if(($request->kode != '') && ($request->tglAwal != '') && ($request->tglAkhir != ''))
@@ -290,8 +292,14 @@ class SalesOrderController extends Controller
             'tipe' => 'Faktur'
         ]);
 
-        $items = DetilSO::where('id_so', $id)->get();
-        foreach($items as $item) {
+        $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)->get();
+
+        if($items[0]->need_appdetil->count() != 0) {
+            $detil = NeedAppDetil::where('id_app', $items[0]->need_appdetil[0]->id_app)->get();
+        } else {
+            $detil = DetilSO::with(['so'])->where('id_so', $id)->get();
+        }
+        foreach($detil as $item) {
             $updateStok = StokBarang::where('id_barang', $item->id_barang)
                     ->where('id_gudang', $item->id_gudang)->first();
 
@@ -395,6 +403,9 @@ class SalesOrderController extends Controller
                 $updateStok->save();
             }
         }
+
+        $items = SalesOrder::with(['customer', 'need_approval'])
+                ->where('id', $request->kode)->get();
         
         if(($items[0]->need_approval->count() > 1) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
             $itemsApp = NeedApproval::where('id_dokumen', $request->kode)
