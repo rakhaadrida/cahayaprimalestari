@@ -39,14 +39,14 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" autofocus>
                   </div>
-                  @if(Auth::user()->roles != 'FINANCE')
+                  {{-- @if(Auth::user()->roles != 'FINANCE') --}}
                     <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-4">
                       <input type="text" class="form-control form-control-sm text-bold mt-1" id="namaCustomer" name="nama">
                       <input type="hidden" name="kode" id="kodeCustomer">
                     </div>
-                  @endif
+                  {{-- @endif --}}
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
@@ -105,12 +105,9 @@ const kodeSO = document.getElementById('kode');
 
 tglAwal.addEventListener("keyup", formatTanggal);
 tglAkhir.addEventListener("keyup", formatTanggal);
+namaCust.addEventListener("keyup", displayKode);
 
 /** Call Fungsi Setelah Inputan Terisi **/
-@if(Auth::user()->roles != 'FINANCE')
-namaCust.addEventListener("keyup", displayKode);
-@endif
-
 function formatTanggal(e) {
   var value = e.target.value.replaceAll("-","");
   var arrValue = value.split("", 3);

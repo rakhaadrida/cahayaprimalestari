@@ -276,6 +276,7 @@
                     <hr>
                     <!-- End Tabel Data Awal SO -->
 
+                    
                     @if(($item->status != 'APPROVE_LIMIT') && ($item->status != 'BATAL'))
                       <div class="container so-update-container text-dark" style="margin-top: 40px">
                         <div class="row" >

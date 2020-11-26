@@ -280,13 +280,21 @@ $('#dataTable').dataTable( {
 
 /** Input nominal comma separator **/
 for(let i = 0; i < transfer.length; i++) {
-  transfer[i].addEventListener("keyup", function(e) {
-    $(this).val(function(index, value) {
-      return value
-      .replace(/\D/g, "")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      ;
-    });
+  // transfer[i].addEventListener("keyup", function(e) {
+  //   $(this).val(function(index, value) {
+  //     return value
+  //     .replace(/\D/g, "")
+  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  //     ;
+  //   });
+  // })
+
+  transfer[i].addEventListener("focus", function(e) {
+    transfer[i].value = transfer[i].value.replace(/\,/g, "");
+  })
+
+  transfer[i].addEventListener("focusout", function(e) {
+    transfer[i].value = addCommas(transfer[i].value);
   })
 
   transfer[i].addEventListener("change", function(e) {

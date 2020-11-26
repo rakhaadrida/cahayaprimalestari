@@ -49,7 +49,8 @@ class KartuStokController extends Controller
         $rowSO = DetilSO::with(['so', 'barang'])
                     ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir]);
+                        $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
+                        ->where('status', '!=', 'BATAL');
                     })->count();
         $itemsBRG = Barang::whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])
                         ->get();
@@ -73,7 +74,8 @@ class KartuStokController extends Controller
             $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
                         ->where('id_barang', $s->id_barang)
                         ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir]);
+                            $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
+                            ->where('status', '!=', 'BATAL');
                         })->get();
             foreach($itemsSO as $so) {
                 $stokAwal[$i] += $so->qty;

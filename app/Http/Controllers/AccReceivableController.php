@@ -100,6 +100,7 @@ class AccReceivableController extends Controller
         if($request->kodeSO != "") {
             $arrKode = explode(",", $request->kodeSO);
             $arrKode = array_unique($arrKode);
+            sort($arrKode);
             for($i = 0; $i < sizeof($arrKode); $i++) {
                 $ar = AccReceivable::where('id_so', $arrKode[$i])->first();
                 $total = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')

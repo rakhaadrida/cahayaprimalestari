@@ -24,13 +24,15 @@
                 $detilar = App\Models\DetilAR::where('id_ar', $a->id)->get();
               @endphp
               @foreach($detilar as $d)
-                <tr class="table-modal-first-row text-dark">
-                  <td class="text-center">{{ $i }}</td>
-                  <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-M-y') }}</td>
-                  <td class="text-right">{{ number_format($d->cicil, 0, "", ".") }}</td>
-                  @php $kurang -= $d->cicil; @endphp
-                  <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
-                </tr>
+                @if($d->cicil != 0)
+                  <tr class="table-modal-first-row text-dark">
+                    <td class="text-center">{{ $i }}</td>
+                    <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-M-y') }}</td>
+                    <td class="text-right">{{ number_format($d->cicil, 0, "", ".") }}</td>
+                    @php $kurang -= $d->cicil; @endphp
+                    <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
+                  </tr>
+                @endif
                 @php $i++; $total += $d->cicil; @endphp
               @endforeach
               <tr>

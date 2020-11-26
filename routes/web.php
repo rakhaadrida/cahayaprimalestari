@@ -157,8 +157,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('so-process');
         Route::get('/so/cetak/{id}', 'SalesOrderController@cetak')->name('so-cetak');
         Route::get('/so/remove/{id}/{barang}','SalesOrderController@remove')->name('so-remove');
-        Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
-        Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
+        // Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
+        // Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
         Route::post('/so/change/status/{id}', 'SalesOrderController@status')->name('so-status');
         Route::post('/so/change/edit/{id}', 'SalesOrderController@edit')->name('so-edit');
         Route::post('/so/change/update', 'SalesOrderController@update')->name('so-update');
@@ -246,6 +246,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Laporan Keuangan
         Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
         Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'FINANCE', 'SUPER']], function() {
+        // Ubah dan Cek Faktur
+        Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
+        Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
     });
 });
 

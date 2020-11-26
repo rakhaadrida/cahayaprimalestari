@@ -39,14 +39,14 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" value="{{ $id }}" >
                   </div>
-                  @if(Auth::user()->roles != 'FINANCE')
+                  {{-- @if(Auth::user()->roles != 'FINANCE') --}}
                     <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-4">
                       <input type="text" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
                       <input type="hidden" name="kode" id="kodeCustomer" value="{{ $kode }}">
                     </div>
-                  @endif
+                  {{-- @endif --}}
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>

@@ -50,7 +50,7 @@
                     <input type="date" class="form-control form-control-sm text-bold mt-1 ml-1" name="tglAkhir" >
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('ar-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('ap-home') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -263,7 +263,7 @@ for(let i = 0; i < diskon.length; i++) {
     else {
       var angkaDiskon = hitungDiskon(e.target.value);
       netPast = +netto[i].value.replace(/\./g, "");
-      diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
+      diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
@@ -279,7 +279,8 @@ function hitungDiskon(angka) {
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
-  totDiskon = Math.floor(((totDiskon - 100) * -1).toFixed(2));
+  totDiskon = ((totDiskon - 100) * -1).toFixed(2);
+  console.log(totDiskon);
   return totDiskon;
 }
 

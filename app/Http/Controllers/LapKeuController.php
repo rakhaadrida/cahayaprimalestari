@@ -127,7 +127,7 @@ class LapKeuController extends Controller
                     ->join('customer', 'customer.id', '=', 'so.id_customer')
                     ->join('sales', 'sales.id' , '=', 'customer.id_sales')
                     ->select('customer.id_sales', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
-                    ->where('status', '!=', 'BATAL')
+                    ->where('so.status', '!=', 'BATAL')
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
                     ->groupBy('customer.id_sales', 'barang.id_kategori')

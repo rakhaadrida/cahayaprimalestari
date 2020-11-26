@@ -117,6 +117,8 @@ class AccPayableController extends Controller
 
         if($request->kodeBM != "") {
             $arrKode = explode(",", $request->kodeBM);
+            $arrKode = array_unique($arrKode);
+            sort($arrKode);
             for($i = 0; $i < sizeof($arrKode); $i++) {
                 $ap = AccPayable::where('id_bm', $arrKode[$i])->first();
                 $total = DetilAP::join('ap', 'ap.id', '=', 'detilap.id_ap')
@@ -128,8 +130,7 @@ class AccPayableController extends Controller
                 if($total->count() == 0) 
                     $totTransfer = 0;
                 else 
-                    $totTransfer = $total[$i]->totTransfer;
-
+                    $totTransfer = $total[0]->totTransfer;
 
                 if($bm[0]->total == str_replace(",", "", $request->{"tr".$arrKode[$i]})) 
                         $status = 'LUNAS';

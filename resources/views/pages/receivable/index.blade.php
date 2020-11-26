@@ -289,13 +289,21 @@ $('#dataTable').dataTable( {
 
 /** Input nominal comma separator **/
 for(let i = 0; i < cicil.length; i++) {
-  cicil[i].addEventListener("keyup", function(e) {
-    $(this).val(function(index, value) {
-      return value
-      .replace(/\D/g, "")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      ;
-    });
+  // cicil[i].addEventListener("keyup", function(e) {
+  //   $(this).val(function(index, value) {
+  //     return value
+  //     .replace(/\D/g, "")
+  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  //     ;
+  //   });
+  // })
+
+  cicil[i].addEventListener("focus", function(e) {
+    cicil[i].value = cicil[i].value.replace(/\,/g, "");
+  })
+
+  cicil[i].addEventListener("focusout", function(e) {
+    cicil[i].value = addCommas(cicil[i].value);
   })
 
   cicil[i].addEventListener("change", function(e) {
@@ -310,13 +318,21 @@ for(let i = 0; i < cicil.length; i++) {
     }
   })
 
-  retur[i].addEventListener("keyup", function(e) {
-    $(this).val(function(index, value) {
-      return value
-      .replace(/\D/g, "")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      ;
-    });
+  // retur[i].addEventListener("keyup", function(e) {
+  //   $(this).val(function(index, value) {
+  //     return value
+  //     .replace(/\D/g, "")
+  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  //     ;
+  //   });
+  // })
+
+  retur[i].addEventListener("focus", function(e) {
+    retur[i].value = retur[i].value.replace(/\,/g, "");
+  })
+
+  retur[i].addEventListener("focusout", function(e) {
+    retur[i].value = addCommas(retur[i].value);
   })
 
   retur[i].addEventListener("change", function(e) {
