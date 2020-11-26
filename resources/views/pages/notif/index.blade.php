@@ -21,7 +21,7 @@
           <thead class="text-center text-bold text-dark">
             <tr align="center">
               <th style="width: 30px">No</th>
-              <th style="width: 70px">No. Transaksi</th>
+              <th style="width: 70px">No. Dokumen</th>
               <th style="width: 80px">Tgl Approve</th>
               <th>Customer / Supplier</th>
               <th style="width: 70px">Status</th>
@@ -35,27 +35,27 @@
             @forelse($items as $item)
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
-                <td class="align-middle" align="center">{{ $item->id }}</td>
-                <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-M-y') }}</td>
+                <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
+                <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</td>
                 <td class="align-middle">
-                  @if($item->approval[0]->tipe == 'Faktur')
-                    {{ $item->customer->nama }}
+                  @if($item->tipe == 'Faktur')
+                    {{ $item->so->customer->nama }}
                   @else
-                    {{ $item->supplier->nama }}
+                    {{ $item->bm->supplier->nama }}
                   @endif
                 </td>
                 <td class="align-middle" align="center">{{ $item->status }}</td>
-                <td class="align-middle">{{ $item->approval[0]->keterangan }}</td>
+                <td class="align-middle">{{ $item->keterangan }}</td>
                 <td class="align-middle" align="center">
                   <a href="{{ route('notif-show', $item->id) }}" class="btn btn-success btn-sm">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
                 <td class="align-middle" align="center">
-                  @if(($item->approval[0]->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
+                  @if(($item->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
                     <a href="{{ route('notif-show', $item->id) }}" class="btn btn-primary btn-sm" style="width: 150px">Cetak</a>
                   @else
-                    <a href="{{ route('notif-read', $item->approval[0]->id) }}" class="btn btn-info btn-sm">Tandai Sudah Dibaca</a>
+                    <a href="{{ route('notif-read', $item->id) }}" class="btn btn-info btn-sm">Tandai Sudah Dibaca</a>
                   @endif
                 </td>
               </tr>

@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\DB;
 class NotifController extends Controller
 {
     public function index() {
+        $items = Approval::with(['so', 'bm'])
+                ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'baca')
+                ->where('baca', 'F')->get();
         $so = SalesOrder::with(['customer'])
                 ->select('id', 'status', 'id_customer')
                 ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT'])
@@ -26,10 +29,12 @@ class NotifController extends Controller
                     $q->where('baca', 'F');
                 })->get();
 
-        $items = $so->merge($bm);
-        $items = $items->sortBy(function($sort) {
-            return $sort->approval[0]->created_at;
-        });
+        // return response()->json($items);
+
+        // $items = $so->merge($bm);
+        // $items = $items->sortBy(function($sort) {
+        //     return $sort->approval[0]->created_at;
+        // });
 
         $data = [
             'items' => $items
@@ -52,10 +57,14 @@ class NotifController extends Controller
                     $q->where('baca', 'F');
                 })->get();
 
-        $items = $so->merge($bm);
-        $items = $items->sortBy(function($sort) {
-            return $sort->approval[0]->created_at;
-        });
+        // $items = $so->merge($bm);
+        // $items = $items->sortBy(function($sort) {
+        //     return $sort->approval[0]->created_at;
+        // });
+
+        $items = Approval::with(['so', 'bm'])
+                ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'baca')
+                ->where('baca', 'F')->get();
 
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
@@ -89,6 +98,7 @@ class NotifController extends Controller
 
     public function markAsRead($id) {
         $item = Approval::where('id', $id)->first();
+        // return response()->json($item);
         $item->{'baca'} = 'T';
         $item->save();
 
