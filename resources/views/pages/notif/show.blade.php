@@ -33,12 +33,22 @@
                   />
                     @php 
                       if($item->tipe != 'Dokumen') {
-                        $items = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so', $item->id_dokumen)->get();
+                        $items = \App\Models\DetilSO::with(['so', 'barang'])
+                                  ->select('id_barang', 'diskon')
+                                  ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                                  ->where('id_so', $item->id_dokumen)
+                                  ->groupBy('id_barang', 'diskon')
+                                  ->get();
 
                         $itemsUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])->where('id_app', $item->id)->get();
                       } 
                       else {
-                        $items = \App\Models\DetilBM::with(['bm', 'barang'])->where('id_bm', $item->id_dokumen)->get();
+                        $items = \App\Models\DetilBM::with(['bm', 'barang'])
+                                  ->select('id_barang', 'diskon')
+                                  ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                                  ->where('id_bm', $item->id_dokumen)
+                                  ->groupBy('id_barang', 'diskon')
+                                  ->get();
 
                         $itemsUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])->where('id_app', $item->id)->get();
                       }
@@ -103,9 +113,9 @@
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Gudang</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang">
-                                {{-- value="{{ $item->gudang->nama }}" > --}}
-                                {{-- <input type="hidden" name="kodeGudang" value="{{ $item->id_gudang }}"> --}}
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
+                                value="{{ $item->bm->gudang->nama }}" >
+                                <input type="hidden" name="kodeGudang" value="{{ $item->bm->id_gudang }}">
                               </div>
                             </div>
                           </div>
@@ -168,6 +178,11 @@
                         <td style="width: 80px">Kode</td>
                         <td>Nama Barang</td>
                         <td style="width: 50px">Qty</td>
+                        @if($item->tipe == 'Faktur') 
+                          @foreach($gudang as $g)
+                            <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
+                          @endforeach
+                        @endif
                         <td>Harga</td>
                         <td>Jumlah</td>
                         @if($item->tipe != 'Dokumen') 
@@ -186,6 +201,21 @@
                             <td align="center">{{ $i->id_barang }} </td>
                             <td>{{ $i->barang->nama }}</td>
                             <td align="right">{{ $i->qty }}</td>
+                            @if($item->tipe == 'Faktur')
+                              @foreach($gudang as $g)
+                                @php
+                                  $itemGud = \App\Models\DetilApproval::where('id_app',
+                                          $i->id_app)
+                                          ->where('id_barang', $i->id_barang)
+                                          ->where('id_gudang', $g->id)->get();
+                                @endphp
+                                @if($itemGud->count() != 0)
+                                  <td align="right">{{ $itemGud[0]->qty }}</td>
+                                @else
+                                  <td></td>
+                                @endif
+                              @endforeach
+                            @endif
                             <td align="right">
                               {{ number_format($i->harga, 0, "", ".") }}
                             </td>
@@ -315,6 +345,14 @@
                         </div>
                       </div>
 
+                      {{-- @php
+                        $items = \App\Models\DetilSO::with(['so', 'barang'])
+                                      ->select('id_barang', 'diskon')
+                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                                      ->where('id_so', $item->id_dokumen)
+                                      ->groupBy('id_barang', 'diskon')
+                                      ->get();
+                      @endphp --}}
                       <!-- Tabel Data Update SO -->
                       <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                         <thead class="text-center text-bold text-dark">
@@ -322,6 +360,11 @@
                           <td style="width: 80px">Kode</td>
                           <td>Nama Barang</td>
                           <td style="width: 50px">Qty</td>
+                          @if($item->tipe == 'Faktur') 
+                            @foreach($gudang as $g)
+                              <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
+                            @endforeach
+                          @endif
                           <td>Harga</td>
                           <td>Jumlah</td>
                           @if($item->tipe == 'Faktur') 
@@ -341,15 +384,41 @@
                               @if($iu->id_barang != $itemsUpdate[$i-1]->id_barang) class="bg-warning text-danger" @endif>
                                 {{ $iu->id_barang }} 
                               </td>
-                              <td @if($iu->barang->nama != $itemsUpdate[$i-1]->barang->nama) class="bg-warning text-danger" @endif>
+                              <td 
+                              @if($iu->barang->nama != $itemsUpdate[$i-1]->barang->nama) class="bg-warning text-danger" @endif>
                               {{ $iu->barang->nama }}</td>
-                              <td align="right" @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
+                              <td align="right" 
+                              @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
                                 {{ $iu->qty }}
                               </td>
+                              @if($item->tipe == 'Faktur')
+                                @foreach($gudang as $g)
+                                  @php
+                                    $itemGud = \App\Models\DetilSO::where('id_so',
+                                            $item->id_dokumen)
+                                            ->where('id_barang', $iu->id_barang)
+                                            ->where('id_gudang', $g->id)->get();
+                                    
+                                    $qtyGud = \App\Models\DetilApproval::where('id_app',
+                                            $item->id)
+                                            ->where('id_barang', $iu->id_barang)
+                                            ->where('id_gudang', $g->id)->get();
+                                  @endphp
+                                  @if($itemGud->count() != 0)
+                                    <td align="right" 
+                                    @if(($qtyGud->count() == 0) || ($itemGud[0]->qty != $qtyGud[0]->qty)) class="bg-warning text-danger" @endif>
+                                      {{ $itemGud[0]->qty }}
+                                    </td>
+                                  @else
+                                    <td></td>
+                                  @endif
+                                @endforeach
+                              @endif
                               <td align="right">
                                 {{ number_format($iu->harga, 0, "", ".") }}
                               </td>
-                              <td align="right" @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
+                              <td align="right" 
+                              @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
                                 {{number_format(($iu->qty * $iu->harga), 0, "", ".")}}
                               </td>
                               @if($item->tipe == 'Faktur') 
@@ -365,10 +434,12 @@
                                   } 
                                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                                 @endphp
-                                <td align="right" @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
+                                <td align="right" 
+                                @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
                                   {{ number_format((($iu->qty * $iu->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
                                 </td>
-                                <td align="right" @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
+                                <td align="right" 
+                                @if($iu->qty != $itemsUpdate[$i-1]->qty) class="bg-warning text-danger" @endif>
                                   {{ number_format(($iu->qty * $iu->harga) - 
                                   ((($iu->qty * $iu->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
                                 </td>

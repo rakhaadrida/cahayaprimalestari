@@ -141,6 +141,7 @@
                             <td align="right">
                               <input type="text" name="dis{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" @if($detil->diskon != null) 
                               value="{{ $detil->diskon }}" @endif required>
+                              <input type="hidden" name="diskon{{$detil->id_barang}}" class="disAngka" @if($detil->diskon != null) value="{{ $detil->diskonRp }}" @endif>
                             </td>
                             @if($detil->diskon != null)
                               @php 
@@ -155,6 +156,7 @@
                             <td align="right">
                               <input type="text" name="disRp{{$detil->id_barang}}" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" @if($detil->diskon != null) 
                               value="{{ number_format((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}" 
+                              {{-- value="{{ $diskon }}" --}}
                               @endif>
                             </td>
                             <td align="right">
@@ -245,6 +247,7 @@
 <script type="text/javascript">
 const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
+const disAngka = document.querySelectorAll(".disAngka");
 const diskonRp = document.querySelectorAll(".diskonRp");
 const netto = document.querySelectorAll(".netto");
 const subtotal = document.getElementById('subtotal');
@@ -253,7 +256,7 @@ const grandtotal = document.getElementById('grandtotal');
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
-  diskon[i].addEventListener("change", function (e) {
+  diskon[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
       netPast = netto[i].value.replace(/\./g, "");
       netto[i].value = "";
@@ -263,6 +266,7 @@ for(let i = 0; i < diskon.length; i++) {
     else {
       var angkaDiskon = hitungDiskon(e.target.value);
       netPast = +netto[i].value.replace(/\./g, "");
+      disAngka[i].value = angkaDiskon;
       diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));

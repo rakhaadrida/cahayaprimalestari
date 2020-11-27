@@ -8,6 +8,7 @@ use App\Models\BarangMasuk;
 use App\Models\AccReceivable;
 use App\Models\DetilAR;
 use App\Models\Approval;
+use App\Models\Gudang;
 use Illuminate\Support\Facades\DB;
 
 class NotifController extends Controller
@@ -62,6 +63,7 @@ class NotifController extends Controller
         //     return $sort->approval[0]->created_at;
         // });
 
+        $gudang = Gudang::All();
         $items = Approval::with(['so', 'bm'])
                 ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'baca')
                 ->where('baca', 'F')->get();
@@ -88,6 +90,7 @@ class NotifController extends Controller
         }
 
         $data = [
+            'gudang' => $gudang,
             'notif' => $items,
             'kode' => $id,
             'total' => $totalPerCust
