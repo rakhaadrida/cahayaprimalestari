@@ -113,8 +113,8 @@ const btnCetak = document.getElementById('btnCetak');
 
 @if($status == "true")
   const printFrame = document.getElementById("frameCetak").contentWindow;
-  const kodeAwal = document.querySelectorAll(".kodeAwal");
-  const kodeAkhir = document.querySelectorAll(".kodeAkhir");
+  // const kodeAwal = document.querySelectorAll(".kodeAwal");
+  // const kodeAkhir = document.querySelectorAll(".kodeAkhir");
 
   /** Cara 1 **/
   // const printFrame = document.createElement('iframe');
@@ -137,14 +137,16 @@ const btnCetak = document.getElementById('btnCetak');
 
 
   /** Cara 2 **/
-  // printFrame.window.onafterprint = function(e) {
-  //   alert('ok');
-  //   window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
-  // }
+  printFrame.window.onafterprint = function(e) {
+    // alert('ok');
+    window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+  }
 
-  // window.print();
+  
   // window.frames["frameCetak"].window.print();
-  // printFrame.window.print();
+  
+  printFrame.window.print();
+  window.print();
   /** End Cara 2 **/
 
 
