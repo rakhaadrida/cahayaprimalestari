@@ -11,7 +11,7 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
     <h1 class="h3 mb-0 text-gray-800 menu-title">
-      @if(Auth::user()->roles == 'FINANCE') Cek Faktur @else Ubah Faktur @endif
+      @if(Auth::user()->roles == 'AR') Cek Faktur @else Ubah Faktur @endif
     </h1>
   </div>
   @if ($errors->any())
@@ -39,7 +39,7 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" autofocus>
                   </div>
-                  {{-- @if(Auth::user()->roles != 'FINANCE') --}}
+                  {{-- @if(Auth::user()->roles != 'AR') --}}
                     <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-4">

@@ -16,7 +16,7 @@
               <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
               <div class="col-md-6">
-                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" onkeypress="return tanpaSpasi(event)" data-toogle="tooltip" data-placement="bottom" title="Tidak boleh ada spasi" required autocomplete="name" autofocus>
 
                 @error('name')
                   <span class="invalid-feedback" role="alert">
@@ -50,7 +50,10 @@
                   <option selected>-- PILIH --</option>
                   <option value="SUPER">SUPER</option>
                   <option value="ADMIN">ADMIN</option>
-                  <option value="FINANCE">FINANCE</option>
+                  <option value="AR">AR</option>
+                  <option value="AP">AP</option>
+                  <option value="KENARI">KENARI</option>
+                  <option value="OFFICE02">OFFICE02</option>
                 </select>
 
                 @error('name')
@@ -74,3 +77,18 @@
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+const nama = document.getElementById('name');
+
+function tanpaSpasi(evt) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if(charCode == 32) {
+    $(nama).tooltip('show');
+    return false;
+  }
+}
+</script>
+@endpush

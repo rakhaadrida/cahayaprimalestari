@@ -13,8 +13,15 @@ class AccReceivableController extends Controller
 {
     public function index() {
         $ar = AccReceivable::with(['so'])->get();
+        $arOffice = AccReceivable::with(['so'])
+                ->select('ar.id', 'ar.id_so', 'ar.keterangan', 'ar.retur')
+                ->join('so', 'so.id', 'ar.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->where('id_sales', 'SLS03')->get();
+                // return response()->json($arOffice);
         $data = [
-            'ar' => $ar
+            'ar' => $ar,
+            'arOffice' => $arOffice
         ];
 
         return view('pages.receivable.index', $data);

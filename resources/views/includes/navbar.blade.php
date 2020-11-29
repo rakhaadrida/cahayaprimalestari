@@ -41,6 +41,7 @@
       </div>
     </li>
 
+    @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN'))
     <!-- Nav Item - Alerts -->
     <li class="nav-item dropdown no-arrow mx-1">
       <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -51,7 +52,7 @@
             $items = \App\Models\NeedApproval::All();
           @endphp
           <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
-        @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
+        @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
           @php 
             $so = \App\Models\SalesOrder::with(['customer'])
                 ->select('id', 'status', 'id_customer')
@@ -86,7 +87,7 @@
               <a class="dropdown-item d-flex align-items-center" 
               @if(Auth::user()->roles == 'SUPER') 
                 href="{{ route('app-show', $item->id_dokumen) }}"
-              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR'))
                 href="{{ route('notif-show', $item->id) }}"
               @endif
               >
@@ -109,7 +110,7 @@
                         Customer {{ $item->so->customer->nama }} melebihi limit pada faktur {{ $item->id_dokumen }}
                       </span>
                     @endif
-                  @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
+                  @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR'))
                     <div class="small text-dark-600">
                       {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-M-y') }}
                     </div>
@@ -167,6 +168,7 @@
         </a> --}}
       </div>
     </li>
+    @endif
 
     <div class="topbar-divider d-none d-sm-block"></div>
 

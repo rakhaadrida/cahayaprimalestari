@@ -32,11 +32,19 @@
   </li>
   @endif
 
-  @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'FINANCE'))
+  @if(Auth::user()->roles == 'ADMIN')
     <li class="nav-item sidebar-menu-icon" >
       <a class="nav-link" href="{{ route('notif') }}">
         <i class="fas fa-fw fa-bell"></i>
         <span>Notifikasi</span></a>
+    </li>
+  @endif
+
+  @if(Auth::user()->roles == 'OFFICE02')
+    <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link" href="{{ route('ar') }}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Penjualan</span></a>
     </li>
   @endif
 
@@ -116,6 +124,7 @@
       <div class="py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('kartu') }}">Kartu Stok</a>
         <a class="collapse-item" href="{{ route('rekap') }}">Rekap Stok</a>
+        <a class="collapse-item" href="{{ route('lap-keu') }}">Rekap Penjualan</a>
       </div>
     </div>
   </li>
@@ -124,40 +133,48 @@
   <hr class="sidebar-divider">
   @endif
 
-  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'FINANCE'))
+  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
   <!-- Heading -->
   <div class="sidebar-heading sidebar-heading-title text-white">
     Finance
   </div>
+  @endif
 
-  <!-- Nav Item - Account Receivable -->
-  <li class="nav-item sidebar-first-icon">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-      <i class="fas fa-fw fa-folder"></i>
-      <span>Account Receivable</span>
-    </a>
-    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-      <div class="py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ route('ar') }}">Data AR</a>
-        <a class="collapse-item" href="{{ route('so-change') }}">Cek Faktur</a>
+  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
+    <!-- Nav Item - Account Receivable -->
+    <li class="nav-item sidebar-first-icon">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+        <i class="fas fa-fw fa-folder"></i>
+        <span>Account Receivable</span>
+      </a>
+      <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div class="py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('ar') }}">Data AR</a>
+          <a class="collapse-item" href="{{ route('so-change') }}">Cek Faktur</a>
+        </div>
       </div>
-    </div>
-  </li>
+    </li>
+  @endif
 
-  <!-- Nav Item - Account Payable -->
-  <li class="nav-item sidebar-menu-icon">
-    <a class="nav-link" href="{{ route('ap') }}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Account Payable</span></a>
-  </li>
+  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AP'))
+    <!-- Nav Item - Account Payable -->
+    <li class="nav-item @if(Auth::user()->roles == 'SUPER') sidebar-menu-icon @else sidebar-first-icon @endif">
+      <a class="nav-link" href="{{ route('ap') }}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Account Payable</span></a>
+    </li>
+  @endif
 
-  <!-- Nav Item - Laporan Keuangan -->
-  <li class="nav-item sidebar-menu-icon">
-    <a class="nav-link" href="{{ route('lap-keu') }}">
-      <i class="fas fa-fw fa-table"></i>
-      <span>Laporan</span></a>
-  </li>
+  @if(Auth::user()->roles == 'SUPER')
+    <!-- Nav Item - Laporan Keuangan -->
+    <li class="nav-item sidebar-menu-icon">
+      <a class="nav-link" href="{{ route('lap-keu') }}">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Laporan</span></a>
+    </li>
+  @endif
 
+  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
   @endif

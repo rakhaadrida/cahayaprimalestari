@@ -197,6 +197,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
         Route::post('rekap/pdf', 'RekapStokController@cetak_pdf')->name('rs-pdf');
         Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');
+
+        // Laporan Keuangan
+        Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
+        Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
     });
 
     Route::group(['roles'=>'SUPER'], function() {
@@ -211,7 +215,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Master User
         Route::resource('user', 'UserController');
 
-        // Soft Deletes Gudang
+        // Soft Deletes User
         Route::get('user/trash/all', 'UserController@trash')->name('user-trash');
         Route::get('user/restore/{id}', 'UserController@restore')->name('user-restore');
         Route::get('user/restore-all/all', 'UserController@restoreAll')
@@ -221,20 +225,22 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('user-hapusAll');
     });
 
-    Route::group(['roles'=>['ADMIN', 'FINANCE']], function() {
+    Route::group(['roles'=>['ADMIN', 'AR']], function() {
         // Notif
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
         Route::get('notif/read/{id}', 'NotifController@markAsRead')->name('notif-read');
     });
 
-    Route::group(['roles'=>['FINANCE', 'SUPER']], function() {
+    Route::group(['roles'=>['AR', 'SUPER', 'OFFICE02']], function() {
         // Account Receivable
         Route::get('ar', 'AccReceivableController@index')->name('ar');
         Route::post('ar', 'AccReceivableController@index')->name('ar-home');
         Route::post('ar/show', 'AccReceivableController@show')->name('ar-show');
         Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
+    });
 
+    Route::group(['roles'=>['AP', 'SUPER']], function() {
         // Account Payable
         Route::get('ap', 'AccPayableController@index')->name('ap');
         Route::post('ap', 'AccPayableController@index')->name('ap-home');
@@ -242,16 +248,18 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ap/detail/{id}', 'AccPayableController@detail')->name('ap-detail');
         Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
         Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
-
-        // Laporan Keuangan
-        Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
-        Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
     });
 
-    Route::group(['roles'=>['ADMIN', 'FINANCE', 'SUPER']], function() {
+    Route::group(['roles'=>['ADMIN', 'AR', 'SUPER']], function() {
         // Ubah dan Cek Faktur
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
+    });
+
+    Route::group(['roles'=>['AR', 'SUPER']], function() {
+        // Account Receivable
+        Route::post('ar', 'AccReceivableController@index')->name('ar-home');
+        Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
     });
 });
 

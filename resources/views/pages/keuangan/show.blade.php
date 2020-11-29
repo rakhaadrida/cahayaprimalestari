@@ -70,12 +70,11 @@
                 <thead class="text-center text-bold text-dark">
                   <tr style="font-size: 14px">
                     <th style="width: 10px" class="align-middle">NO</th>
-                    <th style="width: 120px" class="align-middle">SALES</th>
+                    <th style="width: 100px" class="align-middle">SALES</th>
                     <th style="width: 60px" class="align-middle">DETAIL</th>
                     @foreach($jenis as $j)
                       <th style="width: 70px" class="align-middle">{{$j->nama}}</th>
                     @endforeach
-                    <th style="width: 50px" class="align-middle">RETUR</th>
                     <th style="width: 40px" class="align-middle">Grand Total</th>
                   </tr>
                 </thead>
@@ -83,8 +82,8 @@
                   @php $no = 1; $ret = 0; @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
-                      <td rowspan="4" align="center" class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $no }}</td>
-                      <td rowspan="4" class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $s->nama }}</td>
+                      <td @if(Auth::user()->roles == 'SUPER') rowspan="4" @else rowspan="3" @endif align="center" class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $no }}</td>
+                      <td @if(Auth::user()->roles == 'SUPER') rowspan="4" @else rowspan="3" @endif class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $s->nama }}</td>
                       <td align="center" style="background-color: #f0ededda !important">Revenue</td>
                       @php $total = 0; @endphp
                       @foreach($jenis as $j)
@@ -97,11 +96,11 @@
                         @endforeach
                         </td>
                       @endforeach
-                      <td align="right" class="align-middle" style="background-color: #f0ededda !important"></td>
                       <td align="right" class="align-middle" style="background-color: #f0ededda !important">
                         {{ number_format($total, 0, "", ",") }}
                       </td>
                     </tr>
+                    @if(Auth::user()->roles == 'SUPER')
                     <tr class="text-dark" style="background-color: white">
                       <td align="center">HPP</td>
                       @php $hpp = 0; @endphp
@@ -117,18 +116,17 @@
                         @endforeach
                         </td>
                       @endforeach
-                      <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
                         {{ number_format($hpp, 0, "", ",") }}
                       </td>
                     </tr>
+                    @endif
                     <tr class="text-dark">
                       <td align="center">Retur</td>
                       @php $hpp = 0; @endphp
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle"></td>
                       @endforeach
-                      <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
                         @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
                           {{ number_format($retur[$ret]->total, 0, "", ",") }}
@@ -138,19 +136,27 @@
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="background-color: yellow">
-                      <td align="center">Laba</td>
+                      @if(Auth::user()->roles == 'SUPER')
+                        <td align="center">Laba</td>
+                      @else
+                        <td align="center">Total</td>
+                      @endif
                       @php $laba = 0; @endphp
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle">
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
-                            {{ number_format($i->total - $i->hpp, 0, "", ",") }}
-                            @php $laba += ($i->total - $i->hpp) @endphp
+                            @if(Auth::user()->roles == 'SUPER')
+                              {{ number_format($i->total - $i->hpp, 0, "", ",") }}
+                              @php $laba += ($i->total - $i->hpp) @endphp
+                            @else
+                              {{ number_format($i->total, 0, "", ",") }}
+                              @php $laba += $i->total @endphp
+                            @endif
                           @endif
                         @endforeach
                         </td>
                       @endforeach
-                      <td align="right" class="align-middle"></td>
                       <td align="right" class="align-middle">
                         @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
                           {{ number_format($laba - $retur[$ret]->total, 0, "", ",") }}
