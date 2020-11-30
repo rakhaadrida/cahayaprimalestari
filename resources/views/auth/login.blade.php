@@ -30,6 +30,7 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                <i class="far fa-eye password-eye-icon" id="togglePassword"></i>
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -71,3 +72,17 @@
     </div>
 </div>
 @endsection
+
+@push('addon-script')
+<script type="text/javascript">
+const togglePassword = document.getElementById('togglePassword');
+const password = document.getElementById('password');
+
+togglePassword.addEventListener('click', function (e) {
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    this.classList.toggle('fa-eye-slash');
+});
+
+</script>
+@endpush

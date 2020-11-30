@@ -115,7 +115,37 @@ class AccPayableController extends Controller
         $lastnumber++;
         $newcode = 'TRS'.sprintf("%04s", $lastnumber);
 
-        if($request->kodeBM != "") {
+        $tglBayar = $request->{"tgl".$request->kode};
+        $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
+
+        $ap = AccPayable::where('id_bm', $request->kode)->first();
+        $total = DetilAP::join('ap', 'ap.id', '=', 'detilap.id_ap')
+                    ->select('ap.id', DB::raw('sum(transfer) as totTransfer'))
+                    ->where('ap.id_bm', $request->kode)
+                    ->groupBy('ap.id')->get();
+        $bm = BarangMasuk::where('id', $request->kode)->get();
+
+        if($total->count() == 0) 
+            $totTransfer = 0;
+        else 
+            $totTransfer = $total[0]->totTransfer;
+
+        if($bm[0]->total == str_replace(",", "", $request->{"bayar".$request->kode}) + $totTransfer) 
+                $status = 'LUNAS';
+            else 
+                $status = 'BELUM LUNAS';
+
+        $ap->{'keterangan'} = $status;
+        $ap->save();
+
+        DetilAP::create([
+            'id_ap' => $ap->{'id'},
+            'id_bayar' => $newcode,
+            'tgl_bayar' => $tglBayar,
+            'transfer' => (int) str_replace(",", "", $request->{"bayar".$request->kode})
+        ]);
+
+        /* if($request->kodeBM != "") {
             $arrKode = explode(",", $request->kodeBM);
             $arrKode = array_unique($arrKode);
             sort($arrKode);
@@ -147,7 +177,7 @@ class AccPayableController extends Controller
                     'transfer' => (int) str_replace(",", "", $request->{"tr".$arrKode[$i]}) - $totTransfer
                 ]);
             }
-        }
+        } */
 
         return redirect()->route('ap');
     }

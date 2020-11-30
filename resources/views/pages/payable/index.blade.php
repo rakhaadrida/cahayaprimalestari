@@ -68,14 +68,14 @@
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
               <!-- Button Submit dan Reset -->
-              <div class="form-row justify-content-center" @if($ap->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
+              {{-- <div class="form-row justify-content-center" @if($ap->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
                 <div class="col-1">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ap-transfer') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-1">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
-              </div>
+              </div> --}}
               <!-- End Button Submit dan Reset -->
 
               <!-- Tabel Data Detil AR -->
@@ -118,7 +118,7 @@
                         @if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total, 0, "", ",") }} @endif
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" class="form-control form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
+                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
                       </td>
                       <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total - $total[0]->totTransfer, 0, "", ",") }} @endif</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
@@ -144,14 +144,14 @@
               </table>
 
               <!-- Button Submit dan Reset -->
-              <div class="form-row justify-content-center" @if($ap->count() != 0) style="margin-top: -18px" @endif>
+              {{-- <div class="form-row justify-content-center" @if($ap->count() != 0) style="margin-top: -18px" @endif>
                 <div class="col-1">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ap-transfer') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-1">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
-              </div>
+              </div> --}}
               <!-- End Button Submit dan Reset -->
               
             </form>

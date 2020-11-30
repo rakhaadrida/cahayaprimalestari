@@ -11572,7 +11572,7 @@ a:focus {
     min-width: 10rem;
     font-size: 0.85rem;
     font-weight: 600;
-    margin: 0 0 1rem 0;
+    margin: 0 0 1rem -0.75rem;
 }
 
 .sidebar .nav-item .collapse .collapse-inner .collapse-header,
@@ -11616,6 +11616,71 @@ a:focus {
 
 .sidebar .nav-item .collapse .collapse-inner .collapse-item.active,
 .sidebar .nav-item .collapsing .collapse-inner .collapse-item.active {
+    color: #4e73df;
+    font-weight: 700;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner {
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    background-color: #4784f7;
+}
+
+.sidebar .nav-item .collapsing {
+    display: none;
+    transition: none;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner,
+.sidebar .nav-item .collapsing .collapse-sub-inner {
+    padding: .5rem 0;
+    min-width: 10rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 9.5rem 0 1rem 2.25rem;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner .collapse-header,
+.sidebar .nav-item .collapsing .collapse-sub-inner .collapse-header {
+    margin: 0;
+    white-space: nowrap;
+    padding: .5rem 1.5rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 0.65rem;
+    color: #b7b9cc;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner .collapse-item,
+.sidebar .nav-item .collapsing .collapse-sub-inner .collapse-item {
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    display: block;
+    color: #eeefff;
+    text-decoration: none;
+    /* border-radius: 0.35rem; */
+    white-space: nowrap;
+    border-bottom: solid #ececee;
+    border-width: thin;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner .collapse-item:last-child,
+.sidebar .nav-item .collapsing .collapse-sub-inner .collapse-item:last-child {
+    border-bottom: none !important;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner .collapse-item:hover,
+.sidebar .nav-item .collapsing .collapse-sub-inner .collapse-item:hover {
+    background-color: #707070;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner .collapse-item:active,
+.sidebar .nav-item .collapsing .collapse-sub-inner .collapse-item:active {
+    background-color: #dddfeb;
+}
+
+.sidebar .nav-item .collapse .collapse-sub-inner .collapse-item.active,
+.sidebar .nav-item .collapsing .collapse-sub-inner .collapse-item.active {
     color: #4e73df;
     font-weight: 700;
 }

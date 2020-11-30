@@ -9,6 +9,7 @@ use App\Models\StokBarang;
 use App\Models\TransferBarang;
 use App\Models\DetilTB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TransferBarangController extends Controller
 {
@@ -67,7 +68,8 @@ class TransferBarangController extends Controller
         
         TransferBarang::create([
             'id' => $id,
-            'tgl_tb' => $tanggal
+            'tgl_tb' => $tanggal,
+            'id_user' => Auth::user()->id
         ]);
 
         for($i = 0; $i < $jumlah; $i++) {

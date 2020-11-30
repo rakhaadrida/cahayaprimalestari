@@ -104,6 +104,38 @@ class AccReceivableController extends Controller
         $lastnumber++;
         $newcode = 'CIC'.sprintf("%04s", $lastnumber);
 
+        $tglBayar = $request->{"tgl".$request->kode};
+        $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
+
+        $ar = AccReceivable::where('id_so', $request->kode)->first();
+        $total = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+                    ->select('ar.id', DB::raw('sum(cicil) as totCicil'))
+                    ->where('ar.id_so', $request->kode)
+                    ->groupBy('ar.id')->get();
+        $so = SalesOrder::where('id', $request->kode)->get();
+
+        if($total->count() == 0) 
+            $totCicil = 0;
+        else 
+            $totCicil = $total[0]->totCicil;
+
+        if($so[0]->total == str_replace(",", "", $request->{"cicil".$request->kode}) + $totCicil)
+                $status = 'LUNAS';
+            else 
+                $status = 'BELUM LUNAS';
+
+        // $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
+        $ar->{'keterangan'} = $status;
+        $ar->save();
+
+        DetilAR::create([
+            'id_ar' => $ar->{'id'},
+            'id_cicil' => $newcode,
+            'tgl_bayar' => $tglBayar,
+            'cicil' => (int) str_replace(",", "", $request->{"cicil".$request->kode})
+        ]);
+
+        /*
         if($request->kodeSO != "") {
             $arrKode = explode(",", $request->kodeSO);
             $arrKode = array_unique($arrKode);
@@ -137,7 +169,7 @@ class AccReceivableController extends Controller
                     'cicil' => (int) str_replace(",", "", $request->{"cic".$arrKode[$i]}) - $totCicil
                 ]);
             }
-        }
+        }*/
 
         return redirect()->route('ar');
     }

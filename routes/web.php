@@ -256,11 +256,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
     });
 
-    Route::group(['roles'=>['AR', 'SUPER']], function() {
-        // Account Receivable
-        Route::post('ar', 'AccReceivableController@index')->name('ar-home');
-        Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
-    });
+    // Route::group(['roles'=>['AR', 'SUPER']], function() {
+    //     // Account Receivable
+    //     Route::post('ar', 'AccReceivableController@index')->name('ar-home');
+    //     Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
+    // });
 });
 
 Auth::routes(['verify' => true]);

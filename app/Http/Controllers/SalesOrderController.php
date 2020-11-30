@@ -19,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class SalesOrderController extends Controller
@@ -123,7 +124,8 @@ class SalesOrderController extends Controller
             'tempo' => $tempo,
             'pkp' => $pkp,
             'status' => $status,
-            'id_customer' => $request->kodeCustomer
+            'id_customer' => $request->kodeCustomer,
+            'id_user' => Auth::user()->id
         ]);
 
         if($status != 'LIMIT') {

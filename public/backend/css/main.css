@@ -429,3 +429,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 14px;
     font-weight: 600;
 }
+
+.password-eye-icon {
+    float: right;
+    left: -3%;
+    margin-top: -28px;
+    position: relative;
+    z-index: 2;
+}

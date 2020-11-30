@@ -15,6 +15,7 @@ use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class BarangMasukController extends Controller
@@ -82,7 +83,8 @@ class BarangMasukController extends Controller
             'total' => str_replace(".", "", $request->subtotal),
             'id_gudang' => $request->kodeGudang,
             'id_supplier' => $request->kodeSupplier,
-            'status' => 'NO_DISC'
+            'status' => 'NO_DISC',
+            'id_user' => Auth::user()->id
         ]);
 
         $lastcode = AccPayable::max('id');

@@ -21,9 +21,9 @@ class SubjenisController extends Controller
     public function create()
     {
         $lastcode = Subjenis::withTrashed()->max('id');
-        $lastnumber = (int) substr($lastcode, 3, 3);
+        $lastnumber = (int) substr($lastcode, 3, 2);
         $lastnumber++;
-        $newcode = 'SUB'.sprintf("%03s", $lastnumber);
+        $newcode = 'SUB'.sprintf("%02s", $lastnumber);
         $jenis = JenisBarang::All();
 
         $data = [

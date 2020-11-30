@@ -72,14 +72,14 @@
 
               @if(Auth::user()->roles != 'OFFICE02')
                 <!-- Button Submit dan Reset -->
-                <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
+                {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
                   <div class="col-1">
                     <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                   </div>
                   <div class="col-1">
                     <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                   </div>
-                </div>
+                </div> --}}
                 <!-- End Button Submit dan Reset -->
               @endif
 
@@ -131,10 +131,10 @@
                         {{ number_format($a->so->total, 0, "", ",") }}
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="cic{{$a->id_so}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif >
+                        <input type="text" name="cic{{$a->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif >
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="ret{{$a->id_so}}" id="retur{{$a->id_so}}" class="form-control form-control-sm text-bold text-dark text-right retur" 
+                        <input type="text" name="ret{{$a->id_so}}" id="retur{{$a->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right retur" 
                         @if($a->retur != null) value="{{ number_format($a->retur, 0, "", ",") }}" @endif>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $a->retur, 0, "", ",") }}</td>
@@ -163,14 +163,14 @@
 
               @if(Auth::user()->roles != 'OFFICE02')
                 <!-- Button Submit dan Reset -->
-                <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
+                {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
                   <div class="col-1">
                     <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                   </div>
                   <div class="col-1">
                     <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                   </div>
-                </div>
+                </div> --}}
                 <!-- End Button Submit dan Reset -->
               @endif
               

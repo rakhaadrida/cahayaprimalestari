@@ -91,6 +91,7 @@
       <div class="py-2 collapse-inner rounded">
         {{-- <a class="collapse-item" href="{{ route('po') }}">Purchase Order</a> --}}
         <a class="collapse-item" href="{{ route('barangMasuk')}}">Penerimaan Barang</a>
+         <a class="collapse-item" href="{{ route('bm-change')}}">Cetak Barang Masuk</a>
         <a class="collapse-item" href="{{ route('bm-change')}}">Ubah Barang Masuk</a>
         <a class="collapse-item" href="{{ route('tb') }}">Transfer Barang</a>
       </div>
@@ -109,6 +110,14 @@
         <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
         <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
         <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
+        <a class="collapse-item" data-toggle="collapse" data-target="#collapseRetur" aria-expanded="true" aria-controls="collapseRetur">Retur Barang</a>
+          <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#collapsePenjualan">
+            <div class="py-2 collapse-sub-inner rounded">
+              <a class="collapse-item" href="{{ route('trans') }}">Input Retur</a>
+              <a class="collapse-item" href="{{ route('trans') }}">Data Retur</a>
+              <a class="collapse-item" href="{{ route('trans') }}">Terima Retur</a>
+            </div>
+          </div>
         {{-- <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a> --}}
       </div>
     </div>
