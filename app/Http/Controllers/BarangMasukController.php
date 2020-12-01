@@ -20,7 +20,7 @@ use Carbon\Carbon;
 
 class BarangMasukController extends Controller
 {
-    public function index() {
+    public function index($status) {
         $supplier = Supplier::All();
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -41,14 +41,13 @@ class BarangMasukController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
         $data = [
-            // 'items' => $items,
-            // 'itemsRow' => $itemsRow,
             'supplier' => $supplier,
             'newcode' => $newcode,
             'tanggal' => $tanggal,
             'barang' => $barang,
             'harga' => $harga,
-            'gudang' => $gudang
+            'gudang' => $gudang,
+            'status' => $status
         ];
 
         return view('pages.pembelian.barangmasuk.index', $data);
@@ -72,18 +71,20 @@ class BarangMasukController extends Controller
         return redirect()->route('barangMasuk');
     } */
 
-    public function process (Request $request, $id) {
+    public function process (Request $request, $id, $status) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
         
         BarangMasuk::create([
             'id' => $id,
+            'id_faktur' => $request->kode,
             'tanggal' => $tanggal,
             'total' => str_replace(".", "", $request->subtotal),
             'id_gudang' => $request->kodeGudang,
             'id_supplier' => $request->kodeSupplier,
-            'status' => 'NO_DISC',
+            'status' => $status,
+            'diskon' => 'F',
             'id_user' => Auth::user()->id
         ]);
 
@@ -92,16 +93,19 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcode = 'AP'.sprintf('%04s', $lastnumber);
 
-        AccPayable::create([
-            'id' => $newcode, 
-            'id_bm' => $id,
-            'keterangan' => "BELUM LUNAS"
-        ]);
+        $items = AccPayable::where('id_bm', $request->kode)->count();
+        if($items != 1) {
+            AccPayable::create([
+                'id' => $newcode, 
+                'id_bm' => $request->kode,
+                'keterangan' => 'BELUM LUNAS'
+            ]);
+        }
 
         for($i = 0; $i < $jumlah; $i++) {
             if($request->kodeBarang[$i] != "") {
                 DetilBM::create([
-                    'id_bm' => $request->id,
+                    'id_bm' => $id,
                     'id_barang' => $request->kodeBarang[$i],
                     'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $request->qty[$i],
@@ -115,6 +119,11 @@ class BarangMasukController extends Controller
                 $updateStok->save();
             }
         }
+
+        if($status != 'CETAK')
+            $cetak = 'false';
+        else
+            $cetak = 'true';
 
         /*
         $tempDetil = TempDetilBM::where('id_bm', $id)->get();
@@ -136,7 +145,7 @@ class BarangMasukController extends Controller
         }
         */
 
-        return redirect()->route('barangMasuk');
+        return redirect()->route('barangMasuk', $cetak);
     }
 
     /* public function update(Request $request, $bm, $barang, $id) {

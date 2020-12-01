@@ -23,8 +23,10 @@
               </thead>
               <tbody class="table-ar">
                 @php 
-                  $i = 1; $total = 0; $kurang = $a->bm->total;
+                  $i = 1; $total = 0;
+                  $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))->where('id_faktur', $a->id_bm)->get();
                   $detilap = App\Models\DetilAP::where('id_ap', $a->id)->get();
+                  $kurang = $totalBM[0]->totBM;
                 @endphp
                 @foreach($detilap as $d)
                   @if($d->transfer != 0)

@@ -85,7 +85,7 @@
                   <tr>
                     <th style="width: 30px" class="align-middle">No</th>
                     <th style="width: 170px" class="align-middle">Supplier</th>
-                    <th style="width: 60px" class="align-middle">No. BM</th>
+                    <th style="width: 60px" class="align-middle">No. Faktur</th>
                     <th style="width: 75px" class="align-middle">Tgl. BM</th>
                     <th style="width: 60px" class="align-middle">Discount</th>
                     <th style="width: 70px" class="align-middle">HPP</th>
@@ -99,6 +99,7 @@
                   @php $i = 1 @endphp
                   @forelse($ap as $a)
                     @php 
+                      $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))->where('id_faktur', $a->id_bm)->get();
                       $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as totTransfer'))->where('id_ap', $a->id)->get();
                     @endphp
                     <tr class="text-dark">
@@ -115,12 +116,12 @@
                         @if($a->bm->detilbm[0]->diskon != '') INPUT @else KOSONG @endif
                       </td>
                       <td align="right" class="align-middle">
-                        @if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total, 0, "", ",") }} @endif
+                        @if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM, 0, "", ",") }} @endif
                       </td>
                       <td class="align-middle">
                         <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total - $total[0]->totTransfer, 0, "", ",") }} @endif</td>
+                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM - $total[0]->totTransfer, 0, "", ",") }} @endif</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>

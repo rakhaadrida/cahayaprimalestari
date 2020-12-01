@@ -10,7 +10,7 @@ class BarangMasuk extends Model
     use SoftDeletes;
     protected $table = "barangmasuk";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tanggal', 'total', 'id_gudang', 'id_supplier', 'status', 'id_user'];
+    protected $fillable = ['id', 'id_faktur', 'tanggal', 'total', 'id_gudang', 'id_supplier', 'status', 'diskon', 'id_user'];
     public $incrementing = false;
 
     public function gudang() {
@@ -34,7 +34,7 @@ class BarangMasuk extends Model
     }
 
     public function ap() {
-        return $this->hasOne('App\Models\AccPayable', 'id_bm', 'id');
+        return $this->hasOne('App\Models\AccPayable', 'id_bm', 'id_faktur');
     }
 
     public function approval() {

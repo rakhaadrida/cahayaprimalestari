@@ -90,8 +90,8 @@
     <div id="collapsePembelian" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="py-2 collapse-inner rounded">
         {{-- <a class="collapse-item" href="{{ route('po') }}">Purchase Order</a> --}}
-        <a class="collapse-item" href="{{ route('barangMasuk')}}">Penerimaan Barang</a>
-         <a class="collapse-item" href="{{ route('bm-change')}}">Cetak Barang Masuk</a>
+        <a class="collapse-item" href="{{ route('barangMasuk', 'false')}}">Penerimaan Barang</a>
+         <a class="collapse-item" href="{{ route('cetak-bm', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Barang Masuk</a>
         <a class="collapse-item" href="{{ route('bm-change')}}">Ubah Barang Masuk</a>
         <a class="collapse-item" href="{{ route('tb') }}">Transfer Barang</a>
       </div>

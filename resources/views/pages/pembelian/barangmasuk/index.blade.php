@@ -37,7 +37,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" class="form-control form-control-sm text-bold" name="kode" value="{{ $newcode }}" readonly>
+                        <input type="text" class="form-control form-control-sm text-bold" name="kode" id="kode" value="" required>
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
@@ -262,8 +262,9 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('bm-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</button>
-                  {{-- id="submitBM" onclick="return checkEditable()" --}}
+                  <button type="submit" onclick="return checkRequired(event)" id="submitBM"  class="btn btn-success btn-block text-bold">Submit</button>
+                  {{-- id="submitBM" onclick="return checkEditable()" 
+                  formaction="{{ route('bm-process', $newcode) }}" formmethod="POST"--}}
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
@@ -271,6 +272,34 @@
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
+
+              <!-- Modal Konfirmasi Cetak atau Input -->
+              <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title">Konfirmasi Barang Masuk <b>{{$newcode}}</b></h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Data Barang Masuk <strong>{{$newcode}}</strong> akan disimpan. Silahkan pilih cetak atau input barang masuk lagi.</p>
+                      <hr>
+                      <div class="form-row justify-content-center">
+                        <div class="col-3">
+                          <button type="submit" formaction="{{ route('bm-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                        </div>
+                        <div class="col-3">
+                          <button type="submit" formaction="{{ route('bm-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Modal Konfirmasi -->
+
             </form>
           </div>
         </div>
@@ -301,6 +330,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const kode = document.getElementById('kode');
 const namaSup = document.getElementById('namaSupplier');
 const kodeSup = document.getElementById('kodeSupplier');
 const tanggal = document.getElementById('tanggal');
@@ -722,6 +752,18 @@ for(let i = 0; i < hapusBaris.length; i++) {
     }
     $(this).parents('tr').next().find('input').val('');
   });
+}
+
+function checkRequired(e) {
+  if((kode.value == "") || (tanggal.value == "") || 
+  (namaSup.value == "") || (gudang.value == "")) {
+    e.stopPropagation();
+  }
+  else {
+    document.getElementById("submitBM").dataset.toggle = "modal";
+    document.getElementById("submitBM").dataset.target = "#modalKonfirm";
+    return false;
+  }
 }
 
 /** Autocomplete Input Text **/

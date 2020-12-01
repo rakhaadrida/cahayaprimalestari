@@ -124,9 +124,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/po/remove/{po}/{barang}', 'PurchaseController@remove')->name('po-remove');
 
         // Barang Masuk
-        Route::get('/barangmasuk', 'BarangMasukController@index')->name('barangMasuk');
+        Route::get('/barangmasuk/index/{status}', 'BarangMasukController@index')->name('barangMasuk');
         Route::post('/barangmasuk/create/{id}', 'BarangMasukController@create')->name('bm-create');
-        Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name('bm-process');
+        Route::post('/barangmasuk/process/{id}/{status}','BarangMasukController@process')->name('bm-process');
+        // Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name('bm-process');
         Route::post('/barangmasuk/update/{bm}/{barang}/{id}', 'BarangMasukController@update')
             ->name('bm-update');
         Route::get('/barangmasuk/remove/{bm}/{barang}', 'BarangMasukController@remove')
@@ -141,6 +142,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('bm-edit');
         Route::post('/barangmasuk/change/update', 'BarangMasukController@update')
             ->name('bm-update');
+        
+        // Cetak Barang Masuk
+        Route::get('/cetak-bm/{status}/{awal}/{akhir}', 'CetakBMController@index')
+            ->name('cetak-bm');
+        Route::post('/cetak-bm/detail/{id}', 'CetakBMController@detail')
+            ->name('cetak-detail');
 
         // Transfer Barang
         Route::get('/transfer', 'TransferBarangController@index')->name('tb');
