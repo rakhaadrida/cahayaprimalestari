@@ -42,8 +42,9 @@
                     <input type="text" class="form-control form-control-sm mt-1 kodeAkhir" name="kodeAkhir" id="kodeAkhir" placeholder="Kode Akhir" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
-                    <button type="submit" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" onclick="return checkRequired(event)">Cetak</button>
-                    {{-- formaction="{{ route('cetak-process') }}" formmethod="POST" --}}
+                    <button type="submit" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" formaction="{{ route('cetak-bm-process') }}" formmethod="POST">Cetak</button>
+                    {{-- formaction="{{ route('cetak-process') }}" formmethod="POST" 
+                    onclick="return checkRequired(event)"--}}
                   </div>
                 </div>  
               </div>
@@ -66,7 +67,7 @@
                   @forelse ($items as $item)
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="text-center"><button type="submit" formaction="{{ route('cetak-detail', $item->id) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $item->id }}</button></td>
+                      <td class="text-center"><button type="submit" formaction="{{ route('cetak-bm-detail', $item->id) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $item->id }}</button></td>
                       <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y')  }}</td>
                       <td class="align-middle">{{ $item->supplier->nama }}</td>
                       <td class="text-center align-middle">{{ $item->gudang->nama }}</td>
@@ -82,7 +83,6 @@
                 </tbody>
               </table>
               <!-- End Tabel Detil Transaksi Harian -->
-
               
             </form>
           </div>
@@ -93,8 +93,7 @@
 </div>
 @if($status == "true")
   <!-- Tampilan Cetak -->
-  <iframe src="{{url('cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-  <button type="submit" id="updateCetak" formmethod="GET" formaction="{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}" hidden></button>
+  <iframe src="{{url('cetak-bm-all/'.$awal.'/'.$akhir)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
 @endif
 <!-- /.container-fluid -->
 @endsection
@@ -136,8 +135,8 @@ const btnCetak = document.getElementById('btnCetak');
 
   /** Cara 2 **/
   printFrame.window.onafterprint = function(e) {
-    // alert('ok');
-    window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+    alert('ok');
+    // window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
   }
 
   

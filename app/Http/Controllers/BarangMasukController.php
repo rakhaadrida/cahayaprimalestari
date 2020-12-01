@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use PDF;
 
 class BarangMasukController extends Controller
 {
@@ -43,6 +44,7 @@ class BarangMasukController extends Controller
         $data = [
             'supplier' => $supplier,
             'newcode' => $newcode,
+            'lastcode' => $lastcode,
             'tanggal' => $tanggal,
             'barang' => $barang,
             'harga' => $harga,
@@ -146,6 +148,24 @@ class BarangMasukController extends Controller
         */
 
         return redirect()->route('barangMasuk', $cetak);
+    }
+
+    public function cetak(Request $request, $id) {
+        $items = BarangMasuk::where('id', $id)->get();
+        $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
+
+        $data = [
+            'items' => $items,
+            'today' => $today,
+            'waktu' => $waktu
+        ];
+
+        $paper = array(0,0,612,394);
+        $pdf = PDF::loadview('pages.pembelian.barangmasuk.cetak', $data)->setPaper($paper);
+        ob_end_clean();
+        return $pdf->stream('cetak-bm.pdf');
     }
 
     /* public function update(Request $request, $bm, $barang, $id) {

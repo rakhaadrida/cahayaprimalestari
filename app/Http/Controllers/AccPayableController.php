@@ -92,19 +92,28 @@ class AccPayableController extends Controller
     }
 
     public function process(Request $request) {
-        $detil = DetilBM::where('id_bm', $request->kode)->get();
-        $bm = BarangMasuk::where('id', $request->kode)->first();
+        $items = BarangMasuk::where('id_faktur', $request->kode)->get();
 
-        foreach($detil as $d) {
-            $d->diskon = $request->{"dis".$d->id_barang};
-            $d->disPersen = (float) (str_replace(",", "", $request->{"diskon".$d->id_barang}));
-            $d->hpp = (int) (str_replace(".", "", $request->{"hpp".$d->id_barang}) / $d->qty);
-            $d->save();
+        foreach($items as $i) {
+            $total = 0;
+            $detil = DetilBM::where('id_bm', $i->id)->get();
+            // $bm = BarangMasuk::where('id', $request->kode)->first();
+
+            foreach($detil as $d) {
+                $d->diskon = $request->{"dis".$i->id.$d->id_barang};
+                $d->disPersen = (float) (str_replace(",", "", $request->{"diskon".$i->id.$d->id_barang}));
+                $d->hpp = (int) (str_replace(".", "", $request->{"hpp".$i->id.$d->id_barang}) / $d->qty);
+                $d->save();
+
+                $total += (int) (str_replace(".", "", $request->{"hpp".$i->id.$d->id_barang}));
+            }
+
+            // $i->total = str_replace(".", "", $request->subtotal);
+            $i->total = $total;
+            $i->status = "LENGKAP";
+            $i->diskon = 'T';
+            $i->save();
         }
-
-        $bm->{'total'} = str_replace(".", "", $request->subtotal);
-        $bm->{'status'} = "LENGKAP";
-        $bm->save();
 
         return redirect()->route('ap');
     }
@@ -123,14 +132,16 @@ class AccPayableController extends Controller
                     ->select('ap.id', DB::raw('sum(transfer) as totTransfer'))
                     ->where('ap.id_bm', $request->kode)
                     ->groupBy('ap.id')->get();
-        $bm = BarangMasuk::where('id', $request->kode)->get();
+        $bm = BarangMasuk::selectRaw('sum(total) as totBM')
+                ->where('id_faktur', $request->kode)
+                ->groupBy('id_faktur')->get();
 
         if($total->count() == 0) 
             $totTransfer = 0;
         else 
             $totTransfer = $total[0]->totTransfer;
 
-        if($bm[0]->total == str_replace(",", "", $request->{"bayar".$request->kode}) + $totTransfer) 
+        if($bm[0]->totBM == str_replace(",", "", $request->{"bayar".$request->kode}) + $totTransfer) 
                 $status = 'LUNAS';
             else 
                 $status = 'BELUM LUNAS';

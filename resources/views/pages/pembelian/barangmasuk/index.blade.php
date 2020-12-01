@@ -300,6 +300,11 @@
               </div>
               <!-- End Modal Konfirmasi -->
 
+              @if($status == 'true')
+                <!-- Tampilan Cetak -->
+                <iframe src="{{url('barangmasuk/cetak/'.$lastcode)}}" id="frameCetak" frameborder="0" hidden></iframe>
+              @endif
+
             </form>
           </div>
         </div>
@@ -310,9 +315,16 @@
 @endsection
 
 @push('addon-script')
+<script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 
 <script type="text/javascript">
+@if($status == 'true')
+  $(document).ready(function() {
+    $("#frameCetak").printPage();
+  });
+@endif
+
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BarangMasuk;
+use Carbon\Carbon;
 use PDF;
 
 class CetakBMController extends Controller
@@ -39,18 +40,25 @@ class CetakBMController extends Controller
             'status' => 'true'
         ];
 
-        return redirect()->route('cetak-faktur', $data);
+        return redirect()->route('cetak-bm', $data);
     }
 
     public function cetak($awal, $akhir) {
-        $items = SalesOrder::with(['customer'])->where('status', 'INPUT')->whereBetween('id', [$awal, $akhir])->get();
+        $items = BarangMasuk::where('status', 'INPUT')->whereBetween('id', [$awal, $akhir])
+                ->get();
+        $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
 
         $data = [
-            'items' => $items
+            'items' => $items,
+            'today' => $today,
+            'waktu' => $waktu
         ];
 
-        $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.penjualan.cetakfaktur.cetak', $data)->setPaper($paper);
+        $paper = array(0,0,612,394);
+        // $paper = letter, portrait;
+        $pdf = PDF::loadview('pages.pembelian.cetakBM.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-all.pdf');
     } 

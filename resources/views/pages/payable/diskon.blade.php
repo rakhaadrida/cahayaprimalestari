@@ -57,6 +57,7 @@
               <hr> --}}
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
+              @php $total = 0 @endphp
               @foreach($items as $item)
                 @if($item->id == $items[0]->id)
                   <div class="container so-update-container text-dark" style="margin-top: -10px; margin-bottom: -15px">
@@ -86,7 +87,7 @@
                           <label for="tanggal" class="col-2 form-control-sm text-bold text-right mt-1">Nomor BM</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-2">
-                            <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id }}" >
+                            <input type="text" name="BM{{$item->id}}" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id }}" >
                           </div>
                         </div>
                       </div> 
@@ -120,7 +121,7 @@
                           <label for="kode" class="col-2 form-control-sm text-bold  text-right mt-1">Nomor BM</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-2">
-                            <input type="text" name="kode" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id }}" >
+                            <input type="text" name="BM{{$item->id}}" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id }}" >
                           </div>
                         </div>
                       </div> 
@@ -181,9 +182,9 @@
                           <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format(($detil->qty * $detil->harga), 0, "", ".") }}">
                         </td>
                         <td align="right">
-                          <input type="text" name="dis{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" @if($detil->diskon != null) 
+                          <input type="text" name="dis{{$item->id}}{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" @if($detil->diskon != null) 
                           value="{{ $detil->diskon }}" @endif required>
-                          <input type="hidden" name="diskon{{$detil->id_barang}}" class="disAngka" @if($detil->diskon != null) value="{{ $detil->diskonRp }}" @endif>
+                          <input type="hidden" name="diskon{{$item->id}}{{$detil->id_barang}}" class="disAngka" @if($detil->diskon != null) value="{{ $detil->diskonRp }}" @endif>
                         </td>
                         @if($detil->diskon != null)
                           @php 
@@ -202,18 +203,20 @@
                           @endif>
                         </td>
                         <td align="right">
-                          <input type="text" name="hpp{{$detil->id_barang}}" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" @if($detil->diskon != null) 
+                          <input type="text" name="hpp{{$item->id}}{{$detil->id_barang}}" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" @if($detil->diskon != null) 
                           value="{{ number_format(($detil->qty * $detil->harga) - 
                           ((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}" @endif>
                         </td>
                         @if($detil->diskon != null)
-                          @php $subtotal += ($detil->qty * $detil->harga) - 
-                            ((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100); 
+                          @php 
+                            $subtotal += ($detil->qty * $detil->harga) - 
+                            ((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100);
                           @endphp
                         @endif
                       </tr>
                       @php $i++; @endphp
                     @endforeach
+                    @php $total += $subtotal; @endphp
                   </tbody>
                 </table>
 
@@ -222,7 +225,7 @@
                     <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" />
+                      <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($total, 0, "", ".") }}" />
                     </div>
                   </div>
                   <div class="form-group row justify-content-end total-so">
@@ -237,7 +240,7 @@
                     <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{ number_format($subtotal, 0, "", ".") }}" />
+                      <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{ number_format($total, 0, "", ".") }}" />
                       {{-- value="{{number_format($subtotal + ($subtotal * 10 / 100),0,"",".")}}" --}}
                     </div>
                   </div>

@@ -120,6 +120,7 @@ class ApprovalController extends Controller
         else
             $detil = DetilBM::with(['bm'])->where('id_bm', $id)->get();
 
+        $disPersen = []; $hpp = [];
         foreach($detil as $d) {
             if($tipe == 'Faktur')
                 $gudang = $d->id_gudang;
@@ -134,6 +135,11 @@ class ApprovalController extends Controller
                 'qty' => $d->qty,
                 'diskon' => $d->diskon
             ]);
+
+            if($tipe == 'Dokumen') {
+                array_push($disPersen, $d->disPersen);
+                array_push($hpp, $d->hpp);
+            }
         }
 
         if(($tipe == 'Faktur') && ($statusApp == 'PENDING_UPDATE'))
