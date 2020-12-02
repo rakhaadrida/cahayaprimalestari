@@ -11,6 +11,8 @@ use App\Models\DetilAR;
 use App\Models\DetilAP;
 use App\Models\NeedApproval;
 use App\Models\BarangMasuk;
+use App\Models\Barang;
+use App\Models\StokBarang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -54,6 +56,14 @@ class DashboardController extends Controller
         $needPrint = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
                     ->count();
         $stillPending = NeedApproval::where('tipe', 'Faktur')->count();
+        $barang = Barang::All(); 
+        $restok = 0;
+        foreach($barang as $b) {
+            $stok = StokBarang::selectRaw('id_barang, sum(stok) as total')
+                    ->where('id_barang', $b->id)->get();
+            if($stok[0]->total <= $b->subjenis->limit) 
+                $restok++;
+        }   
 
         $fakturPerStatus = SalesOrder::selectRaw('status, count(status) as total')
                         ->whereYear('tgl_so', $tahun)->groupBy('status')->get();
@@ -194,6 +204,7 @@ class DashboardController extends Controller
             'salesPerType' => $salesPerType,
             'needPrint' => $needPrint,
             'stillPending' => $stillPending,
+            'restock' => $restok,
             'fakturPerStatus' => $fakturPerStatus,
             'lastTrans' => $lastTrans,
             'receivCount' => $receivCount,

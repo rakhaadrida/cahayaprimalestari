@@ -43,7 +43,7 @@
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
                     <button type="submit" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" onclick="return checkRequired(event)">Cetak</button>
-                    {{-- formaction="{{ route('cetak-process') }}" formmethod="POST" --}}
+                    {{-- formaction="{{ route('cetak-all', ['awal' => 'INV0015', 'akhir' => 'INV0015']) }}" formmethod="GET" formtarget="_blank" --}}
                   </div>
                 </div>  
               </div>

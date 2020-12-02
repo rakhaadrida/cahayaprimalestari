@@ -11,7 +11,7 @@
           font-size: 1rem;
           font-weight: 400;
           line-height: 1.5;
-          color: #858796;
+          color: #252525;
           text-align: left;
           background-color: #fff;
       }
@@ -80,6 +80,10 @@
           float: right !important;
       }
 
+      .float-left {
+          float: left !important;
+      }
+
       table {
           border-collapse: collapse;
       }
@@ -87,7 +91,7 @@
       .table {
           width: 100%;
           margin-bottom: 1rem;
-          color: #858796;
+          color:#252525;
       }
 
       .table th,
@@ -108,7 +112,10 @@
 
       .table-sm th,
       .table-sm td {
-          padding: 0.3rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.3rem;
+        padding-left: 0.1rem;
+        padding-right: 0.1rem;
       }
 
       .table-bordered {
@@ -153,31 +160,46 @@
       }
 
       .subtitle-cetak-so-second {
-          margin-left: 7px;
+          margin-left: -2.5px;
           font-size: 12px;
       }
 
+      .sub-title {
+        font-family: 'Courier New', Courier, monospace;
+      }
+
+      .logo-cetak-so img {
+        width: 132px;
+        height: 50px;
+        margin-top: 5px;
+        margin-left: 35px;
+      }
+
       .customer-cetak-so {
-          font-size: 12px;
-          width: 220px;
-          margin-top: -25px;
-          margin-right: 30px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 12px;
+        width: 220px;
+        margin-top: 0px;
+        margin-right: 30px;
+      }
+
+      .kode-cetak-so {
+        font-size: 11px;
       }
 
       .nama-cetak-so {
           margin-top: 10px;
-          margin-bottom: 10px;
           font-size: 14px;
       }
 
       .alamat-cetak-so {
-          margin-bottom: -10px;
-          line-height: 15px;
+        margin-bottom: -10px;
+        line-height: 20px;
       }
 
       .telepon-cetak-so {
           /* margin-bottom: -15px; */
-          line-height: 13px;
+          line-height: 18px;
       }
 
       .table-info-cetak-so {
@@ -190,18 +212,19 @@
       }
 
       .th-info-cetak-so {
-          line-height: 5px;
+        font-family: 'Courier New', Courier, monospace;
+        line-height: 5px;
       }
 
-      .tr-info-cetak-so {
-          line-height: 10px;
+      .tr-info-cetak-so td{
+        line-height: 10px;
       }
 
       .table-cetak {
           font-size: 11px;
-          height: 200px;
+          height: 230px;
           margin-left: 31px;
-          margin-right: 31px;
+          margin-right: 34.5px;
           margin-top: -13px;
       }
 
@@ -231,257 +254,278 @@
       }
 
       .ttd-penerima {
-          font-size: 12px;
-          padding-left: -5px;
-          margin-bottom: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        padding-left: -5px;
+        margin-bottom: 15px;
+        margin-top: 0px;
       }
 
       .info_bayar {
-          margin-top: -20px;
-          margin-left: 5px;
-          margin-right: 30px;
-          font-size: 12px;
-          line-height: 24px;
+        font-family: 'Courier New', Courier, monospace;
+        color: black;
+        margin-top: -15px;
+        margin-left: 5px;
+        margin-right: 30px;
+        font-size: 12px;
+        line-height: 18px;
       }
 
       .ttd-gudang {
-          font-size: 12px;
-          margin-top: 1px;
-          margin-left: 2px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        margin-top: -5px;
+        margin-left: 2px;
+        line-height: 14px;
       }
 
       .ttd-mengetahui {
-          font-size: 12px;
-          margin-top: -7px;
-          line-height: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        margin-top: -12px;
+        line-height: 10px;
       }
 
       .tgl-ttd {
-          font-size: 11px;
+        font-size: 10px;
       }
 
       .total-faktur {
-          margin-top: -3px;
+        font-family: Arial, Helvetica, sans-serif;
+          margin-top: 1px;
           margin-left: 5px;
-          font-size: 12px;
+          font-size: 10px;
       }
 
       .tabel-total-faktur {
-          line-height: 16px;
+          line-height: 12px;
+          margin-bottom: 3px;
       }
 
       .title-total {
-          width: 160px;
+          width: 168px;
       }
 
       .angka-total {
-          font-size: 14px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 12px;
       }
+
+      .angka-total-akhir {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 13px;
+      }
+
+      /* @media print {
+        @page {
+          size: 24.2cm 13.8cm;
+        }
+      } */
     </style>
   </head>
   <body>
-    <div class="container-fluid header-cetak-so">
-      <div class="title-header text-center">
-        <h5 class="text-bold text-dark">FAKTUR PENJUALAN</h5>
-        <h5 class="text-bold text-dark" style="margin-top: -10px"> 
-          (@if($items[0]->kategori == "CASH") CASH @else TEMPO @endif)
-        </h5>
-      </div>
-      <div class="subtitle-cetak-so-one text-center">
-        <span class="text-right">Nomor</span>
-        <span>:</span>
-        <span class="text-bold">{{ $items[0]->id }}</span>
-      </div>
-      <div class="subtitle-cetak-so-second text-center">
-        <span class="text-right">Tanggal</span>
-        <span>:</span>
-        <span class="text-bold">{{ \Carbon\Carbon::parse($items[0]->tgl_so)->format('d-M-y') }}</span>
-      </div>
-    </div>
-    <div class="float-right customer-cetak-so">
-      <span class="kode-cetak-so">Kepada Yth :</span>
-      <span>{{ $items[0]->id_customer }}</span>
-      <br>
-      <span class="nama-cetak-so">{{ $items[0]->customer->nama }}</span>
-      <br>
-      <span class="alamat-cetak-so text-wrap">{{ $items[0]->customer->alamat }}</span>
-      <br>
-      <span class="telepon-cetak-so">{{ $items[0]->customer->telepon }}</span>
-    </div>
-    <br>
-    <br>
+    @foreach($items as $item)
+      <div class="cetak-all-container" @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif>
+        <div class="container-fluid header-cetak-so">
+          <div class="title-header text-center">
+            <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
+            <h5 class="text-bold " style="margin-top: -10px">
+              (@if($item->kategori == "Cash") CASH @else TEMPO @endif)
+            </h5>
+          </div>
+          <div class="subtitle-cetak-so-one text-center">
+            <span class="text-right sub-title">Nomor</span>
+            <span>:</span>
+            <span class="text-bold">{{ $item->id }}</span>
+          </div>
+          <div class="subtitle-cetak-so-second text-center">
+            <span class="text-right sub-title">Tanggal</span>
+            <span>:</span>
+            <span class="text-bold">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</span>
+          </div>
+        </div>
+        <div class="float-left logo-cetak-so">
+          <img src="backend/img/Logo_CPL.jpg" alt="">
+        </div>
+        <div class="float-right customer-cetak-so">
+          <span class="kode-cetak-so">Kepada Yth :</span>
+          <span>{{ $item->id_customer }}</span>
+          <br>
+          <span class="nama-cetak-so">{{ $item->customer->nama }}</span>
+          <br>
+          <span class="alamat-cetak-so text-wrap">{{ $item->customer->alamat }}</span>
+          <br>
+          <span class="telepon-cetak-so">{{ $item->customer->telepon }}</span>
+        </div>
+        <br>
+        <br>
 
-    <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
-      <thead class="text-center text-bold">
-        <tr class="th-info-cetak-so">
-          <td style="border: dotted; width: 110px">No. Order</td>
-          <td style="border: dotted; width: 110px">Tgl. Order</td>
-          <td style="border: dotted; width: 110px">Kredit Term</td>
-          <td style="border: dotted; width: 110px">Jatuh Tempo</td>
-          <td style="border: dotted; width: 180px">Sales</td>
-          <td style="border: dotted">Route</td>
-        </tr>
-      </thead>
-      <tbody class="text-bold">
-        @foreach($items as $item)
-        <tr class="tr-info-cetak-so">
-          <td align="center" style="border: dotted">{{ $item->id }}</td>
-          <td align="center" style="border: dotted">
-            {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
-          </td>
-          <td align="center" style="border: dotted">0 Hari</td>
-          <td align="center" style="border: dotted">
-            {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}
-          </td>
-          <td align="center" style="border: dotted">{{ $item->customer->sales->nama }}</td>
-          <td align="center" style="border: dotted">Admin</td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-    
-    @php 
-      $itemsDet = \App\Models\DetilSO::with(['barang'])
-                      ->select('id_barang', 'diskon')
-                      ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                      ->where('id_so', $items[0]->id)
-                      ->groupBy('id_barang', 'diskon')
-                      ->distinct('diskon')
-                      ->get();
-    @endphp
-
-    <!-- Tabel Data Detil BM-->
-    <table class="table table-sm table-responsive-sm table-hover table-cetak">
-      <thead class="text-center text-bold th-detail-cetak-so">
-        <tr>
-          <td style="width: 10px">No</td>
-          <td style="width: 50px">Kode</td>
-          <td>Nama Barang</td>
-          <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
-          <td style="width: 30px">UOM</td>
-          <td style="width: 55px">Harga</td>
-          <td style="width: 70px">Rupiah</td>
-          <td colspan="2">Diskon</td>
-          <td style="width: 80px">Netto Rp</td>
-        </tr>
-      </thead>
-      <tbody class="tr-detail-cetak-so">
-        @php $i = 1; @endphp
-        @foreach($itemsDet as $item)
-          <tr class="text-dark ">
-            <td rowspan="2" align="center">{{ $i }}</td>
-            <td rowspan="2">{{ $item->id_barang }}</td>
-            <td rowspan="2">{{ $item->barang->nama }}</td>
-            <td rowspan="2" align="right" style="width: 50px">{{ $item->qty }}</td>
-            <td rowspan="2" align="center" style="width: 50px">
-              {{ $item->qty / $item->barang->ukuran }} @if($item->barang->satuan == "Pcs / Pack") Pack @else Rol @endif
-            </td>
-            <td rowspan="2" align="center">
-              @if($item->barang->satuan == "Pcs / Pack") PCS @else MTR @endif
-            </td>
-            <td rowspan="2" align="right">{{ number_format($item->harga, 0, "", ".") }}</td>
-            <td rowspan="2" align="right">{{ number_format($item->qty * $item->harga, 0, "", ".") }}</td>
-            @php 
-              $diskon = 100;
-              $arrDiskon = explode("+", $item->diskon);
-              for($j = 0; $j < sizeof($arrDiskon); $j++) {
-                $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-              } 
-              $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
-            @endphp
-            <td style="width: 70px; border-bottom: none !important" align="right">
-              {{ $item->diskon }} 
-            </td>
-            <td rowspan="2" style="width: 60px" align="right">
-              {{ number_format($item->diskonRp, 0, "", ".") }}
-            </td>
-            <td rowspan="2" align="right">
-              {{ number_format((($item->qty * $item->harga) - $item->diskonRp), 0, "", ".") }}</td>
-          </tr>
-          <tr class="text-dark">
-            <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">({{ $diskon }}%)</td>
-          </tr>
-          @php $i++ @endphp
-        @endforeach
-      </tbody>
-    </table>
-    
-    <div class="container-fluid footer-cetak-so">
-      <table class="table-footer">
-        <thead>
-          <tr>
-            <td style="border-right: dotted; width: 87px"> 
-              <div class="ttd-penerima text-center">
-                <span>Penerima,</span>
-                <br><br><br><br>
-                <span class="form-ttd">(___________)</span>
-              </div>
-            </td>
-            <td style="border-right: dotted; width: 253px">
-              <div class="info_bayar">
-                <span>Pembayaran Giro / Transfer</span>
-                <br>
-                <span>Rekening Bank BCA</span>
-                <br>
-                <span>a/n Irianti Irawan 0911276444</span>
-              </div>
-            </td>
-            <td style="width: 85px">
-              <div class="ttd-gudang">
-                <center><span>Gudang,</span></center>
-                <br><br>
-                <span class="form-ttd">(___________)</span>
-              </div>
-            </td>
-            <td style="border-right: dotted; width: 80px">
-              <div class="ttd-mengetahui">
-                <span class="tgl-ttd">
-                  {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
-                </span>
-                <br>
-                <span>Mengetahui,</span> 
-                <br><br><br><br>
-                <span class="form-ttd">(__________)</span>
-              </div>
-            </td>
-            <td>
-              <div class="total-faktur">
-                <table class="tabel-total-faktur">
-                  <tr>
-                    <td class="title-total text-bold">Jumlah</td>
-                    <td class="text-right angka-total">{{ number_format($items[0]->total, 0, "", ".") }}</td>
-                  </tr>
-                  <tr>
-                    <td class="title-total text-bold">Disc Faktur</td>
-                    <td class="text-right angka-total">0</td>
-                  </tr>
-                  <tr>
-                    <td class="title-total text-bold">Nilai Netto</td>
-                    <td class="text-right angka-total">{{ number_format($items[0]->total, 0, "", ".") }}</td>
-                  </tr>
-                  <tr>
-                    <td class="title-total text-bold">PPN</td>
-                    <td class="text-right angka-total"></td>
-                  </tr>
-                  <tr>
-                    <td class="title-total"></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td class="title-total"></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td class="title-total text-bold">Nilai Tagihan</td>
-                    <td class="text-right angka-total">{{ number_format($items[0]->total, 0, "", ".") }}</td>
-                  </tr>
-                  </tr>
-                </table>
-              </div>
-            </td>
-          </tr>
-        </thead>
-      </table>
-    </div>
+        <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
+          <thead class="text-center text-bold">
+            <tr class="th-info-cetak-so">
+              <td style="border: dotted; width: 110px">No. Order</td>
+              <td style="border: dotted; width: 110px">Tgl. Order</td>
+              <td style="border: dotted; width: 110px">Kredit Term</td>
+              <td style="border: dotted; width: 110px">Jatuh Tempo</td>
+              <td style="border: dotted; width: 180px">Sales</td>
+              <td style="border: dotted">Route</td>
+            </tr>
+          </thead>
+          <tbody class="text-bold">
+            <tr class="tr-info-cetak-so">
+              <td align="center" style="border: dotted">{{ $item->id }}</td>
+              <td align="center" style="border: dotted">
+                {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
+              </td>
+              <td align="center" style="border: dotted">0 Hari</td>
+              <td align="center" style="border: dotted">
+                {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}
+              </td>
+              <td align="center" style="border: dotted">{{ $item->customer->sales->nama }}</td>
+              <td align="center" style="border: dotted">{{ Auth::user()->name }}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        @php 
+        $itemsDet = \App\Models\DetilSO::with(['barang'])
+                          ->select('id_barang', 'diskon')
+                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                          ->where('id_so', $item->id)
+                          ->groupBy('id_barang', 'diskon')
+                          ->get();
+        @endphp
+        <!-- Tabel Data Detil BM-->
+        <table class="table table-sm table-responsive-sm table-hover table-cetak">
+          <thead class="text-center text-bold th-detail-cetak-so">
+            <tr>
+              <td style="width: 10px">No</td>
+              <td style="width: 50px">Kode</td>
+              <td>Nama Barang</td>
+              <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
+              <td style="width: 30px">UOM</td>
+              <td style="width: 55px">Harga</td>
+              <td style="width: 70px">Rupiah</td>
+              <td colspan="2">Diskon</td>
+              <td style="width: 80px">Netto Rp</td>
+            </tr>
+          </thead>
+          <tbody class="tr-detail-cetak-so">
+            @php $i = 1; @endphp
+            @foreach($itemsDet as $itemDet)
+              <tr >
+                <td rowspan="2" align="center">{{ $i }}</td>
+                <td rowspan="2">{{ $itemDet->id_barang }}</td>
+                <td rowspan="2">{{ $itemDet->barang->nama }}</td>
+                <td rowspan="2" align="right" style="width: 50px">{{ $itemDet->qty }}</td>
+                <td rowspan="2" align="center" style="width: 50px">
+                  {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Pack") Pack @else Rol @endif
+                </td>
+                <td rowspan="2" align="center">
+                  @if($itemDet->barang->satuan == "Pcs / Pack") PCS @else MTR @endif
+                </td>
+                <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
+                <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
+                @php 
+                  $diskon = 100;
+                  $arrDiskon = explode("+", $itemDet->diskon);
+                  for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                    $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                  } 
+                  $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                @endphp
+                <td style="width: 70px; border-bottom: none !important" align="right">
+                  {{ $itemDet->diskon }} 
+                </td>
+                <td rowspan="2" style="width: 60px" align="right">
+                  {{ number_format($itemDet->diskonRp, 0, "", ".") }}
+                </td>
+                <td rowspan="2" align="right">
+                  {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
+              </tr>
+              <tr class="">
+                <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">({{ $diskon }}%)</td>
+              </tr>
+              @php $i++ @endphp
+            @endforeach
+          </tbody>
+        </table>
+        
+        <div class="container-fluid footer-cetak-so">
+          <table class="table-footer">
+            <thead>
+              <tr>
+                <td style="border-right: dotted; width: 87px"> 
+                  <div class="ttd-penerima text-center">
+                    <span>Penerima,</span>
+                    <br><br><br>
+                    <span class="form-ttd">(___________)</span>
+                  </div>
+                </td>
+                <td style="border-right: dotted; width: 253px">
+                  <div class="info_bayar">
+                    <span>Pembayaran Giro / Transfer</span>
+                    <br>
+                    <span>Rekening Bank BCA</span>
+                    <br>
+                    <span>a/n Irianti Irawan 0911276444</span>
+                  </div>
+                </td>
+                <td style="width: 85px">
+                  <div class="ttd-gudang">
+                    <center><span class="nama-gudang">Gudang,</span></center>
+                    <br><br>
+                    <span class="form-ttd">(___________)</span>
+                  </div>
+                </td>
+                <td style="border-right: dotted; width: 80px">
+                  <div class="ttd-mengetahui">
+                    <span class="tgl-ttd">
+                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
+                    </span>
+                    <span>Mengetahui,</span> 
+                    <br><br><br><br>
+                    <span class="form-ttd">(__________)</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="total-faktur">
+                    <table class="tabel-total-faktur">
+                      <tr>
+                        <td class="title-total text-bold">Jumlah</td>
+                        <td class="text-right angka-total">{{ number_format($item->total, 0, "", ".") }}</td>
+                      </tr>
+                      <tr>
+                        <td class="title-total text-bold">Disc Faktur</td>
+                        <td class="text-right angka-total">0</td>
+                      </tr>
+                      <tr>
+                        <td class="title-total text-bold">Nilai Netto</td>
+                        <td class="text-right angka-total">{{ number_format($item->total, 0, "", ".") }}</td>
+                      </tr>
+                      <tr>
+                        <td class="title-total text-bold">PPN</td>
+                        <td class="text-right angka-total"></td>
+                      </tr>
+                      <tr>
+                        <td class="title-total"></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="height: 2px"></td>
+                      </tr>
+                      <tr>
+                        <td class="title-total text-bold">Nilai Tagihan</td>
+                        <td class="text-right angka-total-akhir">{{ number_format($item->total, 0, "", ".") }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    @endforeach
   </body>
 </html>

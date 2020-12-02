@@ -139,7 +139,7 @@
                 @endif
               @elseif(Auth::user()->roles == 'ADMIN')
                 <div class="text-md font-weight-bold text-warning text-uppercase mb-2">Re-stok Barang</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($receivable, 0, "", ".") }}</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $restock }}</div>
                @elseif(Auth::user()->roles == 'AP')
                 <div class="text-md font-weight-bold text-warning text-uppercase mb-2">Total Tagihan</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($payable, 0, "", ".") }}</div>

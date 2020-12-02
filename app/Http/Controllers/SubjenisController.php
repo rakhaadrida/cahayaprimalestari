@@ -39,7 +39,8 @@ class SubjenisController extends Controller
         Subjenis::create([
             'id' => $request->kode,
             'nama' => $request->nama,
-            'id_kategori' => $request->kodeJenis
+            'id_kategori' => $request->kodeJenis,
+            'limit' => $request->limit
         ]);
 
         return redirect()->route('subjenis.index');
@@ -68,6 +69,7 @@ class SubjenisController extends Controller
         $item = Subjenis::where('id', $id)->first();
         $item->{'nama'} = $request->nama;
         $item->{'id_kategori'} = $request->kodeJenis;
+        $item->{'limit'} = $request->limit;
         $item->save();
 
         return redirect()->route('subjenis.index');

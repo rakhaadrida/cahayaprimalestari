@@ -209,7 +209,7 @@
             </thead>
             <tbody id="tablePO">
               @php 
-                $i = 1; $baris = 1; $kode = []; $status = 0;
+                $i = 1; $baris = 1; $kode = []; $status = 0; $kodeBrg;
                 $sub = \App\Models\Subjenis::where('id_kategori', $item->id)->get();
               @endphp
               {{-- @for($j = 1; $j <= 66; $j++)
@@ -230,7 +230,7 @@
                   @php
                     $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                   @endphp 
-                  @if(($baris + ($barang->count() + 1)) <= 66)
+                  @if($baris <= 66)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                       <td colspan="6" align="center">{{ $s->nama }}</td>
                     </tr>
@@ -261,7 +261,7 @@
                           @endif
                         @endforeach
                       </tr>
-                      @php $i++; $baris++; @endphp
+                      @php $i++; $baris++; $kodeBrg = $b->id; @endphp
                     @endforeach
                   @else
                     @php $status = 1; @endphp
@@ -292,7 +292,7 @@
                   @php
                     $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                   @endphp 
-                  @if(($baris + ($barang->count() + 1)) <= 132)
+                  @if($baris <= 132)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                       <td colspan="6" align="center">{{ $s->nama }}</td>
                     </tr>

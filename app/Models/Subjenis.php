@@ -10,7 +10,7 @@ class Subjenis extends Model
     use SoftDeletes;
     protected $table = 'subjenis';
     protected $keyType = "string";
-    protected $fillable = ['id', 'nama', 'id_kategori'];
+    protected $fillable = ['id', 'nama', 'id_kategori', 'limit'];
     public $incrementing = false;
     
     public function jenis() {

@@ -47,6 +47,14 @@
                 </div>
                 <input type="hidden" name="kodeJenis" id="kodeJenis">
               </div>
+              <div class="form-group row">
+                <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-1">
+                  <input type="text" class="form-control col-form-label-sm" name="limit" id="limit" value="{{ old('limit') }}" required>
+                </div>
+                <span class="col-form-label text-bold" id="labelUkuran"></span>
+              </div>
               <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">
@@ -71,14 +79,21 @@
 <script type="text/javascript">
 const kategori = document.getElementById('kategori');
 const kodeJenis = document.getElementById('kodeJenis');
+const labelUkuran = document.getElementById('labelUkuran');
 
 kategori.addEventListener("keyup", function(e) {
   @foreach($jenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeJenis.value = '{{ $j->id }}';
+      if(('{{ $j->id }}' == 'KAT02') || ('{{ $j->id }}' == 'KAT03')) {
+        labelUkuran.textContent = 'ROL';
+      } else {
+        labelUkuran.textContent = 'PCS';
+      }
     }
     else if(e.target.value == '') {
       kodeJenis.value = '';
+      labelUkuran.textContent = '';
     }
   @endforeach
 });

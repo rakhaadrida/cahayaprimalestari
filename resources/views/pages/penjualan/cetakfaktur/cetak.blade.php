@@ -11,7 +11,7 @@
           font-size: 1rem;
           font-weight: 400;
           line-height: 1.5;
-          color: #858796;
+          color: #252525;
           text-align: left;
           background-color: #fff;
       }
@@ -91,7 +91,7 @@
       .table {
           width: 100%;
           margin-bottom: 1rem;
-          color: #858796;
+          color:#252525;
       }
 
       .table th,
@@ -112,7 +112,10 @@
 
       .table-sm th,
       .table-sm td {
-          padding: 0.3rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.3rem;
+        padding-left: 0.1rem;
+        padding-right: 0.1rem;
       }
 
       .table-bordered {
@@ -157,8 +160,12 @@
       }
 
       .subtitle-cetak-so-second {
-          margin-left: 7px;
+          margin-left: -2.5px;
           font-size: 12px;
+      }
+
+      .sub-title {
+        font-family: 'Courier New', Courier, monospace;
       }
 
       .logo-cetak-so img {
@@ -169,26 +176,30 @@
       }
 
       .customer-cetak-so {
-          font-size: 12px;
-          width: 220px;
-          margin-top: 5px;
-          margin-right: 30px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 12px;
+        width: 220px;
+        margin-top: 0px;
+        margin-right: 30px;
+      }
+
+      .kode-cetak-so {
+        font-size: 11px;
       }
 
       .nama-cetak-so {
           margin-top: 10px;
-          margin-bottom: 10px;
           font-size: 14px;
       }
 
       .alamat-cetak-so {
-          margin-bottom: -10px;
-          line-height: 15px;
+        margin-bottom: -10px;
+        line-height: 20px;
       }
 
       .telepon-cetak-so {
           /* margin-bottom: -15px; */
-          line-height: 13px;
+          line-height: 18px;
       }
 
       .table-info-cetak-so {
@@ -201,18 +212,19 @@
       }
 
       .th-info-cetak-so {
-          line-height: 5px;
+        font-family: 'Courier New', Courier, monospace;
+        line-height: 5px;
       }
 
-      .tr-info-cetak-so {
-          line-height: 10px;
+      .tr-info-cetak-so td{
+        line-height: 10px;
       }
 
       .table-cetak {
           font-size: 11px;
-          height: 200px;
+          height: 230px;
           margin-left: 31px;
-          margin-right: 31px;
+          margin-right: 34.5px;
           margin-top: -13px;
       }
 
@@ -242,51 +254,66 @@
       }
 
       .ttd-penerima {
-          font-size: 12px;
-          padding-left: -5px;
-          margin-bottom: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        padding-left: -5px;
+        margin-bottom: 15px;
+        margin-top: 0px;
       }
 
       .info_bayar {
-          margin-top: -20px;
-          margin-left: 5px;
-          margin-right: 30px;
-          font-size: 12px;
-          line-height: 24px;
+        font-family: 'Courier New', Courier, monospace;
+        color: black;
+        margin-top: -15px;
+        margin-left: 5px;
+        margin-right: 30px;
+        font-size: 12px;
+        line-height: 18px;
       }
 
       .ttd-gudang {
-          font-size: 12px;
-          margin-top: 1px;
-          margin-left: 2px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        margin-top: -5px;
+        margin-left: 2px;
+        line-height: 14px;
       }
 
       .ttd-mengetahui {
-          font-size: 12px;
-          margin-top: -7px;
-          line-height: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        margin-top: -12px;
+        line-height: 10px;
       }
 
       .tgl-ttd {
-          font-size: 11px;
+        font-size: 10px;
       }
 
       .total-faktur {
-          margin-top: -3px;
+        font-family: Arial, Helvetica, sans-serif;
+          margin-top: 1px;
           margin-left: 5px;
-          font-size: 12px;
+          font-size: 10px;
       }
 
       .tabel-total-faktur {
-          line-height: 16px;
+          line-height: 12px;
+          margin-bottom: 3px;
       }
 
       .title-total {
-          width: 160px;
+          width: 168px;
       }
 
       .angka-total {
-          font-size: 14px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 12px;
+      }
+
+      .angka-total-akhir {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 13px;
       }
 
       /* @media print {
@@ -301,18 +328,18 @@
       <div class="cetak-all-container" @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif>
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
-            <h5 class="text-bold text-dark">FAKTUR PENJUALAN</h5>
-            <h5 class="text-bold text-dark" style="margin-top: -10px">
+            <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
+            <h5 class="text-bold " style="margin-top: -10px">
               (@if($item->kategori == "Cash") CASH @else TEMPO @endif)
             </h5>
           </div>
           <div class="subtitle-cetak-so-one text-center">
-            <span class="text-right">Nomor</span>
+            <span class="text-right sub-title">Nomor</span>
             <span>:</span>
             <span class="text-bold">{{ $item->id }}</span>
           </div>
           <div class="subtitle-cetak-so-second text-center">
-            <span class="text-right">Tanggal</span>
+            <span class="text-right sub-title">Tanggal</span>
             <span>:</span>
             <span class="text-bold">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</span>
           </div>
@@ -386,7 +413,7 @@
           <tbody class="tr-detail-cetak-so">
             @php $i = 1; @endphp
             @foreach($itemsDet as $itemDet)
-              <tr class="text-dark ">
+              <tr >
                 <td rowspan="2" align="center">{{ $i }}</td>
                 <td rowspan="2">{{ $itemDet->id_barang }}</td>
                 <td rowspan="2">{{ $itemDet->barang->nama }}</td>
@@ -416,7 +443,7 @@
                 <td rowspan="2" align="right">
                   {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
               </tr>
-              <tr class="text-dark">
+              <tr class="">
                 <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">({{ $diskon }}%)</td>
               </tr>
               @php $i++ @endphp
@@ -431,7 +458,7 @@
                 <td style="border-right: dotted; width: 87px"> 
                   <div class="ttd-penerima text-center">
                     <span>Penerima,</span>
-                    <br><br><br><br>
+                    <br><br><br>
                     <span class="form-ttd">(___________)</span>
                   </div>
                 </td>
@@ -446,7 +473,7 @@
                 </td>
                 <td style="width: 85px">
                   <div class="ttd-gudang">
-                    <center><span>Gudang,</span></center>
+                    <center><span class="nama-gudang">Gudang,</span></center>
                     <br><br>
                     <span class="form-ttd">(___________)</span>
                   </div>
@@ -456,7 +483,6 @@
                     <span class="tgl-ttd">
                       {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
                     </span>
-                    <br>
                     <span>Mengetahui,</span> 
                     <br><br><br><br>
                     <span class="form-ttd">(__________)</span>
@@ -486,12 +512,11 @@
                         <td></td>
                       </tr>
                       <tr>
-                        <td class="title-total"></td>
-                        <td></td>
+                        <td colspan="2" style="height: 2px"></td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>
-                        <td class="text-right angka-total">{{ number_format($item->total, 0, "", ".") }}</td>
+                        <td class="text-right angka-total-akhir">{{ number_format($item->total, 0, "", ".") }}</td>
                       </tr>
                     </table>
                   </div>
