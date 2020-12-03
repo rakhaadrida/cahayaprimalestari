@@ -181,6 +181,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
             ->name('trans-detail');
 
+        // Tanda Terima
+        Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
+        Route::post('/tandaterima/detail/{id}', 'TandaTerimaController@detail')
+            ->name('ttr-detail');
+
         // Cetak Faktur
         Route::get('/cetak-faktur/{status}/{awal}/{akhir}', 'CetakFakturController@index')
             ->name('cetak-faktur');
@@ -188,6 +193,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-process');
         Route::get('/cetak/{awal}/{akhir}', 'CetakFakturController@cetak')
             ->name('cetak-all');
+        Route::get('/cetak-ttr/{awal}/{akhir}', 'CetakFakturController@tandaterima')
+        ->name('cetak-ttr');
         Route::get('/cetak-update/{awal}/{akhir}', 'CetakFakturController@update')
             ->name('cetak-update');
         // Route::post('/cetak-faktur/cetak', 'CetakFakturController@cetak')

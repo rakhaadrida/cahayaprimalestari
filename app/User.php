@@ -66,4 +66,8 @@ class User extends Authenticatable
     public function so() {
         return $this->hasMany('App\Models\SalesOrder', 'id_user', 'id');
     }
+
+    public function tandaterima() {
+        return $this->hasMany('App\Models\TandaTerima', 'id_user', 'id');
+    }
 }

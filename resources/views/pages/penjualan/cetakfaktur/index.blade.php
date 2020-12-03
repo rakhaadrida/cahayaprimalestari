@@ -42,8 +42,8 @@
                     <input type="text" class="form-control form-control-sm mt-1 kodeAkhir" name="kodeAkhir" id="kodeAkhir" placeholder="Kode Akhir" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
-                    <button type="submit" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" onclick="return checkRequired(event)">Cetak</button>
-                    {{-- formaction="{{ route('cetak-all', ['awal' => 'INV0015', 'akhir' => 'INV0015']) }}" formmethod="GET" formtarget="_blank" --}}
+                    <button type="submit" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" formaction="{{ route('cetak-ttr', ['awal' => 'INV0011', 'akhir' => 'INV0030']) }}" formmethod="GET" formtarget="_blank" >Cetak</button>
+                    {{-- onclick="return checkRequired(event)" --}}
                   </div>
                 </div>  
               </div>

@@ -27,6 +27,10 @@ class SalesOrder extends Model
         return $this->hasMany('App\Models\DetilSO', 'id_so', 'id');
     }
 
+    public function tandaterima() {
+        return $this->hasMany('App\Models\TandaTerima', 'id_so', 'id');
+    }
+
     public function need_approval() {
         return $this->hasMany('App\Models\NeedApproval', 'id_dokumen', 'id');
     }
