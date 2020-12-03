@@ -525,6 +525,7 @@
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
                 <iframe src="{{url('so/cetak/'.$lastcode)}}" id="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('so/cetak-ttr/'.$lastcode)}}" id="frameTTR" frameborder="0" hidden></iframe>
               @endif
 
             </form>
@@ -543,9 +544,21 @@
 <script type="text/javascript">
 
 @if($status == 'true')
-  $(document).ready(function() {
-    $("#frameCetak").printPage();
-  });
+  // $(document).ready(function() {
+  //   $("#frameCetak").printPage();
+  //   $("#frameTTR").printPage();
+  // });
+
+  const printFrame = document.getElementById("frameCetak").contentWindow;
+  const printTTR = document.getElementById("frameTTR").contentWindow;
+
+  printFrame.window.onafterprint = function(e) {
+    alert('ok');
+  }
+
+  printTTR.window.print();
+  printFrame.window.print();
+  window.print();
 @endif
 
 $.fn.datepicker.dates['id'] = {

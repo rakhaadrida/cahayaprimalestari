@@ -168,6 +168,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/so/process/{id}/{status}', 'SalesOrderController@process')
             ->name('so-process');
         Route::get('/so/cetak/{id}', 'SalesOrderController@cetak')->name('so-cetak');
+        Route::get('/so/cetak-ttr/{id}', 'SalesOrderController@tandaterima')->name('so-ttr');
         Route::get('/so/remove/{id}/{barang}','SalesOrderController@remove')->name('so-remove');
         // Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         // Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');

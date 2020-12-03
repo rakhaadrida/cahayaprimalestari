@@ -15,6 +15,7 @@ use App\Models\Harga;
 use App\Models\Gudang;
 use App\Models\AccReceivable;
 use App\Models\DetilAR;
+use App\Models\TandaTerima;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
@@ -202,8 +203,20 @@ class SalesOrderController extends Controller
 
         if($status != 'CETAK')
             $cetak = 'false';
-        else
+        else {
             $cetak = 'true';
+            $lastcode = TandaTerima::max('id');
+            $lastnumber = (int) substr($lastcode, 3, 4);
+            $lastnumber++;
+            $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+
+            TandaTerima::create([
+                'id' => $newcode,
+                'id_so' => $id,
+                'tanggal' => $tanggal,
+                'id_user' => Auth::user()->id
+            ]);
+        }
 
         return redirect()->route('so', $cetak);
     }
@@ -218,6 +231,31 @@ class SalesOrderController extends Controller
         $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-so.pdf');
+    }
+
+    public function tandaterima($id) {
+        $items = SalesOrder::where('id', $id)->get();
+
+        $lastcode = TandaTerima::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+
+        $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
+
+        $data = [
+            'items' => $items,
+            'newcode' => $newcode,
+            'today' => $today,
+            'waktu' => $waktu
+        ];
+
+        $paper = array(0,0,612,394);
+        $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
+        ob_end_clean();
+        return $pdf->stream('cetak-ttr.pdf');
     }
 
     public function change() {
