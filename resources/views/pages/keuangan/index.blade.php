@@ -99,17 +99,19 @@
                     @if(Auth::user()->roles == 'SUPER')
                     <tr class="text-dark" style="background-color: white">
                       <td align="center">HPP</td>
-                      @php $hpp = 0; @endphp
+                      @php $hpp = 0; $kode = $s->id; @endphp
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle">
-                        @foreach($items as $i)
-                          @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
+                        {{-- @foreach($items as $i)
+                          @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id)) --}}
                             <a href="#Detail{{ $i->id_kategori }}{{ $i->id_sales }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
-                              {{ number_format($i->hpp, 0, "", ",") }}
+                              @if($j->$kode != 0)
+                                {{ number_format($j->$kode, 0, "", ",") }}
+                              @endif
                             </a>
-                            @php $hpp += $i->hpp @endphp
-                          @endif
-                        @endforeach
+                            @php $hpp += $j->$kode @endphp
+                          {{-- @endif
+                        @endforeach --}}
                         </td>
                       @endforeach
                       <td align="right" class="align-middle">

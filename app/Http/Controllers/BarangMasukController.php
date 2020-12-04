@@ -117,8 +117,16 @@ class BarangMasukController extends Controller
 
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $request->kodeGudang)->first();
-                $updateStok->{'stok'} = $updateStok->{'stok'} + $request->qty[$i];
-                $updateStok->save();
+                if($updateStok == NULL) {
+                    StokBarang::create([
+                        'id_barang' => $request->kodeBarang[$i],
+                        'id_gudang' => $request->kodeGudang,
+                        'stok' => $request->qty[$i]
+                    ]);
+                } else {
+                    $updateStok->{'stok'} = $updateStok->{'stok'} + $request->qty[$i];
+                    $updateStok->save();
+                }
             }
         }
 

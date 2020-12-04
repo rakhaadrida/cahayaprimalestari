@@ -28,43 +28,94 @@ class LapKeuController extends Controller
         $jenis = JenisBarang::All();
         $sales = Sales::All();
 
-        $qty = $this->getQty($month, $tahun);
-        $items = $this->getItems($qty, $month, $tahun);
+        $qtySales = $this->getQty($month, $tahun);
+        $items = $this->getItems($qtySales, $month, $tahun);
         $retur = $this->getRetur($month, $tahun);
 
-        $qty = 0; $hpp = [];
-        // foreach($jenis as $j) {
-            // $barang = Barang::where('id_kategori', 'KAT01')->get();
-            // foreach($barang as $b) {
-                $bmPerBrg = DetilBM::where('id_barang', 'BRG00001')->get();
-                $soPerBrg = DetilSO::where('id_barang', 'BRG00001')->get();
-                for($i = 0; $i < $bmPerBrg->count(); $i++) {
-                    $qty = $bmPerBrg[$i]->qty;
-                    // var_dump($qty);
-                    for($j = $i; $j < $soPerBrg->count(); $j++) {
-                        if($soPerBrg[$j]->qty <= $qty) {
-                            $hrg = ($bmPerBrg[$i]->harga * $soPerBrg[$j]->qty);
-                            $hrg = $hrg - ($hrg * $bmPerBrg[$i]->disPersen / 100);
-                            // array_push($hpp, $hrg);
-                            $qty -= $soPerBrg[$j]->qty;
-                            array_push($hpp, $soPerBrg[$j]->qty);
-                        }
-                        else {
-                            $hrg = ($bmPerBrg[$i]->harga * ($soPerBrg[$j]->qty - $qty));
-                            $hrg = $hrg - ($hrg * $bmPerBrg[$i]->disPersen / 100);
-                            // array_push($hpp, $hrg);
-                            $qty -= $soPerBrg[$j]->qty;
-                            array_push($hpp, $soPerBrg[$j]->qty - $qty);
-                        }
+        // return response()->json($qty);
 
-                        if($qty == 0)
-                            break;
-                    }
+        foreach($jenis as $j) {
+            foreach($sales as $s) {
+                $j[$s->id] = 0;
+            }
+        }
+
+        $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $hpp = [];
+        $hppPerKat = collect();
+        foreach($jenis as $j) {
+            $barang = Barang::where('id_kategori', $j->id)->get();
+            foreach($barang as $b) {
+                $sisa = 0;
+                $totBM = DetilBM::selectRaw('sum(qty) as totQty')
+                        ->where('id_barang', $b->id)->get();
+                $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
+                        ->selectRaw('sum(qty) as totQty')
+                        ->where('id_barang', $b->id)->whereMonth('tgl_so', '<', $month)->get();
+                
+                if($totSO[0]->totQty != null) {
+                    $sisa = $totBM[0]->totQty - $totSO[0]->totQty;
                 }
-            // }
-        // }
 
-        var_dump($hpp);
+                if($sisa == 0) 
+                    $bmPerBrg = DetilBM::where('id_barang', $b->id)->get();
+                else {
+                    $lastBM = DetilBM::where('id_barang', $b->id)
+                                ->orderBy('id_bm', 'desc')->take(5)->get();
+                    foreach($lastBM as $bm) {
+                        if($sisa <= $bm->qty) {
+                            $kode = $bm->id_bm;
+                            break;
+                        }
+                        else
+                            $sisa -= $bm->qty;
+                    }
+
+                    $bmPerBrg = DetilBM::where('id_barang', $b->id)
+                                ->where('id_bm', '>=', $kode)->get();
+                }
+
+                $soPerBrg = DetilSO::join('so', 'so.id', 'detilso.id_so')
+                            ->select('detilso.*')
+                            ->where('id_barang', $b->id)
+                            ->whereMonth('tgl_so', '=', $month)->get();
+                
+                // return response()->json($soPerBrg);
+
+                if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {
+                    $k = 0;
+                    for($i = 0; $i < $bmPerBrg->count(); $i++) {
+                        $qty = $bmPerBrg[$i]->qty;
+                        for($m = $k; $m < $soPerBrg->count(); $m++) {
+                            $idSales = $soPerBrg[$k]->so->customer->id_sales;
+                            if($soPerBrg[$k]->qty <= $qty) {
+                                $hrg = $bmPerBrg[$i]->harga * $soPerBrg[$k]->qty;
+                                $hrg = $hrg - ($hrg * number_format($bmPerBrg[$i]->disPersen, 2, ".", "") / 100);
+                                $j->$idSales = $j->$idSales + $hrg;
+                                $qty -= $soPerBrg[$k]->qty;
+                                $k++;
+                            }
+                            else {
+                                $hrg = $bmPerBrg[$i]->harga * $qty;
+                                $hrg = $hrg - ($hrg * number_format($bmPerBrg[$i]->disPersen, 2, ".", "") / 100);
+                                $j->$idSales = $j->$idSales + $hrg;
+                                $soPerBrg[$k]->qty = $soPerBrg[$k]->qty - $qty;
+                                $qty = 0;
+                            }
+                            
+                            // var_dump($b->id." - ".$qty." - ".$soPerBrg[$m]->qty." - ".$hrg." - ".Carbon::parse($soPerBrg[$m]->so->tgl_so)->format('m')." - ".$soPerBrg[$m]->so->customer->id_sales);
+                            // echo "<br>";
+
+                            if($qty == 0)
+                                break;
+                        }
+                    }
+                    // echo "<br>";
+                }
+            }
+            // echo "<br>";
+        }
+
+        // return response()->json($jenis);
 
         $data = [
             'tahun' => $tahun,
@@ -72,12 +123,12 @@ class LapKeuController extends Controller
             'month' => $month,
             'jenis' => $jenis,
             'sales' => $sales,
-            'qty' => $qty,
+            'qty' => $qtySales,
             'items' => $items,
             'retur' => $retur
         ];
 
-        // return view('pages.keuangan.index', $data);
+        return view('pages.keuangan.index', $data);
     }
 
     public function show(Request $request) {
