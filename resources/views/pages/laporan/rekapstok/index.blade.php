@@ -73,7 +73,7 @@
                     <table class="table table-sm table-bordered table-responsive-sm table-hover">
                       <thead class="text-center text-dark text-bold">
                         <td style="width: 40px" class="align-middle">No</td>
-                        <td style="width: 80px">Kode Barang</td>
+                        <td style="width: 100px">Kode Barang</td>
                         <td class="align-middle">Nama Barang</td>
                         <td style="width: 110px; background-color: yellow" class="align-middle">Total Stok</td>
                         @foreach($gudang as $g)

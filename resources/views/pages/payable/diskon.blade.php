@@ -184,7 +184,7 @@
                         <td align="right">
                           <input type="text" name="dis{{$item->id}}{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" @if($detil->diskon != null) 
                           value="{{ $detil->diskon }}" @endif required>
-                          <input type="hidden" name="diskon{{$item->id}}{{$detil->id_barang}}" class="disAngka" @if($detil->diskon != null) value="{{ $detil->diskonRp }}" @endif>
+                          <input type="hidden" name="diskon{{$item->id}}{{$detil->id_barang}}" class="disAngka" @if($detil->diskon != null) value="{{ $detil->disPersen }}" @endif>
                         </td>
                         @if($detil->diskon != null)
                           @php 

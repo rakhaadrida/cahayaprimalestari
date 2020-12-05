@@ -669,7 +669,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     data: {
       labels: ["Batal", "Limit", "Approve_limit", "Update", "Cetak", "Input"],
       datasets: [{
-        data: ['{{$fakturPerStatus[1]->total}}', '{{$fakturPerStatus[4]->total}}', '{{$fakturPerStatus[0]->total}}', '{{$fakturPerStatus[5]->total}}', '{{$fakturPerStatus[2]->total}}', '{{$fakturPerStatus[3]->total}}'],
+        data: ['{{$fakturPerStatus[1]}}', '{{$fakturPerStatus[4]}}', '{{$fakturPerStatus[0]}}', '{{$fakturPerStatus[5]}}', '{{$fakturPerStatus[2]}}', '{{$fakturPerStatus[3]}}'],
         backgroundColor: ['#e74a3b', '#f6c23e', '#858796', '#36b9cc', '#1cc88a', '#4e73df'],
         hoverBackgroundColor: ['#d13224', '#e0ab22', '#858796', '#2c9faf', '#17a673', '#2e59d9'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",

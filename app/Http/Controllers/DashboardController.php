@@ -65,8 +65,15 @@ class DashboardController extends Controller
                 $restok++;
         }   
 
-        $fakturPerStatus = SalesOrder::selectRaw('status, count(status) as total')
-                        ->whereYear('tgl_so', $tahun)->groupBy('status')->get();
+        $fakturCount = [];
+        $status = ['APPROVE_LIMIT', 'BATAL', 'CETAK', 'INPUT', 'UPDATE', 'LIMIT'];
+        for($i = 0; $i < sizeof($status); $i++) {
+            $fakturPerStatus = SalesOrder::where('status', $status[$i])
+                        ->whereYear('tgl_so', $tahun)->count();
+            $fakturCount[$i] = $fakturPerStatus;
+        }
+        // $fakturPerStatus = SalesOrder::selectRaw('status, count(status) as total')
+        //                 ->whereYear('tgl_so', $tahun)->groupBy('status')->get();
         $lastTrans = SalesOrder::latest()->take(6)->get();
         foreach($lastTrans as $l) {
             $totalQty = DetilSO::selectRaw('sum(qty) as qty')->where('id_so', $l->id)->get();
@@ -205,7 +212,7 @@ class DashboardController extends Controller
             'needPrint' => $needPrint,
             'stillPending' => $stillPending,
             'restock' => $restok,
-            'fakturPerStatus' => $fakturPerStatus,
+            'fakturPerStatus' => $fakturCount,
             'lastTrans' => $lastTrans,
             'receivCount' => $receivCount,
             'receivTempo' => $receivTempo,
