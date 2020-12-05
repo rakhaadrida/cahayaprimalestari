@@ -104,7 +104,7 @@
                         <td align="right" class="align-middle">
                         {{-- @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id)) --}}
-                            <a href="#Detail{{ $i->id_kategori }}{{ $i->id_sales }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
+                            <a href="#Detail{{ $j->id }}{{ $s->id }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
                               @if($j->$kode != 0)
                                 {{ number_format($j->$kode, 0, "", ",") }}
                               @endif
@@ -145,8 +145,8 @@
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
                             @if(Auth::user()->roles == 'SUPER')
-                              {{ number_format($i->total - $i->hpp, 0, "", ",") }}
-                              @php $laba += ($i->total - $i->hpp) @endphp
+                              {{ number_format($i->total - $j->$kode, 0, "", ",") }}
+                              @php $laba += ($i->total - $j->$kode) @endphp
                             @else
                               {{ number_format($i->total, 0, "", ",") }}
                               @php $laba += $i->total @endphp

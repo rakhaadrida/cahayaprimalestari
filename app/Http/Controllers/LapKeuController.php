@@ -32,15 +32,13 @@ class LapKeuController extends Controller
         $items = $this->getItems($qtySales, $month, $tahun);
         $retur = $this->getRetur($month, $tahun);
 
-        // return response()->json($qty);
-
         foreach($jenis as $j) {
             foreach($sales as $s) {
                 $j[$s->id] = 0;
             }
         }
 
-        $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $hpp = [];
+        $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $h = 0; $hpp = [];
         $hppPerKat = collect();
         foreach($jenis as $j) {
             $barang = Barang::where('id_kategori', $j->id)->get();
@@ -91,6 +89,7 @@ class LapKeuController extends Controller
                                 $hrg = $bmPerBrg[$i]->harga * $soPerBrg[$k]->qty;
                                 $hrg = $hrg - ($hrg * number_format($bmPerBrg[$i]->disPersen, 2, ".", "") / 100);
                                 $j->$idSales = $j->$idSales + $hrg;
+                                $qtyHpp = $soPerBrg[$k]->qty;
                                 $qty -= $soPerBrg[$k]->qty;
                                 $k++;
                             }
@@ -98,11 +97,24 @@ class LapKeuController extends Controller
                                 $hrg = $bmPerBrg[$i]->harga * $qty;
                                 $hrg = $hrg - ($hrg * number_format($bmPerBrg[$i]->disPersen, 2, ".", "") / 100);
                                 $j->$idSales = $j->$idSales + $hrg;
+                                $qtyHpp = $qty;
                                 $soPerBrg[$k]->qty = $soPerBrg[$k]->qty - $qty;
                                 $qty = 0;
                             }
+
+                            $hppPerKat[$h] = collect([
+                                'id_kat' => $j->id,
+                                'id_sales' => $soPerBrg[$m]->so->customer->id_sales,
+                                'nama' => $soPerBrg[$m]->barang->nama,
+                                'qty' => $qtyHpp,
+                                'harga' => $bmPerBrg[$i]->harga,
+                                'diskon' => $bmPerBrg[$i]->diskon,
+                                'disPersen' => $bmPerBrg[$i]->disPersen,
+                                'hpp' => $hrg
+                            ]);
+                            $h++;
                             
-                            // var_dump($b->id." - ".$qty." - ".$soPerBrg[$m]->qty." - ".$hrg." - ".Carbon::parse($soPerBrg[$m]->so->tgl_so)->format('m')." - ".$soPerBrg[$m]->so->customer->id_sales);
+                            // var_dump($b->id." - ".$bmPerBrg[$i]->id_bm." - ".$bmPerBrg[$i]->qty." - ".$soPerBrg[$m]->id_so." - ".$soPerBrg[$m]->qty." - ".$qty." - HPP - ".number_format($hrg, 0, "", ".")." - BULAN - ".Carbon::parse($soPerBrg[$m]->so->tgl_so)->format('m')." - SALES - ".$soPerBrg[$m]->so->customer->id_sales." - ".$soPerBrg[$m]->so->customer->sales->nama);
                             // echo "<br>";
 
                             if($qty == 0)
@@ -115,7 +127,7 @@ class LapKeuController extends Controller
             // echo "<br>";
         }
 
-        // return response()->json($jenis);
+        // return response()->json($hppPerKat);
 
         $data = [
             'tahun' => $tahun,
@@ -125,7 +137,8 @@ class LapKeuController extends Controller
             'sales' => $sales,
             'qty' => $qtySales,
             'items' => $items,
-            'retur' => $retur
+            'retur' => $retur,
+            'hppPerKat' => $hppPerKat
         ];
 
         return view('pages.keuangan.index', $data);
@@ -212,7 +225,7 @@ class LapKeuController extends Controller
                     ->join('so', 'so.id', '=', 'detilso.id_so')
                     ->join('customer', 'customer.id', '=', 'so.id_customer')
                     ->join('sales', 'sales.id' , '=', 'customer.id_sales')
-                    ->select('customer.id_sales', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
+                    ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
