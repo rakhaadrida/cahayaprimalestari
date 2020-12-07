@@ -41,4 +41,8 @@ class BarangMasuk extends Model
     public function approval() {
         return $this->hasMany('App\Models\Approval', 'id_dokumen', 'id');
     }
+
+    public function retur() {
+        return $this->hasMany('App\Models\Retur', 'id_faktur', 'id');
+    }
 }

@@ -47,6 +47,22 @@
                   <textarea class="form-control col-form-label-sm" name="alamat" value="{{ old('alamat') }}" required></textarea>
                 </div>
               </div>
+              <div class="form-group row">
+                <label for="satuan" class="col-1 col-form-label text-bold">Retur</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-6">
+                  <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="radio" name="retur" 
+                    value="T">
+                    <label class="form-check-label font-weight-bold text-dark" for="retur1">Ya</label>
+                  </div>
+                  <div class="form-check form-check-inline ml-4">
+                    <input class="form-check-input" type="radio" name="retur" 
+                    value="F">
+                    <label class="form-check-label font-weight-bold text-dark" for="retur2">Tidak</label>
+                  </div>
+                </div>
+              </div>
               <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">

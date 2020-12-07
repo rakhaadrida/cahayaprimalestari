@@ -12,9 +12,9 @@ class StokBarang extends Model
     use SoftDeletes;
     
     protected $table = "stok";
-    protected $primaryKey = ['id_barang', 'id_gudang'];
+    protected $primaryKey = ['id_barang', 'id_gudang', 'status'];
     protected $keyType = "string";
-    protected $fillable = ['id_barang', 'id_gudang', 'stok'];
+    protected $fillable = ['id_barang', 'id_gudang', 'stok', 'status'];
     
     public $incrementing = false;
 

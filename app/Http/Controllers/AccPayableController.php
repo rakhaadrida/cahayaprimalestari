@@ -142,9 +142,9 @@ class AccPayableController extends Controller
             $totTransfer = $total[0]->totTransfer;
 
         if($bm[0]->totBM == str_replace(",", "", $request->{"bayar".$request->kode}) + $totTransfer) 
-                $status = 'LUNAS';
-            else 
-                $status = 'BELUM LUNAS';
+            $status = 'LUNAS';
+        else 
+            $status = 'BELUM LUNAS';
 
         $ap->{'keterangan'} = $status;
         $ap->save();

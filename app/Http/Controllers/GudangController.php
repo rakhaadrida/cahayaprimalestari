@@ -35,10 +35,14 @@ class GudangController extends Controller
 
     public function store(GudangRequest $request)
     {
+        if($request->retur == '')
+            $request->retur = 'F';
+
         Gudang::create([
             'id' => $request->kode,
             'nama' => $request->nama,
-            'alamat' => $request->alamat
+            'alamat' => $request->alamat,
+            'retur' => $request->retur
         ]);
 
         return redirect()->route('gudang.index');

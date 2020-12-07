@@ -48,13 +48,18 @@
                 <td class="align-middle" align="center" style="width: 10px">{{ $j }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
                 @foreach($gudang as $g)
-                  @if(($stok->count() > 0) && ($i < $stok->count()))
-                    @if(($stok[$i]->id_gudang == $g->id) && ($stok[$i]->id_barang == $item->id))
-                      <td class="align-middle" align="center" style="width: 45px">{{ $stok[$i]->stok }}</td>
-                      @php $i++; @endphp
-                    @else
-                      <td></td>  
-                    @endif
+                  @php
+                    if($g->retur == 'T') {
+                      $stok = App\Models\StokBarang::selectRaw('sum(stok) as stok')
+                              ->where('id_barang', $item->id)
+                              ->where('id_gudang', $g->id)->get();   
+                    } else {
+                      $stok = App\Models\StokBarang::where('id_barang', $item->id)
+                              ->where('id_gudang', $g->id)->get();  
+                    }
+                  @endphp
+                  @if($stok->count() != 0)
+                    <td class="align-middle" align="center" style="width: 45px">{{ $stok[0]->stok }}</td>
                   @else
                     <td></td>
                   @endif

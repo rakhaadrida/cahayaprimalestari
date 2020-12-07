@@ -17,7 +17,7 @@ class BarangController extends Controller
     public function index() {
         $items = Barang::All();
         $gudang = Gudang::All();
-        $stok = stokBarang::All();
+        $stok = StokBarang::All();
         $harga = Harga::All();
         $hargaBarang = HargaBarang::All();
         // $items = Barang::with(['hargaBarang', 'stokBarang'])->get();
@@ -177,7 +177,8 @@ class BarangController extends Controller
         StokBarang::create([
             'id_barang' => $kode,
             'id_gudang' => $id,
-            'stok' => $stok
+            'stok' => $stok,
+            'status' => 'T'
         ]);
     }
 

@@ -46,4 +46,8 @@ class SalesOrder extends Model
     public function ar() {
         return $this->hasOne('App\Models\AccReceivable', 'id_so', 'id');
     }
+    
+    public function retur() {
+        return $this->hasMany('App\Models\Retur', 'id_faktur', 'id');
+    }
 }
