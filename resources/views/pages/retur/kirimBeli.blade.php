@@ -70,11 +70,11 @@
                       </td>
                     </tr>
                   @endif
-                  <tr>
-                    <td colspan="4" class="text-center text-bold text-dark">Total</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($totalTerima, 0, "", ".") }}</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($totalBatal, 0, "", ".") }}</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($kurang, 0, "", ".") }}</td>
+                  <tr class="bg-gradient-danger text-white text-bold">
+                    <td colspan="4" class="text-center">Total</td>
+                    <td class="text-right">{{ number_format($totalTerima, 0, "", ".") }}</td>
+                    <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>
+                    <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
                   </tr>
                 </tbody>
               </table>

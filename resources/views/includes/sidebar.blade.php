@@ -98,7 +98,7 @@
     </div>
   </li>
 
-  <!-- Nav Item - Penjualan Menu -->
+  <!-- Nav Item - Retur Menu -->
   <li class="nav-item sidebar-menu-icon">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePenjualan" aria-expanded="true" aria-controls="collapsePenjualan">
       <i class="fas fa-fw fa-shipping-fast"></i>
@@ -120,6 +120,21 @@
             </div>
           </div>
         <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a>
+      </div>
+    </div>
+  </li>
+
+  <!-- Nav Item - Penjualan Menu -->
+  <li class="nav-item sidebar-menu-icon">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRetur" aria-expanded="true" aria-controls="collapseRetur">
+      <i class="fas fa-fw fa-recycle"></i>
+      <span>Retur</span>
+    </a>
+    <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+      <div class="py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
+        <a class="collapse-item" href="{{ route('retur-jual') }}">Retur Penjualan</a>
+        <a class="collapse-item" href="{{ route('retur-beli') }}">Retur Pembelian</a>
       </div>
     </div>
   </li>

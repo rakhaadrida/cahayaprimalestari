@@ -13,6 +13,11 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Data Retur Penjualan</h1>
+      <div class="justify-content-end">
+        <a href="{{ route('ret-index-jual') }}" class="btn btn-sm btn-primary shadow-sm">
+          <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Input Retur Penjualan
+        </a>
+    </div>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -44,8 +49,9 @@
                   <div class="col-2">
                     <select class="form-control form-control-sm mt-1" name="status">
                       <option value="ALL" selected>ALL</option>
-                      <option value="LUNAS">LUNAS</option>
-                      <option value="BELUM LUNAS">BELUM LUNAS</option>
+                      <option value="INPUT">INPUT</option>
+                      <option value="LENGKAP">LENGKAP</option>
+                      <option value="CETAK">CETAK</option>
                     </select>
                   </div>
                 </div>   
@@ -60,7 +66,7 @@
                     <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('ap-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('retur-jual-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -117,7 +123,7 @@
                     @php $i++ @endphp
                   @empty
                     <tr>
-                      <td colspan="9" class="text-center text-bold h4 p-2"><i>Tidak ada daftar account receivable</i></td>
+                      <td colspan="11" class="text-center text-bold h4 p-2"><i>Tidak ada daftar retur penjualan</i></td>
                     </tr>
                   @endforelse
                 </tbody>

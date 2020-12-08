@@ -117,7 +117,7 @@
                   <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
                 </div>
                 <div class="col-2">
-                  <a href="{{ route('retur-stok') }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
+                  <a href="{{ route('retur-beli') }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->

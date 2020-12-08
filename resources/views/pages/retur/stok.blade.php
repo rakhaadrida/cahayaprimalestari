@@ -11,7 +11,7 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
     <h1 class="h3 mb-0 text-gray-800 menu-title">Data Stok Barang Retur</h1>
-    <div class="justify-content-end">
+    {{-- <div class="justify-content-end">
       <a href="{{ route('ret-index-jual') }}" class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Input Retur Penjualan
       </a>
@@ -19,7 +19,7 @@
       <a href="{{ route('ret-index-beli') }}" class="btn btn-sm btn-outline-danger shadow-sm">
         <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Input Retur Pembelian
       </a>
-    </div>
+    </div> --}}
   </div>
 
   <div class="row">

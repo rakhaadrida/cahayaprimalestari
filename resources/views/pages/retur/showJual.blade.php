@@ -1,4 +1,4 @@
-@extends('pages.retur.kirimBeli')
+@extends('pages.retur.kirimJual')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -12,12 +12,12 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Retur Pembelian</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Retur Penjualan</h1>
       <div class="justify-content-end">
-        <a href="{{ route('ret-index-beli') }}" class="btn btn-sm btn-primary shadow-sm">
-          <i class="fas fa-plus fa-sm text-dark-50 mr-1"></i>  Input Retur Pembelian
+        <a href="{{ route('ret-index-jual') }}" class="btn btn-sm btn-primary shadow-sm">
+          <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Input Retur Penjualan
         </a>
-      </div>
+    </div>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -48,10 +48,10 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <select class="form-control form-control-sm mt-1" name="status">
-                      <option value="ALL" selected>ALL</option>
-                      <option value="INPUT">INPUT</option>
-                      <option value="LENGKAP">LENGKAP</option>
-                      <option value="CETAK">CETAK</option>
+                      <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
+                      <option value="INPUT" @if($status == 'INPUT') selected @endif>INPUT</option>
+                      <option value="LENGKAP" @if($status == 'LENGKAP') selected @endif>LENGKAP</option>
+                      <option value="CETAK" @if($status == 'CETAK') selected @endif>CETAK</option>
                     </select>
                   </div>
                 </div>   
@@ -59,14 +59,17 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('retur-beli-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('retur-jual-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" formaction="{{ route('home-jual') }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                 </div>  
               </div>
@@ -84,7 +87,7 @@
                     <th style="width: 70px" class="align-middle">No. Faktur</th>
                     <th style="width: 60px" class="align-middle">Qty Faktur</th>
                     <th style="width: 40px" class="align-middle">Qty Retur</th>
-                    <th style="width: 50px" class="align-middle">Qty Terima</th>
+                    <th style="width: 50px" class="align-middle">Qty Kirim</th>
                     <th style="width: 50px" class="align-middle">Qty Tidak Retur</th>
                     <th style="width: 50px" class="align-middle">Qty Kurang</th>
                     <th style="width: 70px" class="align-middle">Status</th>
@@ -94,12 +97,12 @@
                   @php $i = 1 @endphp
                   @forelse($retur as $r)
                     @php 
-                      $qtyFaktur = App\Models\DetilBM::selectRaw('sum(qty) as total')
-                                ->where('id_bm', $r->id_faktur)->get();
+                      $qtyFaktur = App\Models\DetilSO::selectRaw('sum(qty) as total')
+                                ->where('id_so', $r->id_faktur)->get();
                       $qtyRetur = App\Models\DetilRetur::selectRaw('sum(qty) as total')
                                 ->where('id_retur', $r->id)->get();
-                      $qtyProses = App\Models\DetilRB::selectRaw('sum(qty_terima) 
-                                as totalTerima, sum(qty_batal) as totalBatal')
+                      $qtyProses = App\Models\DetilRJ::selectRaw('sum(qty_kirim) as totalKirim,
+                                sum(qty_batal) as totalBatal')
                                 ->where('id_retur', $r->id)->get();
                     @endphp
                     <tr class="text-dark">
@@ -108,13 +111,13 @@
                       <td class="align-middle text-center">
                         {{ \Carbon\Carbon::parse($r->tanggal)->format('d-M-y') }}
                       </td>
-                      <td class="align-middle">{{ $r->bm->supplier->nama }}</td>
+                      <td class="align-middle">{{ $r->so->customer->nama }}</td>
                       <td class="align-middle text-center">{{ $r->id_faktur }}</td>
                       <td class="align-middle text-center">{{ $qtyFaktur[0]->total }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalTerima }}</td>
+                      <td class="align-middle text-right">{{ $qtyProses[0]->totalKirim }}</td>
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td>
-                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalBatal + $qtyProses[0]->totalTerima) }}</td>
+                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalBatal + $qtyProses[0]->totalKirim) }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $r->id }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
                         </a>
@@ -123,7 +126,7 @@
                     @php $i++ @endphp
                   @empty
                     <tr>
-                      <td colspan="11" class="text-center text-bold h4 p-2"><i>Tidak ada daftar retur pembelian</i></td>
+                      <td colspan="11" class="text-center text-bold h4 p-2"><i>Tidak ada daftar retur penjualan</i></td>
                     </tr>
                   @endforelse
                 </tbody>

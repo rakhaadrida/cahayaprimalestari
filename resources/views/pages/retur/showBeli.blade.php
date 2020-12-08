@@ -42,16 +42,16 @@
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autofocus>
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autofocus>
                   </div>
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <select class="form-control form-control-sm mt-1" name="status">
-                      <option value="ALL" selected>ALL</option>
-                      <option value="INPUT">INPUT</option>
-                      <option value="LENGKAP">LENGKAP</option>
-                      <option value="CETAK">CETAK</option>
+                      <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
+                      <option value="INPUT" @if($status == 'INPUT') selected @endif>INPUT</option>
+                      <option value="LENGKAP" @if($status == 'LENGKAP') selected @endif>LENGKAP</option>
+                      <option value="CETAK" @if($status == 'CETAK') selected @endif>CETAK</option>
                     </select>
                   </div>
                 </div>   
@@ -59,14 +59,17 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('retur-beli-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" formaction="{{ route('home-beli') }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                 </div>  
               </div>

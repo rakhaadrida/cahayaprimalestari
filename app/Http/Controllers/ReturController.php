@@ -112,7 +112,7 @@ class ReturController extends Controller
             $i++;
         }
 
-        return redirect()->route('retur-stok');
+        return redirect()->route('retur-jual');
     }
 
     public function dataReturJual() {
@@ -123,6 +123,69 @@ class ReturController extends Controller
         ];
 
         return view('pages.retur.indexJual', $data);
+    }
+
+    public function showReturJual(Request $request) {
+        if($request->status == 'ALL')  {
+            $status[0] = 'INPUT';
+            $status[1] = 'LENGKAP';
+            $status[2] = 'CETAK';
+        }
+        else {
+            $status[0] = $request->status;
+            $status[1] = '';
+            $status[2] = '';
+        }
+
+        $awal = $request->tglAwal;
+        if($awal == NULL)
+            $awal = '0000-00-00';
+        else
+            $awal = $this->formatTanggal($awal, 'Y-m-d');
+
+
+        $akhir = $request->tglAkhir;
+        if($akhir == NULL)
+            $akhir = '0000-00-00';
+        else
+            $akhir = $this->formatTanggal($akhir, 'Y-m-d');
+
+        $isi = 2;
+        if(($request->bulan == '') && ($request->tglAwal == ''))
+            $isi = 1;
+
+        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                'September', 'Oktober', 'November', 'Desember'];
+        for($i = 0; $i < sizeof($bulan); $i++) {
+            if($request->bulan == $bulan[$i]) {
+                $month = $i+1;
+                break;
+            }
+            else
+                $month = '';
+        }
+
+        if($isi == 1) {
+            $retur = Retur::whereIn('status', [$status[0], $status[1], $status[2]])
+                    ->where('tipe', 'Jual')->get();
+        } else {
+            $retur = Retur::whereIn('retur.status', [$status[0], $status[1], $status[2]])
+                    ->where('tipe', 'Jual')
+                    ->where(function ($q) use ($awal, $akhir, $month) {
+                        $q->whereMonth('tanggal', $month)
+                        ->orWhereBetween('tanggal', [$awal, $akhir]);
+                    })->get();
+        }
+
+        $data = [
+            'retur' => $retur,
+            'bulan' => $request->bulan,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir,
+            'status' => $request->status
+        ];
+
+        return view('pages.retur.showJual', $data);
     }
 
     public function storeKirimJual(Request $request) {
@@ -256,7 +319,7 @@ class ReturController extends Controller
             $i++;
         }
 
-        return redirect()->route('retur-stok');
+        return redirect()->route('retur-beli');
     }
 
     public function dataReturBeli() {
@@ -267,6 +330,69 @@ class ReturController extends Controller
         ];
 
         return view('pages.retur.indexBeli', $data);
+    }
+
+    public function showReturBeli(Request $request) {
+        if($request->status == 'ALL')  {
+            $status[0] = 'INPUT';
+            $status[1] = 'LENGKAP';
+            $status[2] = 'CETAK';
+        }
+        else {
+            $status[0] = $request->status;
+            $status[1] = '';
+            $status[2] = '';
+        }
+
+        $awal = $request->tglAwal;
+        if($awal == NULL)
+            $awal = '0000-00-00';
+        else
+            $awal = $this->formatTanggal($awal, 'Y-m-d');
+
+
+        $akhir = $request->tglAkhir;
+        if($akhir == NULL)
+            $akhir = '0000-00-00';
+        else
+            $akhir = $this->formatTanggal($akhir, 'Y-m-d');
+
+        $isi = 2;
+        if(($request->bulan == '') && ($request->tglAwal == ''))
+            $isi = 1;
+
+        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                'September', 'Oktober', 'November', 'Desember'];
+        for($i = 0; $i < sizeof($bulan); $i++) {
+            if($request->bulan == $bulan[$i]) {
+                $month = $i+1;
+                break;
+            }
+            else
+                $month = '';
+        }
+
+        if($isi == 1) {
+            $retur = Retur::whereIn('status', [$status[0], $status[1], $status[2]])
+                    ->where('tipe', 'Beli')->get();
+        } else {
+            $retur = Retur::whereIn('retur.status', [$status[0], $status[1], $status[2]])
+                    ->where('tipe', 'Beli')
+                    ->where(function ($q) use ($awal, $akhir, $month) {
+                        $q->whereMonth('tanggal', $month)
+                        ->orWhereBetween('tanggal', [$awal, $akhir]);
+                    })->get();
+        }
+
+        $data = [
+            'retur' => $retur,
+            'bulan' => $request->bulan,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir,
+            'status' => $request->status
+        ];
+
+        return view('pages.retur.showBeli', $data);
     }
 
     public function storeTerimaBeli(Request $request) {

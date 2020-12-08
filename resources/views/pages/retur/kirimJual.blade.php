@@ -70,11 +70,11 @@
                       </td>
                     </tr>
                   @endif
-                  <tr>
-                    <td colspan="4" class="text-center text-bold text-dark">Total</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($totalKirim, 0, "", ".") }}</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($totalBatal, 0, "", ".") }}</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($kurang, 0, "", ".") }}</td>
+                  <tr class="bg-gradient-danger text-bold text-white">
+                    <td colspan="4" class="text-center">Total</td>
+                    <td class="text-right">{{ number_format($totalKirim, 0, "", ".") }}</td>
+                    <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>
+                    <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -91,6 +91,12 @@
                 </div>
                 <div class="col-2">
                   <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
+                </div>
+              </div>
+            @elseif($r->status == 'LENGKAP')
+              <div class="form-row justify-content-center">
+                <div class="col-3">
+                  <button type="submit" class="btn btn-primary btn-block text-bold" formaction="{{ route('retur-jual-process') }}" formmethod="POST">Cetak</button>
                 </div>
               </div>
             @endif

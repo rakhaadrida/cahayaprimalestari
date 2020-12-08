@@ -184,16 +184,30 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         
         // Retur Barang
         Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
-        Route::get('/retur/index-jual', 'ReturController@createPenjualan')->name('ret-index-jual');
-        Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')->name('ret-detail-jual');
-        Route::post('/retur/index-jual/process/{id}', 'ReturController@storeJual')->name('ret-process-jual');
+        Route::get('/retur/index-jual', 'ReturController@createPenjualan')
+            ->name('ret-index-jual');
+        Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')
+            ->name('ret-detail-jual');
+        Route::post('/retur/index-jual/process/{id}', 'ReturController@storeJual')
+            ->name('ret-process-jual');
         Route::get('retur/penjualan', 'ReturController@dataReturJual')->name('retur-jual');
-        Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')->name('retur-jual-process');
-        Route::get('/retur/index-beli', 'ReturController@createPembelian')->name('ret-index-beli');
-        Route::post('/retur/index-beli/detail', 'ReturController@showCreateBeli')->name('ret-detail-beli');
-        Route::post('/retur/index-beli/process/{id}', 'ReturController@storeBeli')->name('ret-process-beli');
+        Route::post('retur/penjualan', 'ReturController@dataReturJual')->name('home-jual');
+        Route::post('retur/penjualan/show', 'ReturController@showReturJual')
+            ->name('retur-jual-show');
+        Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
+            ->name('retur-jual-process');
+        Route::get('/retur/index-beli', 'ReturController@createPembelian')
+            ->name('ret-index-beli');
+        Route::post('/retur/index-beli/detail', 'ReturController@showCreateBeli')
+            ->name('ret-detail-beli');
+        Route::post('/retur/index-beli/process/{id}', 'ReturController@storeBeli')
+            ->name('ret-process-beli');
         Route::get('retur/pembelian', 'ReturController@dataReturBeli')->name('retur-beli');
-        Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')->name('retur-beli-process');
+        Route::post('retur/pembelian', 'ReturController@dataReturBeli')->name('home-beli');
+        Route::post('retur/pembelian/show', 'ReturController@showReturBeli')
+            ->name('retur-beli-show');
+        Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')
+            ->name('retur-beli-process');
 
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
