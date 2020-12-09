@@ -19,7 +19,7 @@ class LapKeuController extends Controller
     public function index() {
         $date = Carbon::now();
         $tahun = $date->year;
-        $month = '10';
+        $month = $date->month;
 
         $arrBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                     'September', 'Oktober', 'November', 'Desember'];
@@ -28,16 +28,73 @@ class LapKeuController extends Controller
         $jenis = JenisBarang::All();
         $sales = Sales::All();
 
-        $qtySales = $this->getQty($month, $tahun);
-        $items = $this->getItems($qtySales, $month, $tahun);
+        $items = $this->getItems($month, $tahun);
         $retur = $this->getRetur($month, $tahun);
 
+        $jenis = $this->getJenis($jenis, $sales);
+        $hppPerKat = $this->getHpp($jenis, $month);
+
+        $data = [
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+            'month' => $month,
+            'jenis' => $jenis,
+            'sales' => $sales,
+            'items' => $items,
+            'retur' => $retur,
+            'hppPerKat' => $hppPerKat
+        ];
+
+        return view('pages.keuangan.index', $data);
+    }
+
+    public function show(Request $request) {
+        $tahun = $request->tahun;
+        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                'September', 'Oktober', 'November', 'Desember'];
+        for($i = 0; $i < sizeof($bulan); $i++) {
+            if($request->bulan == $bulan[$i]) {
+                $month = $i+1;
+                break;
+            }
+            else
+                $month = '';
+        }
+
+        $jenis = JenisBarang::All();
+        $sales = Sales::All();
+
+        $items = $this->getItems($month, $tahun);
+        $retur = $this->getRetur($month, $tahun);
+
+        $jenis = $this->getJenis($jenis, $sales);
+        $hppPerKat = $this->getHpp($jenis, $month);
+
+        $data = [
+            'tahun' => $tahun,
+            'bulan' => $request->bulan,
+            'month' => $month,
+            'jenis' => $jenis,
+            'sales' => $sales,
+            'items' => $items,
+            'retur' => $retur,
+            'hppPerKat' => $hppPerKat
+        ];
+
+        return view('pages.keuangan.show', $data);
+    }
+
+    public function getJenis($jenis, $sales) {
         foreach($jenis as $j) {
             foreach($sales as $s) {
                 $j[$s->id] = 0;
             }
         }
 
+        return $jenis;
+    }
+
+    public function getHpp($jenis, $month) {
         $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $h = 0; $hpp = [];
         $hppPerKat = collect();
         foreach($jenis as $j) {
@@ -48,7 +105,8 @@ class LapKeuController extends Controller
                         ->where('id_barang', $b->id)->get();
                 $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
                         ->selectRaw('sum(qty) as totQty')
-                        ->where('id_barang', $b->id)->whereMonth('tgl_so', '<', $month)->get();
+                        ->where('id_barang', $b->id)->whereMonth('tgl_so', '<', $month)
+                        ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
                 
                 if($totSO[0]->totQty != null) {
                     $sisa = $totBM[0]->totQty - $totSO[0]->totQty;
@@ -74,10 +132,8 @@ class LapKeuController extends Controller
 
                 $soPerBrg = DetilSO::join('so', 'so.id', 'detilso.id_so')
                             ->select('detilso.*')
-                            ->where('id_barang', $b->id)
-                            ->whereMonth('tgl_so', '=', $month)->get();
-                
-                // return response()->json($soPerBrg);
+                            ->where('id_barang', $b->id)->whereMonth('tgl_so', '=', $month)
+                            ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
 
                 if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {
                     $k = 0;
@@ -127,58 +183,39 @@ class LapKeuController extends Controller
             // echo "<br>";
         }
 
-        // return response()->json($hppPerKat);
-
-        $data = [
-            'tahun' => $tahun,
-            'bulan' => $bulan,
-            'month' => $month,
-            'jenis' => $jenis,
-            'sales' => $sales,
-            'qty' => $qtySales,
-            'items' => $items,
-            'retur' => $retur,
-            'hppPerKat' => $hppPerKat
-        ];
-
-        return view('pages.keuangan.index', $data);
+        return $hppPerKat;
     }
 
-    public function show(Request $request) {
-        $tahun = $request->tahun;
-        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
-                'September', 'Oktober', 'November', 'Desember'];
-        for($i = 0; $i < sizeof($bulan); $i++) {
-            if($request->bulan == $bulan[$i]) {
-                $month = $i+1;
-                break;
-            }
-            else
-                $month = '';
-        }
+    public function getItems($bulan, $tahun) { 
+        $items = DetilSO::join('barang', 'barang.id', '=', 'detilso.id_barang')
+                    ->join('so', 'so.id', '=', 'detilso.id_so')
+                    ->join('customer', 'customer.id', '=', 'so.id_customer')
+                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
+                    ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
+                    ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])
+                    ->whereYear('so.tgl_so', $tahun)
+                    ->whereMonth('so.tgl_so', $bulan)
+                    ->groupBy('customer.id_sales', 'barang.id_kategori')
+                    ->get();
 
-        $jenis = JenisBarang::All();
-        $sales = Sales::All();
-
-        $qty = $this->getQty($month, $tahun);
-        $items = $this->getItems($qty, $month, $tahun);
-        $retur = $this->getRetur($month, $tahun);
-
-        $data = [
-            'tahun' => $tahun,
-            'bulan' => $request->bulan,
-            'month' => $month,
-            'jenis' => $jenis,
-            'sales' => $sales,
-            'qty' => $qty,
-            'items' => $items,
-            'retur' => $retur
-        ];
-
-        return view('pages.keuangan.show', $data);
+        return $items;
     }
 
-    public function getQty($bulan, $tahun) {
+    public function getRetur($bulan, $tahun) {
+        $retur = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+                    ->join('customer', 'customer.id', '=', 'so.id_customer')
+                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
+                    ->select('customer.id_sales', DB::raw('sum(retur) as total'))
+                    ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
+                    ->whereYear('so.tgl_so', $tahun)
+                    ->whereMonth('so.tgl_so', $bulan)
+                    ->groupBy('customer.id_sales')
+                    ->get();
+        
+        return $retur;
+    } 
+
+    /* public function getQty($bulan, $tahun) {
         $qtySalesPerItems = DetilSO::join('barang', 'barang.id', '=', 'detilso.id_barang')
                     ->join('so', 'so.id', '=', 'detilso.id_so')
                     ->join('customer', 'customer.id', '=', 'so.id_customer')
@@ -218,49 +255,5 @@ class LapKeuController extends Controller
         // } 
 
         return $qtySalesPerItems;
-    }
-
-    public function getItems($qty, $bulan, $tahun) { 
-        $items = DetilSO::join('barang', 'barang.id', '=', 'detilso.id_barang')
-                    ->join('so', 'so.id', '=', 'detilso.id_so')
-                    ->join('customer', 'customer.id', '=', 'so.id_customer')
-                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
-                    ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
-                    ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
-                    ->whereYear('so.tgl_so', $tahun)
-                    ->whereMonth('so.tgl_so', $bulan)
-                    ->groupBy('customer.id_sales', 'barang.id_kategori')
-                    ->get();
-
-        foreach($items as $i) {
-            foreach($qty as $q) {
-                if(($i->id_kategori == $q->id_kategori) && ($i->id_sales == $q->id_sales)) {
-                    $i['hpp'] += $q->totHpp;
-                }
-            }
-        }
-
-        // return response()->json($items);
-        // echo "<br>";
-        // foreach($items as $i) {
-        // echo "<br>";
-        // var_dump($i->id_sales." = ".$i->id_kategori." = ".$i->hpp);
-        // }
-
-        return $items;
-    }
-
-    public function getRetur($bulan, $tahun) {
-        $retur = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-                    ->join('customer', 'customer.id', '=', 'so.id_customer')
-                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
-                    ->select('customer.id_sales', DB::raw('sum(retur) as total'))
-                    ->whereNotIn('so.status', ['BATAL', 'LIMIT']) 
-                    ->whereYear('so.tgl_so', $tahun)
-                    ->whereMonth('so.tgl_so', $bulan)
-                    ->groupBy('customer.id_sales')
-                    ->get();
-        
-        return $retur;
-    }
+    } */
 }

@@ -1,3 +1,4 @@
+@php $j = 0; @endphp
 @foreach($retur as $r)
   <div class="modal modalGudang" id="Detail{{ $r->id }}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -93,6 +94,15 @@
                   <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
                 </div>
               </div>
+            @elseif($r->status == 'LENGKAP')
+              <div class="form-row justify-content-center">
+                <div class="col-3">
+                  <button type="button" id="btnCetak" class="btn btn-primary btn-block text-bold btnCetak">Cetak</button>
+                </div>
+              </div>
+
+              <iframe src="{{url('retur/pembelian/cetak/'.$r->id)}}" id="frameCetak{{$j}}" frameborder="0" hidden></iframe>
+              @php $j++; @endphp
             @endif
           </form>
         </div>
@@ -125,6 +135,7 @@ const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
+const btnCetak = document.querySelectorAll('.btnCetak');
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {
@@ -156,6 +167,19 @@ for(let i = 0; i < batalModal.length; i++) {
       kurang[i].value = kurangAwal[i].value - e.target.value;
     else
       kurang[i].value -= e.target.value;
+  });
+}
+
+for(let i = 0; i < btnCetak.length; i++) {
+  btnCetak[i].addEventListener("click", function(e) {
+    const printFrame = document.getElementById("frameCetak"+i).contentWindow;
+
+    printFrame.window.onafterprint = function(e) {
+      alert('ok');
+    }
+
+    printFrame.window.print();
+    // window.print();
   });
 }
 

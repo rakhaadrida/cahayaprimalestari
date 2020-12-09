@@ -82,8 +82,20 @@
                   @php $no = 1; $ret = 0; @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
-                      <td @if(Auth::user()->roles == 'SUPER') rowspan="4" @else rowspan="3" @endif align="center" class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $no }}</td>
-                      <td @if(Auth::user()->roles == 'SUPER') rowspan="4" @else rowspan="3" @endif class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $s->nama }}</td>
+                      <td align="center" class="align-middle"
+                        @if(Auth::user()->roles == 'SUPER') rowspan="4" 
+                        @else rowspan="3" 
+                        @endif  
+                        @if($no % 2 == 0) style="background-color: white" @endif>
+                          {{ $no }}
+                      </td>
+                      <td class="align-middle"
+                        @if(Auth::user()->roles == 'SUPER') rowspan="4" 
+                        @else rowspan="3" 
+                        @endif  
+                        @if($no % 2 == 0) style="background-color: white" @endif>
+                          {{ $s->nama }}
+                      </td>
                       <td align="center" style="background-color: #f0ededda !important">Revenue</td>
                       @php $total = 0; @endphp
                       @foreach($jenis as $j)
@@ -103,17 +115,19 @@
                     @if(Auth::user()->roles == 'SUPER')
                     <tr class="text-dark" style="background-color: white">
                       <td align="center">HPP</td>
-                      @php $hpp = 0; @endphp
+                      @php $hpp = 0; $kode = $s->id; @endphp
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle">
-                        @foreach($items as $i)
-                          @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
-                            <a href="#Detail{{ $i->id_kategori }}{{ $i->id_sales }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
-                              {{ number_format($i->hpp, 0, "", ",") }}
+                        {{-- @foreach($items as $i)
+                          @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id)) --}}
+                            <a href="#Detail{{ $j->id }}{{ $s->id }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
+                              @if($j->$kode != 0)
+                                {{ number_format($j->$kode, 0, "", ",") }}
+                              @endif
                             </a>
-                            @php $hpp += $i->hpp @endphp
-                          @endif
-                        @endforeach
+                            @php $hpp += $j->$kode @endphp
+                          {{-- @endif
+                        @endforeach --}}
                         </td>
                       @endforeach
                       <td align="right" class="align-middle">
@@ -147,8 +161,8 @@
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
                             @if(Auth::user()->roles == 'SUPER')
-                              {{ number_format($i->total - $i->hpp, 0, "", ",") }}
-                              @php $laba += ($i->total - $i->hpp) @endphp
+                              {{ number_format($i->total - $j->$kode, 0, "", ",") }}
+                              @php $laba += ($i->total - $j->$kode) @endphp
                             @else
                               {{ number_format($i->total, 0, "", ",") }}
                               @php $laba += $i->total @endphp

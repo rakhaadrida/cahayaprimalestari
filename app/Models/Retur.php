@@ -22,4 +22,12 @@ class Retur extends Model
     public function detilretur() {
         return $this->hasMany('App\Models\DetilRetur', 'id_retur', 'id');
     }
+
+    public function detilrj() {
+        return $this->hasMany('App\Models\DetilRJ', 'id_retur', 'id');
+    }
+
+    public function detilrb() {
+        return $this->hasMany('App\Models\DetilRB', 'id_retur', 'id');
+    }
 }

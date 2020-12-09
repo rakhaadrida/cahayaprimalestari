@@ -87,7 +87,7 @@
       table {
           border-collapse: collapse;
       }
-
+      
       .table {
           width: 100%;
           margin-bottom: 1rem;
@@ -232,7 +232,7 @@
                   @endphp 
                   @if($baris <= 66)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                      <td colspan="6" align="center">{{ $s->nama }}</td>
+                      <td colspan="7" align="center">{{ $s->nama }}</td>
                     </tr>
                     @php $baris++; array_push($kode, $s->id); @endphp
                     @foreach($barang as $b)
@@ -251,8 +251,14 @@
                         @endif
                         @foreach($gudang as $g)
                           @php
-                            $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                    ->where('id_gudang', $g->id)->get();
+                            if($g->retur != 'T') {
+                              $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                        ->where('id_gudang', $g->id)->get();
+                            } else {
+                              $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
+                                        stok')->where('id_barang', $b->id)
+                                        ->where('id_gudang', $g->id)->get();
+                            }
                           @endphp
                           @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
                             <td align="right">{{$stokGd[0]->stok}}</td>
@@ -294,7 +300,7 @@
                   @endphp 
                   @if($baris <= 132)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                      <td colspan="6" align="center">{{ $s->nama }}</td>
+                      <td colspan="7" align="center">{{ $s->nama }}</td>
                     </tr>
                     @php $baris++; @endphp
                     @foreach($barang as $b)
@@ -313,8 +319,14 @@
                         @endif
                         @foreach($gudang as $sg)
                           @php
-                            $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                    ->where('id_gudang', $sg->id)->get();
+                            if($sg->retur != 'T') {
+                              $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                        ->where('id_gudang', $sg->id)->get();
+                            } else {
+                              $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
+                                        stok')->where('id_barang', $b->id)
+                                        ->where('id_gudang', $sg->id)->get();
+                            }
                           @endphp
                           @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
                             <td align="right">{{$stokGd[0]->stok}}</td>

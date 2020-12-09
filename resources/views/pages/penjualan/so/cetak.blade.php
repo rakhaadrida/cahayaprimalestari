@@ -419,10 +419,10 @@
                 <td rowspan="2">{{ $itemDet->barang->nama }}</td>
                 <td rowspan="2" align="right" style="width: 50px">{{ $itemDet->qty }}</td>
                 <td rowspan="2" align="center" style="width: 50px">
-                  {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Pack") Pack @else Rol @endif
+                  {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
                 </td>
                 <td rowspan="2" align="center">
-                  @if($itemDet->barang->satuan == "Pcs / Pack") PCS @else MTR @endif
+                  @if($itemDet->barang->satuan == "Pcs / Dus") PCS @else MTR @endif
                 </td>
                 <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>

@@ -13,8 +13,11 @@ use App\Models\DetilRJ;
 use App\Models\BarangMasuk;
 use App\Models\DetilBM;
 use App\Models\DetilRB;
+use App\Models\TandaTerima;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class ReturController extends Controller
 {
@@ -196,9 +199,16 @@ class ReturController extends Controller
 
         $gudang = Gudang::where('retur', 'T')->get();
         $retur = Retur::where('id', $request->kode)->first();
+        $items = DetilRetur::where('id_retur', $request->kode)->get();
+
+        $lastcodeSO = SalesOrder::max('id');
+        $lastnumberSO = (int) substr($lastcodeSO, 3, 4);
+        $lastnumberSO++;
+        $newcodeSO = 'INV'.sprintf('%04s', $lastnumberSO);
+
+        $so = SalesOrder::where('id', $items[0]->retur->id_faktur)->get();
 
         $totRetur = 0;
-        $items = DetilRetur::where('id_retur', $request->kode)->get();
         foreach($items as $i) {
             if(($request->{"kirim".$request->kode.$i->id_barang} != '') || ($request->{"batal".$request->kode.$i->id_barang} != '')) {
                 $tglKirim = $request->{"tgl".$request->kode.$i->id_barang};
@@ -211,6 +221,16 @@ class ReturController extends Controller
                     'tgl_kirim' => $tglKirim,
                     'qty_kirim' => $request->{"kirim".$request->kode.$i->id_barang},
                     'qty_batal' => $request->{"batal".$request->kode.$i->id_barang}
+                ]);
+
+                DetilSO::create([
+                    'id_so' => $newcodeSO,
+                    'id_barang' => $i->id_barang,
+                    'id_gudang' => $gudang[0]->id,
+                    'harga' => 0,
+                    'qty' => $request->{"kirim".$request->kode.$i->id_barang},
+                    'diskon' => '0',
+                    'diskonRp' => 0,
                 ]);
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
@@ -227,13 +247,40 @@ class ReturController extends Controller
             }
         }
 
+        // SalesOrder::create([
+        //     'id' => $newcodeSO,
+        //     'tgl_so' => $tglKirim,
+        //     'tgl_kirim' => $tglKirim,
+        //     'total' => 0,
+        //     'diskon' => 0,
+        //     'kategori' => 'Retur',
+        //     'tempo' => 0,
+        //     'pkp' => 0,
+        //     'status' => 'INPUT',
+        //     'id_customer' => $so[0]->id_customer,
+        //     'id_user' => Auth::user()->id
+        // ]);
+
         $items = DetilRetur::selectRaw('sum(qty) as total')->where('id_retur', $request->kode)
                 ->get();
         $total = DetilRJ::select(DB::raw('sum(qty_kirim) as totalKirim, 
                 sum(qty_batal) as totalBatal'))->where('id_retur', $request->kode)->get();
 
-        if($items[0]->total == ($total[0]->totalKirim + $total[0]->totalBatal)) 
+        if($items[0]->total == ($total[0]->totalKirim + $total[0]->totalBatal)) {
             $status = 'LENGKAP';
+
+            $lastcode = TandaTerima::max('id');
+            $lastnumber = (int) substr($lastcode, 3, 4);
+            $lastnumber++;
+            $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+
+            TandaTerima::create([
+                'id' => $newcode,
+                'id_so' => $retur[0]->id_faktur,
+                'tanggal' => $tglKirim,
+                'id_user' => Auth::user()->id
+            ]);
+        }
         else 
             $status = 'INPUT';
 
@@ -241,6 +288,43 @@ class ReturController extends Controller
         $retur->save();
 
         return redirect()->route('retur-jual');
+    }
+    
+    public function cetakKirimJual(Request $request, $id) {
+        $items = Retur::where('id', $id)->get();
+        $data = [
+            'items' => $items
+        ];
+
+        $paper = array(0,0,686,394);
+        $pdf = PDF::loadview('pages.retur.cetakJual', $data)->setPaper($paper);
+        ob_end_clean();
+        return $pdf->stream('cetak-so.pdf');
+    }
+
+    public function ttrKirimJual($id) {
+        $items = Retur::where('id', $id)->get();
+
+        $lastcode = TandaTerima::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+
+        $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
+
+        $data = [
+            'items' => $items,
+            'newcode' => $newcode,
+            'today' => $today,
+            'waktu' => $waktu
+        ];
+
+        $paper = array(0,0,612,394);
+        $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
+        ob_end_clean();
+        return $pdf->stream('cetak-ttr.pdf');
     }
 
     public function createPembelian() {
@@ -448,5 +532,23 @@ class ReturController extends Controller
         $retur->save();
 
         return redirect()->route('retur-beli');
+    }
+
+    public function cetakTerimaBeli(Request $request, $id) {
+        $items = Retur::where('id', $id)->get();
+        $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
+
+        $data = [
+            'items' => $items,
+            'today' => $today,
+            'waktu' => $waktu
+        ];
+
+        $paper = array(0,0,612,394);
+        $pdf = PDF::loadview('pages.retur.cetakBeli', $data)->setPaper($paper);
+        ob_end_clean();
+        return $pdf->stream('cetak-bm.pdf');
     }
 }

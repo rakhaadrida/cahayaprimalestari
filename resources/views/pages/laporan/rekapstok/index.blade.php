@@ -89,7 +89,7 @@
                             $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                           @endphp
                           <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                            <td colspan="7" align="center">
+                            <td colspan="8" align="center">
                               <button type="button" class="btn btn-link btn-sm text-dark text-bold" data-toggle="collapse" data-target="#collapseSub{{$s->id}}" aria-expanded="false" aria-controls="collapseSub{{$s->id}}" style="padding: 0; font-size: 15px; width: 100%">{{ $s->nama }}</button>
                             </td>
                           </tr>
@@ -110,8 +110,14 @@
                               @endif
                               @foreach($gudang as $g)
                                 @php
-                                  $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                          ->where('id_gudang', $g->id)->get();
+                                  if($g->retur != 'T') {
+                                    $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                              ->where('id_gudang', $g->id)->get();
+                                  } else {
+                                    $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
+                                              stok')->where('id_barang', $b->id)
+                                              ->where('id_gudang', $g->id)->get();
+                                  }
                                 @endphp
                                 @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
                                   <td align="right">{{$stokGd[0]->stok}}</td>

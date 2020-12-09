@@ -111,14 +111,14 @@
         <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
         <a class="collapse-item" href="{{ route('ttr') }}">Tanda Terima</a>
         <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
-        <a class="collapse-item" data-toggle="collapse" data-target="#collapseRetur" aria-expanded="true" aria-controls="collapseRetur">Retur Barang</a>
+        {{-- <a class="collapse-item" data-toggle="collapse" data-target="#collapseRetur" aria-expanded="true" aria-controls="collapseRetur">Retur Barang</a>
           <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#collapsePenjualan">
             <div class="py-2 collapse-sub-inner rounded">
               <a class="collapse-item" href="{{ route('retur-stok') }}">Input Retur</a>
               <a class="collapse-item" href="{{ route('retur-jual') }}">Retur Penjualan</a>
               <a class="collapse-item" href="{{ route('retur-beli') }}">Retur Pembelian</a>
             </div>
-          </div>
+          </div> --}}
         <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a>
       </div>
     </div>

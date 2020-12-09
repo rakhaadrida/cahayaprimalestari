@@ -329,19 +329,17 @@
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
-            <h5 class="text-bold " style="margin-top: -10px">
-              (@if($item->kategori == "Cash") CASH @else TEMPO @endif)
-            </h5>
+            <h5 class="text-bold " style="margin-top: -10px">( RETUR )</h5>
           </div>
           <div class="subtitle-cetak-so-one text-center">
             <span class="text-right sub-title">Nomor</span>
             <span>:</span>
-            <span class="text-bold">{{ $item->id }}</span>
+            <span class="text-bold">{{ $item->id_faktur }}</span>
           </div>
           <div class="subtitle-cetak-so-second text-center">
             <span class="text-right sub-title">Tanggal</span>
             <span>:</span>
-            <span class="text-bold">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</span>
+            <span class="text-bold">{{ \Carbon\Carbon::parse($item->detilrj[0]->tgl_kirim)->format('d-M-y') }}</span>
           </div>
         </div>
         <div class="float-left logo-cetak-so">
@@ -349,13 +347,13 @@
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
-          <span>{{ $item->id_customer }}</span>
+          <span>{{ $item->so->id_customer }}</span>
           <br>
-          <span class="nama-cetak-so">{{ $item->customer->nama }}</span>
+          <span class="nama-cetak-so">{{ $item->so->customer->nama }}</span>
           <br>
-          <span class="alamat-cetak-so text-wrap">{{ $item->customer->alamat }}</span>
+          <span class="alamat-cetak-so text-wrap">{{ $item->so->customer->alamat }}</span>
           <br>
-          <span class="telepon-cetak-so">{{ $item->customer->telepon }}</span>
+          <span class="telepon-cetak-so">{{ $item->so->customer->telepon }}</span>
         </div>
         <br>
         <br>
@@ -373,26 +371,23 @@
           </thead>
           <tbody class="text-bold">
             <tr class="tr-info-cetak-so">
-              <td align="center" style="border: dotted">{{ $item->id }}</td>
+              <td align="center" style="border: dotted">{{ $item->id_faktur }}</td>
               <td align="center" style="border: dotted">
-                {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
+                {{ \Carbon\Carbon::parse($item->detilrj[0]->tgl_kirim)->format('d-M-y') }}
               </td>
               <td align="center" style="border: dotted">0 Hari</td>
-              <td align="center" style="border: dotted">
-                {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}
-              </td>
-              <td align="center" style="border: dotted">{{ $item->customer->sales->nama }}</td>
+              <td align="center" style="border: dotted"></td>
+              <td align="center" style="border: dotted">{{ $item->so->customer->sales->nama }}</td>
               <td align="center" style="border: dotted">{{ Auth::user()->name }}</td>
             </tr>
           </tbody>
         </table>
         
         @php 
-        $itemsDet = \App\Models\DetilSO::with(['barang'])
-                          ->select('id_barang', 'diskon')
-                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                          ->where('id_so', $item->id)
-                          ->groupBy('id_barang', 'diskon')
+        $itemsDet = \App\Models\DetilRJ::select('id_barang')
+                          ->selectRaw('sum(qty_kirim) as qty')
+                          ->where('id_retur', $item->id)
+                          ->groupBy('id_barang')
                           ->get();
         @endphp
         <!-- Tabel Data Detil BM-->
@@ -424,27 +419,14 @@
                 <td rowspan="2" align="center">
                   @if($itemDet->barang->satuan == "Pcs / Dus") PCS @else MTR @endif
                 </td>
-                <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
-                <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
-                @php 
-                  $diskon = 100;
-                  $arrDiskon = explode("+", $itemDet->diskon);
-                  for($j = 0; $j < sizeof($arrDiskon); $j++) {
-                    $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                  } 
-                  $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
-                @endphp
-                <td style="width: 70px; border-bottom: none !important" align="right">
-                  {{ $itemDet->diskon }} 
-                </td>
-                <td rowspan="2" style="width: 60px" align="right">
-                  {{ number_format($itemDet->diskonRp, 0, "", ".") }}
-                </td>
-                <td rowspan="2" align="right">
-                  {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
+                <td rowspan="2" align="right">0</td>
+                <td rowspan="2" align="right">0</td>
+                <td style="width: 70px; border-bottom: none !important" align="right">0</td>
+                <td rowspan="2" style="width: 60px" align="right">0</td>
+                <td rowspan="2" align="right">0</td>
               </tr>
               <tr class="">
-                <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">({{ $diskon }}%)</td>
+                <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">( 0 %)</td>
               </tr>
               @php $i++ @endphp
             @endforeach
@@ -493,7 +475,7 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        <td class="text-right angka-total">{{ number_format($item->total, 0, "", ".") }}</td>
+                        <td class="text-right angka-total">0</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Disc Faktur</td>
@@ -501,7 +483,7 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
-                        <td class="text-right angka-total">{{ number_format($item->total, 0, "", ".") }}</td>
+                        <td class="text-right angka-total">0</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">PPN</td>
@@ -516,7 +498,7 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>
-                        <td class="text-right angka-total-akhir">{{ number_format($item->total, 0, "", ".") }}</td>
+                        <td class="text-right angka-total-akhir">0</td>
                       </tr>
                     </table>
                   </div>

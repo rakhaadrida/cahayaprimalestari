@@ -1,3 +1,4 @@
+@php $j = 0; @endphp
 @foreach($retur as $r)
   <div class="modal modalGudang" id="Detail{{ $r->id }}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -96,10 +97,14 @@
             @elseif($r->status == 'LENGKAP')
               <div class="form-row justify-content-center">
                 <div class="col-3">
-                  <button type="submit" class="btn btn-primary btn-block text-bold" formaction="{{ route('retur-jual-process') }}" formmethod="POST">Cetak</button>
+                  <button type="button" id="btnCetak" class="btn btn-primary btn-block text-bold btnCetak">Cetak</button>
                 </div>
               </div>
-            @endif
+
+              <iframe src="{{url('retur/penjualan/cetak/'.$r->id)}}" id="frameCetak{{$j}}" frameborder="0" hidden></iframe>
+              <iframe src="{{url('retur/penjualan/cetak-ttr/'.$r->id)}}" id="frameTTR{{$j}}" frameborder="0" hidden></iframe>
+              @php $j++; @endphp
+            @endif            
           </form>
         </div>
       </div>
@@ -109,6 +114,7 @@
 
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
+
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
@@ -131,6 +137,8 @@ const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
+const btnCetak = document.querySelectorAll('.btnCetak');
+// const frameCetak = document.querySelectorAll('.frameCetak');
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {
@@ -165,6 +173,22 @@ for(let i = 0; i < batalModal.length; i++) {
   });
 }
 
+for(let i = 0; i < btnCetak.length; i++) {
+  btnCetak[i].addEventListener("click", function(e) {
+    const printFrame = document.getElementById("frameCetak"+i).contentWindow;
+    const printTTR = document.getElementById("frameTTR"+i).contentWindow;
+
+
+    printFrame.window.onafterprint = function(e) {
+      alert('ok');
+    }
+
+    printFrame.window.print();
+    printTTR.window.print();
+    // window.print();
+  });
+}
+
 /** Add Thousand Separators **/
 function addCommas(nStr) {
 	nStr += '';
@@ -177,5 +201,16 @@ function addCommas(nStr) {
 	}
 	return x1 + x2;
 }
+
+// function cetakRetur(e) {
+//   const printFrame = document.getElementById("frameCetak"+).contentWindow;
+
+//   printFrame.window.onafterprint = function(e) {
+//     alert('ok');
+//   }
+
+//   printFrame.window.print();
+//   window.print();
+// }
 
 </script>

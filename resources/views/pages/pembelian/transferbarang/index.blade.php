@@ -614,7 +614,7 @@ for(let i = 0; i < gdgAsal.length; i++) {
 
   function displayStok(kode, stok) {
     @foreach($stok as $s)
-      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == kode)) {
+      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == kode) && ('{{ $s->status }}' == 'T')) {
         stok.value = '{{ $s->stok }}';
       }
     @endforeach

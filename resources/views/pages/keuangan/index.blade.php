@@ -78,15 +78,27 @@
                   @php $no = 1; $ret = 0; @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
-                      <td @if(Auth::user()->roles == 'SUPER') rowspan="4" @else rowspan="3" @endif align="center" class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $no }}</td>
-                      <td @if(Auth::user()->roles == 'SUPER') rowspan="4" @else rowspan="3" @endif class="align-middle" @if($no % 2 == 0) style="background-color: white" @endif>{{ $s->nama }}</td>
+                      <td align="center" class="align-middle" 
+                        @if(Auth::user()->roles == 'SUPER') rowspan="4" 
+                        @else rowspan="3" 
+                        @endif 
+                        @if($no % 2 == 0) style="background-color: white" @endif>
+                          {{ $no }}
+                      </td>
+                      <td class="align-middle"
+                        @if(Auth::user()->roles == 'SUPER') rowspan="4" 
+                        @else rowspan="3" 
+                        @endif  
+                        @if($no % 2 == 0) style="background-color: white" @endif>
+                          {{ $s->nama }}
+                      </td>
                       <td align="center" style="background-color: #f0ededda !important">Revenue</td>
                       @php $total = 0; @endphp
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle" style="background-color: #f0ededda !important">
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
-                              {{ number_format($i->total, 0, "", ",") }}
+                            {{ number_format($i->total, 0, "", ",") }}
                             @php $total += $i->total @endphp
                           @endif
                         @endforeach
@@ -102,16 +114,12 @@
                       @php $hpp = 0; $kode = $s->id; @endphp
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle">
-                        {{-- @foreach($items as $i)
-                          @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id)) --}}
-                            <a href="#Detail{{ $j->id }}{{ $s->id }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
-                              @if($j->$kode != 0)
-                                {{ number_format($j->$kode, 0, "", ",") }}
-                              @endif
-                            </a>
-                            @php $hpp += $j->$kode @endphp
-                          {{-- @endif
-                        @endforeach --}}
+                          <a href="#Detail{{ $j->id }}{{ $s->id }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
+                            @if($j->$kode != 0)
+                              {{ number_format($j->$kode, 0, "", ",") }}
+                            @endif
+                          </a>
+                          @php $hpp += $j->$kode @endphp
                         </td>
                       @endforeach
                       <td align="right" class="align-middle">

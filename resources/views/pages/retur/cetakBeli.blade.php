@@ -84,10 +84,6 @@
           float: left !important;
       }
 
-      .align-middle {
-        vertical-align: middle !important;
-      }
-
       table {
           border-collapse: collapse;
       }
@@ -114,15 +110,15 @@
       }
 
       .table-sm th {
-        padding-top: 0.2rem;
-        padding-bottom: 0.2rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
       }
 
       .table-sm td {
-        padding-top: 0.5rem;
-        padding-bottom: 0.4rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.15rem;
         padding-left: 0.2rem;
         padding-right: 0.2rem;
       }
@@ -186,13 +182,13 @@
       .detail-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 12px;
-        margin-top: -50px;
-        margin-left: 560px;
+        margin-top: -75px;
+        margin-left: 555px;
         line-height: 15px;
       }
 
       .detail-second {
-        margin-left: -12px;
+        margin-left: -17.5px;
       }
 
       .detail-third {
@@ -273,7 +269,7 @@
 
       .page-number {
         float: right;
-        margin-top: -41px;
+        margin-top: -37px;
         margin-right: -7px;
         font-family: 'Courier New', Courier, monospace;
         font-size: 14px;
@@ -283,23 +279,23 @@
           font-size: 11px;
           /* height: 200px; */
           margin-left: -25px;
-          margin-right: -15px;
-          margin-top: -22px;
+          margin-right: 41px;
+          margin-top: -18px;
       }
 
-      .th-detail-cetak-so th{
+      .th-detail-cetak-so {
         line-height: 20px;
         border: solid;
         border-width: 1.25px;
+        border-left: none;
+        border-right: none;
         color: black !important;
         font-family: 'Courier New', Courier, monospace;
         font-size: 16px;
       }
 
-      .tr-detail-cetak-so td {
+      .tr-detail-cetak-so {
         line-height: 13px;
-        border: solid;
-        border-width: 1.25px;
         color: black !important;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 14px;
@@ -373,20 +369,19 @@
     </style>
   </head>
   <body>
-    <div class="cetak-all-container" >
-    {{-- @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif> --}}
+    <div class="cetak-all-container">
       <div class="container-fluid header-cetak-so">
         <div class="title-header text-center">
-          <h3 class="text-bold">Tanda Terima @if(substr($items[0]->id, 0, 3) == 'RET') Retur @else Faktur @endif</h3>
+          <h3 class="text-bold">Goods Receipt Note</h3>
         </div>
-        {{-- <div class="subtitle-cetak-so">
+        <div class="subtitle-cetak-so">
           <span class="text-right">Supplier</span>
           <span>:</span>
-          <span>{{ $item->supplier->nama }}</span>
+          <span>{{ $items[0]->bm->supplier->nama }}</span>
         </div>
         <div class="subtitle-cetak-so subtitle-second">
           <span class="text-right">We had accepted these following item(s) :</span>
-        </div> --}}
+        </div>
       </div>
       <div class="float-left logo-cetak-so">
         <img src="backend/img/Logo_CPL.jpg" alt="">
@@ -407,73 +402,63 @@
         <span>{{ Auth::user()->name }}</span>
       </div>
       <div class="detail-cetak-so">
-        <span class="text-right">No. TTF</span>
+        <span class="text-right">GRN Date</span>
         <span>:</span>
-        <span>{{ $newcode }}</span>
+        <span>{{ \Carbon\Carbon::parse($items[0]->detilrb[0]->tgl_terima)->format('d-M-y') }}</span>
         <br>
-        <span class="detail-second text-right">No. Faktur</span>
+        <span class="detail-second text-right">GRN Number</span>
         <span>:</span>
-        @if($items->count() == 1)
-          <span>{{ $items[0]->id }}</span>
-        @else
-          <span>{{ $items[0]->id }} - {{ $items->last()->id }}</span>
-        @endif
-        {{-- <br>
+        <span>{{ $items[0]->id }}</span>
+        <br>
         <span class="detail-third text-right">DO. Date</span>
         <span>:</span>
-        <span>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</span>
+        <span>{{ \Carbon\Carbon::parse($items[0]->tanggal)->format('d-M-y') }}</span>
         <br>
         <span class="detail-fourth text-right">DO. Number</span>
         <span>:</span>
-        <span>{{ $item->id_faktur }}</span> --}}
+        <span></span>
       </div>
       <br>
       
       @php 
-      // $itemsDet = \App\Models\DetilBM::with(['barang'])
-      //                   ->select('id_barang', 'diskon')
-      //                   ->selectRaw('avg(harga) as harga, sum(qty) as qty')
-      //                   ->where('id_bm', $item->id)
-      //                   ->groupBy('id_barang', 'diskon')
-      //                   ->get();
+      $itemsDet = \App\Models\DetilRB::select('id_barang')
+                        ->selectRaw('sum(qty_terima) as qty')
+                        ->where('id_retur', $items[0]->id)
+                        ->groupBy('id_barang')
+                        ->get();
       @endphp
       <!-- Tabel Data Detil BM-->
       <span class="page-number text-right">Page  :   1</span>
       <table class="table table-sm table-responsive-sm table-cetak">
         <thead class="text-center text-bold th-detail-cetak-so">
           <tr>
-            <th rowspan="2" class="align-middle" style="width: 5px">No.</th>
-            <th rowspan="2" class="align-middle" style="width: 60px">No. Faktur</th>
-            <th rowspan="2" class="align-middle" style="width: 60px">Tgl. Faktur</th>
-            <th rowspan="2" class="align-middle" style="width: 260px">Customer</th>
-            <th colspan="2">Ttd</th>
-          </tr>
-          <tr>
-            <th style="width: 10px">Gudang</th>
-            <th style="width: 10px">Pengiriman</th>
+            <th style="width: 5px">No.</th>
+            <th style="width: 20px">Kode</th>
+            <th style="width: 220px">Nama Barang</th>
+            <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th>
+            <th style="width: 160px">Description</th>
           </tr>
         </thead>
         <tbody class="tr-detail-cetak-so">
           @php $i = 1; @endphp
-          @foreach($items as $item)
+          @foreach($itemsDet as $itemDet)
             <tr>
               <td align="center">{{ $i }}</td>
-              <td align="center">{{ $item->id }}</td>
-              <td align="center">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</td>
-              @if(substr($items[0]->id, 0, 3) == 'RET')
-                <td>{{ $item->so->customer->nama }}</td>
-              @else
-                <td>{{ $item->customer->nama }}</td>
-              @endif
-              <td></td>
-              <td></td>
+              <td align="center">{{ $itemDet->id_barang }}</td>
+              <td>{{ $itemDet->barang->nama }}</td>
+              <td align="right" style="width: 50px">{{ $itemDet->qty }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @else Mtr @endif</td>
+              <td align="center" style="width: 1px">/</td>
+              <td style="width: 50px">
+                {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
+              </td>
+              <td align="center">RETUR</td>
             </tr>
             @php $i++ @endphp
           @endforeach
         </tbody>
       </table>
       
-      {{-- <div class="container-fluid footer-cetak-so">
+      <div class="container-fluid footer-cetak-so">
         <table class="table-footer">
           <thead>
             <tr>
@@ -491,7 +476,7 @@
             </tr>
           </thead>
         </table>
-      </div> --}}
+      </div>
     </div>
   </body>
 </html>

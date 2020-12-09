@@ -196,6 +196,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('retur-jual-show');
         Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
             ->name('retur-jual-process');
+        Route::get('/retur/penjualan/cetak/{id}', 'ReturController@cetakKirimJual')
+            ->name('retur-jual-cetak');
+        Route::get('/retur/penjualan/cetak-ttr/{id}', 'ReturController@ttrKirimJual')
+            ->name('retur-jual-cetak');
         Route::get('/retur/index-beli', 'ReturController@createPembelian')
             ->name('ret-index-beli');
         Route::post('/retur/index-beli/detail', 'ReturController@showCreateBeli')
@@ -208,6 +212,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('retur-beli-show');
         Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')
             ->name('retur-beli-process');
+        Route::get('/retur/pembelian/cetak/{id}', 'ReturController@cetakTerimaBeli')
+            ->name('retur-beli-cetak');
 
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
