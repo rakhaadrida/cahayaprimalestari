@@ -25,13 +25,16 @@ class RekapStokController extends Controller
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
+
+        return response()->json($jenis);
+
         $data = [
             'jenis' => $jenis,
             'gudang' => $gudang,
             'stok' => $stok,
         ];
         
-        return view('pages.laporan.rekapstok.index', $data);
+        // return view('pages.laporan.rekapstok.index', $data);
     }
 
     public function show(Request $request) {

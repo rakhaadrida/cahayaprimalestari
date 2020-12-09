@@ -86,6 +86,7 @@
 
       table {
           border-collapse: collapse;
+          font-size: 8px;
       }
       
       .table {
@@ -142,6 +143,15 @@
         margin-top: -10px !important;
       }
 
+      /* #container {
+        column-count: 2 !important;
+        -moz-column-count: 2 !important;
+        -webkit-column-count: 2 !important;
+        
+        width: 200px;
+        height: 200px;
+      } */
+
       .table-cetak {
         left: 0%;
         width: 50%;
@@ -194,7 +204,7 @@
         </center>
         <br>
         
-        <div class="row rekap-split">
+        <div id="container">
           <!-- Tabel Data Detil BM-->
           <table class="table table-sm table-bordered table-cetak">
             <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
@@ -203,11 +213,11 @@
                 <td class="align-middle" class="align-middle">Nama Barang</td>
                 <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
                 @foreach($gudang as $g)
-                  <td style="width: 20px" class="align-middle">{{ $g->nama }}</td>
+                  <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
                 @endforeach
               </tr>
             </thead>
-            <tbody id="tablePO">
+            <tbody>
               @php 
                 $i = 1; $baris = 1; $kode = []; $status = 0; $kodeBrg;
                 $sub = \App\Models\Subjenis::where('id_kategori', $item->id)->get();
@@ -234,40 +244,48 @@
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                       <td colspan="7" align="center">{{ $s->nama }}</td>
                     </tr>
-                    @php $baris++; array_push($kode, $s->id); @endphp
+                    @php 
+                      $baris++; 
+                      if(($baris + $barang->count()) <= 66)
+                        array_push($kode, $s->id); 
+                    @endphp
                     @foreach($barang as $b)
-                      @php
-                        $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
-                                  DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
-                                  ->groupBy('id_barang')->get();
-                      @endphp
-                      <tr class="text-dark ">
-                        <td align="center">{{ $i }}</td>
-                        <td>{{ $b->nama }}</td>
-                        @if($stok->count() != 0)
-                          <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
-                        @else
-                          <td align="right" style="background-color: yellow">0</td>
-                        @endif
-                        @foreach($gudang as $g)
-                          @php
-                            if($g->retur != 'T') {
-                              $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                        ->where('id_gudang', $g->id)->get();
-                            } else {
-                              $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
-                                        stok')->where('id_barang', $b->id)
-                                        ->where('id_gudang', $g->id)->get();
-                            }
-                          @endphp
-                          @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
-                            <td align="right">{{$stokGd[0]->stok}}</td>
+                      @if($baris <= 66)
+                        @php
+                          $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                                    DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                                    ->groupBy('id_barang')->get();
+                        @endphp
+                        <tr class="text-dark ">
+                          <td align="center">{{ $i }}</td>
+                          <td>{{ $b->nama }}</td>
+                          @if($stok->count() != 0)
+                            <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
                           @else
-                            <td></td>
+                            <td align="right" style="background-color: yellow">0</td>
                           @endif
-                        @endforeach
-                      </tr>
-                      @php $i++; $baris++; $kodeBrg = $b->id; @endphp
+                          @foreach($gudang as $g)
+                            @php
+                              if($g->retur != 'T') {
+                                $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                          ->where('id_gudang', $g->id)->get();
+                              } else {
+                                $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
+                                          stok')->where('id_barang', $b->id)
+                                          ->where('id_gudang', $g->id)->get();
+                              }
+                            @endphp
+                            @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
+                              <td align="right">{{$stokGd[0]->stok}}</td>
+                            @else
+                              <td></td>
+                            @endif
+                          @endforeach
+                        </tr>
+                        @php $i++; $baris++; $kodeBrg = $b->id; @endphp
+                      @else
+                        @break
+                      @endif
                     @endforeach
                   @else
                     @php $status = 1; @endphp
@@ -283,7 +301,7 @@
                 <td class="align-middle" class="align-middle">Nama Barang</td>
                 <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
                 @foreach($gudang as $g)
-                  <td style="width: 20px" class="align-middle">{{ $g->nama }}</td>
+                  <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
                 @endforeach
               </tr>
             </thead>
@@ -296,7 +314,8 @@
                 @foreach($sub as $s)
                 @if($status != 1)
                   @php
-                    $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                    $barang = \App\Models\Barang::where('id_sub', $s->id)
+                              ->where('id', '>', $kodeBrg)->get();
                   @endphp 
                   @if($baris <= 132)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
@@ -349,4 +368,11 @@
       </div>
     @endforeach
   </body>
+
+  {{-- <script src="{{ url('backend/vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ url('backend/vendor/jquery/jquery-1.12.4.js') }}"></script>
+  <script>
+    $('#container').columnize({ columns: 2 })
+  </script> --}}
+
 </html>
