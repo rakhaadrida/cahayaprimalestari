@@ -324,190 +324,188 @@
     </style>
   </head>
   <body>
-    @foreach($items as $item)
-      <div class="cetak-all-container" @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif>
-        <div class="container-fluid header-cetak-so">
-          <div class="title-header text-center">
-            <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
-            <h5 class="text-bold " style="margin-top: -10px">( RETUR )</h5>
-          </div>
-          <div class="subtitle-cetak-so-one text-center">
-            <span class="text-right sub-title">Nomor</span>
-            <span>:</span>
-            <span class="text-bold">{{ $item->id_faktur }}</span>
-          </div>
-          <div class="subtitle-cetak-so-second text-center">
-            <span class="text-right sub-title">Tanggal</span>
-            <span>:</span>
-            <span class="text-bold">{{ \Carbon\Carbon::parse($item->detilrj[0]->tgl_kirim)->format('d-M-y') }}</span>
-          </div>
+    <div class="cetak-all-container">
+      <div class="container-fluid header-cetak-so">
+        <div class="title-header text-center">
+          <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
+          <h5 class="text-bold " style="margin-top: -10px">( RETUR )</h5>
         </div>
-        <div class="float-left logo-cetak-so">
-          <img src="backend/img/Logo_CPL.jpg" alt="">
+        <div class="subtitle-cetak-so-one text-center">
+          <span class="text-right sub-title">Nomor</span>
+          <span>:</span>
+          <span class="text-bold">{{ $items[0]->id_retur }}</span>
         </div>
-        <div class="float-right customer-cetak-so">
-          <span class="kode-cetak-so">Kepada Yth :</span>
-          <span>{{ $item->so->id_customer }}</span>
-          <br>
-          <span class="nama-cetak-so">{{ $item->so->customer->nama }}</span>
-          <br>
-          <span class="alamat-cetak-so text-wrap">{{ $item->so->customer->alamat }}</span>
-          <br>
-          <span class="telepon-cetak-so">{{ $item->so->customer->telepon }}</span>
-        </div>
-        <br>
-        <br>
-
-        <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
-          <thead class="text-center text-bold">
-            <tr class="th-info-cetak-so">
-              <td style="border: dotted; width: 110px">No. Order</td>
-              <td style="border: dotted; width: 110px">Tgl. Order</td>
-              <td style="border: dotted; width: 110px">Kredit Term</td>
-              <td style="border: dotted; width: 110px">Jatuh Tempo</td>
-              <td style="border: dotted; width: 180px">Sales</td>
-              <td style="border: dotted">Route</td>
-            </tr>
-          </thead>
-          <tbody class="text-bold">
-            <tr class="tr-info-cetak-so">
-              <td align="center" style="border: dotted">{{ $item->id_faktur }}</td>
-              <td align="center" style="border: dotted">
-                {{ \Carbon\Carbon::parse($item->detilrj[0]->tgl_kirim)->format('d-M-y') }}
-              </td>
-              <td align="center" style="border: dotted">0 Hari</td>
-              <td align="center" style="border: dotted"></td>
-              <td align="center" style="border: dotted">{{ $item->so->customer->sales->nama }}</td>
-              <td align="center" style="border: dotted">{{ Auth::user()->name }}</td>
-            </tr>
-          </tbody>
-        </table>
-        
-        @php 
-        $itemsDet = \App\Models\DetilRJ::select('id_barang')
-                          ->selectRaw('sum(qty_kirim) as qty')
-                          ->where('id_retur', $item->id)
-                          ->groupBy('id_barang')
-                          ->get();
-        @endphp
-        <!-- Tabel Data Detil BM-->
-        <table class="table table-sm table-responsive-sm table-hover table-cetak">
-          <thead class="text-center text-bold th-detail-cetak-so">
-            <tr>
-              <td style="width: 10px">No</td>
-              <td style="width: 50px">Kode</td>
-              <td>Nama Barang</td>
-              <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
-              <td style="width: 30px">UOM</td>
-              <td style="width: 55px">Harga</td>
-              <td style="width: 70px">Rupiah</td>
-              <td colspan="2">Diskon</td>
-              <td style="width: 80px">Netto Rp</td>
-            </tr>
-          </thead>
-          <tbody class="tr-detail-cetak-so">
-            @php $i = 1; @endphp
-            @foreach($itemsDet as $itemDet)
-              <tr >
-                <td rowspan="2" align="center">{{ $i }}</td>
-                <td rowspan="2">{{ $itemDet->id_barang }}</td>
-                <td rowspan="2">{{ $itemDet->barang->nama }}</td>
-                <td rowspan="2" align="right" style="width: 50px">{{ $itemDet->qty }}</td>
-                <td rowspan="2" align="center" style="width: 50px">
-                  {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
-                </td>
-                <td rowspan="2" align="center">
-                  @if($itemDet->barang->satuan == "Pcs / Dus") PCS @else MTR @endif
-                </td>
-                <td rowspan="2" align="right">0</td>
-                <td rowspan="2" align="right">0</td>
-                <td style="width: 70px; border-bottom: none !important" align="right">0</td>
-                <td rowspan="2" style="width: 60px" align="right">0</td>
-                <td rowspan="2" align="right">0</td>
-              </tr>
-              <tr class="">
-                <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">( 0 %)</td>
-              </tr>
-              @php $i++ @endphp
-            @endforeach
-          </tbody>
-        </table>
-        
-        <div class="container-fluid footer-cetak-so">
-          <table class="table-footer">
-            <thead>
-              <tr>
-                <td style="border-right: dotted; width: 87px"> 
-                  <div class="ttd-penerima text-center">
-                    <span>Penerima,</span>
-                    <br><br><br>
-                    <span class="form-ttd">(___________)</span>
-                  </div>
-                </td>
-                <td style="border-right: dotted; width: 253px">
-                  <div class="info_bayar">
-                    <span>Pembayaran Giro / Transfer</span>
-                    <br>
-                    <span>Rekening Bank BCA</span>
-                    <br>
-                    <span>a/n Irianti Irawan 0911276444</span>
-                  </div>
-                </td>
-                <td style="width: 85px">
-                  <div class="ttd-gudang">
-                    <center><span class="nama-gudang">Gudang,</span></center>
-                    <br><br>
-                    <span class="form-ttd">(___________)</span>
-                  </div>
-                </td>
-                <td style="border-right: dotted; width: 80px">
-                  <div class="ttd-mengetahui">
-                    <span class="tgl-ttd">
-                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
-                    </span>
-                    <span>Mengetahui,</span> 
-                    <br><br><br><br>
-                    <span class="form-ttd">(__________)</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="total-faktur">
-                    <table class="tabel-total-faktur">
-                      <tr>
-                        <td class="title-total text-bold">Jumlah</td>
-                        <td class="text-right angka-total">0</td>
-                      </tr>
-                      <tr>
-                        <td class="title-total text-bold">Disc Faktur</td>
-                        <td class="text-right angka-total">0</td>
-                      </tr>
-                      <tr>
-                        <td class="title-total text-bold">Nilai Netto</td>
-                        <td class="text-right angka-total">0</td>
-                      </tr>
-                      <tr>
-                        <td class="title-total text-bold">PPN</td>
-                        <td class="text-right angka-total"></td>
-                      </tr>
-                      <tr>
-                        <td class="title-total"></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="height: 2px"></td>
-                      </tr>
-                      <tr>
-                        <td class="title-total text-bold">Nilai Tagihan</td>
-                        <td class="text-right angka-total-akhir">0</td>
-                      </tr>
-                    </table>
-                  </div>
-                </td>
-              </tr>
-            </thead>
-          </table>
+        <div class="subtitle-cetak-so-second text-center">
+          <span class="text-right sub-title">Tanggal</span>
+          <span>:</span>
+          <span class="text-bold">{{ \Carbon\Carbon::parse($items[0]->tgl_kirim)->format('d-M-y') }}</span>
         </div>
       </div>
-    @endforeach
+      <div class="float-left logo-cetak-so">
+        <img src="backend/img/Logo_CPL.jpg" alt="">
+      </div>
+      <div class="float-right customer-cetak-so">
+        <span class="kode-cetak-so">Kepada Yth :</span>
+        <span>{{ $items[0]->retur->id_customer }}</span>
+        <br>
+        <span class="nama-cetak-so">{{ $items[0]->retur->customer->nama }}</span>
+        <br>
+        <span class="alamat-cetak-so text-wrap">{{ $items[0]->retur->customer->alamat }}</span>
+        <br>
+        <span class="telepon-cetak-so">{{ $items[0]->retur->customer->telepon }}</span>
+      </div>
+      <br>
+      <br>
+
+      <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
+        <thead class="text-center text-bold">
+          <tr class="th-info-cetak-so">
+            <td style="border: dotted; width: 110px">No. Order</td>
+            <td style="border: dotted; width: 110px">Tgl. Order</td>
+            <td style="border: dotted; width: 110px">Kredit Term</td>
+            <td style="border: dotted; width: 110px">Jatuh Tempo</td>
+            <td style="border: dotted; width: 180px">Sales</td>
+            <td style="border: dotted">Route</td>
+          </tr>
+        </thead>
+        <tbody class="text-bold">
+          <tr class="tr-info-cetak-so">
+            <td align="center" style="border: dotted">{{ $items[0]->id_retur }}</td>
+            <td align="center" style="border: dotted">
+              {{ \Carbon\Carbon::parse($items[0]->tgl_kirim)->format('d-M-y') }}
+            </td>
+            <td align="center" style="border: dotted">0 Hari</td>
+            <td align="center" style="border: dotted"></td>
+            <td align="center" style="border: dotted">{{ $items[0]->retur->customer->sales->nama }}</td>
+            <td align="center" style="border: dotted">{{ Auth::user()->name }}</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      {{-- @php 
+      $itemsDet = \App\Models\DetilRJ::select('id_barang')
+                        ->selectRaw('sum(qty_kirim) as qty')
+                        ->where('id_retur', $item->id)
+                        ->groupBy('id_barang')
+                        ->get();
+      @endphp --}}
+      <!-- Tabel Data Detil BM-->
+      <table class="table table-sm table-responsive-sm table-hover table-cetak">
+        <thead class="text-center text-bold th-detail-cetak-so">
+          <tr>
+            <td style="width: 10px">No</td>
+            <td style="width: 50px">Kode</td>
+            <td>Nama Barang</td>
+            <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
+            <td style="width: 30px">UOM</td>
+            <td style="width: 55px">Harga</td>
+            <td style="width: 70px">Rupiah</td>
+            <td colspan="2">Diskon</td>
+            <td style="width: 80px">Netto Rp</td>
+          </tr>
+        </thead>
+        <tbody class="tr-detail-cetak-so">
+          @php $i = 1; @endphp
+          @foreach($items as $item)
+            <tr >
+              <td rowspan="2" align="center">{{ $i }}</td>
+              <td rowspan="2">{{ $item->id_barang }}</td>
+              <td rowspan="2">{{ $item->barang->nama }}</td>
+              <td rowspan="2" align="right" style="width: 50px">{{ $item->qty_kirim }}</td>
+              <td rowspan="2" align="center" style="width: 50px">
+                {{ $item->qty / $item->barang->ukuran }} @if($item->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
+              </td>
+              <td rowspan="2" align="center">
+                @if($item->barang->satuan == "Pcs / Dus") PCS @else MTR @endif
+              </td>
+              <td rowspan="2" align="right">0</td>
+              <td rowspan="2" align="right">0</td>
+              <td style="width: 70px; border-bottom: none !important" align="right">0</td>
+              <td rowspan="2" style="width: 60px" align="right">0</td>
+              <td rowspan="2" align="right">0</td>
+            </tr>
+            <tr class="">
+              <td style="width: 70px; border-top: none !important; margin-top: -8px !important;" align="right">( 0 %)</td>
+            </tr>
+            @php $i++ @endphp
+          @endforeach
+        </tbody>
+      </table>
+      
+      <div class="container-fluid footer-cetak-so">
+        <table class="table-footer">
+          <thead>
+            <tr>
+              <td style="border-right: dotted; width: 87px"> 
+                <div class="ttd-penerima text-center">
+                  <span>Penerima,</span>
+                  <br><br><br>
+                  <span class="form-ttd">(___________)</span>
+                </div>
+              </td>
+              <td style="border-right: dotted; width: 253px">
+                <div class="info_bayar">
+                  <span>Pembayaran Giro / Transfer</span>
+                  <br>
+                  <span>Rekening Bank BCA</span>
+                  <br>
+                  <span>a/n Irianti Irawan 0911276444</span>
+                </div>
+              </td>
+              <td style="width: 85px">
+                <div class="ttd-gudang">
+                  <center><span class="nama-gudang">Gudang,</span></center>
+                  <br><br>
+                  <span class="form-ttd">(___________)</span>
+                </div>
+              </td>
+              <td style="border-right: dotted; width: 80px">
+                <div class="ttd-mengetahui">
+                  <span class="tgl-ttd">
+                    {{ \Carbon\Carbon::parse($items[0]->tgl_kirim)->format('d-M-y')}}
+                  </span>
+                  <span>Mengetahui,</span> 
+                  <br><br><br><br>
+                  <span class="form-ttd">(__________)</span>
+                </div>
+              </td>
+              <td>
+                <div class="total-faktur">
+                  <table class="tabel-total-faktur">
+                    <tr>
+                      <td class="title-total text-bold">Jumlah</td>
+                      <td class="text-right angka-total">0</td>
+                    </tr>
+                    <tr>
+                      <td class="title-total text-bold">Disc Faktur</td>
+                      <td class="text-right angka-total">0</td>
+                    </tr>
+                    <tr>
+                      <td class="title-total text-bold">Nilai Netto</td>
+                      <td class="text-right angka-total">0</td>
+                    </tr>
+                    <tr>
+                      <td class="title-total text-bold">PPN</td>
+                      <td class="text-right angka-total"></td>
+                    </tr>
+                    <tr>
+                      <td class="title-total"></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="height: 2px"></td>
+                    </tr>
+                    <tr>
+                      <td class="title-total text-bold">Nilai Tagihan</td>
+                      <td class="text-right angka-total-akhir">0</td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
   </body>
 </html>

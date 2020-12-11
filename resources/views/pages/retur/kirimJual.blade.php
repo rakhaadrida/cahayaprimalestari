@@ -12,77 +12,62 @@
         <div class="modal-body text-dark">
           <form action="" method="POST">
             @csrf
+            {{-- <div class="form-group row justify-content-center">
+              <label for="nama" class="col-2 col-form-label text-bold ">Tanggal Kirim</label>
+              <span class="col-form-label text-bold">:</span>
+              <div class="col-3 mt-1">
+                <input type="text" class="form-control @if($r->detilrj[0]->tgl_kirim == '') datepicker @endif form-control-sm text-bold tglKirim" name="tanggal{{$r->id}}" required
+                @if($r->detilrj[0]->tgl_kirim != '') value ="{{ \Carbon\Carbon::parse($r->detilrj[0]->tgl_kirim)->format('d-M-y') }}" readonly @endif>
+              </div>
+            </div>  --}}
             <input type="hidden" name="kode" value="{{ $r->id }}">
-            @php 
-              $detail = \App\Models\DetilRetur::where('id_retur', $r->id)->get();
-            @endphp
-            @foreach($detail as $d)
-              <table class="table table-responsive table-bordered table-striped table-sm" style="font-size: 16px">
-                <thead class="text-center text-bold text-dark">
-                  <tr class="text-center bg-gradient-danger text-white">
-                    <th class="align-middle" style="width: 40px">No</th>
-                    <th class="align-middle" style="width: 90px">Kode Barang</th>
-                    <th class="align-middle" style="width: 325px">Nama Barang</th>
-                    <th class="align-middle" style="width: 100px">Tgl. Kirim</th>
-                    <th class="align-middle" style="width: 70px">Qty Kirim</th>
-                    <th class="align-middle" style="width: 70px">Qty Tidak Retur</th>
-                    <th class="align-middle" style="width: 70px">Qty Kurang</th>
-                  </tr>
-                </thead>
-                <tbody class="table-ar">
-                  @php 
-                    $i = 1; $totalKirim = 0; $totalBatal = 0;
-                    $detilretur = App\Models\DetilRJ::where('id_retur', $r->id)
-                              ->where('id_barang', $d->id_barang)->get();
-                    $kurang = $d->qty;
+            <table class="table table-responsive table-bordered table-striped table-sm" style="font-size: 16px">
+              <thead class="text-center text-bold text-dark">
+                <tr class="text-center bg-gradient-danger text-white">
+                  <th class="align-middle" style="width: 40px">No</th>
+                  <th class="align-middle" style="width: 90px">Kode Barang</th>
+                  <th class="align-middle" style="width: 325px">Nama Barang</th>
+                  <th class="align-middle" style="width: 70px">Qty Retur</th>
+                  <th class="align-middle" style="width: 70px">Qty Bagus</th>
+                  <th class="align-middle" style="width: 100px">Tgl. Kirim</th>
+                  <th class="align-middle" style="width: 70px">Qty Kirim</th>
+                  {{-- <th class="align-middle" style="width: 70px">Qty Kurang</th> --}}
+                </tr>
+              </thead>
+              <tbody class="table-ar">
+                @php 
+                  $i = 1; $totalRetur = 0; $totalKirim = 0;
+                  $detil = App\Models\DetilRJ::where('id_retur', $r->id)->get();
+                @endphp
+                @foreach($detil as $dr)
+                  @php $stok = App\Models\StokBarang::where('id_barang', $dr->id_barang)
+                              ->where('id_gudang', $gudang[0]->id)->where('status', 'T')->get();
                   @endphp
-                  @foreach($detilretur as $dr)
-                    @if(($dr->qty_kirim != 0) || ($dr->qty_batal != 0))
-                      <tr class="table-modal-first-row text-dark text-bold">
-                        <td class="text-center align-middle">{{ $i }}</td>
-                        <td class="text-center align-middle">{{ $d->id_barang }}</td>
-                        <td class="align-middle">{{ $d->barang->nama }}</td>
-                        <td class="text-center">{{ \Carbon\Carbon::parse($dr->tgl_kirim)->format('d-M-y') }}</td>
-                        <td class="text-right">{{ number_format($dr->qty_kirim, 0, "", ".") }}</td>
-                        <td class="text-right">{{ number_format($dr->qty_batal, 0, "", ".") }}</td>
-                        @php $kurang -= ($dr->qty_kirim + $dr->qty_batal); @endphp
-                        <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
-                      </tr>
-                      @php $i++; $totalKirim += $dr->qty_kirim; $totalBatal += $dr->qty_batal; @endphp
-                    @endif
-                  @endforeach
-                  @if($d->qty != $totalKirim + $totalBatal)
-                    <input type="hidden" name="kurangAwal" class="kurangAwal" value="{{ $kurang }}">
-                    <tr class="text-dark text-bold">
-                      <td class="text-center align-middle">{{ $i }}</td>
-                      <td class="text-center align-middle">{{ $d->id_barang }}</td>
-                      <td class="align-middle">{{ $d->barang->nama }}</td>
-                      <td class="text-center align-middle">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$d->id_barang}}" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY">
-                      </td>
-                      <td class="text-right align-middle">
-                        <input type="text" name="kirim{{$r->id}}{{$d->id_barang}}" id="bayar{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal">
-                      </td>
-                      <td class="text-right align-middle">
-                        <input type="text" name="batal{{$r->id}}{{$d->id_barang}}" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal">
-                      </td>
-                      <td class="text-right align-middle">
-                        <input type="text" name="kurang{{$d->id_barang}}" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
-                      </td>
-                    </tr>
-                  @endif
-                  <tr class="bg-gradient-danger text-bold text-white">
-                    <td colspan="4" class="text-center">Total</td>
-                    <td class="text-right">{{ number_format($totalKirim, 0, "", ".") }}</td>
-                    <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>
-                    <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
+                  <tr class="text-dark text-bold">
+                    <td class="text-center align-middle">{{ $i }}</td>
+                    <td class="text-center align-middle">{{ $dr->id_barang }}</td>
+                    <td class="align-middle">{{ $dr->barang->nama }}</td>
+                    <td class="align-middle text-right">{{ $dr->qty_retur }}</td>
+                    <td class="align-middle text-right">{{ $stok->count() != 0 ? $stok[0]->stok : '0' }}</td>
+                    <td class="text-center align-middle">
+                      <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$dr->id_barang}}" id="tglBayar{{$dr->id_barang}}" placeholder="DD-MM-YYYY" @if($dr->tgl_kirim != '') value ="{{ \Carbon\Carbon::parse($dr->tgl_kirim)->format('d-M-y') }}" readonly @endif>
+                    </td>
+                    <td class="text-right align-middle">
+                      <input type="text" name="kirim{{$r->id}}{{$dr->id_barang}}" id="kirim{{$r->id}}{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
+                      @if($dr->qty_kirim != '') value ="{{ $dr->qty_kirim }}" readonly @endif>
+                    </td>
                   </tr>
-                </tbody>
-              </table>
-              @if($d->id_barang != $detail->last()->id_barang)
-                <br>
-              @endif
-            @endforeach
+                  @php $i++; $totalRetur += $dr->qty_retur; $totalKirim += $dr->qty_kirim @endphp
+                @endforeach
+                <tr class="bg-gradient-danger text-bold text-white">
+                  <td colspan="3" class="text-center">Total</td>
+                  <td class="text-right">{{ number_format($totalRetur, 0, "", ".") }}</td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-right">{{ number_format($totalKirim, 0, "", ".") }}</td>
+                </tr>
+              </tbody>
+            </table>
             <hr>
 
             @if($r->status == 'INPUT')
@@ -95,14 +80,13 @@
                 </div>
               </div>
             @elseif($r->status == 'LENGKAP')
-              <div class="form-row justify-content-center">
+              {{-- <div class="form-row justify-content-center">
                 <div class="col-3">
                   <button type="button" id="btnCetak" class="btn btn-primary btn-block text-bold btnCetak">Cetak</button>
                 </div>
-              </div>
+              </div> --}}
 
               <iframe src="{{url('retur/penjualan/cetak/'.$r->id)}}" id="frameCetak{{$j}}" frameborder="0" hidden></iframe>
-              <iframe src="{{url('retur/penjualan/cetak-ttr/'.$r->id)}}" id="frameTTR{{$j}}" frameborder="0" hidden></iframe>
               @php $j++; @endphp
             @endif            
           </form>
@@ -132,6 +116,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const tglKirim = document.querySelectorAll(".tglKirim");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
@@ -139,6 +124,21 @@ const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const btnCetak = document.querySelectorAll('.btnCetak');
 // const frameCetak = document.querySelectorAll('.frameCetak');
+
+for(let i = 0; i < tglKirim.length; i++) {
+  tglKirim[i].addEventListener("keyup", function(e) {
+    var value = e.target.value.replaceAll("-","");
+    var arrValue = value.split("", 3);
+    var kode = arrValue.join("");
+
+    if(value.length > 2 && value.length <= 4) 
+      value = value.slice(0,2) + "-" + value.slice(2);
+    else if(value.length > 4 && value.length <= 8)
+      value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+    
+    tglKirim[i].value = value;
+  });
+}
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {
@@ -189,17 +189,19 @@ for(let i = 0; i < btnCetak.length; i++) {
   });
 }
 
-/** Add Thousand Separators **/
-function addCommas(nStr) {
-	nStr += '';
-	x = nStr.split(',');
-	x1 = x[0];
-	x2 = x.length > 1 ? ',' + x[1] : '';
-	var rgx = /(\d+)(\d{3})/;
-	while (rgx.test(x1)) {
-		x1 = x1.replace(rgx, '$1' + '.' + '$2');
-	}
-	return x1 + x2;
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= kirimModal.length; i++) {
+      if(inputan == i)
+        $(kirimModal[inputan-1]).tooltip('show');
+    }
+
+    return false;
+  }
+  return true;
 }
 
 // function cetakRetur(e) {

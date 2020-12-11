@@ -133,7 +133,7 @@
     <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
-        <a class="collapse-item" href="{{ route('retur-jual') }}">Retur Penjualan</a>
+        <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Penjualan</a>
         <a class="collapse-item" href="{{ route('retur-beli') }}">Retur Pembelian</a>
       </div>
     </div>

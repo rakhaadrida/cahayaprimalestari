@@ -81,11 +81,11 @@
                     <th style="width: 60px" class="align-middle">No. Retur</th>
                     <th style="width: 60px" class="align-middle">Tgl. Retur</th>
                     <th class="align-middle">Customer</th>
-                    <th style="width: 70px" class="align-middle">No. Faktur</th>
-                    <th style="width: 60px" class="align-middle">Qty Faktur</th>
+                    {{-- <th style="width: 70px" class="align-middle">No. Faktur</th>
+                    <th style="width: 60px" class="align-middle">Qty Faktur</th> --}}
                     <th style="width: 40px" class="align-middle">Qty Retur</th>
                     <th style="width: 50px" class="align-middle">Qty Kirim</th>
-                    <th style="width: 50px" class="align-middle">Qty Tidak Retur</th>
+                    {{-- <th style="width: 50px" class="align-middle">Qty Tidak Retur</th> --}}
                     <th style="width: 50px" class="align-middle">Qty Kurang</th>
                     <th style="width: 70px" class="align-middle">Status</th>
                   </tr>
@@ -96,10 +96,9 @@
                     @php 
                       $qtyFaktur = App\Models\DetilSO::selectRaw('sum(qty) as total')
                                 ->where('id_so', $r->id_faktur)->get();
-                      $qtyRetur = App\Models\DetilRetur::selectRaw('sum(qty) as total')
+                      $qtyRetur = App\Models\DetilRJ::selectRaw('sum(qty_retur) as total')
                                 ->where('id_retur', $r->id)->get();
-                      $qtyProses = App\Models\DetilRJ::selectRaw('sum(qty_kirim) as totalKirim,
-                                sum(qty_batal) as totalBatal')
+                      $qtyProses = App\Models\DetilRJ::selectRaw('sum(qty_kirim) as totalKirim')
                                 ->where('id_retur', $r->id)->get();
                     @endphp
                     <tr class="text-dark">
@@ -108,13 +107,13 @@
                       <td class="align-middle text-center">
                         {{ \Carbon\Carbon::parse($r->tanggal)->format('d-M-y') }}
                       </td>
-                      <td class="align-middle">{{ $r->so->customer->nama }}</td>
-                      <td class="align-middle text-center">{{ $r->id_faktur }}</td>
-                      <td class="align-middle text-center">{{ $qtyFaktur[0]->total }}</td>
+                      <td class="align-middle">{{ $r->customer->nama }}</td>
+                      {{-- <td class="align-middle text-center">{{ $r->id_faktur }}</td>
+                      <td class="align-middle text-center">{{ $qtyFaktur[0]->total }}</td> --}}
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalKirim }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td>
-                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalBatal + $qtyProses[0]->totalKirim) }}</td>
+                      {{-- <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td> --}}
+                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalKirim }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $r->id }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
                         </a>
@@ -129,15 +128,19 @@
                 </tbody>
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="background-color: lightgrey; font-size: 14px">
-                    <td colspan="6" class="text-center">Total</td>
-                    <td></td>
+                    <td colspan="4" class="text-center">Total</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                   </tr>
                 </tfoot>
-              </table>              
+              </table>  
+              
+              @if($status == 'true')
+                <!-- Tampilan Cetak -->
+                <iframe src="{{url('retur/penjualan/cetak/'.$id)}}" id="frameCetak" frameborder="0" hidden></iframe>
+              @endif
             </form>
           </div>
         </div>
@@ -155,6 +158,17 @@
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 
 <script type="text/javascript">
+@if($status == 'true')
+  const printFrame = document.getElementById("frameCetak").contentWindow;
+
+  printFrame.window.onafterprint = function(e) {
+    alert('ok');
+  }
+  
+  printFrame.window.print();
+  // window.print();
+@endif
+
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
@@ -199,7 +213,7 @@ function formatTanggal(e) {
 /** Sort Datatable **/
 $('#dataTable').dataTable( {
   "columnDefs": [
-    { "orderable": false, "targets": [0, 5] }
+    { "orderable": false, "targets": [0] }
   ],
   "aaSorting" : [],
   "footerCallback": function ( row, data, start, end, display ) {
@@ -213,7 +227,7 @@ $('#dataTable').dataTable( {
             i : 0;
     };
 
-    $.each([6, 7, 8, 9], function(index, value) {
+    $.each([4, 5, 6], function(index, value) {
 
       var column = api
         .column(value, {
@@ -236,38 +250,6 @@ $('#dataTable').dataTable( {
     }); 
   }
 });
-
-/** Input nominal comma separator **/
-for(let i = 0; i < transfer.length; i++) {
-  // transfer[i].addEventListener("keyup", function(e) {
-  //   $(this).val(function(index, value) {
-  //     return value
-  //     .replace(/\D/g, "")
-  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  //     ;
-  //   });
-  // })
-
-  transfer[i].addEventListener("focus", function(e) {
-    transfer[i].value = transfer[i].value.replace(/\,/g, "");
-  })
-
-  transfer[i].addEventListener("focusout", function(e) {
-    transfer[i].value = addCommas(transfer[i].value);
-  })
-
-  transfer[i].addEventListener("change", function(e) {
-    var arrKode = kodeBM.value.split(',');
-    var kode = transfer[i].name.substr(-6);
-
-    if(arrKode[0] != "") {
-      kodeBM.value = kodeBM.value.concat(`,${kode}`);
-    }
-    else {
-      kodeBM.value = kode;
-    }
-  })
-}
 
 /** Add Thousand Separators **/
 function addCommas(nStr) {

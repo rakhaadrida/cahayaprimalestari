@@ -4,19 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Retur extends Model
+class ReturJual extends Model
 {
-    protected $table = "retur";
+    protected $table = "returjual";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tanggal', 'id_faktur', 'tipe', 'status'];
+    protected $fillable = ['id', 'tanggal', 'id_customer', 'status'];
     public $incrementing = false;
 
-    public function bm() {
-        return $this->belongsTo('App\Models\BarangMasuk', 'id_faktur', 'id');
-    }
+    // public function bm() {
+    //     return $this->belongsTo('App\Models\BarangMasuk', 'id_faktur', 'id');
+    // }
 
-    public function so() {
-        return $this->belongsTo('App\Models\SalesOrder', 'id_faktur', 'id');
+    // public function so() {
+    //     return $this->belongsTo('App\Models\SalesOrder', 'id_faktur', 'id');
+    // }
+
+    public function customer() {
+        return $this->belongsTo('App\Models\Customer', 'id_customer', 'id');
     }
 
     public function detilretur() {

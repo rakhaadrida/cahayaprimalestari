@@ -10,14 +10,14 @@ class DetilRJ extends Model
     use CompositePrimaryKey;
     
     protected $table = "detilrj";
-    protected $primaryKey = ['id_retur', 'id_barang', 'id_kirim'];
+    protected $primaryKey = ['id_retur', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_retur', 'id_barang', 'id_kirim', 'tgl_kirim', 'qty_kirim', 'qty_batal'];
+    protected $fillable = ['id_retur', 'id_barang', 'id_kirim', 'tgl_kirim', 'qty_retur', 'qty_kirim'];
 
     public $incrementing = false;
 
     public function retur() {
-        return $this->belongsTo('App\Models\Retur', 'id_retur', 'id');
+        return $this->belongsTo('App\Models\ReturJual', 'id_retur', 'id');
     }
 
     public function barang() {

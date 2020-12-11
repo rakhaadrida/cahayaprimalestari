@@ -190,7 +190,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('ret-detail-jual');
         Route::post('/retur/index-jual/process/{id}', 'ReturController@storeJual')
             ->name('ret-process-jual');
-        Route::get('retur/penjualan', 'ReturController@dataReturJual')->name('retur-jual');
+        Route::get('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
+            ->name('retur-jual');
         Route::post('retur/penjualan', 'ReturController@dataReturJual')->name('home-jual');
         Route::post('retur/penjualan/show', 'ReturController@showReturJual')
             ->name('retur-jual-show');
