@@ -134,7 +134,7 @@
       <div class="py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
         <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Penjualan</a>
-        <a class="collapse-item" href="{{ route('retur-beli') }}">Retur Pembelian</a>
+        <a class="collapse-item" href="{{ route('retur-beli', ['status' => 'false', 'id'=> '0']) }}">Retur Pembelian</a>
       </div>
     </div>
   </li>

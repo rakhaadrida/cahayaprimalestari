@@ -369,114 +369,112 @@
     </style>
   </head>
   <body>
-    <div class="cetak-all-container">
-      <div class="container-fluid header-cetak-so">
-        <div class="title-header text-center">
-          <h3 class="text-bold">Goods Receipt Note</h3>
+    @foreach($items as $item)
+      <div class="cetak-all-container" @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif>
+        <div class="container-fluid header-cetak-so">
+          <div class="title-header text-center">
+            <h3 class="text-bold">Goods Receipt Note</h3>
+          </div>
+          <div class="subtitle-cetak-so">
+            <span class="text-right">Supplier</span>
+            <span>:</span>
+            <span>{{ $item->returbeli->supplier->nama }}</span>
+          </div>
+          <div class="subtitle-cetak-so subtitle-second">
+            <span class="text-right">We had accepted these following item(s) :</span>
+          </div>
         </div>
-        <div class="subtitle-cetak-so">
-          <span class="text-right">Supplier</span>
+        <div class="float-left logo-cetak-so">
+          <img src="backend/img/Logo_CPL.jpg" alt="">
+          <h6 class="logo-address">JL KRAMAT PULO GUNDUL</h6>
+          <h6 class="logo-address address-line-two">KRAMAT SENTIONG - JAKPUS</h6>
+        </div>
+        <div class="float-right customer-cetak-so">
+          <span class="text-right text-bold">Tanggal Cetak</span>
           <span>:</span>
-          <span>{{ $items[0]->bm->supplier->nama }}</span>
+          <span>{{ $today }}</span>
+          <br>
+          <span class="waktu-second text-right text-bold">Jam Cetak</span>
+          <span>:</span>
+          <span>{{ $waktu }}</span>
+          <br>
+          <span class="waktu-third text-right text-bold">Pemakai</span>
+          <span>:</span>
+          <span>{{ Auth::user()->name }}</span>
         </div>
-        <div class="subtitle-cetak-so subtitle-second">
-          <span class="text-right">We had accepted these following item(s) :</span>
+        <div class="detail-cetak-so">
+          <span class="text-right">GRN Date</span>
+          <span>:</span>
+          <span>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</span>
+          <br>
+          <span class="detail-second text-right">GRN Number</span>
+          <span>:</span>
+          <span>{{ $item->id_retur }}</span>
+          <br>
+          <span class="detail-third text-right">DO. Date</span>
+          <span>:</span>
+          <span>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</span>
+          <br>
+          <span class="detail-fourth text-right">DO. Number</span>
+          <span>:</span>
+          <span></span>
         </div>
-      </div>
-      <div class="float-left logo-cetak-so">
-        <img src="backend/img/Logo_CPL.jpg" alt="">
-        <h6 class="logo-address">JL KRAMAT PULO GUNDUL</h6>
-        <h6 class="logo-address address-line-two">KRAMAT SENTIONG - JAKPUS</h6>
-      </div>
-      <div class="float-right customer-cetak-so">
-        <span class="text-right text-bold">Tanggal Cetak</span>
-        <span>:</span>
-        <span>{{ $today }}</span>
         <br>
-        <span class="waktu-second text-right text-bold">Jam Cetak</span>
-        <span>:</span>
-        <span>{{ $waktu }}</span>
-        <br>
-        <span class="waktu-third text-right text-bold">Pemakai</span>
-        <span>:</span>
-        <span>{{ Auth::user()->name }}</span>
-      </div>
-      <div class="detail-cetak-so">
-        <span class="text-right">GRN Date</span>
-        <span>:</span>
-        <span>{{ \Carbon\Carbon::parse($items[0]->detilrb[0]->tgl_terima)->format('d-M-y') }}</span>
-        <br>
-        <span class="detail-second text-right">GRN Number</span>
-        <span>:</span>
-        <span>{{ $items[0]->id }}</span>
-        <br>
-        <span class="detail-third text-right">DO. Date</span>
-        <span>:</span>
-        <span>{{ \Carbon\Carbon::parse($items[0]->tanggal)->format('d-M-y') }}</span>
-        <br>
-        <span class="detail-fourth text-right">DO. Number</span>
-        <span>:</span>
-        <span></span>
-      </div>
-      <br>
-      
-      @php 
-      $itemsDet = \App\Models\DetilRB::select('id_barang')
-                        ->selectRaw('sum(qty_terima) as qty')
-                        ->where('id_retur', $items[0]->id)
-                        ->groupBy('id_barang')
-                        ->get();
-      @endphp
-      <!-- Tabel Data Detil BM-->
-      <span class="page-number text-right">Page  :   1</span>
-      <table class="table table-sm table-responsive-sm table-cetak">
-        <thead class="text-center text-bold th-detail-cetak-so">
-          <tr>
-            <th style="width: 5px">No.</th>
-            <th style="width: 20px">Kode</th>
-            <th style="width: 220px">Nama Barang</th>
-            <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th>
-            <th style="width: 160px">Description</th>
-          </tr>
-        </thead>
-        <tbody class="tr-detail-cetak-so">
-          @php $i = 1; @endphp
-          @foreach($itemsDet as $itemDet)
+        
+        @php 
+        $itemsDet = \App\Models\DetilRT::where('id_terima', $item->id)->get();
+        @endphp
+        <!-- Tabel Data Detil BM-->
+        <span class="page-number text-right">Page  :   1</span>
+        <table class="table table-sm table-responsive-sm table-cetak">
+          <thead class="text-center text-bold th-detail-cetak-so">
             <tr>
-              <td align="center">{{ $i }}</td>
-              <td align="center">{{ $itemDet->id_barang }}</td>
-              <td>{{ $itemDet->barang->nama }}</td>
-              <td align="right" style="width: 50px">{{ $itemDet->qty }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @else Mtr @endif</td>
-              <td align="center" style="width: 1px">/</td>
-              <td style="width: 50px">
-                {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
-              </td>
-              <td align="center">RETUR</td>
-            </tr>
-            @php $i++ @endphp
-          @endforeach
-        </tbody>
-      </table>
-      
-      <div class="container-fluid footer-cetak-so">
-        <table class="table-footer">
-          <thead>
-            <tr>
-              <td align="center" style="width: 200px">KEPALA GUDANG</td>
-              <td align="center" style="width: 220px">ADMIN SALES</td>
-              <td align="center" style="width: 160px">GUDANG</td>
-            </tr>
-            <tr>
-              <td colspan="3" style="height: 45px"></td>
-            </tr>
-            <tr>
-              <td align="center">( AGUNG NUGRAHA )</td>
-              <td align="center">( ERNA )</td>
-              <td align="center">( TORO )</td>
+              <th style="width: 5px">No.</th>
+              <th style="width: 20px">Kode</th>
+              <th style="width: 220px">Nama Barang</th>
+              <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th>
+              <th style="width: 160px">Description</th>
             </tr>
           </thead>
+          <tbody class="tr-detail-cetak-so">
+            @php $i = 1; @endphp
+            @foreach($item->detilrt as $itemDet)
+              <tr>
+                <td align="center">{{ $i }}</td>
+                <td align="center">{{ $itemDet->id_barang }}</td>
+                <td>{{ $itemDet->barang->nama }}</td>
+                <td align="right" style="width: 50px">{{ $itemDet->qty_terima }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @else Rol @endif</td>
+                <td align="center" style="width: 1px">/</td>
+                <td style="width: 50px">
+                  {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
+                </td>
+                <td align="center">RETUR</td>
+              </tr>
+              @php $i++ @endphp
+            @endforeach
+          </tbody>
         </table>
+        
+        <div class="container-fluid footer-cetak-so">
+          <table class="table-footer">
+            <thead>
+              <tr>
+                <td align="center" style="width: 200px">KEPALA GUDANG</td>
+                <td align="center" style="width: 220px">ADMIN SALES</td>
+                <td align="center" style="width: 160px">GUDANG</td>
+              </tr>
+              <tr>
+                <td colspan="3" style="height: 45px"></td>
+              </tr>
+              <tr>
+                <td align="center">( AGUNG NUGRAHA )</td>
+                <td align="center">( ERNA )</td>
+                <td align="center">( TORO )</td>
+              </tr>
+            </thead>
+          </table>
+        </div>
       </div>
-    </div>
+    @endforeach
   </body>
 </html>

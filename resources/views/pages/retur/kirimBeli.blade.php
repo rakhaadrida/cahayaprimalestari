@@ -13,17 +13,17 @@
           <form action="" method="POST">
             @csrf
             <input type="hidden" name="kode" value="{{ $r->id }}">
-            {{-- @php 
-              $detail = \App\Models\DetilRetur::where('id_retur', $r->id)->get();
-            @endphp --}}
-            {{-- @foreach($detail as $d) --}}
+            @php 
+              $detail = \App\Models\DetilRB::where('id_retur', $r->id)->get();
+            @endphp
+            @foreach($detail as $d)
               <table class="table table-responsive table-bordered table-striped table-sm" style="font-size: 16px">
                 <thead class="text-center text-bold text-dark">
                   <tr class="text-center bg-gradient-danger text-white">
                     <th class="align-middle" style="width: 40px">No</th>
                     <th class="align-middle" style="width: 90px">Kode Barang</th>
                     <th class="align-middle" style="width: 325px">Nama Barang</th>
-                    <th class="align-middle" style="width: 70px">Qty Retur</th>
+                    <th class="align-middle" style="width: 60px">Qty Retur</th>
                     <th class="align-middle" style="width: 100px">Tgl. Terima</th>
                     <th class="align-middle" style="width: 70px">Qty Terima</th>
                     <th class="align-middle" style="width: 70px">Qty Ditolak</th>
@@ -33,56 +33,60 @@
                 <tbody class="table-ar">
                   @php 
                     $i = 1; $totalTerima = 0; $totalBatal = 0;
-                    $detilretur = App\Models\DetilRB::where('id_retur', $r->id)->get();
-                    $kurang = 0;
+                    $returTerima = App\Models\DetilRT::join('returterima', 'returterima.id',
+                                  'detilrt.id_terima')->where('id_retur', $r->id)
+                                  ->where('id_barang', $d->id_barang)->get();
+                    $kurang = $d->qty_retur;
                   @endphp
-                  @foreach($detilretur as $dr)
-                    @if(($dr->qty_terima != 0) || ($dr->qty_batal != 0))
+                  @if($returTerima->count() != 0)
+                    @foreach($returTerima as $dr)
                       <tr class="table-modal-first-row text-dark text-bold">
                         <td class="text-center align-middle">{{ $i }}</td>
                         <td class="text-center align-middle">{{ $dr->id_barang }}</td>
                         <td class="align-middle">{{ $dr->barang->nama }}</td>
-                        <td class="text-center">{{ \Carbon\Carbon::parse($dr->tgl_terima)->format('d-M-y') }}</td>
+                        <td class="text-center">{{ number_format($d->qty_retur, 0, "", ".") }}</td>
+                        <td class="text-center">{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-M-y') }}</td>
                         <td class="text-right">{{ number_format($dr->qty_terima, 0, "", ".") }}</td>
-                        <td class="text-right">{{ number_format($dr->qty_retur, 0, "", ".") }}</td>
-                        @php $kurang -= ($dr->qty_terima + $dr->qty_retur); @endphp
+                        <td class="text-right">{{ number_format($dr->qty_batal, 0, "", ".") }}</td>
+                        @php $kurang -= ($dr->qty_terima + $dr->qty_batal); @endphp
                         <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
                       </tr>
                       @php $i++; $totalTerima += $dr->qty_terima; $totalBatal += $dr->qty_batal; @endphp
-                    @endif
-                  @endforeach
-                  @if($dr->qty_retur != $totalTerima + $totalBatal)
+                    @endforeach
+                  @endif
+                  @if($d->qty_retur != $totalTerima + $totalBatal)
                     <input type="hidden" name="kurangAwal" class="kurangAwal" value="{{ $kurang }}">
                     <tr class="text-dark text-bold">
                       <td class="text-center align-middle">{{ $i }}</td>
-                      <td class="text-center align-middle">{{ $dr->id_barang }}</td>
-                      <td class="align-middle">{{ $dr->barang->nama }}</td>
+                      <td class="text-center align-middle">{{ $d->id_barang }}</td>
+                      <td class="align-middle">{{ $d->barang->nama }}</td>
+                      <td class="align-middle text-center">{{ $d->qty_retur }}</td>
                       <td class="text-center align-middle">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$dr->id_barang}}" id="tglBayar{{$dr->id_barang}}" placeholder="DD-MM-YYYY">
+                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$d->id_barang}}" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="terima{{$r->id}}{{$dr->id_barang}}" id="bayar{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal">
+                        <input type="text" name="terima{{$r->id}}{{$d->id_barang}}" id="bayar{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="batal{{$r->id}}{{$dr->id_barang}}" id="batal{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal">
+                        <input type="text" name="batal{{$r->id}}{{$d->id_barang}}" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="kurang{{$dr->id_barang}}" id="kurang{{$dr->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
+                        <input type="text" name="kurang{{$d->id_barang}}" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
                       </td>
                     </tr>
                   @endif
                   <tr class="bg-gradient-danger text-white text-bold">
-                    <td colspan="4" class="text-center">Total</td>
+                    <td colspan="5" class="text-center">Total</td>
                     <td class="text-right">{{ number_format($totalTerima, 0, "", ".") }}</td>
                     <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>
                     <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
                   </tr>
                 </tbody>
               </table>
-              @if($dr->id_barang != $detilretur->last()->id_barang)
+              @if($d->id_barang != $detail->last()->id_barang)
                 <br>
               @endif
-            {{-- @endforeach --}}
+            @endforeach
             <hr>
 
             @if($r->status == 'INPUT')

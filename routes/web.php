@@ -207,7 +207,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('ret-detail-beli');
         Route::post('/retur/index-beli/process/{id}', 'ReturController@storeBeli')
             ->name('ret-process-beli');
-        Route::get('retur/pembelian', 'ReturController@dataReturBeli')->name('retur-beli');
+        Route::get('retur/pembelian/index/{status}/{id}', 'ReturController@dataReturBeli')
+            ->name('retur-beli');
         Route::post('retur/pembelian', 'ReturController@dataReturBeli')->name('home-beli');
         Route::post('retur/pembelian/show', 'ReturController@showReturBeli')
             ->name('retur-beli-show');

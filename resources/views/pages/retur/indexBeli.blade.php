@@ -94,8 +94,9 @@
                     @php
                       $qtyRetur = App\Models\DetilRB::selectRaw('sum(qty_retur) as total')
                                 ->where('id_retur', $r->id)->get();
-                      $qtyProses = App\Models\DetilRB::selectRaw('sum(qty_terima) 
-                                as totalTerima')
+                      $qtyProses = App\Models\DetilRT::join('returterima', 'returterima.id',
+                               'detilrt.id_terima')->selectRaw('sum(qty_terima) 
+                                as totalTerima, sum(qty_batal) as totalBatal')
                                 ->where('id_retur', $r->id)->get();
                     @endphp
                     <tr class="text-dark">
@@ -107,8 +108,8 @@
                       <td class="align-middle">{{ $r->supplier->nama }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalTerima }}</td>
-                      <td class="align-middle text-right"></td>
-                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalTerima }}</td>
+                      <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td>
+                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalTerima + $qtyProses[0]->totalBatal) }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $r->id }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
                         </a>
@@ -131,7 +132,12 @@
                     <td></td>
                   </tr>
                 </tfoot>
-              </table>              
+              </table>
+              
+              @if($status == 'true')
+                <!-- Tampilan Cetak -->
+                <iframe src="{{url('retur/pembelian/cetak/'.$id)}}" id="frameCetak" frameborder="0" hidden></iframe>
+              @endif
             </form>
           </div>
         </div>
@@ -149,6 +155,17 @@
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 
 <script type="text/javascript">
+@if($status == 'true')
+  const printFrame = document.getElementById("frameCetak").contentWindow;
+
+  printFrame.window.onafterprint = function(e) {
+    alert('ok');
+  }
+  
+  printFrame.window.print();
+  // window.print();
+@endif
+
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],

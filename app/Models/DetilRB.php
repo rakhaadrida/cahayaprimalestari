@@ -12,12 +12,12 @@ class DetilRB extends Model
     protected $table = "detilrb";
     protected $primaryKey = ['id_retur', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_retur', 'id_barang', 'tgl_terima', 'qty_retur', 'qty_terima'];
+    protected $fillable = ['id_retur', 'id_barang', 'qty_retur'];
 
     public $incrementing = false;
 
-    public function retur() {
-        return $this->belongsTo('App\Models\Retur', 'id_retur', 'id');
+    public function returbeli() {
+        return $this->belongsTo('App\Models\ReturBeli', 'id_retur', 'id');
     }
 
     public function barang() {
