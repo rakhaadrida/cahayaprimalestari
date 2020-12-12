@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Gudang;
 use App\Models\StokBarang;
 use App\Models\Customer;
+use App\Models\Supplier;
 use App\Models\Barang;
 use App\Models\SalesOrder;
 use App\Models\DetilSO;
 use App\Models\ReturJual;
+use App\Models\ReturBeli;
 use App\Models\DetilRetur;
 use App\Models\DetilRJ;
 use App\Models\BarangMasuk;
@@ -48,18 +50,15 @@ class ReturController extends Controller
         $lastcode = ReturJual::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
-        $newcode = 'RTR'.sprintf('%04s', $lastnumber);
+        $newcode = 'RTJ'.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
-
-        $so = SalesOrder::All();
 
         $data = [
             'customer' => $customer,
             'barang' => $barang,
             'tanggal' => $tanggal,
-            'so' => $so,
             'newcode' => $newcode,
         ];
 
@@ -82,8 +81,6 @@ class ReturController extends Controller
 
     public function storeJual(Request $request, $id) {
         $gudang = Gudang::where('retur', 'T')->get();
-        $items = DetilSO::select('id_so', 'id_barang', DB::raw('sum(qty) as qty'))
-                ->where('id_so', $request->kode)->groupBy('id_barang')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
         ReturJual::create([
@@ -121,7 +118,12 @@ class ReturController extends Controller
             }
         }
 
-        return redirect()->route('retur-jual');
+        $data = [
+            'status' => 'false',
+            'id' => '0'
+        ];
+
+        return redirect()->route('retur-jual', $data);
     }
 
     public function dataReturJual($status, $id) {
@@ -278,7 +280,7 @@ class ReturController extends Controller
         return $pdf->stream('cetak-so.pdf');
     }
 
-    public function ttrKirimJual($id) {
+    /* public function ttrKirimJual($id) {
         $items = ReturJual::where('id', $id)->get();
 
         $lastcode = TandaTerima::max('id');
@@ -301,17 +303,27 @@ class ReturController extends Controller
         $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-ttr.pdf');
-    }
+    } */
 
     public function createPembelian() {
+        $supplier = Supplier::All();
+        $gudang = Gudang::where('retur', 'T')->get();
+        $barang = StokBarang::where('id_gudang', $gudang[0]->id)
+                ->where('status', 'F')->get();
+
+        $lastcode = ReturBeli::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'RTB'.sprintf('%04s', $lastnumber);
+
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
-        $bm = BarangMasuk::All();
-
         $data = [
-            'tanggal' => $tanggal,
-            'bm' => $bm
+            'supplier' => $supplier,
+            'barang' => $barang,
+            'newcode' => $newcode,
+            'tanggal' => $tanggal
         ];
 
         return view('pages.retur.createBeli', $data);
@@ -333,39 +345,32 @@ class ReturController extends Controller
 
     public function storeBeli(Request $request, $id) {
         $gudang = Gudang::where('retur', 'T')->get();
-        $items = DetilBM::select('id_bm', 'id_barang', DB::raw('sum(qty) as qty'))
-                ->where('id_bm', $request->kode)->groupBy('id_barang')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
-        $lastcode = ReturJual::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
-        $lastnumber++;
-        $newcode = 'RET'.sprintf('%04s', $lastnumber);
-
-        ReturJual::create([
-            'id' => $newcode,
+        ReturBeli::create([
+            'id' => $id,
             'tanggal' => $tanggal,
-            'id_faktur' => $id,
-            'tipe' => 'Beli',
+            'id_supplier' => $request->kodeSupplier,
             'status' => 'INPUT'
         ]);
 
-        $i = 0;
-        foreach($items as $item) {
-            if($request->qty[$i] != '') {
-                DetilRetur::create([
-                    'id_retur' => $newcode,
-                    'id_barang' => $item->id_barang,
-                    'qty' => $request->qty[$i]
+        for($i = 0; $i < $request->jumBaris; $i++) {
+            if($request->kodeBarang[$i] != '') {
+                DetilRB::create([
+                    'id_retur' => $id,
+                    'id_barang' => $request->kodeBarang[$i],
+                    'tgl_terima' => NULL,
+                    'qty_retur' => $request->qty[$i],
+                    'qty_terima' => NULL,
                 ]);
 
-                $stok = StokBarang::where('id_barang', $item->id_barang)
+                $stok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                         ->where('id_gudang', $gudang[0]->id)
                         ->where('status', 'F')->first();
                 
                 if($stok == NULL) {
                     StokBarang::create([
-                        'id_barang' => $item->id_barang,
+                        'id_barang' => $request->kodeBarang[$i],
                         'id_gudang' => $gudang[0]->id,
                         'status' => 'F',
                         'stok' => $request->qty[$i]
@@ -375,18 +380,18 @@ class ReturController extends Controller
                     $stok->save();
                 }
             }
-            
-            $i++;
         }
 
         return redirect()->route('retur-beli');
     }
 
     public function dataReturBeli() {
-        $retur = ReturJual::where('tipe', 'Beli')->get();
+        $retur = ReturBeli::All();
+        $gudang = Gudang::where('retur', 'T')->get();
 
         $data = [
-            'retur' => $retur
+            'retur' => $retur,
+            'gudang' => $gudang
         ];
 
         return view('pages.retur.indexBeli', $data);

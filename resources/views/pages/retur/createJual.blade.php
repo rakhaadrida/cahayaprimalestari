@@ -152,6 +152,7 @@ const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
+const jumBaris = document.getElementById('jumBaris');
 
 tglRetur.addEventListener("keyup", formatTanggal);
 namaCustomer.addEventListener("keyup", displayCust);

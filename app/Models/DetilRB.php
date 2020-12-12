@@ -10,9 +10,9 @@ class DetilRB extends Model
     use CompositePrimaryKey;
     
     protected $table = "detilrb";
-    protected $primaryKey = ['id_retur', 'id_barang', 'id_terima'];
+    protected $primaryKey = ['id_retur', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_retur', 'id_barang', 'id_terima', 'tgl_terima', 'qty_terima', 'qty_batal'];
+    protected $fillable = ['id_retur', 'id_barang', 'tgl_terima', 'qty_retur', 'qty_terima'];
 
     public $incrementing = false;
 

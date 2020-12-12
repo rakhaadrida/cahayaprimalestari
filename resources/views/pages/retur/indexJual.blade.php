@@ -81,11 +81,8 @@
                     <th style="width: 60px" class="align-middle">No. Retur</th>
                     <th style="width: 60px" class="align-middle">Tgl. Retur</th>
                     <th class="align-middle">Customer</th>
-                    {{-- <th style="width: 70px" class="align-middle">No. Faktur</th>
-                    <th style="width: 60px" class="align-middle">Qty Faktur</th> --}}
                     <th style="width: 40px" class="align-middle">Qty Retur</th>
                     <th style="width: 50px" class="align-middle">Qty Kirim</th>
-                    {{-- <th style="width: 50px" class="align-middle">Qty Tidak Retur</th> --}}
                     <th style="width: 50px" class="align-middle">Qty Kurang</th>
                     <th style="width: 70px" class="align-middle">Status</th>
                   </tr>
@@ -94,8 +91,6 @@
                   @php $i = 1 @endphp
                   @forelse($retur as $r)
                     @php 
-                      $qtyFaktur = App\Models\DetilSO::selectRaw('sum(qty) as total')
-                                ->where('id_so', $r->id_faktur)->get();
                       $qtyRetur = App\Models\DetilRJ::selectRaw('sum(qty_retur) as total')
                                 ->where('id_retur', $r->id)->get();
                       $qtyProses = App\Models\DetilRJ::selectRaw('sum(qty_kirim) as totalKirim')
@@ -108,11 +103,8 @@
                         {{ \Carbon\Carbon::parse($r->tanggal)->format('d-M-y') }}
                       </td>
                       <td class="align-middle">{{ $r->customer->nama }}</td>
-                      {{-- <td class="align-middle text-center">{{ $r->id_faktur }}</td>
-                      <td class="align-middle text-center">{{ $qtyFaktur[0]->total }}</td> --}}
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalKirim }}</td>
-                      {{-- <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td> --}}
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalKirim }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $r->id }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
