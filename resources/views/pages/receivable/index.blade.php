@@ -1,4 +1,5 @@
 @extends('pages.receivable.detail')
+@extends('pages.receivable.retur')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -133,9 +134,9 @@
                       <td class="align-middle">
                         <input type="text" name="cic{{$a->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif >
                       </td>
-                      <td class="align-middle">
-                        <input type="text" name="ret{{$a->id_so}}" id="retur{{$a->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right retur" 
-                        @if($a->retur != null) value="{{ number_format($a->retur, 0, "", ",") }}" @endif>
+                      <td class="text-right">
+                        {{-- <input type="text" name="ret{{$a->id_so}}" id="retur{{$a->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right retur" value="{{ $a->retur != null ? $a->retur : '' }}"> --}}
+                        <a href="#Retur{{ $a->id_so }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $a->retur != null ? $a->retur : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $a->retur, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>

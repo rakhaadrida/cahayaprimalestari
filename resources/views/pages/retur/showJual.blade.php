@@ -51,7 +51,6 @@
                       <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
                       <option value="INPUT" @if($status == 'INPUT') selected @endif>INPUT</option>
                       <option value="LENGKAP" @if($status == 'LENGKAP') selected @endif>LENGKAP</option>
-                      <option value="CETAK" @if($status == 'CETAK') selected @endif>CETAK</option>
                     </select>
                   </div>
                 </div>   
@@ -69,7 +68,7 @@
                     <button type="submit" formaction="{{ route('retur-jual-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('home-jual') }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
+                    <button type="submit" formaction="{{ route('home-jual', ['status' => 'false', 'id' => '0']) }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                 </div>  
               </div>
@@ -84,11 +83,8 @@
                     <th style="width: 60px" class="align-middle">No. Retur</th>
                     <th style="width: 60px" class="align-middle">Tgl. Retur</th>
                     <th class="align-middle">Customer</th>
-                    <th style="width: 70px" class="align-middle">No. Faktur</th>
-                    <th style="width: 60px" class="align-middle">Qty Faktur</th>
                     <th style="width: 40px" class="align-middle">Qty Retur</th>
                     <th style="width: 50px" class="align-middle">Qty Kirim</th>
-                    <th style="width: 50px" class="align-middle">Qty Tidak Retur</th>
                     <th style="width: 50px" class="align-middle">Qty Kurang</th>
                     <th style="width: 70px" class="align-middle">Status</th>
                   </tr>
@@ -97,12 +93,9 @@
                   @php $i = 1 @endphp
                   @forelse($retur as $r)
                     @php 
-                      $qtyFaktur = App\Models\DetilSO::selectRaw('sum(qty) as total')
-                                ->where('id_so', $r->id_faktur)->get();
-                      $qtyRetur = App\Models\DetilRetur::selectRaw('sum(qty) as total')
+                      $qtyRetur = App\Models\DetilRJ::selectRaw('sum(qty_retur) as total')
                                 ->where('id_retur', $r->id)->get();
-                      $qtyProses = App\Models\DetilRJ::selectRaw('sum(qty_kirim) as totalKirim,
-                                sum(qty_batal) as totalBatal')
+                      $qtyProses = App\Models\DetilRJ::selectRaw('sum(qty_kirim) as totalKirim')
                                 ->where('id_retur', $r->id)->get();
                     @endphp
                     <tr class="text-dark">
@@ -111,13 +104,10 @@
                       <td class="align-middle text-center">
                         {{ \Carbon\Carbon::parse($r->tanggal)->format('d-M-y') }}
                       </td>
-                      <td class="align-middle">{{ $r->so->customer->nama }}</td>
-                      <td class="align-middle text-center">{{ $r->id_faktur }}</td>
-                      <td class="align-middle text-center">{{ $qtyFaktur[0]->total }}</td>
+                      <td class="align-middle">{{ $r->customer->nama }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalKirim }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td>
-                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalBatal + $qtyProses[0]->totalKirim) }}</td>
+                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalKirim }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $r->id }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
                         </a>
@@ -132,15 +122,14 @@
                 </tbody>
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="background-color: lightgrey; font-size: 14px">
-                    <td colspan="6" class="text-center">Total</td>
-                    <td></td>
+                    <td colspan="4" class="text-center">Total</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                   </tr>
                 </tfoot>
-              </table>              
+              </table>             
             </form>
           </div>
         </div>
@@ -202,7 +191,7 @@ function formatTanggal(e) {
 /** Sort Datatable **/
 $('#dataTable').dataTable( {
   "columnDefs": [
-    { "orderable": false, "targets": [0, 5] }
+    { "orderable": false, "targets": [0] }
   ],
   "aaSorting" : [],
   "footerCallback": function ( row, data, start, end, display ) {
@@ -216,7 +205,7 @@ $('#dataTable').dataTable( {
             i : 0;
     };
 
-    $.each([6, 7, 8, 9], function(index, value) {
+    $.each([4, 5, 6], function(index, value) {
 
       var column = api
         .column(value, {

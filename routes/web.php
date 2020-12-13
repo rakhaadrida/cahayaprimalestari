@@ -192,7 +192,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('ret-process-jual');
         Route::get('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
             ->name('retur-jual');
-        Route::post('retur/penjualan', 'ReturController@dataReturJual')->name('home-jual');
+        Route::post('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
+            ->name('home-jual');
         Route::post('retur/penjualan/show', 'ReturController@showReturJual')
             ->name('retur-jual-show');
         Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
@@ -209,7 +210,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('ret-process-beli');
         Route::get('retur/pembelian/index/{status}/{id}', 'ReturController@dataReturBeli')
             ->name('retur-beli');
-        Route::post('retur/pembelian', 'ReturController@dataReturBeli')->name('home-beli');
+        Route::post('retur/pembelian/index/{status}/{id}', 'ReturController@dataReturBeli')
+            ->name('home-beli');
         Route::post('retur/pembelian/show', 'ReturController@showReturBeli')
             ->name('retur-beli-show');
         Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')

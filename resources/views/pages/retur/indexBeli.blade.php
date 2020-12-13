@@ -51,7 +51,6 @@
                       <option value="ALL" selected>ALL</option>
                       <option value="INPUT">INPUT</option>
                       <option value="LENGKAP">LENGKAP</option>
-                      <option value="CETAK">CETAK</option>
                     </select>
                   </div>
                 </div>   

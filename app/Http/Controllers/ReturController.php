@@ -140,12 +140,10 @@ class ReturController extends Controller
         if($request->status == 'ALL')  {
             $status[0] = 'INPUT';
             $status[1] = 'LENGKAP';
-            $status[2] = 'CETAK';
         }
         else {
             $status[0] = $request->status;
             $status[1] = '';
-            $status[2] = '';
         }
 
         $awal = $request->tglAwal;
@@ -177,19 +175,20 @@ class ReturController extends Controller
         }
 
         if($isi == 1) {
-            $retur = ReturJual::whereIn('status', [$status[0], $status[1], $status[2]])
-                    ->where('tipe', 'Jual')->get();
+            $retur = ReturJual::whereIn('status', [$status[0], $status[1]])->get();
         } else {
-            $retur = ReturJual::whereIn('retur.status', [$status[0], $status[1], $status[2]])
-                    ->where('tipe', 'Jual')
+            $retur = ReturJual::whereIn('status', [$status[0], $status[1]])
                     ->where(function ($q) use ($awal, $akhir, $month) {
                         $q->whereMonth('tanggal', $month)
                         ->orWhereBetween('tanggal', [$awal, $akhir]);
                     })->get();
         }
 
+        $gudang = Gudang::where('retur', 'T')->get();
+
         $data = [
             'retur' => $retur,
+            'gudang' => $gudang,
             'bulan' => $request->bulan,
             'tglAwal' => $request->tglAwal,
             'tglAkhir' => $request->tglAkhir,
@@ -376,7 +375,12 @@ class ReturController extends Controller
             }
         }
 
-        return redirect()->route('retur-beli');
+        $data = [
+            'status' => 'false',
+            'id' => '0'
+        ];
+
+        return redirect()->route('retur-beli', $data);
     }
 
     public function dataReturBeli($status, $id) {
@@ -397,12 +401,10 @@ class ReturController extends Controller
         if($request->status == 'ALL')  {
             $status[0] = 'INPUT';
             $status[1] = 'LENGKAP';
-            $status[2] = 'CETAK';
         }
         else {
             $status[0] = $request->status;
             $status[1] = '';
-            $status[2] = '';
         }
 
         $awal = $request->tglAwal;
@@ -434,11 +436,9 @@ class ReturController extends Controller
         }
 
         if($isi == 1) {
-            $retur = ReturJual::whereIn('status', [$status[0], $status[1], $status[2]])
-                    ->where('tipe', 'Beli')->get();
+            $retur = ReturBeli::whereIn('status', [$status[0], $status[1]])->get();
         } else {
-            $retur = ReturJual::whereIn('retur.status', [$status[0], $status[1], $status[2]])
-                    ->where('tipe', 'Beli')
+            $retur = ReturBeli::whereIn('status', [$status[0], $status[1]])
                     ->where(function ($q) use ($awal, $akhir, $month) {
                         $q->whereMonth('tanggal', $month)
                         ->orWhereBetween('tanggal', [$awal, $akhir]);

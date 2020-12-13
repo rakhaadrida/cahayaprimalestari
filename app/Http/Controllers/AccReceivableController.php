@@ -18,7 +18,6 @@ class AccReceivableController extends Controller
                 ->join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->where('id_sales', 'SLS03')->get();
-                // return response()->json($arOffice);
         $data = [
             'ar' => $ar,
             'arOffice' => $arOffice
@@ -65,17 +64,7 @@ class AccReceivableController extends Controller
         if($isi == 1) {
             $ar = AccReceivable::with(['so'])->whereIn('keterangan', [$status[0], $status[1]])
                 ->get();
-
-            // $ar = AccReceivable::with(['so'])->whereMonth('updated_at', $month)
-            //     ->orWhereBetween('updated_at', [$awal, $akhir])
-            //     ->orWhereIn('keterangan', [$status[0], $status[1]])
-            //     ->get();
         } else {
-            // $ar = AccReceivable::with(['so'])->whereMonth('updated_at', $month)
-            //     ->orWhereBetween('updated_at', [$awal, $akhir])
-            //     ->orWhereIn('keterangan', [$status[0], $status[1]])
-            //     ->get();
-
             $ar = AccReceivable::with(['so'])->join('so', 'so.id', '=', 'ar.id_so')
                 ->select('*', 'so.id as id_so', 'ar.id as id')
                 ->whereIn('keterangan', [$status[0], $status[1]])
@@ -84,8 +73,6 @@ class AccReceivableController extends Controller
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
                 })->get();
         }
-
-        // var_dump($isi.' = '.$ar[0]->id.' = '.$ar[0]->id_so);
         
         $data = [
             'ar' => $ar,
