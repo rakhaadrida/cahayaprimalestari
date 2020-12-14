@@ -183,41 +183,25 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('trans-detail');
         
         // Retur Barang
-        Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
-        Route::get('/retur/index-jual', 'ReturController@createPenjualan')
-            ->name('ret-index-jual');
-        Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')
-            ->name('ret-detail-jual');
-        Route::post('/retur/index-jual/process/{id}', 'ReturController@storeJual')
-            ->name('ret-process-jual');
-        Route::get('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
-            ->name('retur-jual');
-        Route::post('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
-            ->name('home-jual');
-        Route::post('retur/penjualan/show', 'ReturController@showReturJual')
-            ->name('retur-jual-show');
-        Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
-            ->name('retur-jual-process');
-        Route::get('/retur/penjualan/cetak/{id}', 'ReturController@cetakKirimJual')
-            ->name('retur-jual-cetak');
-        Route::get('/retur/penjualan/cetak-ttr/{id}', 'ReturController@ttrKirimJual')
-            ->name('retur-jual-cetak');
-        Route::get('/retur/index-beli', 'ReturController@createPembelian')
-            ->name('ret-index-beli');
-        Route::post('/retur/index-beli/detail', 'ReturController@showCreateBeli')
-            ->name('ret-detail-beli');
-        Route::post('/retur/index-beli/process/{id}', 'ReturController@storeBeli')
-            ->name('ret-process-beli');
-        Route::get('retur/pembelian/index/{status}/{id}', 'ReturController@dataReturBeli')
-            ->name('retur-beli');
-        Route::post('retur/pembelian/index/{status}/{id}', 'ReturController@dataReturBeli')
-            ->name('home-beli');
-        Route::post('retur/pembelian/show', 'ReturController@showReturBeli')
-            ->name('retur-beli-show');
-        Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')
-            ->name('retur-beli-process');
-        Route::get('/retur/pembelian/cetak/{id}', 'ReturController@cetakTerimaBeli')
-            ->name('retur-beli-cetak');
+        // Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
+        // Route::get('/retur/index-jual', 'ReturController@createPenjualan')
+        //     ->name('ret-index-jual');
+        // Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')
+        //     ->name('ret-detail-jual');
+        // Route::post('/retur/index-jual/process/{id}', 'ReturController@storeJual')
+        //     ->name('ret-process-jual');
+        // Route::get('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
+        //     ->name('retur-jual');
+        // Route::post('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
+        //     ->name('home-jual');
+        // Route::post('retur/penjualan/show', 'ReturController@showReturJual')
+        //     ->name('retur-jual-show');
+        // Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
+        //     ->name('retur-jual-process');
+        // Route::get('/retur/penjualan/cetak/{id}', 'ReturController@cetakKirimJual')
+        //     ->name('retur-jual-cetak');
+        // Route::get('/retur/penjualan/cetak-ttr/{id}', 'ReturController@ttrKirimJual')
+        //     ->name('retur-jual-cetak');
 
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
@@ -307,6 +291,49 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
         Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
         Route::post('ap/retur', 'AccPayableController@retur')->name('ap-retur');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
+        // Account Receivable
+        Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
+        Route::get('/retur/index-jual', 'ReturController@createPenjualan')
+            ->name('ret-index-jual');
+        Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')
+            ->name('ret-detail-jual');
+        Route::post('/retur/index-jual/process/{id}', 'ReturController@storeJual')
+            ->name('ret-process-jual');
+        Route::get('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
+            ->name('retur-jual');
+        Route::post('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
+            ->name('home-jual');
+        Route::post('retur/penjualan/show', 'ReturController@showReturJual')
+            ->name('retur-jual-show');
+        Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
+            ->name('retur-jual-process');
+        Route::get('/retur/penjualan/cetak/{id}', 'ReturController@cetakKirimJual')
+            ->name('retur-jual-cetak');
+        Route::get('/retur/penjualan/cetak-ttr/{id}', 'ReturController@ttrKirimJual')
+            ->name('retur-jual-cetak');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'GUDANG', 'AR', 'SUPER']], function() {
+        // Retur Pembelian
+        Route::get('/retur/index-beli', 'ReturController@createPembelian')
+            ->name('ret-index-beli');
+        Route::post('/retur/index-beli/detail', 'ReturController@showCreateBeli')
+            ->name('ret-detail-beli');
+        Route::post('/retur/index-beli/process/{id}', 'ReturController@storeBeli')
+            ->name('ret-process-beli');
+        Route::get('retur/pembelian/index/{status}/{id}', 'ReturController@dataReturBeli')
+            ->name('retur-beli');
+        Route::post('retur/pembelian/index/{status}/{id}', 'ReturController@dataReturBeli')
+            ->name('home-beli');
+        Route::post('retur/pembelian/show', 'ReturController@showReturBeli')
+            ->name('retur-beli-show');
+        Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')
+            ->name('retur-beli-process');
+        Route::get('/retur/pembelian/cetak/{id}', 'ReturController@cetakTerimaBeli')
+            ->name('retur-beli-cetak');
     });
 
     Route::group(['roles'=>['ADMIN', 'AR', 'SUPER']], function() {

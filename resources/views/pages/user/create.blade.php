@@ -52,6 +52,7 @@
                   <option value="ADMIN">ADMIN</option>
                   <option value="AR">AR</option>
                   <option value="AP">AP</option>
+                  <option value="GUDANG">GUDANG</option>
                   <option value="KENARI">KENARI</option>
                   <option value="OFFICE02">OFFICE02</option>
                 </select>
