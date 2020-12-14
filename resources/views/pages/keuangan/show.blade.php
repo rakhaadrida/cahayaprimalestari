@@ -79,7 +79,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $no = 1; $ret = 0; @endphp
+                  @php $no = 1; @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
                       <td align="center" class="align-middle"
@@ -137,16 +137,26 @@
                     @endif
                     <tr class="text-dark">
                       <td align="center">Retur</td>
-                      @php $hpp = 0; @endphp
+                      @php $ret = 0; $arrRet = []; $k = 0; @endphp
                       @foreach($jenis as $j)
-                        <td align="right" class="align-middle"></td>
+                        <td align="right" class="align-middle">
+                          @foreach($retur as $r)
+                            @if(($r->id_sales == $s->id) && ($r->id_kategori == $j->id))
+                              {{ number_format($r->total, 0, "", ",") }}
+                              @php $ret += $r->total; $arrRet[$k] = $r->total; @endphp
+                              @break
+                            @else
+                              @php $arrRet[$k] = 0; @endphp
+                            @endif
+                          @endforeach
+                          @if($retur->count() == 0)
+                            @php $arrRet[$k] = 0; @endphp
+                          @endif
+                          @php $k++ @endphp
+                        </td>
                       @endforeach
                       <td align="right" class="align-middle">
-                        @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
-                          {{ number_format($retur[$ret]->total, 0, "", ",") }}
-                        @else
-                          0
-                        @endif
+                        {{ number_format($ret, 0, "", ",") }}
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="background-color: yellow">
@@ -155,29 +165,25 @@
                       @else
                         <td align="center">Total</td>
                       @endif
-                      @php $laba = 0; @endphp
+                      @php $laba = 0; $k = 0; @endphp
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle">
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
                             @if(Auth::user()->roles == 'SUPER')
-                              {{ number_format($i->total - $j->$kode, 0, "", ",") }}
-                              @php $laba += ($i->total - $j->$kode) @endphp
+                              {{ number_format($i->total - $j->$kode - $arrRet[$k], 0, "", ",") }}
+                              @php $laba += ($i->total - $j->$kode - $arrRet[$k]) @endphp
                             @else
-                              {{ number_format($i->total, 0, "", ",") }}
-                              @php $laba += $i->total @endphp
+                              {{ number_format($i->total - $arrRet[$k], 0, "", ",") }}
+                              @php $laba += ($i->total - $arrRet[$k]) @endphp
                             @endif
                           @endif
                         @endforeach
+                        @php $k++ @endphp
                         </td>
                       @endforeach
                       <td align="right" class="align-middle">
-                        @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
-                          {{ number_format($laba - $retur[$ret]->total, 0, "", ",") }}
-                          @php $ret++; @endphp
-                        @else
-                          {{ number_format($laba, 0, "", ",") }}
-                        @endif
+                        {{ number_format($laba, 0, "", ",") }}
                       </td>
                     </tr>
                     @php $no++ @endphp

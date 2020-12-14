@@ -295,6 +295,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ar', 'AccReceivableController@index')->name('ar-home');
         Route::post('ar/show', 'AccReceivableController@show')->name('ar-show');
         Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
+        Route::post('ar/retur', 'AccReceivableController@retur')->name('ar-retur');
     });
 
     Route::group(['roles'=>['AP', 'SUPER']], function() {
@@ -305,6 +306,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ap/detail/{id}', 'AccPayableController@detail')->name('ap-detail');
         Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
         Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
+        Route::post('ap/retur', 'AccPayableController@retur')->name('ap-retur');
     });
 
     Route::group(['roles'=>['ADMIN', 'AR', 'SUPER']], function() {

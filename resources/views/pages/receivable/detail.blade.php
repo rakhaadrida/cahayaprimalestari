@@ -23,7 +23,9 @@
               </thead>
               <tbody class="table-ar">
                 @php 
-                  $i = 1; $total = 0; $kurang = $a->so->total - $a->retur;
+                  $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
+                          ->where('id_ar', $a->id)->get();
+                  $i = 1; $total = 0; $kurang = $a->so->total - $retur[0]->total;
                   $detilar = App\Models\DetilAR::where('id_ar', $a->id)->get();
                 @endphp
                 @foreach($detilar as $d)
@@ -46,7 +48,7 @@
                       <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$a->id_so}}" id="tglBayar{{$a->id_so}}" placeholder="DD-MM-YYYY">
                     </td>
                     <td class="text-right align-middle">
-                      <input type="text" name="cicil{{$a->id_so}}" id="cicil{{$a->id_so}}" class="form-control form-control-sm text-bold text-dark text-right cicilModal">
+                      <input type="text" name="cicil{{$a->id_so}}" id="cicil{{$a->id_so}}" class="form-control form-control-sm text-bold text-dark text-right cicilModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                     </td>
                     <td class="text-right align-middle">
                       <input type="text" name="kurang{{$a->id_so}}" id="kurang{{$a->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
@@ -129,6 +131,20 @@ for(let i = 0; i < cicilModal.length; i++) {
   cicilModal[i].addEventListener("change", function(e) {
     kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
   });
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= qty.length; i++) {
+      if(inputan == i)
+        $(qty[inputan-1]).tooltip('show');
+    }
+    return false;
+  }
+  return true;
 }
 
 /** Add Thousand Separators **/

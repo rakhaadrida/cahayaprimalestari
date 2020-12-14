@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\DetilSO;
 use App\Models\AccReceivable;
-use App\Models\AccPayable;
 use App\Models\DetilAR;
+use App\Models\AR_Retur;
+use App\Models\AccPayable;
 use App\Models\DetilAP;
 use App\Models\NeedApproval;
 use App\Models\BarangMasuk;
@@ -31,7 +32,7 @@ class DashboardController extends Controller
         $transAnnual = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->count();
         $transMonthly = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereMonth('tgl_so', $bulan)->count();
-        $retur = AccReceivable::selectRaw('sum(retur) as total')->get();
+        $retur = AR_Retur::selectRaw('sum(total) as total')->get();
         $cicil = DetilAR::selectRaw('sum(cicil) as total')->get();
         $receivable = $salesAnnual[0]->sales - $retur[0]->total - $cicil[0]->total;
 
@@ -166,9 +167,10 @@ class DashboardController extends Controller
                         ->where('customer.id_sales', 'SLS03')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereMonth('tgl_so', $bulan)->count();
-        $returOff = AccReceivable::join('so', 'so.id', 'ar.id_so')
+        $returOff = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                    ->join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
-                    ->selectRaw('sum(retur) as total')
+                    ->selectRaw('sum(ar_retur.total) as total')
                     ->where('id_sales', 'SLS03')->get();
         $cicilOff = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
                     ->join('so', 'so.id', 'ar.id_so')

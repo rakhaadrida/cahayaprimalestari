@@ -1,4 +1,5 @@
 @extends('pages.payable.detail')
+@extends('pages.payable.retur')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -87,13 +88,14 @@
                 <thead class="text-center text-bold text-dark">
                   <tr>
                     <th style="width: 30px" class="align-middle">No</th>
-                    <th style="width: 170px" class="align-middle">Supplier</th>
-                    <th style="width: 60px" class="align-middle">No. BM</th>
-                    <th style="width: 75px" class="align-middle">Tgl. BM</th>
+                    <th style="width: 300px" class="align-middle">Supplier</th>
+                    <th style="width: 50px" class="align-middle">No. Faktur</th>
+                    <th style="width: 65px" class="align-middle">Tgl. BM</th>
                     <th style="width: 60px" class="align-middle">Discount</th>
                     <th style="width: 70px" class="align-middle">HPP</th>
                     <th style="width: 75px" class="align-middle">Total</th>
                     <th style="width: 70px" class="align-middle">Transfer</th>
+                    <th style="width: 70px" class="align-middle">Retur</th>
                     <th style="width: 70px" class="align-middle">Kurang Bayar</th>
                     <th style="width: 60px" class="align-middle">Keterangan</th>
                   </tr>
@@ -102,7 +104,12 @@
                   @php $i = 1 @endphp
                   @forelse($ap as $a)
                     @php 
-                      $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as totTransfer'))->where('id_ap', $a->id)->get();
+                      $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))
+                              ->where('id_faktur', $a->id_bm)->get();
+                      $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as 
+                              totTransfer'))->where('id_ap', $a->id)->get();
+                      $retur = App\Models\AP_Retur::selectRaw('sum(total) as total')
+                              ->where('id_ap', $a->id)->get();
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
@@ -118,12 +125,16 @@
                         @if($a->bm->detilbm[0]->diskon != '') INPUT @else KOSONG @endif
                       </td>
                       <td align="right" class="align-middle">
-                        @if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total, 0, "", ",") }} @endif
+                        @if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM, 0, "", ",") }} @endif
                       </td>
                       <td class="align-middle">
-                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" class="form-control form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
+                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
                       </td>
-                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($a->bm->total - $total[0]->totTransfer, 0, "", ",") }} @endif</td>
+                      <td>
+                        <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
+                        <a href="#Retur{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
+                      </td>
+                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total, 0, "", ",") }} @endif</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
@@ -138,6 +149,7 @@
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="background-color: lightgrey; font-size: 14px">
                     <td colspan="6" class="text-center">Total</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -232,9 +244,9 @@ $('#dataTable').dataTable( {
             i : 0;
     };
 
-    $.each([6, 7, 8], function(index, value) {
+    $.each([6, 7, 8, 9], function(index, value) {
 
-      if((value == 6) || (value == 8)) {
+      if((value == 6) || (value == 9)) {
         var column = api
           .column(value, {
               page: 'current'
@@ -255,7 +267,7 @@ $('#dataTable').dataTable( {
           }, 0 );
       }
 
-      if((value == 6) || (value == 8)) {
+      if((value == 6) || (value == 9)) {
         var column_total = api
           .column(value)
           .data()

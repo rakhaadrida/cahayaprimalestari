@@ -75,7 +75,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $no = 1; $ret = 0; @endphp
+                  @php $no = 1; @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
                       <td align="center" class="align-middle" 
@@ -129,16 +129,24 @@
                     @endif
                     <tr class="text-dark">
                       <td align="center">Retur</td>
-                      @php $hpp = 0; @endphp
+                      @php $ret = 0; @endphp
                       @foreach($jenis as $j)
-                        <td align="right" class="align-middle"></td>
+                        <td align="right" class="align-middle">
+                          @foreach($retur as $r)
+                            @if(($r->id_sales == $s->id) && ($r->id_kategori == $j->id))
+                              {{ number_format($r->total, 0, "", ",") }}
+                              @php $ret += $r->total @endphp
+                            @endif
+                          @endforeach
+                        </td>
                       @endforeach
                       <td align="right" class="align-middle">
-                        @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
+                        {{-- @if(($ret != $retur->count()) && ($retur[$ret]->id_sales == $s->id))
                           {{ number_format($retur[$ret]->total, 0, "", ",") }}
                         @else
                           0
-                        @endif
+                        @endif --}}
+                        {{ number_format($ret, 0, "", ",") }}
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="background-color: yellow">

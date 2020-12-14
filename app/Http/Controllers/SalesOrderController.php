@@ -15,6 +15,7 @@ use App\Models\Harga;
 use App\Models\Gudang;
 use App\Models\AccReceivable;
 use App\Models\DetilAR;
+use App\Models\AR_Retur;
 use App\Models\TandaTerima;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
@@ -49,10 +50,16 @@ class SalesOrderController extends Controller
                         ->get();
 
         $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-                        ->select('id_customer', DB::raw('sum(total - retur) as totKredit'))
+                        ->select('id_customer', DB::raw('sum(total) as totKredit'))
                         ->where('keterangan', 'BELUM LUNAS')
-                        ->groupBy('id_customer')
-                        ->get();
+                        ->groupBy('id_customer')->get();
+
+        $returPerCust = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')->get();
+
+        // return response()->json($totalPerCust);
 
         foreach($totalPerCust as $q) {
             foreach($cicilPerCust as $h) {
@@ -60,6 +67,14 @@ class SalesOrderController extends Controller
                     $q['total'] = $q->totKredit - $h->totCicil;
                 } else {
                     $q['total'] = $q->totKredit - 0;
+                }
+            }
+
+            foreach($returPerCust as $r) {
+                if($q->id_customer == $r->id_customer) {
+                    $q['total'] -= $r->totRetur;
+                } else {
+                    $q['total'] -= 0;
                 }
             }
         }
@@ -133,7 +148,6 @@ class SalesOrderController extends Controller
             AccReceivable::create([
                 'id' => $newcode,
                 'id_so' => $id,
-                'retur' => 0,
                 'keterangan' => 'BELUM LUNAS'
             ]);
         }

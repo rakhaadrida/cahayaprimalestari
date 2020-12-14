@@ -11,6 +11,7 @@ use App\Models\DetilSO;
 use App\Models\Barang;
 use App\Models\DetilBM;
 use App\Models\AccReceivable;
+use App\Models\DetilRAR;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -112,7 +113,7 @@ class LapKeuController extends Controller
                     $sisa = $totBM[0]->totQty - $totSO[0]->totQty;
                 }
 
-                if($sisa == 0) 
+                if(($sisa == 0) && ($totSO[0]->totQty == null)) 
                     $bmPerBrg = DetilBM::where('id_barang', $b->id)->get();
                 else {
                     $lastBM = DetilBM::where('id_barang', $b->id)
@@ -134,10 +135,13 @@ class LapKeuController extends Controller
                             ->select('detilso.*')
                             ->where('id_barang', $b->id)->whereMonth('tgl_so', '=', $month)
                             ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
-
+                           
                 if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {
                     $k = 0;
                     for($i = 0; $i < $bmPerBrg->count(); $i++) {
+                        if(($i == 0) && ($sisa != 0))
+                            $bmPerBrg[$i]->qty = $sisa;
+                            
                         $qty = $bmPerBrg[$i]->qty;
                         for($m = $k; $m < $soPerBrg->count(); $m++) {
                             $idSales = $soPerBrg[$k]->so->customer->id_sales;
@@ -202,15 +206,27 @@ class LapKeuController extends Controller
     }
 
     public function getRetur($bulan, $tahun) {
-        $retur = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-                    ->join('customer', 'customer.id', '=', 'so.id_customer')
-                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
-                    ->select('customer.id_sales', DB::raw('sum(retur) as total'))
+        $retur = DetilRAR::join('barang', 'barang.id', 'detilrar.id_barang')
+                    ->join('ar_retur', 'ar_retur.id', 'detilrar.id_retur')
+                    ->join('ar', 'ar.id', 'ar_retur.id_ar')->join('so', 'so.id', 'ar.id_so')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->join('sales', 'sales.id' , 'customer.id_sales')
+                    ->select('customer.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
-                    ->groupBy('customer.id_sales')
+                    ->groupBy('customer.id_sales', 'barang.id_kategori')
                     ->get();
+
+        // $retur = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+        //             ->join('customer', 'customer.id', '=', 'so.id_customer')
+        //             ->join('sales', 'sales.id' , '=', 'customer.id_sales')
+        //             ->select('customer.id_sales', DB::raw('sum(retur) as total'))
+        //             ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
+        //             ->whereYear('so.tgl_so', $tahun)
+        //             ->whereMonth('so.tgl_so', $bulan)
+        //             ->groupBy('customer.id_sales')
+        //             ->get();
         
         return $retur;
     } 

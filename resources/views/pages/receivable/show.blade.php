@@ -1,4 +1,5 @@
 @extends('pages.receivable.detail')
+@extends('pages.receivable.retur')
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -106,6 +107,8 @@
                     @php 
                       $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
                                 ->where('id_ar', $a->id)->get();
+                      $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
+                              ->where('id_ar', $a->id)->get();
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
@@ -126,11 +129,11 @@
                       <td class="align-middle">
                         <input type="text" name="cic{{$a->id_so}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif>
                       </td>
-                      <td class="align-middle">
-                        <input type="text" name="ret{{$a->id_so}}" id="retur{{$a->id_so}}" class="form-control form-control-sm text-bold text-dark text-right retur" 
-                        @if($a->retur != null) value="{{ number_format($a->retur, 0, "", ",") }}" @endif>
+                      <td class="text-right align-middle">
+                        <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
+                        <a href="#Retur{{ $a->id_so }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
-                      <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $a->retur, 0, "", ",") }}</td>
+                      <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $a->id_so }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>

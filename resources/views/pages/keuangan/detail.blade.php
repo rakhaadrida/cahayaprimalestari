@@ -41,9 +41,6 @@
                     <td class="text-right">{{ $h->get('qty') }}</td>
                     <td class="text-right">{{ number_format($h->get('harga'), 0, "", ".") }}</td>
                     @php 
-                      // $hrgDiskon = number_format(($q->hrg * $q->avgDis) / 100, 0, "", "");
-                      // $hrgDiskon = number_format($q->hrg - $hrgDiskon, 0, "", "");
-
                       $total = $h->get('qty') * $h->get('harga');
                       $diskon = $total * $h->get('disPersen') / 100;
                     @endphp

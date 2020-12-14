@@ -395,7 +395,10 @@
                   <button type="submit" formaction="{{ route('so-update') }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
+                </div>
+                <div class="col-2">
+                  <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->

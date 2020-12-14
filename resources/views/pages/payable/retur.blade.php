@@ -3,15 +3,15 @@
     z-index:1050;
   }
 </style>
-@foreach($ar as $a)
-  <div class="modal modalGudang" id="Retur{{ $a->id_so }}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
+@foreach($ap as $a)
+  <div class="modal modalGudang" id="Retur{{ $a->id_bm }}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true" class="h2 text-bold">&times;</span>
           </button>
-          <h5 class="modal-title text-bold"><i class="fa fa-money-bill-alt fa-fw"></i> Detail Retur Faktur <strong>{{ $a->id_so }}</strong></h5>
+          <h5 class="modal-title text-bold"><i class="fa fa-money-bill-alt fa-fw"></i> Detail Retur Faktur <strong>{{ $a->id_bm }}</strong></h5>
         </div>
         <div class="modal-body text-dark">
           <form action="" method="POST">
@@ -38,8 +38,8 @@
               <tbody class="table-ar">
                 @php 
                   $i = 1; $totalQty = 0; $totalRet = 0;
-                  $retur = App\Models\DetilRAR::join('ar_retur', 'ar_retur.id', 
-                          'detilrar.id_retur')->where('id_ar', $a->id)->get();
+                  $retur = App\Models\DetilRAP::join('ap_retur', 'ap_retur.id', 
+                          'detilrap.id_retur')->where('id_ap', $a->id)->get();
                 @endphp
                 @foreach($retur as $d)
                   <tr class="table-modal-first-row text-dark" >
@@ -110,7 +110,7 @@
             @if($a->keterangan == 'BELUM LUNAS')
               <div class="form-row justify-content-center">
                 <div class="col-3">
-                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-retur') }}" formmethod="POST">Submit</button>
+                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ap-retur') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-3">
                   <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
@@ -143,7 +143,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
-/* @foreach($ar as $a)
+/* @foreach($ap as $a)
   $('#dataTabRetur'+'{{ $a->id }}').dataTable( {
     "columnDefs": [
       { "orderable": false }

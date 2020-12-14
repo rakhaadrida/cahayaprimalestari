@@ -82,15 +82,20 @@
                   <td colspan="3" class="text-bold text-center bg-success text-white">Data Stok</td>
                 </tr>
                 @foreach($gudang as $g)
+                  @php
+                    if($g->retur == 'T') {
+                      $stok = App\Models\StokBarang::selectRaw('sum(stok) as stok')
+                              ->where('id_barang', $item->id)
+                              ->where('id_gudang', $g->id)->get();   
+                    } else {
+                      $stok = App\Models\StokBarang::where('id_barang', $item->id)
+                              ->where('id_gudang', $g->id)->get();  
+                    }
+                  @endphp
                   <tr>
                     <td width="100px" class="text-bold">{{ $g->nama }}</td>
                     <td>:</td>
-                    @foreach($stok as $s)
-                      @if(($s->id_gudang == $g->id) && ($s->id_barang == $item->id))
-                        <td>{{ $s->stok }} <b> @if($item->satuan == "Pcs / Pack") Pcs @elseif($item->satuan == "Meter / Rol") Rol @endif </b></td>
-                        @break
-                      @endif
-                    @endforeach
+                    <td class="align-middle" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
                   </tr>
                 @endforeach
               </tbody>

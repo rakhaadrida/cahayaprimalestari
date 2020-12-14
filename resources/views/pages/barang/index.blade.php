@@ -58,11 +58,7 @@
                               ->where('id_gudang', $g->id)->get();  
                     }
                   @endphp
-                  @if($stok->count() != 0)
-                    <td class="align-middle" align="center" style="width: 45px">{{ $stok[0]->stok }}</td>
-                  @else
-                    <td></td>
-                  @endif
+                  <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
                 @endforeach
                 <td align="center" style="width: 15px">
                   <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">

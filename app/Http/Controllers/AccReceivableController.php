@@ -6,21 +6,34 @@ use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\AccReceivable;
 use App\Models\DetilAR;
+use App\Models\Barang;
+use App\Models\HargaBarang;
+use App\Models\Gudang;
+use App\Models\AR_Retur;
+use App\Models\DetilRAR;
+use App\Models\StokBarang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AccReceivableController extends Controller
 {
     public function index() {
         $ar = AccReceivable::with(['so'])->get();
         $arOffice = AccReceivable::with(['so'])
-                ->select('ar.id', 'ar.id_so', 'ar.keterangan', 'ar.retur')
+                ->select('ar.id', 'ar.id_so', 'ar.keterangan')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->where('id_sales', 'SLS03')->get();
+        
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
+
         $data = [
             'ar' => $ar,
-            'arOffice' => $arOffice
+            'arOffice' => $arOffice,
+            'barang' => $barang,
+            'harga' => $harga,
         ];
 
         return view('pages.receivable.index', $data);
@@ -73,13 +86,18 @@ class AccReceivableController extends Controller
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
                 })->get();
         }
+
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
         
         $data = [
             'ar' => $ar,
             'bulan' => $request->bulan,
             'tglAwal' => $request->tglAwal,
             'tglAkhir' => $request->tglAkhir,
-            'status' => $request->status
+            'status' => $request->status,
+            'barang' => $barang,
+            'harga' => $harga,
         ];
 
         return view('pages.receivable.show', $data);
@@ -157,6 +175,58 @@ class AccReceivableController extends Controller
                 ]);
             }
         }*/
+
+        return redirect()->route('ar');
+    }
+
+    public function retur(Request $request) {
+        $gudang = Gudang::where('retur', 'T')->get();
+
+        $lastcode = AR_Retur::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'RTT'.sprintf("%04s", $lastnumber);
+
+        $tanggal = Carbon::now()->toDateString();
+        $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
+                $request->{"qty".$request->kode}) - str_replace(".", "", $request->{"diskonRp".$request->kode});
+
+        AR_Retur::create([
+            'id' => $newcode,
+            'id_ar' => $request->kode,
+            'tanggal' => $tanggal,
+            'total' => $total,
+            'id_user' => Auth::user()->id
+        ]);
+
+        $tglRetur = $request->{"tglRetur".$request->kode};
+        $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
+
+        DetilRAR::create([
+            'id_retur' => $newcode,
+            'id_barang' => $request->{"kodeBarang".$request->kode},
+            'tgl_retur' => $tglRetur,
+            'qty' => $request->{"qty".$request->kode},
+            'harga' => str_replace(".", "", $request->{"harga".$request->kode}),
+            'diskon' => $request->{"diskon".$request->kode},
+            'diskonRp' => str_replace(".", "", $request->{"diskonRp".$request->kode}),
+        ]);
+
+        $stok = StokBarang::where('id_barang', $request->{"kodeBarang".$request->kode})
+                        ->where('id_gudang', $gudang[0]->id)
+                        ->where('status', 'F')->first();
+            
+        if($stok == NULL) {
+            StokBarang::create([
+                'id_barang' => $request->{"kodeBarang".$request->kode},
+                'id_gudang' => $gudang[0]->id,
+                'status' => 'F',
+                'stok' => $request->{"qty".$request->kode}
+            ]);
+        } else {
+            $stok->{'stok'} += $request->{"qty".$request->kode};
+            $stok->save();
+        }
 
         return redirect()->route('ar');
     }

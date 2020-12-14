@@ -9,7 +9,7 @@ class AccReceivable extends Model
     protected $table = "ar";
     protected $primaryKey = "id";
     protected $keyType = "string";
-    protected $fillable = ['id', 'id_so', 'retur', 'keterangan'];
+    protected $fillable = ['id', 'id_so', 'keterangan'];
     public $incrementing = false;
 
     public function so() {
@@ -18,5 +18,9 @@ class AccReceivable extends Model
 
     public function detilar() {
         return $this->hasMany('App\Models\DetilAR', 'id_ar', 'id');
+    }
+
+    public function retur() {
+        return $this->hasMany('App\Models\AR_Retur', 'id_ar', 'id');
     }
 }
