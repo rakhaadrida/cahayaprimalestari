@@ -219,17 +219,17 @@ class SalesOrderController extends Controller
             $cetak = 'false';
         else {
             $cetak = 'true';
-            $lastcode = TandaTerima::max('id');
-            $lastnumber = (int) substr($lastcode, 3, 4);
-            $lastnumber++;
-            $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+            // $lastcode = TandaTerima::max('id');
+            // $lastnumber = (int) substr($lastcode, 3, 4);
+            // $lastnumber++;
+            // $newcode = 'TTR'.sprintf('%04s', $lastnumber);
 
-            TandaTerima::create([
-                'id' => $newcode,
-                'id_so' => $id,
-                'tanggal' => $tanggal,
-                'id_user' => Auth::user()->id
-            ]);
+            // TandaTerima::create([
+            //     'id' => $newcode,
+            //     'id_so' => $id,
+            //     'tanggal' => $tanggal,
+            //     'id_user' => Auth::user()->id
+            // ]);
         }
 
         return redirect()->route('so', $cetak);

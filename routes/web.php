@@ -207,7 +207,13 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
         Route::post('/tandaterima/detail/{id}', 'TandaTerimaController@detail')
             ->name('ttr-detail');
-
+        Route::get('/tandaterima/cetak/{status}/{awal}/{akhir}',
+            'TandaTerimaController@indexCetak')->name('ttr-index-cetak');
+        Route::post('/tandaterima/process', 'TandaTerimaController@process')
+            ->name('ttr-process');
+        Route::get('/tandaterima/cetak-ttr/{awal}/{akhir}', 'TandaTerimaController@cetak')
+            ->name('ttr-cetak');
+            
         // Cetak Faktur
         Route::get('/cetak-faktur/{status}/{awal}/{akhir}', 'CetakFakturController@index')
             ->name('cetak-faktur');
@@ -216,7 +222,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/cetak/{awal}/{akhir}', 'CetakFakturController@cetak')
             ->name('cetak-all');
         Route::get('/cetak-ttr/{awal}/{akhir}', 'CetakFakturController@tandaterima')
-        ->name('cetak-ttr');
+            ->name('cetak-ttr');
         Route::get('/cetak-update/{awal}/{akhir}', 'CetakFakturController@update')
             ->name('cetak-update');
         // Route::post('/cetak-faktur/cetak', 'CetakFakturController@cetak')

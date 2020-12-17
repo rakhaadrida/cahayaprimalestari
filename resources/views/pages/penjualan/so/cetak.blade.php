@@ -527,5 +527,19 @@
         </div>
       </div>
     @endforeach
+
+    <script type="text/javascript">
+    //  window.onload = function() {
+    //     // console.log(frameCetak);
+
+    //     window.onafterprint = function(e) {
+    //       alert('ok');
+    //     };
+
+    //     window.print();
+
+    //     window.onload = null
+    //   };
+    </script>
   </body>
 </html>

@@ -86,8 +86,8 @@
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
-                    <input type="hidden" name="namaSupplier" id="namaSupplier"  class="form-control form-control-sm text-bold" required />
-                    <input type="text" name="kodeSupplier" id="kodeSupplier" />
+                    <input type="text" name="namaSupplier" id="namaSupplier"  class="form-control form-control-sm text-bold" required />
+                    <input type="hidden" name="kodeSupplier" id="kodeSupplier" />
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="5">
 

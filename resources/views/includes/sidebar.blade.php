@@ -110,7 +110,8 @@
             <a class="collapse-item" href="{{ route('so', 'false') }}">Sales Order</a>
             <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
             <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
-            <a class="collapse-item" href="{{ route('ttr') }}">Tanda Terima</a>
+            <a class="collapse-item" href="{{route('ttr-index-cetak', ['status' => 'false', 'awal' => '0', 'akhir' => '0'])}}">Cetak Tanda Terima</a>
+            <a class="collapse-item" href="{{ route('ttr') }}">Data Tanda Terima</a>
             <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
             {{-- <a class="collapse-item" data-toggle="collapse" data-target="#collapseRetur" aria-expanded="true" aria-controls="collapseRetur">Retur Barang</a>
               <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#collapsePenjualan">
@@ -120,7 +121,7 @@
                   <a class="collapse-item" href="{{ route('retur-beli') }}">Retur Pembelian</a>
                 </div>
               </div> --}}
-            <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a>
+            {{-- <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a> --}}
           </div>
         </div>
       </li>

@@ -26,12 +26,12 @@ CREATE TABLE IF NOT EXISTS `ap` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.ap: ~12 rows (approximately)
+-- Dumping data for table cahayaprima.ap: ~13 rows (approximately)
 /*!40000 ALTER TABLE `ap` DISABLE KEYS */;
 INSERT INTO `ap` (`id`, `id_bm`, `keterangan`, `created_at`, `updated_at`) VALUES
 	('AP0001', 'FAK001', 'BELUM LUNAS', '2020-10-04 16:55:38', '2020-10-04 16:55:38'),
 	('AP0002', 'FAK002', 'BELUM LUNAS', '2020-10-09 17:10:29', '2020-10-09 17:10:29'),
-	('AP0003', 'FAK003', 'BELUM LUNAS', '2020-10-14 17:10:53', '2020-10-14 17:10:53'),
+	('AP0003', 'FAK003', 'LUNAS', '2020-10-14 17:10:53', '2020-12-14 19:58:29'),
 	('AP0004', 'FAK004', 'BELUM LUNAS', '2020-10-14 17:11:13', '2020-10-14 17:11:13'),
 	('AP0006', 'FAK006', 'BELUM LUNAS', '2020-10-25 17:13:46', '2020-10-25 17:13:46'),
 	('AP0007', 'FAK007', 'BELUM LUNAS', '2020-11-02 17:14:25', '2020-11-02 17:14:25'),
@@ -39,7 +39,9 @@ INSERT INTO `ap` (`id`, `id_bm`, `keterangan`, `created_at`, `updated_at`) VALUE
 	('AP0009', 'FAK009', 'BELUM LUNAS', '2020-11-11 17:16:41', '2020-11-11 17:16:41'),
 	('AP0010', 'FAK010', 'BELUM LUNAS', '2020-11-20 17:27:22', '2020-11-20 17:27:22'),
 	('AP0011', 'FAK011', 'BELUM LUNAS', '2020-11-22 17:27:49', '2020-11-22 17:27:49'),
-	('AP0012', 'FAK012', 'BELUM LUNAS', '2020-12-04 17:28:27', '2020-12-04 17:28:27');
+	('AP0012', 'FAK012', 'BELUM LUNAS', '2020-12-04 17:28:27', '2020-12-04 17:28:27'),
+	('AP0013', 'KR01', 'BELUM LUNAS', '2020-12-10 15:04:05', '2020-12-10 15:04:05'),
+	('AP0014', 'TES-001', 'BELUM LUNAS', '2020-12-16 00:55:11', '2020-12-16 00:55:11');
 /*!40000 ALTER TABLE `ap` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.approval
@@ -60,11 +62,31 @@ CREATE TABLE IF NOT EXISTS `approval` (
 /*!40000 ALTER TABLE `approval` DISABLE KEYS */;
 /*!40000 ALTER TABLE `approval` ENABLE KEYS */;
 
+-- Dumping structure for table cahayaprima.ap_retur
+CREATE TABLE IF NOT EXISTS `ap_retur` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_ap` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal` date NOT NULL,
+  `total` int(11) NOT NULL,
+  `id_user` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table cahayaprima.ap_retur: ~4 rows (approximately)
+/*!40000 ALTER TABLE `ap_retur` DISABLE KEYS */;
+INSERT INTO `ap_retur` (`id`, `id_ap`, `tanggal`, `total`, `id_user`, `created_at`, `updated_at`) VALUES
+	('RTP0001', 'AP0009', '2020-12-14', 451250, '1', '2020-12-14 19:48:33', '2020-12-14 19:48:33'),
+	('RTP0002', 'AP0009', '2020-12-14', 523800, '1', '2020-12-14 19:57:44', '2020-12-14 19:57:44'),
+	('RTP0003', 'AP0012', '2020-12-14', 1111320, '1', '2020-12-14 19:58:03', '2020-12-14 19:58:03'),
+	('RTP0004', 'AP0007', '2020-12-15', 787930, '1', '2020-12-15 00:55:23', '2020-12-15 00:55:23');
+/*!40000 ALTER TABLE `ap_retur` ENABLE KEYS */;
+
 -- Dumping structure for table cahayaprima.ar
 CREATE TABLE IF NOT EXISTS `ar` (
   `id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_so` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `retur` int(11) DEFAULT NULL,
   `keterangan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -73,20 +95,43 @@ CREATE TABLE IF NOT EXISTS `ar` (
 
 -- Dumping data for table cahayaprima.ar: ~12 rows (approximately)
 /*!40000 ALTER TABLE `ar` DISABLE KEYS */;
-INSERT INTO `ar` (`id`, `id_so`, `retur`, `keterangan`, `created_at`, `updated_at`) VALUES
-	('AR0001', 'INV0001', 0, 'BELUM LUNAS', '2020-12-04 17:19:37', '2020-12-04 17:19:37'),
-	('AR0002', 'INV0002', 0, 'BELUM LUNAS', '2020-12-04 17:21:35', '2020-12-04 17:21:35'),
-	('AR0003', 'INV0003', 0, 'BELUM LUNAS', '2020-12-04 17:22:52', '2020-12-04 17:22:52'),
-	('AR0004', 'INV0004', 0, 'BELUM LUNAS', '2020-12-04 17:23:42', '2020-12-04 17:23:42'),
-	('AR0005', 'INV0005', 0, 'BELUM LUNAS', '2020-12-04 17:24:50', '2020-12-04 17:24:50'),
-	('AR0006', 'INV0006', 0, 'BELUM LUNAS', '2020-12-04 17:26:12', '2020-12-04 17:26:12'),
-	('AR0007', 'INV0007', 0, 'BELUM LUNAS', '2020-12-04 17:31:07', '2020-12-04 17:31:07'),
-	('AR0008', 'INV0008', 0, 'BELUM LUNAS', '2020-12-04 17:31:51', '2020-12-04 17:31:51'),
-	('AR0009', 'INV0009', 0, 'BELUM LUNAS', '2020-12-04 17:32:34', '2020-12-04 17:32:34'),
-	('AR0010', 'INV0010', 0, 'BELUM LUNAS', '2020-12-04 17:33:14', '2020-12-04 17:33:14'),
-	('AR0011', 'INV0011', 0, 'BELUM LUNAS', '2020-12-04 17:35:11', '2020-12-04 17:35:11'),
-	('AR0012', 'INV0012', 0, 'BELUM LUNAS', '2020-12-04 17:35:53', '2020-12-04 17:35:53');
+INSERT INTO `ar` (`id`, `id_so`, `keterangan`, `created_at`, `updated_at`) VALUES
+	('AR0001', 'INV0001', 'BELUM LUNAS', '2020-12-04 17:19:37', '2020-12-04 17:19:37'),
+	('AR0002', 'INV0002', 'BELUM LUNAS', '2020-12-04 17:21:35', '2020-12-04 17:21:35'),
+	('AR0003', 'INV0003', 'BELUM LUNAS', '2020-12-04 17:22:52', '2020-12-04 17:22:52'),
+	('AR0004', 'INV0004', 'BELUM LUNAS', '2020-12-04 17:23:42', '2020-12-04 17:23:42'),
+	('AR0005', 'INV0005', 'BELUM LUNAS', '2020-12-04 17:24:50', '2020-12-04 17:24:50'),
+	('AR0006', 'INV0006', 'BELUM LUNAS', '2020-12-04 17:26:12', '2020-12-04 17:26:12'),
+	('AR0007', 'INV0007', 'LUNAS', '2020-12-04 17:31:07', '2020-12-14 19:21:03'),
+	('AR0008', 'INV0008', 'BELUM LUNAS', '2020-12-04 17:31:51', '2020-12-04 17:31:51'),
+	('AR0009', 'INV0009', 'BELUM LUNAS', '2020-12-04 17:32:34', '2020-12-04 17:32:34'),
+	('AR0010', 'INV0010', 'BELUM LUNAS', '2020-12-04 17:33:14', '2020-12-04 17:33:14'),
+	('AR0011', 'INV0011', 'BELUM LUNAS', '2020-12-04 17:35:11', '2020-12-04 17:35:11'),
+	('AR0012', 'INV0012', 'BELUM LUNAS', '2020-12-04 17:35:53', '2020-12-04 17:35:53'),
+	('AR0013', 'INV0013', 'BELUM LUNAS', '2020-12-15 01:19:14', '2020-12-15 01:19:14');
 /*!40000 ALTER TABLE `ar` ENABLE KEYS */;
+
+-- Dumping structure for table cahayaprima.ar_retur
+CREATE TABLE IF NOT EXISTS `ar_retur` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_ar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal` date NOT NULL,
+  `total` int(11) NOT NULL,
+  `id_user` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table cahayaprima.ar_retur: ~5 rows (approximately)
+/*!40000 ALTER TABLE `ar_retur` DISABLE KEYS */;
+INSERT INTO `ar_retur` (`id`, `id_ar`, `tanggal`, `total`, `id_user`, `created_at`, `updated_at`) VALUES
+	('RTT0001', 'AR0002', '2020-12-14', 1425000, '1', '2020-12-14 16:47:58', '2020-12-14 16:47:58'),
+	('RTT0002', 'AR0003', '2020-12-14', 820800, '1', '2020-12-14 17:18:17', '2020-12-14 17:18:17'),
+	('RTT0003', 'AR0003', '2020-12-14', 675000, '1', '2020-12-14 17:23:53', '2020-12-14 17:23:53'),
+	('RTT0004', 'AR0005', '2020-12-14', 570000, '1', '2020-12-14 19:20:29', '2020-12-14 19:20:29'),
+	('RTT0005', 'AR0006', '2020-12-15', 691125, '1', '2020-12-15 00:27:06', '2020-12-15 00:27:06');
+/*!40000 ALTER TABLE `ar_retur` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.barang
 CREATE TABLE IF NOT EXISTS `barang` (
@@ -102,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `barang` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.barang: ~374 rows (approximately)
+-- Dumping data for table cahayaprima.barang: ~375 rows (approximately)
 /*!40000 ALTER TABLE `barang` DISABLE KEYS */;
 INSERT INTO `barang` (`id`, `nama`, `id_kategori`, `id_sub`, `satuan`, `ukuran`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	('BRG00001', 'Lampu Phillips 30W', 'KAT01', 'SUB15', 'Pcs / Dus', 10, NULL, NULL, '2020-11-26 01:44:28'),
@@ -478,7 +523,8 @@ INSERT INTO `barang` (`id`, `nama`, `id_kategori`, `id_sub`, `satuan`, `ukuran`,
 	('BRG0366', 'EXTRANA NYYHY 4X0.75@50M (HTM)', 'KAT03', 'SUB24', 'Meter / Rol', 50, NULL, '2020-12-02 13:10:02', '2020-12-02 13:10:02'),
 	('BRG0367', 'EXTRANA NYYHY 4X2.5@50M', 'KAT03', 'SUB24', 'Meter / Rol', 50, NULL, '2020-12-02 13:10:02', '2020-12-02 13:10:02'),
 	('BRG0368', 'EXTRANA NYYHY 4X4 @100 M', 'KAT03', 'SUB24', 'Meter / Rol', 100, NULL, '2020-12-02 13:10:02', '2020-12-02 13:10:02'),
-	('BRG0369', 'EXTRANA NYYHY 4X4 @50M', 'KAT03', 'SUB24', 'Meter / Rol', 50, NULL, '2020-12-02 13:10:02', '2020-12-02 13:10:02');
+	('BRG0369', 'EXTRANA NYYHY 4X4 @50M', 'KAT03', 'SUB24', 'Meter / Rol', 50, NULL, '2020-12-02 13:10:02', '2020-12-02 13:10:02'),
+	('BRG0370', 'Tes Server', 'KAT07', 'SUB28', 'Pcs / Dus', 1, NULL, '2020-12-16 00:34:33', '2020-12-16 00:34:33');
 /*!40000 ALTER TABLE `barang` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.barangmasuk
@@ -498,7 +544,7 @@ CREATE TABLE IF NOT EXISTS `barangmasuk` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.barangmasuk: ~15 rows (approximately)
+-- Dumping data for table cahayaprima.barangmasuk: ~16 rows (approximately)
 /*!40000 ALTER TABLE `barangmasuk` DISABLE KEYS */;
 INSERT INTO `barangmasuk` (`id`, `id_faktur`, `tanggal`, `total`, `id_gudang`, `id_supplier`, `status`, `diskon`, `id_user`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	('BM0001', 'FAK001', '2020-10-04', 26937870, 'GDG01', 'SUP001', 'LENGKAP', 'T', '1', NULL, '2020-10-04 17:09:23', '2020-12-04 23:21:45'),
@@ -515,7 +561,9 @@ INSERT INTO `barangmasuk` (`id`, `id_faktur`, `tanggal`, `total`, `id_gudang`, `
 	('BM0013', 'FAK010', '2020-11-20', 22500000, 'GDG01', 'SUP002', 'INPUT', 'F', '1', NULL, '2020-11-20 17:27:22', '2020-11-20 17:27:22'),
 	('BM0014', 'FAK011', '2020-11-22', 27600000, 'GDG01', 'SUP003', 'INPUT', 'F', '1', NULL, '2020-11-22 17:27:49', '2020-11-22 17:27:49'),
 	('BM0015', 'FAK012', '2020-12-04', 21804480, 'GDG02', 'SUP004', 'LENGKAP', 'T', '1', NULL, '2020-12-04 17:28:27', '2020-12-05 19:16:43'),
-	('BM0016', 'FAK012', '2020-12-04', 11696400, 'GDG02', 'SUP004', 'LENGKAP', 'T', '1', NULL, '2020-12-04 17:29:16', '2020-12-05 19:16:43');
+	('BM0016', 'FAK012', '2020-12-04', 11696400, 'GDG02', 'SUP004', 'LENGKAP', 'T', '1', NULL, '2020-12-04 17:29:16', '2020-12-05 19:16:43'),
+	('BM0017', 'KR01', '2020-12-10', 1500000, 'GDG01', 'SUP001', 'CETAK', 'F', '1', NULL, '2020-12-10 15:04:05', '2020-12-10 15:04:05'),
+	('BM0018', 'TES-001', '2020-12-16', 1500000, 'GDG01', 'SUP002', 'INPUT', 'F', '1', NULL, '2020-12-16 00:55:11', '2020-12-16 00:55:11');
 /*!40000 ALTER TABLE `barangmasuk` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.customer
@@ -1514,6 +1562,7 @@ INSERT INTO `detilap` (`id_ap`, `id_bayar`, `tgl_bayar`, `transfer`, `created_at
 	('AP0001', 'TRS0002', '2020-10-25', 5000000, '2020-12-04 18:23:46', '2020-12-04 18:23:46'),
 	('AP0002', 'TRS0003', '2020-10-20', 5360000, '2020-12-04 18:24:02', '2020-12-04 18:24:02'),
 	('AP0003', 'TRS0004', '2020-10-28', 2526000, '2020-12-04 18:24:19', '2020-12-04 18:24:19'),
+	('AP0003', 'TRS0009', '2020-12-15', 7690100, '2020-12-14 19:58:29', '2020-12-14 19:58:29'),
 	('AP0007', 'TRS0005', '2020-11-11', 6197500, '2020-12-04 18:24:41', '2020-12-04 18:24:41'),
 	('AP0007', 'TRS0006', '2020-11-16', 1000000, '2020-12-04 18:24:54', '2020-12-04 18:24:54'),
 	('AP0009', 'TRS0007', '2020-11-20', 382460, '2020-12-04 18:25:19', '2020-12-04 18:25:19'),
@@ -1531,8 +1580,12 @@ CREATE TABLE IF NOT EXISTS `detilar` (
   PRIMARY KEY (`id_ar`,`id_cicil`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.detilar: ~0 rows (approximately)
+-- Dumping data for table cahayaprima.detilar: ~2 rows (approximately)
 /*!40000 ALTER TABLE `detilar` DISABLE KEYS */;
+INSERT INTO `detilar` (`id_ar`, `id_cicil`, `tgl_bayar`, `cicil`, `created_at`, `updated_at`) VALUES
+	('AR0001', 'CIC0001', '2020-12-13', 830000, '2020-12-13 15:43:44', '2020-12-13 15:43:44'),
+	('AR0003', 'CIC0002', '2020-12-13', 1605000, '2020-12-13 15:43:55', '2020-12-13 15:43:55'),
+	('AR0007', 'CIC0003', '2020-12-16', 10080000, '2020-12-14 19:21:03', '2020-12-14 19:21:03');
 /*!40000 ALTER TABLE `detilar` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.detilbm
@@ -1550,7 +1603,7 @@ CREATE TABLE IF NOT EXISTS `detilbm` (
   PRIMARY KEY (`id_bm`,`id_barang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.detilbm: ~25 rows (approximately)
+-- Dumping data for table cahayaprima.detilbm: ~26 rows (approximately)
 /*!40000 ALTER TABLE `detilbm` DISABLE KEYS */;
 INSERT INTO `detilbm` (`id_bm`, `id_barang`, `harga`, `qty`, `diskon`, `disPersen`, `hpp`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	('BM0001', 'BRG00001', 150000, 100, '20+5+3', 26.28, 110580, NULL, '2020-12-04 17:09:23', '2020-12-04 23:21:44'),
@@ -1579,7 +1632,9 @@ INSERT INTO `detilbm` (`id_bm`, `id_barang`, `harga`, `qty`, `diskon`, `disPerse
 	('BM0015', 'BRG00001', 150000, 80, '15+4', 18.4, 122400, NULL, '2020-12-04 17:28:27', '2020-12-05 19:16:43'),
 	('BM0015', 'BRG00003', 180000, 80, '14+3', 16.58, 150156, NULL, '2020-12-04 17:28:27', '2020-12-04 18:10:12'),
 	('BM0016', 'BRG00002', 200000, 50, '10+5', 14.5, 171000, NULL, '2020-12-04 17:29:17', '2020-12-05 19:16:43'),
-	('BM0016', 'BRG00004', 120000, 30, '8+5', 12.6, 104880, NULL, '2020-12-04 17:29:17', '2020-12-05 19:16:43');
+	('BM0016', 'BRG00004', 120000, 30, '8+5', 12.6, 104880, NULL, '2020-12-04 17:29:17', '2020-12-05 19:16:43'),
+	('BM0017', 'BRG00001', 150000, 10, NULL, NULL, NULL, NULL, '2020-12-10 15:04:05', '2020-12-10 15:04:05'),
+	('BM0018', 'BRG00001', 150000, 10, NULL, NULL, NULL, NULL, '2020-12-16 00:55:11', '2020-12-16 00:55:11');
 /*!40000 ALTER TABLE `detilbm` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.detilpo
@@ -1613,87 +1668,132 @@ INSERT INTO `detilpo` (`id_po`, `id_barang`, `harga`, `qty`, `qty_terima`, `kete
 	('PO0010', 'BRG001', 3000, 20000, NULL, NULL, NULL, '2020-09-25 12:22:58', '2020-09-25 12:22:58');
 /*!40000 ALTER TABLE `detilpo` ENABLE KEYS */;
 
--- Dumping structure for table cahayaprima.detilrb
-CREATE TABLE IF NOT EXISTS `detilrb` (
+-- Dumping structure for table cahayaprima.detilrap
+CREATE TABLE IF NOT EXISTS `detilrap` (
   `id_retur` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_barang` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id_terima` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tgl_terima` date NOT NULL,
-  `qty_terima` int(11) DEFAULT NULL,
-  `qty_batal` int(11) DEFAULT NULL,
+  `tgl_retur` date NOT NULL,
+  `qty` int(11) NOT NULL,
+  `harga` int(11) NOT NULL,
+  `diskon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `diskonRp` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id_retur`,`id_barang`,`id_terima`)
+  PRIMARY KEY (`id_retur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.detilrb: ~3 rows (approximately)
-/*!40000 ALTER TABLE `detilrb` DISABLE KEYS */;
-INSERT INTO `detilrb` (`id_retur`, `id_barang`, `id_terima`, `tgl_terima`, `qty_terima`, `qty_batal`, `created_at`, `updated_at`) VALUES
-	('RET0005', 'BRG00001', 'TRM0001', '2020-12-08', 10, 2, '2020-12-08 02:21:24', '2020-12-08 02:21:24'),
-	('RET0006', 'BRG00002', 'TRM0002', '2020-12-08', 15, NULL, '2020-12-08 02:22:59', '2020-12-08 02:22:59'),
-	('RET0006', 'BRG00005', 'TRM0002', '2020-12-08', 8, 2, '2020-12-08 02:22:59', '2020-12-08 02:22:59'),
-	('RET0010', 'BRG00002', 'TRM0003', '2020-12-08', 8, 2, '2020-12-08 14:42:01', '2020-12-08 14:42:01');
-/*!40000 ALTER TABLE `detilrb` ENABLE KEYS */;
+-- Dumping data for table cahayaprima.detilrap: ~4 rows (approximately)
+/*!40000 ALTER TABLE `detilrap` DISABLE KEYS */;
+INSERT INTO `detilrap` (`id_retur`, `id_barang`, `tgl_retur`, `qty`, `harga`, `diskon`, `diskonRp`, `created_at`, `updated_at`) VALUES
+	('RTP0001', 'BRG00005', '2020-12-15', 5, 95000, '5', 23750, '2020-12-14 19:48:33', '2020-12-14 19:48:33'),
+	('RTP0002', 'BRG00004', '2020-12-15', 5, 120000, '10+3', 76200, '2020-12-14 19:57:44', '2020-12-14 19:57:44'),
+	('RTP0003', 'BRG00003', '2020-12-16', 7, 180000, '10+2', 148680, '2020-12-14 19:58:03', '2020-12-14 19:58:03'),
+	('RTP0004', 'BRG00005', '2020-12-15', 10, 95000, '10+5+3', 162070, '2020-12-15 00:55:24', '2020-12-15 00:55:24');
+/*!40000 ALTER TABLE `detilrap` ENABLE KEYS */;
 
--- Dumping structure for table cahayaprima.detilretur
-CREATE TABLE IF NOT EXISTS `detilretur` (
+-- Dumping structure for table cahayaprima.detilrar
+CREATE TABLE IF NOT EXISTS `detilrar` (
   `id_retur` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_barang` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tgl_retur` date NOT NULL,
   `qty` int(11) NOT NULL,
+  `harga` int(11) NOT NULL,
+  `diskon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `diskonRp` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_retur`,`id_barang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.detilretur: ~13 rows (approximately)
-/*!40000 ALTER TABLE `detilretur` DISABLE KEYS */;
-INSERT INTO `detilretur` (`id_retur`, `id_barang`, `qty`, `created_at`, `updated_at`) VALUES
-	('RET0001', 'BRG00002', 10, '2020-12-07 19:55:49', '2020-12-07 19:55:49'),
-	('RET0001', 'BRG00005', 10, '2020-12-07 19:55:49', '2020-12-07 19:55:49'),
-	('RET0002', 'BRG00003', 10, '2020-12-07 20:05:12', '2020-12-07 20:05:12'),
-	('RET0002', 'BRG00004', 10, '2020-12-07 20:05:12', '2020-12-07 20:05:12'),
-	('RET0003', 'BRG00003', 20, '2020-12-07 20:29:01', '2020-12-07 20:29:01'),
-	('RET0003', 'BRG00005', 20, '2020-12-07 20:29:01', '2020-12-07 20:29:01'),
-	('RET0004', 'BRG00001', 15, '2020-12-08 01:45:55', '2020-12-08 01:45:55'),
-	('RET0005', 'BRG00001', 20, '2020-12-08 02:05:14', '2020-12-08 02:05:14'),
-	('RET0006', 'BRG00002', 15, '2020-12-08 02:05:44', '2020-12-08 02:05:44'),
-	('RET0006', 'BRG00005', 10, '2020-12-08 02:05:44', '2020-12-08 02:05:44'),
-	('RET0007', 'BRG00003', 10, '2020-12-08 12:23:14', '2020-12-08 12:23:14'),
-	('RET0008', 'BRG00003', 10, '2020-12-08 12:24:32', '2020-12-08 12:24:32'),
-	('RET0009', 'BRG00001', 10, '2020-12-08 14:39:34', '2020-12-08 14:39:34'),
-	('RET0009', 'BRG00003', 10, '2020-12-08 14:39:35', '2020-12-08 14:39:35'),
-	('RET0010', 'BRG00002', 10, '2020-12-08 14:41:43', '2020-12-08 14:41:43');
-/*!40000 ALTER TABLE `detilretur` ENABLE KEYS */;
+-- Dumping data for table cahayaprima.detilrar: ~5 rows (approximately)
+/*!40000 ALTER TABLE `detilrar` DISABLE KEYS */;
+INSERT INTO `detilrar` (`id_retur`, `id_barang`, `tgl_retur`, `qty`, `harga`, `diskon`, `diskonRp`, `created_at`, `updated_at`) VALUES
+	('RTT0001', 'BRG00001', '2020-12-14', 10, 150000, '5', 75000, '2020-12-14 16:47:58', '2020-12-14 16:47:58'),
+	('RTT0002', 'BRG00003', '2020-12-14', 5, 180000, '5+4', 79200, '2020-12-14 17:18:17', '2020-12-14 17:18:17'),
+	('RTT0003', 'BRG00001', '2020-12-15', 5, 150000, '10', 75000, '2020-12-14 17:23:53', '2020-12-14 17:23:53'),
+	('RTT0004', 'BRG00004', '2020-12-16', 5, 120000, '5', 30000, '2020-12-14 19:20:29', '2020-12-14 19:20:29'),
+	('RTT0005', 'BRG00001', '2020-12-15', 5, 150000, '5+3', 58875, '2020-12-15 00:27:06', '2020-12-15 00:27:06');
+/*!40000 ALTER TABLE `detilrar` ENABLE KEYS */;
+
+-- Dumping structure for table cahayaprima.detilrb
+CREATE TABLE IF NOT EXISTS `detilrb` (
+  `id_retur` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_barang` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `qty_retur` int(11) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_retur`,`id_barang`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table cahayaprima.detilrb: ~9 rows (approximately)
+/*!40000 ALTER TABLE `detilrb` DISABLE KEYS */;
+INSERT INTO `detilrb` (`id_retur`, `id_barang`, `qty_retur`, `created_at`, `updated_at`) VALUES
+	('RTB0001', 'BRG00003', 10, '2020-12-12 15:39:55', '2020-12-12 15:39:55'),
+	('RTB0001', 'BRG00004', 10, '2020-12-12 15:39:55', '2020-12-12 15:39:55'),
+	('RTB0002', 'BRG00002', 10, '2020-12-12 15:42:54', '2020-12-12 15:42:54'),
+	('RTB0002', 'BRG00005', 5, '2020-12-12 15:42:54', '2020-12-12 15:42:54'),
+	('RTB0003', 'BRG00001', 10, '2020-12-13 01:55:26', '2020-12-13 01:55:26'),
+	('RTB0003', 'BRG00003', 10, '2020-12-13 01:55:26', '2020-12-13 01:55:26'),
+	('RTB0004', 'BRG00003', 7, '2020-12-13 01:55:43', '2020-12-13 01:55:43'),
+	('RTB0005', 'BRG00001', 5, '2020-12-13 15:14:53', '2020-12-13 15:14:53'),
+	('RTB0005', 'BRG00003', 5, '2020-12-13 15:14:53', '2020-12-13 15:14:53');
+/*!40000 ALTER TABLE `detilrb` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.detilrj
 CREATE TABLE IF NOT EXISTS `detilrj` (
   `id_retur` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_barang` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id_kirim` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tgl_kirim` date NOT NULL,
+  `id_kirim` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tgl_kirim` date DEFAULT NULL,
+  `qty_retur` int(11) NOT NULL,
   `qty_kirim` int(11) DEFAULT NULL,
-  `qty_batal` int(11) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id_retur`,`id_barang`,`id_kirim`)
+  PRIMARY KEY (`id_retur`,`id_barang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.detilrj: ~12 rows (approximately)
+-- Dumping data for table cahayaprima.detilrj: ~8 rows (approximately)
 /*!40000 ALTER TABLE `detilrj` DISABLE KEYS */;
-INSERT INTO `detilrj` (`id_retur`, `id_barang`, `id_kirim`, `tgl_kirim`, `qty_kirim`, `qty_batal`, `created_at`, `updated_at`) VALUES
-	('RET0001', 'BRG00002', 'KRM0003', '2020-12-08', 4, NULL, '2020-12-08 01:44:20', '2020-12-08 01:44:20'),
-	('RET0001', 'BRG00002', 'KRM0004', '2020-12-09', 6, NULL, '2020-12-08 01:45:14', '2020-12-08 01:45:14'),
-	('RET0001', 'BRG00005', 'KRM0003', '2020-12-09', NULL, 5, '2020-12-08 01:44:20', '2020-12-08 01:44:20'),
-	('RET0002', 'BRG00003', 'KRM0001', '2020-12-08', 5, NULL, '2020-12-08 00:48:31', '2020-12-08 00:48:31'),
-	('RET0002', 'BRG00003', 'KRM0002', '2020-12-09', 2, 3, '2020-12-08 01:37:07', '2020-12-08 01:37:07'),
-	('RET0002', 'BRG00004', 'KRM0001', '2020-12-08', 10, NULL, '2020-12-08 00:48:31', '2020-12-08 00:48:31'),
-	('RET0003', 'BRG00003', 'KRM0006', '2020-12-08', 5, 2, '2020-12-08 02:30:29', '2020-12-08 02:30:29'),
-	('RET0004', 'BRG00001', 'KRM0005', '2020-12-08', 8, 2, '2020-12-08 01:46:18', '2020-12-08 01:46:18'),
-	('RET0007', 'BRG00003', 'KRM0009', '2020-12-09', 5, NULL, '2020-12-09 15:58:49', '2020-12-09 15:58:49'),
-	('RET0009', 'BRG00001', 'KRM0007', '2020-12-08', 5, NULL, '2020-12-08 14:40:14', '2020-12-08 14:40:14'),
-	('RET0009', 'BRG00001', 'KRM0008', '2020-12-08', NULL, 5, '2020-12-08 14:40:37', '2020-12-08 14:40:37'),
-	('RET0009', 'BRG00003', 'KRM0007', '2020-12-08', 10, NULL, '2020-12-08 14:40:14', '2020-12-08 14:40:14');
+INSERT INTO `detilrj` (`id_retur`, `id_barang`, `id_kirim`, `tgl_kirim`, `qty_retur`, `qty_kirim`, `created_at`, `updated_at`) VALUES
+	('RTJ0001', 'BRG00001', 'KRM0001', '2020-12-12', 10, 10, '2020-12-11 18:29:41', '2020-12-12 02:10:36'),
+	('RTJ0001', 'BRG00003', 'KRM0002', '2020-12-14', 10, 10, '2020-12-11 18:29:41', '2020-12-12 02:10:51'),
+	('RTJ0001', 'BRG0001', NULL, NULL, 10, NULL, '2020-12-11 18:29:41', '2020-12-12 02:07:05'),
+	('RTJ0002', 'BRG00004', NULL, '2020-12-11', 10, 10, '2020-12-11 18:37:02', '2020-12-11 20:28:11'),
+	('RTJ0002', 'BRG00005', NULL, '2020-12-11', 10, 10, '2020-12-11 18:37:02', '2020-12-11 20:28:11'),
+	('RTJ0003', 'BRG00002', NULL, NULL, 20, NULL, '2020-12-11 18:37:57', '2020-12-13 02:25:52'),
+	('RTJ0004', 'BRG00001', NULL, '2020-12-12', 5, 5, '2020-12-11 18:44:19', '2020-12-12 01:32:54'),
+	('RTJ0004', 'BRG00002', NULL, '2020-12-14', 5, 5, '2020-12-11 18:44:19', '2020-12-12 01:33:03');
 /*!40000 ALTER TABLE `detilrj` ENABLE KEYS */;
+
+-- Dumping structure for table cahayaprima.detilrt
+CREATE TABLE IF NOT EXISTS `detilrt` (
+  `id_terima` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_barang` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `qty_terima` int(11) DEFAULT NULL,
+  `qty_batal` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_terima`,`id_barang`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table cahayaprima.detilrt: ~12 rows (approximately)
+/*!40000 ALTER TABLE `detilrt` DISABLE KEYS */;
+INSERT INTO `detilrt` (`id_terima`, `id_barang`, `qty_terima`, `qty_batal`, `created_at`, `updated_at`) VALUES
+	('TRM0001', 'BRG00003', 6, NULL, '2020-12-13 01:41:41', '2020-12-13 01:41:41'),
+	('TRM0002', 'BRG00003', NULL, 4, '2020-12-13 01:42:37', '2020-12-13 01:42:37'),
+	('TRM0003', 'BRG00002', 5, NULL, '2020-12-13 01:51:33', '2020-12-13 01:51:33'),
+	('TRM0003', 'BRG00005', 5, NULL, '2020-12-13 01:51:33', '2020-12-13 01:51:33'),
+	('TRM0004', 'BRG00002', 5, NULL, '2020-12-13 01:52:18', '2020-12-13 01:52:18'),
+	('TRM0005', 'BRG00001', 5, NULL, '2020-12-13 02:13:46', '2020-12-13 02:13:46'),
+	('TRM0006', 'BRG00003', 5, NULL, '2020-12-13 02:13:47', '2020-12-13 02:13:47'),
+	('TRM0007', 'BRG00001', 5, NULL, '2020-12-13 03:04:30', '2020-12-13 03:04:30'),
+	('TRM0008', 'BRG00003', 5, NULL, '2020-12-13 03:04:30', '2020-12-13 03:04:30'),
+	('TRM0009', 'BRG00001', 5, NULL, '2020-12-13 15:15:07', '2020-12-13 15:15:07'),
+	('TRM0009', 'BRG00003', 5, NULL, '2020-12-13 15:15:07', '2020-12-13 15:15:07'),
+	('TRM0010', 'BRG00003', 5, 2, '2020-12-13 15:20:38', '2020-12-13 15:20:38'),
+	('TRM0011', 'BRG00004', NULL, 5, '2020-12-13 15:20:51', '2020-12-13 15:20:51'),
+	('TRM0012', 'BRG00004', 5, NULL, '2020-12-13 15:37:56', '2020-12-13 15:37:56');
+/*!40000 ALTER TABLE `detilrt` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.detilsj
 CREATE TABLE IF NOT EXISTS `detilsj` (
@@ -1769,7 +1869,7 @@ INSERT INTO `detilso` (`id_so`, `id_barang`, `id_gudang`, `harga`, `qty`, `disko
 	('INV0011', 'BRG00004', 'GDG03', 120000, 20, '5', 100000, NULL, '2020-12-04 17:35:11', '2020-12-04 17:35:11'),
 	('INV0012', 'BRG00002', 'GDG02', 200000, 50, '5', 250000, NULL, '2020-12-04 17:35:53', '2020-12-04 17:35:53'),
 	('INV0012', 'BRG00005', 'GDG02', 95000, 50, '5', 118750, NULL, '2020-12-04 17:35:53', '2020-12-04 17:35:53'),
-	('INV0013', 'BRG00003', 'GDG04', 0, 5, '0', 0, NULL, '2020-12-09 15:58:49', '2020-12-09 15:58:49');
+	('INV0013', 'BRG00001', 'GDG01', 150000, 10, '5+3', 117750, NULL, '2020-12-15 01:19:14', '2020-12-15 01:19:14');
 /*!40000 ALTER TABLE `detilso` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.detiltb
@@ -1904,7 +2004,7 @@ CREATE TABLE IF NOT EXISTS `jenisbarang` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.jenisbarang: ~8 rows (approximately)
+-- Dumping data for table cahayaprima.jenisbarang: ~9 rows (approximately)
 /*!40000 ALTER TABLE `jenisbarang` DISABLE KEYS */;
 INSERT INTO `jenisbarang` (`id`, `nama`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	('KAT01', 'PHILLIPS', NULL, '2020-10-20 16:01:59', '2020-11-20 16:11:17'),
@@ -1915,7 +2015,8 @@ INSERT INTO `jenisbarang` (`id`, `nama`, `deleted_at`, `created_at`, `updated_at
 	('KAT06', 'SAKLAR', NULL, '2020-10-20 16:02:41', '2020-10-20 16:02:41'),
 	('KAT07', 'MASPION', NULL, '2020-11-30 20:16:51', '2020-11-30 20:16:51'),
 	('KAT08', 'PRIME', NULL, '2020-11-30 20:16:56', '2020-11-30 20:16:56'),
-	('KAT09', 'STARK', NULL, '2020-12-02 12:54:15', '2020-12-02 12:54:15');
+	('KAT09', 'STARK', NULL, '2020-12-02 12:54:15', '2020-12-02 12:54:15'),
+	('KAT10', 'Tes Server', NULL, '2020-12-16 00:45:09', '2020-12-16 00:45:09');
 /*!40000 ALTER TABLE `jenisbarang` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.migrations
@@ -1924,7 +2025,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table cahayaprima.migrations: ~34 rows (approximately)
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
@@ -1963,7 +2064,13 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(32, '2020_12_07_171726_create_detilretur_table', 29),
 	(33, '2020_12_07_172224_create_detilretur_table', 30),
 	(34, '2020_12_07_233019_create_returjual_table', 31),
-	(35, '2020_12_08_020847_create_detilrb_table', 32);
+	(35, '2020_12_08_020847_create_detilrb_table', 32),
+	(36, '2020_12_12_144914_create_returbeli_table', 33),
+	(37, '2020_12_13_003231_create_returterima_table', 34),
+	(38, '2020_12_14_112339_create_detilrar_table', 35),
+	(39, '2020_12_14_115058_create_ar_retur_table', 36),
+	(40, '2020_12_14_192704_create_ap_retur_table', 37),
+	(41, '2020_12_14_192829_create_detilrap_table', 38);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.need_appdetil
@@ -2041,32 +2148,73 @@ INSERT INTO `po` (`id`, `tgl_po`, `id_supplier`, `total`, `status`, `deleted_at`
 	('PO0010', '2020-09-25', 'SUP003', 66000000, 'PENDING', NULL, '2020-09-25 12:22:58', '2020-09-25 12:22:58');
 /*!40000 ALTER TABLE `po` ENABLE KEYS */;
 
--- Dumping structure for table cahayaprima.retur
-CREATE TABLE IF NOT EXISTS `retur` (
+-- Dumping structure for table cahayaprima.returbeli
+CREATE TABLE IF NOT EXISTS `returbeli` (
   `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tanggal` date NOT NULL,
-  `id_faktur` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipe` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_supplier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.retur: ~8 rows (approximately)
-/*!40000 ALTER TABLE `retur` DISABLE KEYS */;
-INSERT INTO `retur` (`id`, `tanggal`, `id_faktur`, `tipe`, `status`, `created_at`, `updated_at`) VALUES
-	('RET0001', '2020-12-07', 'INV0012', 'Jual', 'INPUT', '2020-12-07 19:55:49', '2020-12-07 19:55:49'),
-	('RET0002', '2020-12-07', 'INV0011', 'Jual', 'LENGKAP', '2020-12-07 20:05:12', '2020-12-08 01:37:07'),
-	('RET0003', '2020-12-07', 'INV0003', 'Jual', 'INPUT', '2020-12-07 20:29:01', '2020-12-07 20:29:01'),
-	('RET0004', '2020-12-08', 'INV0004', 'Jual', 'INPUT', '2020-12-08 01:45:55', '2020-12-08 01:45:55'),
-	('RET0005', '2020-12-08', 'BM0015', 'Beli', 'INPUT', '2020-12-08 02:05:14', '2020-12-08 02:05:14'),
-	('RET0006', '2020-12-08', 'BM0014', 'Beli', 'LENGKAP', '2020-12-08 02:05:44', '2020-12-08 02:22:59'),
-	('RET0007', '2020-12-08', 'INV0005', 'Jual', 'INPUT', '2020-12-08 12:23:14', '2020-12-09 15:56:35'),
-	('RET0008', '2020-12-08', 'BM0008', 'Beli', 'INPUT', '2020-12-08 12:24:32', '2020-12-08 12:24:32'),
-	('RET0009', '2020-12-08', 'INV0011', 'Jual', 'LENGKAP', '2020-12-08 14:39:34', '2020-12-08 14:40:37'),
-	('RET0010', '2020-12-08', 'BM0014', 'Beli', 'LENGKAP', '2020-12-08 14:41:43', '2020-12-08 14:42:02');
-/*!40000 ALTER TABLE `retur` ENABLE KEYS */;
+-- Dumping data for table cahayaprima.returbeli: ~4 rows (approximately)
+/*!40000 ALTER TABLE `returbeli` DISABLE KEYS */;
+INSERT INTO `returbeli` (`id`, `tanggal`, `id_supplier`, `status`, `created_at`, `updated_at`) VALUES
+	('RTB0001', '2020-12-12', 'SUP001', 'LENGKAP', '2020-12-12 15:39:55', '2020-12-13 15:37:56'),
+	('RTB0002', '2020-12-12', 'SUP003', 'LENGKAP', '2020-12-12 15:42:54', '2020-12-13 01:52:18'),
+	('RTB0003', '2020-12-13', 'SUP004', 'LENGKAP', '2020-12-13 01:55:26', '2020-12-13 03:04:31'),
+	('RTB0004', '2020-12-13', 'SUP005', 'LENGKAP', '2020-12-13 01:55:43', '2020-12-13 15:20:38'),
+	('RTB0005', '2020-12-13', 'SUP002', 'LENGKAP', '2020-12-13 15:14:53', '2020-12-13 15:15:07');
+/*!40000 ALTER TABLE `returbeli` ENABLE KEYS */;
+
+-- Dumping structure for table cahayaprima.returjual
+CREATE TABLE IF NOT EXISTS `returjual` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal` date NOT NULL,
+  `id_customer` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table cahayaprima.returjual: ~4 rows (approximately)
+/*!40000 ALTER TABLE `returjual` DISABLE KEYS */;
+INSERT INTO `returjual` (`id`, `tanggal`, `id_customer`, `status`, `created_at`, `updated_at`) VALUES
+	('RTJ0001', '2020-12-11', 'CUS00001', 'INPUT', '2020-12-11 18:29:41', '2020-12-11 18:29:41'),
+	('RTJ0002', '2020-12-11', 'CUS00004', 'LENGKAP', '2020-12-11 18:37:02', '2020-12-11 20:28:11'),
+	('RTJ0003', '2020-12-11', 'CUS00003', 'INPUT', '2020-12-11 18:37:57', '2020-12-13 02:25:52'),
+	('RTJ0004', '2020-12-11', 'CUS00002', 'LENGKAP', '2020-12-11 18:44:19', '2020-12-12 01:33:03');
+/*!40000 ALTER TABLE `returjual` ENABLE KEYS */;
+
+-- Dumping structure for table cahayaprima.returterima
+CREATE TABLE IF NOT EXISTS `returterima` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_retur` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table cahayaprima.returterima: ~11 rows (approximately)
+/*!40000 ALTER TABLE `returterima` DISABLE KEYS */;
+INSERT INTO `returterima` (`id`, `id_retur`, `tanggal`, `created_at`, `updated_at`) VALUES
+	('TRM0001', 'RTB0001', '2020-12-13', '2020-12-13 01:41:41', '2020-12-13 01:41:41'),
+	('TRM0002', 'RTB0001', '2020-12-14', '2020-12-13 01:42:37', '2020-12-13 01:42:37'),
+	('TRM0003', 'RTB0002', '2020-12-14', '2020-12-13 01:51:33', '2020-12-13 01:51:33'),
+	('TRM0004', 'RTB0002', '2020-12-15', '2020-12-13 01:52:18', '2020-12-13 01:52:18'),
+	('TRM0005', 'RTB0003', '2020-12-13', '2020-12-13 02:13:46', '2020-12-13 02:13:46'),
+	('TRM0006', 'RTB0003', '2020-12-14', '2020-12-13 02:13:47', '2020-12-13 02:13:47'),
+	('TRM0007', 'RTB0003', '2020-12-14', '2020-12-13 03:04:30', '2020-12-13 03:04:30'),
+	('TRM0008', 'RTB0003', '2020-12-15', '2020-12-13 03:04:30', '2020-12-13 03:04:30'),
+	('TRM0009', 'RTB0005', '2020-12-15', '2020-12-13 15:15:07', '2020-12-13 15:15:07'),
+	('TRM0010', 'RTB0004', '2020-12-15', '2020-12-13 15:20:38', '2020-12-13 15:20:38'),
+	('TRM0011', 'RTB0001', '2020-12-15', '2020-12-13 15:20:51', '2020-12-13 15:20:51'),
+	('TRM0012', 'RTB0001', '2020-12-15', '2020-12-13 15:37:56', '2020-12-13 15:37:56');
+/*!40000 ALTER TABLE `returterima` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.sales
 CREATE TABLE IF NOT EXISTS `sales` (
@@ -2078,7 +2226,7 @@ CREATE TABLE IF NOT EXISTS `sales` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table cahayaprima.sales: ~17 rows (approximately)
+-- Dumping data for table cahayaprima.sales: ~18 rows (approximately)
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
 INSERT INTO `sales` (`id`, `nama`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('SLS01', 'Ibu', '2020-09-07 14:02:48', '2020-11-23 13:29:15', NULL),
@@ -2097,7 +2245,8 @@ INSERT INTO `sales` (`id`, `nama`, `created_at`, `updated_at`, `deleted_at`) VAL
 	('SLS14', 'Irawan', '2020-11-23 13:31:34', '2020-11-23 13:44:00', NULL),
 	('SLS15', 'Irawan (OP)', '2020-11-23 13:31:39', '2020-11-23 13:44:12', NULL),
 	('SLS16', 'Irawan (Jef)', '2020-11-23 13:31:44', '2020-11-23 13:44:25', NULL),
-	('SLS17', 'Irawan (Adi)', '2020-11-23 13:32:07', '2020-11-23 13:44:35', NULL);
+	('SLS17', 'Irawan (Adi)', '2020-11-23 13:32:07', '2020-11-23 13:44:35', NULL),
+	('SLS18', 'Tes', '2020-12-16 00:36:21', '2020-12-16 00:36:21', NULL);
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.sj
@@ -2154,7 +2303,7 @@ INSERT INTO `so` (`id`, `tgl_so`, `tgl_kirim`, `total`, `diskon`, `kategori`, `t
 	('INV0010', '2020-11-26', '2020-12-04', 17200000, 0, 'Extrana', 30, 1, 'INPUT', 'CUS00005', '1', NULL, '2020-11-26 17:33:14', '2020-11-26 17:33:14'),
 	('INV0011', '2020-12-04', '2020-12-04', 21285000, 0, 'Cash', 0, 0, 'INPUT', 'CUS00003', '1', NULL, '2020-12-04 17:35:11', '2020-12-04 17:35:11'),
 	('INV0012', '2020-12-04', '2020-12-04', 14012500, 0, 'Extrana', 20, 0, 'INPUT', 'CUS00001', '1', NULL, '2020-12-04 17:35:53', '2020-12-04 17:35:53'),
-	('INV0013', '2020-12-09', '2020-12-09', 0, 0, 'Retur', 0, 0, 'RETUR', 'CUS00002', '1', NULL, '2020-12-09 15:58:49', '2020-12-09 15:58:49');
+	('INV0013', '2020-12-15', '2020-12-15', 1282250, 100000, 'Cash', 0, 0, 'INPUT', 'CUS00004', '1', NULL, '2020-12-15 01:19:14', '2020-12-15 01:19:14');
 /*!40000 ALTER TABLE `so` ENABLE KEYS */;
 
 -- Dumping structure for table cahayaprima.stok
@@ -2172,34 +2321,35 @@ CREATE TABLE IF NOT EXISTS `stok` (
 -- Dumping data for table cahayaprima.stok: ~33 rows (approximately)
 /*!40000 ALTER TABLE `stok` DISABLE KEYS */;
 INSERT INTO `stok` (`id_barang`, `id_gudang`, `status`, `stok`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	('BRG00001', 'GDG01', 'T', 0, NULL, '2020-12-04 17:09:23', '2020-12-04 17:31:51'),
+	('BRG00001', 'GDG01', 'T', 10, NULL, '2020-12-04 17:09:23', '2020-12-16 00:55:11'),
 	('BRG00001', 'GDG02', 'T', 0, NULL, '2020-12-04 17:13:46', '2020-12-04 17:35:11'),
 	('BRG00001', 'GDG03', 'T', 40, NULL, '2020-12-04 17:14:59', '2020-12-04 17:35:11'),
-	('BRG00001', 'GDG04', 'F', 39, NULL, '2020-12-04 17:14:59', '2020-12-08 14:39:35'),
-	('BRG00001', 'GDG04', 'T', 27, NULL, '2020-12-04 17:14:59', '2020-12-08 14:40:14'),
+	('BRG00001', 'GDG04', 'F', 39, NULL, '2020-12-04 17:14:59', '2020-12-15 00:27:06'),
+	('BRG00001', 'GDG04', 'T', 80, NULL, '2020-12-04 17:14:59', '2020-12-13 15:15:07'),
 	('BRG00002', 'GDG01', 'T', 0, NULL, '2020-12-04 17:10:29', '2020-12-04 17:33:14'),
 	('BRG00002', 'GDG02', 'T', 0, NULL, '2020-12-04 17:11:38', '2020-12-04 17:35:53'),
 	('BRG00002', 'GDG03', 'T', 50, NULL, '2020-12-04 17:16:41', '2020-12-04 17:16:41'),
-	('BRG00002', 'GDG04', 'F', 17, NULL, '2020-12-04 17:16:41', '2020-12-08 14:42:01'),
-	('BRG00002', 'GDG04', 'T', 33, NULL, '2020-12-04 17:16:41', '2020-12-08 14:42:01'),
+	('BRG00002', 'GDG04', 'F', 32, NULL, '2020-12-04 17:16:41', '2020-12-12 15:42:54'),
+	('BRG00002', 'GDG04', 'T', 49, NULL, '2020-12-04 17:16:41', '2020-12-13 02:25:52'),
 	('BRG00003', 'GDG01', 'T', 0, NULL, '2020-12-04 17:09:23', '2020-12-04 17:32:34'),
 	('BRG00003', 'GDG02', 'T', 0, NULL, '2020-12-04 17:11:14', '2020-12-04 17:35:11'),
 	('BRG00003', 'GDG03', 'T', 30, NULL, '2020-12-04 17:15:44', '2020-12-04 17:26:12'),
-	('BRG00003', 'GDG04', 'F', 43, NULL, '2020-12-07 20:05:12', '2020-12-08 14:39:35'),
-	('BRG00003', 'GDG04', 'T', -2, NULL, '2020-12-04 17:15:44', '2020-12-09 15:58:49'),
+	('BRG00003', 'GDG04', 'F', 30, NULL, '2020-12-07 20:05:12', '2020-12-14 19:58:03'),
+	('BRG00003', 'GDG04', 'T', 83, NULL, '2020-12-04 17:15:44', '2020-12-13 15:20:38'),
 	('BRG00004', 'GDG01', 'T', 0, NULL, '2020-12-04 17:14:25', '2020-12-04 17:31:07'),
 	('BRG00004', 'GDG02', 'T', 0, NULL, '2020-12-04 17:11:14', '2020-12-04 17:35:11'),
 	('BRG00004', 'GDG03', 'T', 30, NULL, '2020-12-04 17:15:44', '2020-12-04 17:35:12'),
-	('BRG00004', 'GDG04', 'F', 30, NULL, '2020-12-04 17:15:44', '2020-12-08 00:48:31'),
-	('BRG00004', 'GDG04', 'T', 30, NULL, '2020-12-04 17:15:44', '2020-12-08 00:48:31'),
+	('BRG00004', 'GDG04', 'F', 35, NULL, '2020-12-04 17:15:44', '2020-12-14 19:57:44'),
+	('BRG00004', 'GDG04', 'T', 35, NULL, '2020-12-04 17:15:44', '2020-12-13 15:37:56'),
 	('BRG00005', 'GDG01', 'T', 0, NULL, '2020-12-04 17:09:24', '2020-12-04 17:32:35'),
 	('BRG00005', 'GDG02', 'T', 0, NULL, '2020-12-04 17:13:46', '2020-12-04 17:35:53'),
 	('BRG00005', 'GDG03', 'T', 40, NULL, '2020-12-04 17:17:01', '2020-12-04 17:32:35'),
-	('BRG00005', 'GDG04', 'F', 27, NULL, '2020-12-07 19:55:49', '2020-12-08 02:22:59'),
-	('BRG00005', 'GDG04', 'T', 38, NULL, '2020-12-04 17:17:01', '2020-12-08 02:22:59'),
+	('BRG00005', 'GDG04', 'F', 25, NULL, '2020-12-07 19:55:49', '2020-12-15 00:55:24'),
+	('BRG00005', 'GDG04', 'T', 43, NULL, '2020-12-04 17:17:01', '2020-12-13 01:51:33'),
 	('BRG0001', 'GDG01', 'T', 10, NULL, '2020-12-02 13:32:30', '2020-12-02 13:32:30'),
 	('BRG0001', 'GDG02', 'T', 10, NULL, '2020-12-02 13:32:30', '2020-12-02 13:32:30'),
 	('BRG0001', 'GDG03', 'T', 10, NULL, '2020-12-02 13:32:30', '2020-12-02 13:32:30'),
+	('BRG0001', 'GDG04', 'F', 10, NULL, '2020-12-11 18:29:41', '2020-12-11 18:29:41'),
 	('BRG0005', 'GDG01', 'T', 50, NULL, '2020-12-02 13:32:42', '2020-12-02 13:32:42'),
 	('BRG0005', 'GDG02', 'T', 0, NULL, '2020-12-02 13:32:42', '2020-12-02 13:32:42'),
 	('BRG0005', 'GDG03', 'T', 10, NULL, '2020-12-02 13:32:42', '2020-12-02 13:32:42'),
@@ -2345,7 +2495,8 @@ INSERT INTO `users` (`id`, `name`, `password`, `remember_token`, `deleted_at`, `
 	(2, 'Rakha', '$2y$10$FJ7uWf.S7AxyQ0pqKVxL1.h0WaAl/wTKDI3ue4VURahoWMohtd2Se', NULL, NULL, '2020-10-02 08:55:26', '2020-11-11 15:50:51', 'ADMIN'),
 	(3, 'Adrida', '$2y$10$FcA2NV.SH0f52z5nQAi52uSwe2Q0YN4vs4Nh/2tvut1B/FcFwjCUO', NULL, NULL, '2020-10-19 14:49:45', '2020-10-19 14:49:45', 'AR'),
 	(4, 'Hara', '$2y$10$BjBcIE8YML/qHmsQ7OB0YuhTvKw9LqaDYOvRx4RupmchL1OhYKEI.', NULL, NULL, '2020-11-29 19:12:54', '2020-11-29 19:12:54', 'AP'),
-	(5, 'Office02', '$2y$10$UV5QgC9a8.uiPTxapPF6k.H.8Mn2H8ntfHgibeB7O8c9IpzbVPTJK', NULL, NULL, '2020-11-29 20:31:03', '2020-11-29 20:31:03', 'OFFICE02');
+	(5, 'Office02', '$2y$10$UV5QgC9a8.uiPTxapPF6k.H.8Mn2H8ntfHgibeB7O8c9IpzbVPTJK', NULL, NULL, '2020-11-29 20:31:03', '2020-11-29 20:31:03', 'OFFICE02'),
+	(6, 'Gudang', '$2y$10$.LAR7JA5Ec/oAr5LEzH/8.bFXYugTChWZTHdRHIpid24ibasQ/QLW', NULL, NULL, '2020-12-15 01:40:24', '2020-12-15 01:40:24', 'GUDANG');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
