@@ -37,13 +37,13 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" class="form-control form-control-sm text-bold" name="kode" id="kode" value="" required>
+                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold" name="kode" id="kode" value="" required autofocus>
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
+                        <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
                       </div>
                     </div>   
                   </div>
@@ -78,7 +78,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Gudang</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" required autofocus>
+                    <input type="text" tabindex="3" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" required>
                     <input type="hidden" name="kodeGudang" id="kodeGudang"> 
                   </div>
                 </div>
@@ -86,7 +86,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
-                    <input type="text" name="namaSupplier" id="namaSupplier"  class="form-control form-control-sm text-bold" required />
+                    <input type="text" tabindex="4" name="namaSupplier" id="namaSupplier"  class="form-control form-control-sm text-bold" required />
                     <input type="hidden" name="kodeSupplier" id="kodeSupplier" />
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="5">
@@ -161,19 +161,20 @@
                   @endif --}}
                 </thead>
                 <tbody id="tablePO">
+                  @php $tab = 4; @endphp
                   @for($i=1; $i<=5; $i++)
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                        <input type="text" tabindex="{{$tab++}}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
                         value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                        <input type="text" tabindex="{{$tab += 2}}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{$tab += 3}}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -254,12 +255,12 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" onclick="return checkRequired(event)" id="submitBM"  class="btn btn-success btn-block text-bold">Submit</button>
+                  <button type="submit" tabindex="{{ $tab++ }}" onclick="return checkRequired(event)" id="submitBM"  class="btn btn-success btn-block text-bold">Submit</button>
                   {{-- id="submitBM" onclick="return checkEditable()" 
                   formaction="{{ route('bm-process', $newcode) }}" formmethod="POST"--}}
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
+                  <button type="reset" tabindex="{{ $tab++ }}" id="resetBM" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
                   {{-- formaction="{{ route('bm-reset', $newcode) }}" formmethod="GET" --}}
                 </div>
               </div>
@@ -364,13 +365,13 @@ const grandtotal = document.getElementById('grandtotal');
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
-var netPast;
+var netPast; var tab = '{{ $tab }}';
 // const keterangan = document.querySelectorAll(".keterangan");
 
 tanggal.addEventListener("keyup", formatTanggal);
 gudang.addEventListener("keyup", displayGud);
 namaSup.addEventListener("keyup", displaySupp);
-namaSup.addEventListener("focusout", focusTabel);
+// namaSup.addEventListener("focusout", focusTabel);
 newRow.addEventListener('click', displayRow);
 
 /** Add New Table Line **/
@@ -383,13 +384,13 @@ function displayRow(e) {
     <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
+        <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
+        <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td>
         <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow">
@@ -414,6 +415,9 @@ function displayRow(e) {
   const hargaRow = document.getElementById("hargaRow"+newNum);
   const jumlahRow = document.getElementById("jumlahRow"+newNum);
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
+  kodeRow.focus();
+  document.getElementById("submitBM").tabIndex = tab++;
+  document.getElementById("resetBM").tabIndex = tab++;
 
   /** Tampil Harga **/
   brgRow.addEventListener("keyup", function (e) {   
@@ -484,6 +488,7 @@ function displayRow(e) {
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
+    var numRow;
     if(qtyRow.value != "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
       total_ppn(subtotal.value.replace(/\./g, ""));
@@ -494,11 +499,17 @@ function displayRow(e) {
       for(let i = +curNum; i < +lastNum; i++) {
         $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
       }
+      numRow = lastNum;
     }
     else if(+curNum == +lastNum) {
       $(newRow).remove();
+      numRow = +curNum - 1;
     }
     jumBaris.value -= 1;
+    if(jumBaris.value > 5)
+      document.getElementById("kdBrgRow"+numRow).focus();
+    else
+      kodeBarang[4].focus();
   });
 
   /** Autocomplete Nama  Barang **/
@@ -765,6 +776,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
         qty[j+1].removeAttribute('required');
     }
     $(this).parents('tr').next().find('input').val('');
+    kodeBarang[i+1].focus();
   });
 }
 

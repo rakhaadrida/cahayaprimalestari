@@ -41,7 +41,7 @@
                     <label for="nama" class="col-auto col-form-label text-bold ">Tanggal TB</label>
                     <span class="col-form-label text-bold ml-3">:</span>
                     <div class="col-2">
-                      <input type="text" class="form-control datepicker col-form-label-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
+                      <input type="text" tabindex="1" class="form-control datepicker col-form-label-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
                     </div>
                     <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div> 
@@ -119,33 +119,34 @@
                   <td style="width: 50px">Delete</td>
                 </thead>
                 <tbody id="tablePO">
+                  @php $tab = 1 @endphp
                   @for($i=1; $i<=5; $i++)
                     <tr class="text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-dark kodeBarang"
+                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-dark kodeBarang"
                         value="{{ old('kodeBarang[]') }}" @if($i == 1) required autofocus @endif >
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-dark namaBarang"
+                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-dark namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-dark gdgAsal" value="{{ old('gdgAsal[]') }}">
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-dark gdgAsal" value="{{ old('gdgAsal[]') }}">
                         <input type="hidden" name="kodeAsal[]" class="kodeAsal">
                       </td>
                       <td> 
                         <input type="text" name="stokAsal[]" id="stokAsal" readonly class="form-control-plaintext form-control-sm text-dark text-center stokAsal" value="{{ old('stokAsal[]') }}">
                       </td>
                       <td> 
-                        <input type="text" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-dark gdgTujuan" value="{{ old('gdgTujuan[]') }}">
+                        <input type="text" tabindex="{{ $tab += 4 }}" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-dark gdgTujuan" value="{{ old('gdgTujuan[]') }}">
                         <input type="hidden" name="kodeTujuan[]" class="kodeTujuan">
                       </td>
                       <td> 
                         <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuan" value="{{ old('stokTujuan[]') }}">
                       </td>
                       <td> 
-                        <input type="text" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -200,10 +201,10 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('tb-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" tabindex="{{ $tab++ }}" id="submitTB" formaction="{{ route('tb-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" tabindex="{{ $tab++ }}" id="resetTB" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
@@ -249,6 +250,7 @@ const qtyTransfer = document.querySelectorAll(".qtyTransfer");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
+var tab = '{{ $tab }}';
 
 newRow.addEventListener('click', displayRow);
 tanggal.addEventListener("keyup", formatTanggal);
@@ -276,27 +278,27 @@ function displayRow(e) {
     <tr class="text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-dark kdBrgRow">
+        <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-dark kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-dark nmBrgRow">
+        <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-dark gdgAsalRow" >
+        <input type="text" tabindex="${tab += 3}" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-dark gdgAsalRow" >
         <input type="hidden" name="kodeAsal[]" id="kodeAsal${newNum}" class="kodeAsalRow">
       </td>
       <td> 
         <input type="text" name="stokAsal[]" id="stokAsal${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-center stokAsalRow">
       </td>
       <td> 
-        <input type="text" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-dark gdgTujuanRow" >
+        <input type="text" tabindex="${tab += 4}" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-dark gdgTujuanRow" >
         <input type="hidden" name="kodeTujuan[]" id="kodeTujuan${newNum}" class="kodeTujuanRow">
       </td>
       <td> 
         <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuanRow">
       </td>
       <td> 
-        <input type="text" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 5}" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -319,6 +321,9 @@ function displayRow(e) {
   const stokTujuanRow = document.getElementById("stokTujuan"+newNum);
   const qtyTransferRow = document.getElementById("qtyTransfer"+newNum);
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
+  kodeRow.focus();
+  document.getElementById("submitTB").tabIndex = tab++;
+  document.getElementById("resetTB").tabIndex = tab++;
 
   /** Tampil Harga **/
   brgRow.addEventListener("keyup", function (e) {   
@@ -406,16 +411,23 @@ function displayRow(e) {
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
+    var numRow;
     if(+curNum < +lastNum) {
       $(newRow).remove();
       for(let i = +curNum; i < +lastNum; i++) {
         $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
       }
+      numRow = lastNum;
     }
     else if(+curNum == +lastNum) {
       $(newRow).remove();
+      numRow = +curNum - 1;
     }
     jumBaris.value -= 1;
+    if(jumBaris.value > 5)
+      document.getElementById("kdBrgRow"+numRow).focus();
+    else
+      kodeBarang[4].focus();
   });
 
   /** Autocomplete Nama  Barang **/
@@ -658,6 +670,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
       qtyTransfer[i].removeAttribute('required');
     }
     $(this).parents('tr').next().find('input').val('');
+    kodeBarang[i].focus();
   });
 }
 
