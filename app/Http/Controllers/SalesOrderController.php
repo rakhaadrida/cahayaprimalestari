@@ -139,7 +139,7 @@ class SalesOrderController extends Controller
             'kategori' => $request->kategori,
             'tempo' => $tempo,
             'pkp' => $pkp,
-            'status' => $status,
+            'status' => 'INPUT',
             'id_customer' => $request->kodeCustomer,
             'id_user' => Auth::user()->id
         ]);
@@ -270,6 +270,18 @@ class SalesOrderController extends Controller
         $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-ttr.pdf');
+    }
+
+    public function afterPrint($id) {
+        $item = SalesOrder::where('id', $id)->first();
+        $item->{'status'} = 'CETAK';
+        $item->save();
+
+        $data = [
+            'status' => 'false'
+        ];
+
+        return redirect()->route('so', $data);
     }
 
     public function change() {

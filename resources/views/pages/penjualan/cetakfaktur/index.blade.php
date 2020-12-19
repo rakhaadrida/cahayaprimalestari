@@ -147,9 +147,9 @@ const btnCetak = document.getElementById('btnCetak');
   
   // window.frames["frameCetak"].window.print();
   
-  printTTR.window.print();
+  // printTTR.window.print();
   printFrame.window.print();
-  window.print();
+  // window.print();
   /** End Cara 2 **/
 
 

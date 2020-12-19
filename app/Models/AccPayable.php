@@ -20,4 +20,8 @@ class AccPayable extends Model
     public function detilap() {
         return $this->hasMany('App\Models\DetilAP', 'id_ap', 'id');
     }
+
+    public function retur() {
+        return $this->hasMany('App\Models\AP_Retur', 'id_ap', 'id');
+    }
 }

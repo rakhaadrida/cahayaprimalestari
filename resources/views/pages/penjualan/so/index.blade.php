@@ -572,10 +572,11 @@
     // console.log(frameCetak);
 
     frameCetak.onafterprint = function(e) {
-      alert('ok');
+      // alert('ok');
+      window.location = "{{ route('so-after-print', $lastcode) }}";
     };
 
-    window[0].print();
+    window.print();
   };
 
   // printFrame.window.onafterprint = function(e) {

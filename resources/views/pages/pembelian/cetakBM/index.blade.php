@@ -135,15 +135,15 @@ const btnCetak = document.getElementById('btnCetak');
 
   /** Cara 2 **/
   printFrame.window.onafterprint = function(e) {
-    alert('ok');
-    // window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+    // alert('ok');
+    // window.location = "{{ route('cetak-bm-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
   }
 
   
   // window.frames["frameCetak"].window.print();
   
   printFrame.window.print();
-  window.print();
+  // window.print();
   /** End Cara 2 **/
 
 

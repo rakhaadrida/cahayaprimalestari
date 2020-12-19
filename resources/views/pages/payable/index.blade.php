@@ -116,13 +116,13 @@
                         {{ \Carbon\Carbon::parse($a->bm->tanggal)->format('d-M-y') }}
                       </td>
                       <td align="center" class="align-middle" @if($a->bm->detilbm[0]->diskon != '') style="background-color: lightgreen" @endif>
-                        @if($a->bm->detilbm[0]->diskon != '') INPUT @else KOSONG @endif
+                        {{ $a->bm->diskon == 'T' ? 'INPUT' : 'KOSONG' }}
                       </td>
                       <td align="center" class="align-middle" @if($a->bm->detilbm[0]->diskon != '') style="background-color: lightgreen" @endif>
-                        @if($a->bm->detilbm[0]->diskon != '') INPUT @else KOSONG @endif
+                        {{ $a->bm->diskon == 'T' ? 'INPUT' : 'KOSONG' }}
                       </td>
                       <td align="right" class="align-middle">
-                        @if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM, 0, "", ",") }} @endif
+                        {{ $a->bm->diskon == 'T' ? number_format($totalBM[0]->totBM, 0, "", ",") : '' }}
                       </td>
                       <td class="align-middle">
                         <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
@@ -131,7 +131,9 @@
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
                         <a href="#Retur{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
-                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total, 0, "", ",") }} @endif</td>
+                      <td align="right" class="align-middle">
+                        {{ $a->bm->diskon == 'T' ? number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total, 0, "", ",") : '' }}
+                      </td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>

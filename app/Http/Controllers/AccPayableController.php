@@ -128,7 +128,6 @@ class AccPayableController extends Controller
 
             // $i->total = str_replace(".", "", $request->subtotal);
             $i->total = $total;
-            $i->status = "LENGKAP";
             $i->diskon = 'T';
             $i->save();
         }

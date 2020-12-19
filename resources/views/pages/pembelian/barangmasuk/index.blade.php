@@ -312,9 +312,19 @@
 
 <script type="text/javascript">
 @if($status == 'true')
-  $(document).ready(function() {
-    $("#frameCetak").printPage();
-  });
+  // $(document).ready(function() {
+  //   $("#frameCetak").printPage();
+  // });
+
+  const printFrame = document.getElementById("frameCetak").contentWindow;
+
+  printFrame.window.onafterprint = function(e) {
+    // alert('ok');
+    window.location = "{{ route('bm-after-print', $lastcode) }}";
+  }
+  
+  // printFrame.window.print();
+  window.print();
 @endif
 
 $.fn.datepicker.dates['id'] = {

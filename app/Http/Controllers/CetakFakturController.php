@@ -94,10 +94,7 @@ class CetakFakturController extends Controller
             $item->save();
         }
 
-        $items = SalesOrder::where('status', 'INPUT')->get();
-
         $data = [
-            'items' => $items,
             'status' => 'false',
             'awal' => 0,
             'akhir' => 0

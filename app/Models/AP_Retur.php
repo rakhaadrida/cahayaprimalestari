@@ -11,7 +11,7 @@ class AP_Retur extends Model
     protected $fillable = ['id', 'id_ap', 'tanggal', 'total', 'id_user'];
     public $incrementing = false;
 
-    public function ar() {
+    public function ap() {
         return $this->belongsTo('App\Models\AccPayable', 'id_ap', 'id');
     }
 

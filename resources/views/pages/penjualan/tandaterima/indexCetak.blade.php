@@ -110,11 +110,11 @@ const btnCetak = document.getElementById('btnCetak');
   const printTTR = document.getElementById("frameTTR").contentWindow;
 
   printTTR.window.onafterprint = function(e) {
-    alert('ok');
-    // window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+    // alert('ok');
+    window.location = "{{ route('ttr-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
   }
   
-  printTTR.window.print();
+  // printTTR.window.print();
   window.print();
 @endif
 

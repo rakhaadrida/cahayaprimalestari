@@ -59,9 +59,9 @@
          */
         function printit() {
             window.frames["printPage"].focus();
-            window.frames["printPage"].onafterprint = function(e) {
-                afterPrint();
-            }
+            // window.onafterprint = function(e) {
+            //     afterPrint();
+            // }
             window.frames["printPage"].print();
             unloadMessage();
         }

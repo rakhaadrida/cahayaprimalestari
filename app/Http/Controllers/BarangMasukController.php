@@ -85,7 +85,7 @@ class BarangMasukController extends Controller
             'total' => str_replace(".", "", $request->subtotal),
             'id_gudang' => $request->kodeGudang,
             'id_supplier' => $request->kodeSupplier,
-            'status' => $status,
+            'status' => 'INPUT',
             'diskon' => 'F',
             'id_user' => Auth::user()->id
         ]);
@@ -174,6 +174,18 @@ class BarangMasukController extends Controller
         $pdf = PDF::loadview('pages.pembelian.barangmasuk.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-bm.pdf');
+    }
+
+    public function afterPrint($id) {
+        $item = BarangMasuk::where('id', $id)->first();
+        $item->{'status'} = 'CETAK';
+        $item->save();
+
+        $data = [
+            'status' => 'false'
+        ];
+
+        return redirect()->route('barangMasuk', $data);
     }
 
     /* public function update(Request $request, $bm, $barang, $id) {

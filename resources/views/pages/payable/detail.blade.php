@@ -24,9 +24,12 @@
               <tbody class="table-ar">
                 @php 
                   $i = 1; $total = 0;
-                  $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))->where('id_faktur', $a->id_bm)->get();
+                  $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))
+                          ->where('id_faktur', $a->id_bm)->get();
                   $detilap = App\Models\DetilAP::where('id_ap', $a->id)->get();
-                  $kurang = $totalBM[0]->totBM;
+                  $retur = App\Models\AP_Retur::selectRaw('sum(total) as total')
+                          ->where('id_ap', $a->id)->get();
+                  $kurang = $totalBM[0]->totBM - $retur[0]->total;
                 @endphp
                 @foreach($detilap as $d)
                   @if($d->transfer != 0)

@@ -129,6 +129,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/barangmasuk/process/{id}/{status}','BarangMasukController@process')->name('bm-process');
         // Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name('bm-process');
         Route::get('/barangmasuk/cetak/{id}', 'BarangMasukController@cetak')->name('bm-cetak');
+        Route::get('/barangmasuke/afterPrint/{id}', 'BarangMasukController@afterPrint')
+            ->name('bm-after-print');
         Route::post('/barangmasuk/update/{bm}/{barang}/{id}', 'BarangMasukController@update')
             ->name('bm-update');
         Route::get('/barangmasuk/remove/{bm}/{barang}', 'BarangMasukController@remove')
@@ -153,6 +155,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-bm-process');
         Route::get('/cetak-bm-all/{awal}/{akhir}', 'CetakBMController@cetak')
             ->name('cetak-bm-all');
+        Route::get('/cetak-bm-update/{awal}/{akhir}', 'CetakBMController@update')
+            ->name('cetak-bm-update');
 
         // Transfer Barang
         Route::get('/transfer', 'TransferBarangController@index')->name('tb');
@@ -169,6 +173,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('so-process');
         Route::get('/so/cetak/{id}', 'SalesOrderController@cetak')->name('so-cetak');
         Route::get('/so/cetak-ttr/{id}', 'SalesOrderController@tandaterima')->name('so-ttr');
+        Route::get('/so/afterPrint/{id}', 'SalesOrderController@afterPrint')
+            ->name('so-after-print');
         Route::get('/so/remove/{id}/{barang}','SalesOrderController@remove')->name('so-remove');
         // Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         // Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
@@ -213,6 +219,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('ttr-process');
         Route::get('/tandaterima/cetak-ttr/{awal}/{akhir}', 'TandaTerimaController@cetak')
             ->name('ttr-cetak');
+        Route::get('/tandaterima/cetak-update/{awal}/{akhir}', 'TandaTerimaController@update')
+            ->name('ttr-update');
             
         // Cetak Faktur
         Route::get('/cetak-faktur/{status}/{awal}/{akhir}', 'CetakFakturController@index')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\TandaTerima;
 use App\Models\SalesOrder;
 use Carbon\Carbon;
@@ -79,5 +80,31 @@ class TandaTerimaController extends Controller
         $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-ttr.pdf');
+    }
+
+    public function update($awal, $akhir) {
+        $items = SalesOrder::whereBetween('id', [$awal, $akhir])->get();
+
+        $lastcode = TandaTerima::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+
+        foreach($items as $item) {
+            TandaTerima::create([
+                'id' => $newcode,
+                'id_so' => $item->id,
+                'tanggal' => Carbon::now()->toDateString(),
+                'id_user' => Auth::user()->id
+            ]);
+        }
+
+        $data = [
+            'status' => 'false',
+            'awal' => 0,
+            'akhir' => 0
+        ];
+
+        return redirect()->route('cetak-faktur', $data);
     }
 }
