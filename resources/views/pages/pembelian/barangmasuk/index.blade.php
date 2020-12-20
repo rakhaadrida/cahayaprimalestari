@@ -765,18 +765,29 @@ for(let i = 0; i < hapusBaris.length; i++) {
     }
 
     for(let j = i; j < hapusBaris.length; j++) {
-      jumlah[j].value = jumlah[j+1].value;
-      harga[j].value = harga[j+1].value;
-      qty[j].value = qty[j+1].value;
-      brgNama[j].value = brgNama[j+1].value;
-      kodeBarang[j].value = kodeBarang[j+1].value;
-      if(kodeBarang[j+1].value == "")
-        qty[j].removeAttribute('required');
-      else
-        qty[j+1].removeAttribute('required');
+      if(j+1 != hapusBaris.length) {
+        jumlah[j].value = jumlah[j+1].value;
+        harga[j].value = harga[j+1].value;
+        qty[j].value = qty[j+1].value;
+        brgNama[j].value = brgNama[j+1].value;
+        kodeBarang[j].value = kodeBarang[j+1].value;
+        if(kodeBarang[j+1].value == "")
+          qty[j].removeAttribute('required');
+        else
+          qty[j+1].removeAttribute('required');
+      } else {
+        jumlah[j].value = '';
+        harga[j].value = '';
+        qty[j].value = '';
+        brgNama[j].value = '';
+        kodeBarang[j].value = '';
+      }
     }
     $(this).parents('tr').next().find('input').val('');
-    kodeBarang[i+1].focus();
+    if(kodeBarang[i].value == '')
+      kodeBarang[i].focus();
+    else
+      kodeBarang[i+1].focus();
   });
 }
 

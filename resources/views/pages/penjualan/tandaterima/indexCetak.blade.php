@@ -35,14 +35,14 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Nomor Faktur</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm mt-1 kodeAwal" name="kodeAwal" id="kodeAwal" placeholder="Kode Awal" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi" autofocus>
+                    <input type="text" tabindex="1" class="form-control form-control-sm mt-1 kodeAwal" name="kodeAwal" id="kodeAwal" placeholder="Kode Awal" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi" autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s / d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm mt-1 kodeAkhir" name="kodeAkhir" id="kodeAkhir" placeholder="Kode Akhir" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi">
+                    <input type="text" tabindex="2" class="form-control form-control-sm mt-1 kodeAkhir" name="kodeAkhir" id="kodeAkhir" placeholder="Kode Akhir" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
-                    <button type="submit" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" onclick="return checkRequired(event)" >Cetak</button>
+                    <button type="submit" tabindex="3" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" onclick="return checkRequired(event)" >Cetak</button>
                     {{-- formaction="{{ route('cetak-ttr', ['awal' => 'INV0011', 'akhir' => 'INV0030']) }}" formmethod="GET" formtarget="_blank"  --}}
                   </div>
                 </div>  
@@ -61,11 +61,11 @@
                   <th style="width: 100px" class="align-middle">Kategori</th>
                 </thead>
                 <tbody>
-                  @php $i=1; @endphp
+                  @php $i=1; $tab = 3; @endphp
                   @forelse ($items as $item)
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="text-center"><button type="submit" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $item->id }}</button></td>
+                      <td class="text-center"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $item->id }}</button></td>
                       <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')  }}</td>
                       <td class="align-middle">{{ $item->customer->nama }}</td>
                       <td class="text-right align-middle">{{ number_format($item->total, 0, "", ",") }}</td>

@@ -42,12 +42,12 @@
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autofocus>
+                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autofocus>
                   </div>
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <select class="form-control form-control-sm mt-1" name="status">
+                    <select class="form-control form-control-sm mt-1" tabindex="2" name="status">
                       <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
                       <option value="INPUT" @if($status == 'INPUT') selected @endif>INPUT</option>
                       <option value="LENGKAP" @if($status == 'LENGKAP') selected @endif>LENGKAP</option>
@@ -58,17 +58,17 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
+                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('retur-beli-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('retur-beli-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('home-beli', ['status' => 'false', 'id' => '0']) }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
+                    <button type="submit" tabindex="6" formaction="{{ route('home-beli', ['status' => 'false', 'id' => '0']) }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                 </div>  
               </div>
@@ -91,7 +91,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1 @endphp
+                  @php $i = 1; $tab = 6 @endphp
                   @forelse($retur as $r)
                     @php
                       $qtyRetur = App\Models\DetilRB::selectRaw('sum(qty_retur) as total')
@@ -113,7 +113,7 @@
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalTerima + $qtyProses[0]->totalBatal) }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="#Detail{{ $r->id }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
+                        <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
                         </a>
                       </td>
                     </tr>

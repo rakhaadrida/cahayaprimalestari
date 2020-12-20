@@ -30,7 +30,7 @@
             <form action="" method="">
               @csrf
 
-              <div class="container so-container">  
+              {{-- <div class="container so-container">  
                 <div class="form-group row justify-content-center" style="margin-top: -10px">
                   <label for="tanggal" class="col-auto col-form-label text-bold">Tanggal Rekap</label>
                   <span class="col-form-label text-bold">:</span>
@@ -41,7 +41,7 @@
                     <button type="submit" formaction="{{ route('rs-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
-              </div>  
+              </div>   --}}
 
               <div class="row justify-content-center" style="margin-bottom: 15px">
                 <div class="col-2">

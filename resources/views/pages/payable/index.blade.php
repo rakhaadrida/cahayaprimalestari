@@ -38,12 +38,12 @@
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autofocus>
+                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autofocus>
                   </div>
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <select class="form-control form-control-sm mt-1" name="status">
+                    <select class="form-control form-control-sm mt-1" tabindex="2" name="status">
                       <option value="ALL" selected>ALL</option>
                       <option value="LUNAS">LUNAS</option>
                       <option value="BELUM LUNAS">BELUM LUNAS</option>
@@ -54,14 +54,14 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('ap-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('ap-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -98,7 +98,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1 @endphp
+                  @php $i = 1; $tab = 5 @endphp
                   @forelse($ap as $a)
                     @php 
                       $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))
@@ -111,7 +111,7 @@
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->bm->supplier->nama }}</td>
-                      <td align="center" class="align-middle"><button type="submit" formaction="{{ route('ap-detail', $a->id_bm) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $a->id_bm }}</button></td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $a->id_bm) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $a->id_bm }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->bm->tanggal)->format('d-M-y') }}
                       </td>
@@ -129,13 +129,13 @@
                       </td>
                       <td>
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
-                        <a href="#Retur{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
+                        <a href="#Retur{{ $a->id_bm }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">
                         {{ $a->bm->diskon == 'T' ? number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total, 0, "", ",") : '' }}
                       </td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="#Detail{{ $a->id_bm }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
+                        <a href="#Detail{{ $a->id_bm }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
                     </tr>
                     @php $i++ @endphp

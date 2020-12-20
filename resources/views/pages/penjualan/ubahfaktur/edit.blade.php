@@ -77,7 +77,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold text-dark">Keterangan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-5">
-                    <input type="text" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required>
+                    <input type="text" tabindex="1" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required autofocus>
                     @php
                       if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
                         $itemsApp = \App\Models\NeedApproval::where('id_dokumen', $items[0]->id)
@@ -118,7 +118,7 @@
                 </thead>
                 <tbody id="tablePO">
                   @php 
-                    $i = 1; $subtotal = 0;
+                    $i = 1; $subtotal = 0; $tab = 1;
                     if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
                       $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
                                   ->select('id_barang', 'diskon')
@@ -139,14 +139,14 @@
                     <tr class="text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ $item->id_barang }}" required>
+                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ $item->id_barang }}" required>
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
+                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
                         <input type="hidden" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
                         @php $arrKode = ''; $arrQty = ''; @endphp
                         @foreach($gudang as $g)
                           @php
@@ -214,7 +214,7 @@
                         }
                       @endphp
                       <td>
-                        <input type="text" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
+                        <input type="text" tabindex="{{ $tab += 4 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
                         value="{{ $tipe }}">
                       </td>
                       <td align="right">
@@ -224,7 +224,7 @@
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($item->qty * $item->harga, 0, "", ".") }}" >
                       </td>
                       <td align="right" style="width: 60px">
-                        <input type="text" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" required>
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" required>
                       </td>
                       @php 
                         $diskon = 100;
@@ -392,13 +392,13 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('so-update') }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('so-update') }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
+                  <button type="reset" tabindex="{{ $tab += 2 }}" class="btn btn-outline-danger btn-block text-bold">Reset</button>
                 </div>
                 <div class="col-2">
-                  <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
+                  <a href="{{ url()->previous() }}" tabindex="{{ $tab += 3 }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
@@ -488,7 +488,6 @@ for(let i = 0; i < brgNama.length; i++) {
     }
 
     kodeGudang[i].value = 'GDG01';
-    qty[i].value = '';
   }
 }
 

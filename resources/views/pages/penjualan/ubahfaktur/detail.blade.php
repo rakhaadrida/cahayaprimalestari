@@ -37,13 +37,13 @@
                   <label for="kode" class="col-2 col-form-label text-bold">Nomor SO</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" value="{{ $id }}" >
+                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" value="{{ $id }}" autofocus>
                   </div>
                   {{-- @if(Auth::user()->roles != 'AR') --}}
                     <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-4">
-                      <input type="text" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
+                      <input type="text" tabindex="2" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
                       <input type="hidden" name="kode" id="kodeCustomer" value="{{ $kode }}">
                     </div>
                   {{-- @endif --}}
@@ -52,15 +52,15 @@
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
+                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">Tanggal Akhir</label>
                   <span class="col-form-label text-bold ml-3">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('so-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('so-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -321,12 +321,12 @@
                       <!-- Button Submit dan Reset -->
                       <div class="form-row justify-content-center">
                         <div class="col-2">
-                          <a href="" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold"> Ganti Status
+                          <a href="" tabindex="6" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold"> Ganti Status
                           </a>
                           {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
                         </div>
                         <div class="col-2">
-                          <button type="submit" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi Faktur</button>
+                          <button type="submit" tabindex="7" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi Faktur</button>
                         </div>
                       </div>
                       <!-- End Button Submit dan Reset -->

@@ -51,7 +51,7 @@
                   <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
+                    <input type="text" tabindex="1" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
                     <input type="hidden" name="kodeCustomer" id="idCustomer">
                     <input type="hidden" name="limit" id="limit">
                     <input type="hidden" name="piutang" id="piutang">
@@ -80,22 +80,22 @@
                       <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" required />
+                        <input type="text" tabindex="2" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" required />
                         <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                       </div>
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
                       <div class="col-3" style="margin-top: -35px">
                         <div class="form-check mt-2">
-                          <input class="form-check-input" type="radio" name="kategori"  value="Cash" id="kategori" required>
+                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Cash" id="kategori" required>
                           <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="kategori"  value="Prime">
+                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Prime">
                           <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="kategori"  value="Extrana">
+                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Extrana">
                           <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
                         </div>
                       </div>
@@ -106,7 +106,7 @@
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" readonly >
+                        <input type="text" tabindex="4" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" readonly >
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
@@ -137,11 +137,11 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3 pkp-check">
                         <div class="form-check mt-2">
-                          <input class="form-check-input" type="radio" name="pkp" id="pkp" value="1" >
+                          <input class="form-check-input" tabindex="5" type="radio" name="pkp" id="pkp" value="1" >
                           <label class="form-check-label text-bold text-dark" for="pkp1">Ya</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="radio" name="pkp" id="pkp" value="0" >
+                          <input class="form-check-input" tabindex="5" type="radio" name="pkp" id="pkp" value="0" >
                           <label class="form-check-label text-bold text-dark" for="pkp2">Tidak</label>
                         </div>
                       </div>
@@ -153,7 +153,7 @@
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
               
               <!-- Tabel Data Detil PO -->
-              <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
+              <span class="table-add float-right mb-3 mr-2"><a href="#!" tabindex="-1" class="text-primary text-bold">
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
               </span>
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
@@ -178,29 +178,30 @@
                   </tr>
                 </thead>
                 <tbody id="tablePO">
+                  @php $tab = 5; @endphp
                   @for($i=1; $i<=5; $i++)
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
                         value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang">
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
-                        <input type="text" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
+                        <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
                         value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                       </td>
                       <td>
-                        <input type="text" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
                         value="{{ old('tipe[]') }}">
                       </td>
                       <td>
@@ -210,7 +211,7 @@
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                       </td>
                       <td>
-                        <input type="text" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
+                        <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
                         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
                       </td>
                       <td>
@@ -440,11 +441,10 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" class="btn btn-success btn-block text-bold"
-                  onclick="return checkRequired(event)" id="submitSO" >Submit</button>
+                  <button type="submit" tabindex="{{ $tab++ }}" class="btn btn-success btn-block text-bold" onclick="return checkRequired(event)" id="submitSO" >Submit</button>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" tabindex="{{ $tab += 2 }}" class="btn btn-outline-secondary btn-block text-bold" id="resetSO">Reset</button>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
@@ -659,14 +659,13 @@ const totalTagihan = document.getElementById('totalTagihan');
 const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
-var netPast; var ukuran;
+var netPast; var ukuran; var tab = '{{ $tab }}';
 var kodeModal;
 var totPast;
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keyup', displayCust);
-namaCust.addEventListener('focusout', focusTanggal);
 tanggalKirim.addEventListener("keyup", formatTanggal);
 newRow.addEventListener("click", displayRow);
 diskonFaktur.addEventListener('keyup', formatNominal);
@@ -674,7 +673,7 @@ diskonFaktur.addEventListener('keyup', displayTotal);
 
 Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayTempo);
-});
+}); 
 
 /** Tampil Id Supplier **/
 function displayCust(e) {
@@ -700,10 +699,6 @@ function displayCust(e) {
   @endforeach
 }
 
-function focusTanggal(e) {
-  tanggalKirim.focus();
-}
-
 function formatTanggal(e) {
   var value = e.target.value.replaceAll("-","");
   var arrValue = value.split("", 3);
@@ -717,10 +712,6 @@ function formatTanggal(e) {
   tanggalKirim.value = value;
 }
 
-function focusKode(e) {
-  kodeBarang[0].focus();
-}
-
 /** Tampil Input Tempo **/
 function displayTempo(e) {
   if((radios[1].checked) || (radios[2].checked)) {
@@ -730,8 +721,10 @@ function displayTempo(e) {
   else if(radios[0].checked) {
     tempo.setAttribute('readonly', 'true');
     tempo.removeAttribute('required');
+    // tempo.tabIndex = '';
+    // pkp.tabIndex = 4;
   }
-}
+} 
 
 /** Add New Table Line **/
 function displayRow(e) {
@@ -743,21 +736,21 @@ function displayRow(e) {
     <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
+        <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
+        <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td>
-        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
         <input type="hidden" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
         <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
       <td>
-        <input type="text" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
+        <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
         value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td>
-        <input type="text" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow" 
+        <input type="text" tabindex="${tab += 5}" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow" 
         value="{{ old('tipe[]') }}">
       </td>
       <td>
@@ -767,7 +760,7 @@ function displayRow(e) {
         <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
       </td>
       <td style="width: 60px">
-        <input type="text" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
+        <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
       </td>
       <td style="width: 120px">
@@ -891,6 +884,9 @@ function displayRow(e) {
   const totalsatuanRow = document.getElementById("totalsatuanRow"+newNum);
   const nmbrgRow = document.getElementById("nmbrgRow"+newNum);
   var ukuranRow;
+  kodeRow.focus();
+  document.getElementById("submitSO").tabIndex = tab++;
+  document.getElementById("resetSO").tabIndex = tab++;
 
   /** Tampil Harga **/
   brgRow.addEventListener("keyup", displayHargaRow); 
@@ -1121,8 +1117,7 @@ function displayRow(e) {
     
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
-    console.log(curNum);
-    console.log(lastNum);
+    var numRow;
     if(+curNum < +lastNum) {
       $(newRow).remove();
       $(newMod).remove();
@@ -1133,11 +1128,17 @@ function displayRow(e) {
       for(let i = +curNum; i < +lastNum; i++) {
         $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
       }
+      numRow = lastNum;
     }
     else if(+curNum == +lastNum) {
       $(newRow).remove();
+      numRow = +curNum - 1;
     }
     jumBaris.value -= 1;
+    if(jumBaris.value > 5)
+      document.getElementById("kdBrgRow"+numRow).focus();
+    else
+      kodeBarang[4].focus();
   })
 
   /** Autocomplete Nama  Barang **/
@@ -1506,23 +1507,40 @@ for(let i = 0; i < hapusBaris.length; i++) {
     }
 
     for(let j = i; j < hapusBaris.length; j++) {
-      netto[j].value = netto[j+1].value;
-      diskonRp[j].value = diskonRp[j+1].value;
-      diskon[j].value = diskon[j+1].value;
-      jumlah[j].value = jumlah[j+1].value;
-      harga[j].value = harga[j+1].value;
-      tipe[j].value = tipe[j+1].value;
-      satuan[j].value = satuan[j+1].value;
-      qty[j].value = qty[j+1].value;
-      brgNama[j].value = brgNama[j+1].value;
-      kodeBarang[j].value = kodeBarang[j+1].value;
-      if(kodeBarang[j+1].value == "")
-        qty[j].removeAttribute('required');
-      else
-        qty[j+1].removeAttribute('required');
+      if(j+1 != hapusBaris.length) {
+        netto[j].value = netto[j+1].value;
+        diskonRp[j].value = diskonRp[j+1].value;
+        diskon[j].value = diskon[j+1].value;
+        jumlah[j].value = jumlah[j+1].value;
+        harga[j].value = harga[j+1].value;
+        tipe[j].value = tipe[j+1].value;
+        satuan[j].value = satuan[j+1].value;
+        qty[j].value = qty[j+1].value;
+        brgNama[j].value = brgNama[j+1].value;
+        kodeBarang[j].value = kodeBarang[j+1].value;
+        if(kodeBarang[j+1].value == "")
+          qty[j].removeAttribute('required');
+        else
+          qty[j+1].removeAttribute('required');
+      } else {
+        netto[j].value = '';
+        diskonRp[j].value = '';
+        diskon[j].value = '';
+        jumlah[j].value = '';
+        harga[j].value = '';
+        tipe[j].value = '';
+        satuan[j].value = '';
+        qty[j].value = '';
+        brgNama[j].value = '';
+        kodeBarang[j].value = '';
+      }
     }
 
     $(this).parents('tr').next().find('input').val('');
+    if(kodeBarang[i].value == '')
+      kodeBarang[i].focus();
+    else
+      kodeBarang[i+1].focus();
   });
 }
 

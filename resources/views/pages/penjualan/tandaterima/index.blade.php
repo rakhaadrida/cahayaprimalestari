@@ -36,14 +36,14 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal">
+                    <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir">
+                    <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="3" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -60,11 +60,11 @@
                   <th style="width: 80px" class="align-middle">User</th>
                 </thead>
                 <tbody>
-                  @php $i=1; @endphp
+                  @php $i=1; $tab = 3; @endphp
                   @forelse ($items as $item)
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="text-center"><button type="submit" formaction="{{ route('ttr-detail', $item->id) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $item->id }}</button></td>
+                      <td class="text-center"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ttr-detail', $item->id) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $item->id }}</button></td>
                       <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y')  }}</td>
                       @php
                         $kode = \App\Models\TandaTerima::where('id', $item->id)->get();

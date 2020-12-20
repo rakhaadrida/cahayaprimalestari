@@ -38,12 +38,12 @@
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autofocus>
+                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autofocus>
                   </div>
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <select class="form-control form-control-sm mt-1" name="status">
+                    <select class="form-control form-control-sm mt-1" tabindex="2" name="status">
                       <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
                       <option value="LUNAS" @if($status == 'LUNAS') selected @endif>LUNAS</option>
                       <option value="BELUM LUNAS" @if($status == 'BELUM LUNAS') selected @endif>BELUM LUNAS</option>
@@ -54,17 +54,17 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
+                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3">s / d</label>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('ar-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('ar-home') }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
+                    <button type="submit" tabindex="6" formaction="{{ route('ar-home') }}" formmethod="POST" class="btn btn-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                 </div>  
               </div>
@@ -72,14 +72,14 @@
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
               <!-- Button Submit dan Reset -->
-              <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
+              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
                 <div class="col-1">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-1">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
-              </div>
+              </div> --}}
               <!-- End Button Submit dan Reset -->
 
               <!-- Tabel Data Detil AR -->
@@ -102,7 +102,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1; @endphp
+                  @php $i = 1; $tab = 6; @endphp
                   @forelse($ar as $a)
                     @php 
                       $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
@@ -131,11 +131,11 @@
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
-                        <a href="#Retur{{ $a->id_so }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
+                        <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="#Detail{{ $a->id_so }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
+                        <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
                     </tr>
                     @php $i++; @endphp
@@ -158,14 +158,14 @@
               </table>
 
               <!-- Button Submit dan Reset -->
-              <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
+              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
                 <div class="col-1">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-1">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
-              </div>
+              </div> --}}
               <!-- End Button Submit dan Reset -->
               
             </form>
