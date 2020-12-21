@@ -31,8 +31,9 @@ class SalesOrderController extends Controller
         $barang = Barang::All();
         $harga = HargaBarang::All();
         $hrg = Harga::All();
-        $stok = StokBarang::All();
-        $gudang = Gudang::All();
+        $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
+                ->where('retur', 'F')->get();
+        $gudang = Gudang::where('retur', 'F')->get();
 
         $lastcode = SalesOrder::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
@@ -184,20 +185,19 @@ class SalesOrderController extends Controller
                         'diskonRp' => $diskonRp
                     ]);
 
-                    // if($status == 'LIMIT') {
-                    //     NeedAppDetil::create([
-                    //         'id_app' => $newcode,
-                    //         'id_barang' => $request->kodeBarang[$i],
-                    //         'id_gudang' => $arrGudang[$j],
-                    //         'harga' => str_replace(".", "", $request->harga[$i]),
-                    //         'qty' => $arrStok[$j],
-                    //         'diskon' => $request->diskon[$i],
-                    //     ]);
-                    // }
+                    /* if($status == 'LIMIT') {
+                        NeedAppDetil::create([
+                            'id_app' => $newcode,
+                            'id_barang' => $request->kodeBarang[$i],
+                            'id_gudang' => $arrGudang[$j],
+                            'harga' => str_replace(".", "", $request->harga[$i]),
+                            'qty' => $arrStok[$j],
+                            'diskon' => $request->diskon[$i],
+                        ]);
+                    } */
 
                     $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                                 ->where('id_gudang', $arrGudang[$j])->first();
-                    // var_dump($updateStok);
                     $updateStok->{'stok'} -= $arrStok[$j];
                     $updateStok->save();
                     
@@ -219,17 +219,17 @@ class SalesOrderController extends Controller
             $cetak = 'false';
         else {
             $cetak = 'true';
-            // $lastcode = TandaTerima::max('id');
-            // $lastnumber = (int) substr($lastcode, 3, 4);
-            // $lastnumber++;
-            // $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+            /* $lastcode = TandaTerima::max('id');
+            $lastnumber = (int) substr($lastcode, 3, 4);
+            $lastnumber++;
+            $newcode = 'TTR'.sprintf('%04s', $lastnumber);
 
-            // TandaTerima::create([
-            //     'id' => $newcode,
-            //     'id_so' => $id,
-            //     'tanggal' => $tanggal,
-            //     'id_user' => Auth::user()->id
-            // ]);
+            TandaTerima::create([
+                'id' => $newcode,
+                'id_so' => $id,
+                'tanggal' => $tanggal,
+                'id_user' => Auth::user()->id
+            ]); */
         }
 
         return redirect()->route('so', $cetak);

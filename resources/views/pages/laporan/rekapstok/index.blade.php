@@ -44,11 +44,11 @@
               </div>   --}}
 
               <div class="row justify-content-center" style="margin-bottom: 15px">
-                <div class="col-2">
+                {{-- <div class="col-2">
                   <a href="{{ url('/rekap/cetak') }}" class="btn btn-primary btn-block text-bold btnprnt">Print</a>
-                </div>
+                </div> --}}
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('rs-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-success btn-block text-bold">Download PDF</>
+                  <button type="submit" formaction="{{ route('rs-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
                 </div>
                 <div class="col-2">
                   <button type="submit" formaction="{{ route('rs-excel') }}" formmethod="POST"  class="btn btn-danger btn-block text-bold">Download Excel</>
@@ -89,7 +89,7 @@
                             $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                           @endphp
                           <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                            <td colspan="8" align="center">
+                            <td colspan="{{ $gudang->count() + 4 }}" align="center">
                               <button type="button" class="btn btn-link btn-sm text-dark text-bold" data-toggle="collapse" data-target="#collapseSub{{$s->id}}" aria-expanded="false" aria-controls="collapseSub{{$s->id}}" style="padding: 0; font-size: 15px; width: 100%">{{ $s->nama }}</button>
                             </td>
                           </tr>

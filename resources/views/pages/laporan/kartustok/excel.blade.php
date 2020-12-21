@@ -22,7 +22,7 @@
           <td rowspan="3">Nomor Transaksi</td>
           <td rowspan="3">Keterangan</td>
           <td colspan="3">Pemasukan</td>
-          <td colspan="5">Pengeluaran</td>
+          <td colspan="{{ $gudang->count() + 2 }}">Pengeluaran</td>
           <td rowspan="3">Pemakai</td>
         </tr>
         <tr>
@@ -48,7 +48,7 @@
           <tr>
             <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
             <td class="text-bold text-dark text-right">{{ $stokAwal }}</td>
-            <td colspan="8"></td>
+            <td colspan="{{ $gudang->count() + 5 }}"></td>
           </tr>
           @php 
             $i = 1; $totalBM = 0; $totalSO = 0;
@@ -65,7 +65,7 @@
               <td align="right">{{ $ib->qty }}</td>
               <td>{{ $ib->bm->gudang->nama }}</td>
               <td align="right">
-                {{ number_format($ib->qty * $ib->harga, 0, "", ",") }}
+                {{ number_format($ib->bm->total, 0, "", ",") }}
               </td>
               <td align="right"></td>
               @foreach($gudang as $g)
@@ -102,10 +102,32 @@
                 @endif
               @endforeach
               <td align="right">
-                {{ number_format($is->qty * $is->harga, 0, "", ",") }}
+                {{ number_format($is->so->total - $is->so->diskon, 0, "", ",") }}
               </td>
               <td align="left">{{ $is->so->user->name }} - {{ \Carbon\Carbon::parse($is->so->updated_at)->format('H:i:s') }}</td>
               @php $totalSO += $is->qty @endphp
+            </tr>
+            @php $i++; @endphp
+          @endforeach
+          @foreach($rowTB as $it)
+            <tr class="text-bold">
+              <td align="center">{{ $i }}</td>
+              <td align="center">
+                {{ \Carbon\Carbon::parse($it->tb->tgl_tb)->format('d-M-y') }} 
+              </td>
+              <td>Transfer Barang</td>
+              <td>{{ $it->tb->id }}</td>
+              <td>{{ $it->gudangAsal->nama }}</td>
+              <td align="right">{{ $it->qty }}</td>
+              <td>{{ $it->gudangTuju->nama }}</td>
+              <td align="right"></td>
+              <td align="right"></td>
+              @foreach($gudang as $g)
+                <td></td>
+              @endforeach
+              <td align="right"></td>
+              <td align="left">{{ $it->tb->user->name }} - {{ \Carbon\Carbon::parse($it->tb->updated_at)->format('H:i:s') }}</td>
+              @php $totalBM += $it->qty @endphp
             </tr>
             @php $i++; @endphp
           @endforeach
@@ -116,12 +138,12 @@
             </td>
             <td colspan="2"></td>
             <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
-            <td colspan="5"></td>
+            <td colspan="{{ $gudang->count() + 2 }}"></td>
           </tr>
           <tr style="background-color: yellow">
             <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
             <td class="text-bold text-dark text-right">{{ $stok[0]->total }}</td>
-            <td colspan="8"></td>
+            <td colspan="{{ $gudang->count() + 5 }}"></td>
           </tr>
         @else 
           <tr>

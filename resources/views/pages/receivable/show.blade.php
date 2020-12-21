@@ -102,13 +102,20 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1; $tab = 6; @endphp
-                  @forelse($ar as $a)
+                  @php 
+                    $i = 1; $tab = 6; 
+                    if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
+                      $items = $ar;
+                    elseif(Auth::user()->roles == 'OFFICE02')
+                      $items = $arOffice
+                  @endphp
+                  @forelse($items as $a)
                     @php 
                       $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
                                 ->where('id_ar', $a->id)->get();
                       $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
                               ->where('id_ar', $a->id)->get();
+                      
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
@@ -292,21 +299,17 @@ $('#dataTable').dataTable( {
 
 /** Input nominal comma separator **/
 for(let i = 0; i < cicil.length; i++) {
-  // cicil[i].addEventListener("keyup", function(e) {
-  //   $(this).val(function(index, value) {
-  //     return value
-  //     .replace(/\D/g, "")
-  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  //     ;
-  //   });
-  // })
+  /* cicil[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value
+      .replace(/\D/g, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      ;
+    });
+  })
 
   cicil[i].addEventListener("focus", function(e) {
     cicil[i].value = cicil[i].value.replace(/\,/g, "");
-  })
-
-  cicil[i].addEventListener("focusout", function(e) {
-    cicil[i].value = addCommas(cicil[i].value);
   })
 
   cicil[i].addEventListener("change", function(e) {
@@ -319,18 +322,18 @@ for(let i = 0; i < cicil.length; i++) {
     else {
       kodeSO.value = kode;
     }
-  })
+  }) */
 
-  // retur[i].addEventListener("keyup", function(e) {
-  //   $(this).val(function(index, value) {
-  //     return value
-  //     .replace(/\D/g, "")
-  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  //     ;
-  //   });
-  // })
+  /* retur[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value
+      .replace(/\D/g, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      ;
+    });
+  }) */
 
-  retur[i].addEventListener("focus", function(e) {
+  /* retur[i].addEventListener("focus", function(e) {
     retur[i].value = retur[i].value.replace(/\,/g, "");
   })
 
@@ -348,7 +351,7 @@ for(let i = 0; i < cicil.length; i++) {
     else {
       kodeSO.value = kode;
     }
-  })
+  }) */
 }
 
 /** Add Thousand Separators **/

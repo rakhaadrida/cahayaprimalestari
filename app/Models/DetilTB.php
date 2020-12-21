@@ -22,4 +22,12 @@ class DetilTB extends Model
     public function barang() {
         return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
     }
+
+    public function gudangAsal() {
+        return $this->belongsTo('App\Models\Gudang', 'id_asal', 'id');
+    }
+
+    public function gudangTuju() {
+        return $this->belongsTo('App\Models\Gudang', 'id_tujuan', 'id');
+    }
 }

@@ -14,6 +14,7 @@ use App\Models\NeedApproval;
 use App\Models\BarangMasuk;
 use App\Models\Barang;
 use App\Models\StokBarang;
+use App\Models\AP_Retur;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -32,9 +33,18 @@ class DashboardController extends Controller
         $transAnnual = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->count();
         $transMonthly = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereMonth('tgl_so', $bulan)->count();
+        $buyAnnual = BarangMasuk::where('status', '!=', 'BATAL')->count();
+        $buyMonthly = BarangMasuk::where('status', '!=', 'BATAL')
+                    ->whereMonth('tanggal', $bulan)->count();
         $retur = AR_Retur::selectRaw('sum(total) as total')->get();
+        $returMon = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                ->join('so', 'so.id', 'ar.id_so')
+                ->selectRaw('sum(ar_retur.total) as total')
+                ->whereMonth('tgl_so', $bulan)->get();
         $cicil = DetilAR::selectRaw('sum(cicil) as total')->get();
         $receivable = $salesAnnual[0]->sales - $retur[0]->total - $cicil[0]->total;
+        $salesAnnual[0]->sales -= $retur[0]->total;
+        $salesMonthly[0]->sales -= $returMon[0]->total;
 
         $salesPerMonth = SalesOrder::selectRaw('sum(total) as sales, MONTH(tgl_so) month')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
@@ -94,6 +104,9 @@ class DashboardController extends Controller
         foreach($receiv as $s) {
             $detil = DetilAR::selectRaw('sum(cicil) as total')
                     ->where('id_ar', $s->id)->get();
+            $retur = AR_Retur::selectRaw('sum(total) as total')
+                    ->where('id_ar', $s->id)->get();
+            $s->total -= $retur[0]->total;
             $s->{'cicil'} = $detil[0]->total;
             $total = round(($detil[0]->total * 100) / ($s->total - $s->retur), 2);
             $piutang = $s->total - $s->retur - $detil[0]->total;
@@ -120,16 +133,25 @@ class DashboardController extends Controller
         $tagihanAnnual = BarangMasuk::selectRaw('sum(total) as sales')
                         ->whereNotIn('status', ['BATAL'])->get();
         $bayar = DetilAP::selectRaw('sum(transfer) as total')->get();
-        $payable = $tagihanAnnual[0]->sales - $bayar[0]->total;
-        $payableDiskon = BarangMasuk::whereIn('status', ['NO_DISC', 'UPDATE_NO_DISC'])->count();
+        $retur = AP_Retur::selectRaw('sum(total) as total')->get();
+        $payable = $tagihanAnnual[0]->sales - $bayar[0]->total - $retur[0]->total;
+        $payableDiskon = BarangMasuk::where('diskon', 'F')->count();
 
         $q1 = 0; $q2 = 0; $q3 = 0; $q4 = 0;
-        $tagihan = BarangMasuk::join('ap', 'ap.id_bm', 'barangmasuk.id') 
+        $tagihan = BarangMasuk::join('ap', 'ap.id_bm', 'barangmasuk.id_faktur') 
+                ->select('barangmasuk.*')
+                ->selectRaw('sum(total) as total')
                 ->where('status', '!=', 'BATAL')
-                ->where('keterangan', 'BELUM LUNAS')->get();
+                ->where('keterangan', 'BELUM LUNAS')
+                ->groupBy('id_faktur')->get();
+
+        // return response()->json($tagihan);
         foreach($tagihan as $t) {
             $detil = DetilAP::selectRaw('sum(transfer) as total')
-                    ->where('id_ap', $t->id)->get();
+                    ->where('id_ap', $t->ap->id)->get();
+            $retur = AP_Retur::selectRaw('sum(total) as total')
+                    ->where('id_ap', $t->ap->id)->get();
+            $t->total -= $retur[0]->total;
             $t->{'transfer'} = $detil[0]->total;
             $total = round(($detil[0]->total * 100) / $t->total, 2);
             $utang = $t->total - $detil[0]->total;
@@ -172,12 +194,20 @@ class DashboardController extends Controller
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->selectRaw('sum(ar_retur.total) as total')
                     ->where('id_sales', 'SLS03')->get();
+        $returMonOff = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                    ->join('so', 'so.id', 'ar.id_so')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->selectRaw('sum(ar_retur.total) as total')
+                    ->where('id_sales', 'SLS03')
+                    ->whereMonth('tgl_so', $bulan)->get();
         $cicilOff = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
                     ->join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->selectRaw('sum(cicil) as total')
                     ->where('id_sales', 'SLS03')->get();
         $receivableOff = $salesAnnOff[0]->sales - $returOff[0]->total - $cicilOff[0]->total;
+        $salesAnnOff[0]->sales -= $returOff[0]->total;
+        $salesMonOff[0]->sales -= $returMonOff[0]->total;
 
         $salesPerMonOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                         ->selectRaw('sum(total) as sales, MONTH(tgl_so) month')
@@ -207,6 +237,8 @@ class DashboardController extends Controller
             'salesMonthly' => $salesMonthly,
             'transAnnual' => $transAnnual,
             'transMonthly' => $transMonthly,
+            'buyAnnual' => $buyAnnual,
+            'buyMonthly' => $buyMonthly,
             'receivable' => $receivable,
             'salesPerMonth' => $salesPerMonth,
             'arrTotal' => $arrTotal,

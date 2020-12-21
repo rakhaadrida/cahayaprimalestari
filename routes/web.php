@@ -165,6 +165,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/transfer/process/{id}', 'TransferBarangController@process')
             ->name('tb-process');
         Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}','TransferBarangController@remove')->name('tb-remove');
+        Route::get('/tb/index', 'TransferBarangController@indexTab')
+            ->name('tb-index');
+        Route::post('/tb/detail/{id}', 'TransferBarangController@detail')
+            ->name('tb-detail');
 
         // Sales Order
         Route::get('/so/index/{status}', 'SalesOrderController@index')->name('so');
@@ -188,27 +192,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
             ->name('trans-detail');
         
-        // Retur Barang
-        // Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
-        // Route::get('/retur/index-jual', 'ReturController@createPenjualan')
-        //     ->name('ret-index-jual');
-        // Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')
-        //     ->name('ret-detail-jual');
-        // Route::post('/retur/index-jual/process/{id}', 'ReturController@storeJual')
-        //     ->name('ret-process-jual');
-        // Route::get('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
-        //     ->name('retur-jual');
-        // Route::post('retur/penjualan/index/{status}/{id}', 'ReturController@dataReturJual')
-        //     ->name('home-jual');
-        // Route::post('retur/penjualan/show', 'ReturController@showReturJual')
-        //     ->name('retur-jual-show');
-        // Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
-        //     ->name('retur-jual-process');
-        // Route::get('/retur/penjualan/cetak/{id}', 'ReturController@cetakKirimJual')
-        //     ->name('retur-jual-cetak');
-        // Route::get('/retur/penjualan/cetak-ttr/{id}', 'ReturController@ttrKirimJual')
-        //     ->name('retur-jual-cetak');
-
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
         Route::post('/tandaterima/detail/{id}', 'TandaTerimaController@detail')
@@ -309,7 +292,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
         // Account Receivable
-        Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
         Route::get('/retur/index-jual', 'ReturController@createPenjualan')
             ->name('ret-index-jual');
         Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')
@@ -332,6 +314,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
     Route::group(['roles'=>['ADMIN', 'GUDANG', 'AR', 'SUPER']], function() {
         // Retur Pembelian
+        Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
         Route::get('/retur/index-beli', 'ReturController@createPembelian')
             ->name('ret-index-beli');
         Route::post('/retur/index-beli/detail', 'ReturController@showCreateBeli')

@@ -79,15 +79,15 @@
                   <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
                 </div>
               </div>
-            @elseif($r->status == 'LENGKAP')
-              {{-- <div class="form-row justify-content-center">
+            {{-- @elseif($r->status == 'LENGKAP')
+              <div class="form-row justify-content-center">
                 <div class="col-3">
                   <button type="button" id="btnCetak" class="btn btn-primary btn-block text-bold btnCetak">Cetak</button>
                 </div>
-              </div> --}}
+              </div>
 
               <iframe src="{{url('retur/penjualan/cetak/'.$r->id)}}" id="frameCetak{{$j}}" frameborder="0" hidden></iframe>
-              @php $j++; @endphp
+              @php $j++; @endphp --}}
             @endif            
           </form>
         </div>

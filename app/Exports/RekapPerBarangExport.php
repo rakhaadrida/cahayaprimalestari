@@ -67,21 +67,26 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
             $totSub += $barang->count();
         } 
+
+        $alpha = range('A', 'Z');
+        $gudang = Gudang::All();
+        $angkaHuruf = $gudang->count() + 2;
+        $huruf = $alpha[$angkaHuruf];
         
         $range = 4 + $totSub + $sub->count();
         $rangeStr = strval($range);
         $rangeTot = 'C'.$rangeStr;
-        $rangeTab = 'F'.$rangeStr;
+        $rangeTab = $huruf.$rangeStr;
 
-        $header = 'A4:F4';
+        $header = 'A4:'.$huruf.'4';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
         
-        $sheet->mergeCells('A1:F1');
-        $sheet->mergeCells('A2:F2');
-        $title = 'A1:F2';
+        $sheet->mergeCells('A1:'.$huruf.'1');
+        $sheet->mergeCells('A2:'.$huruf.'2');
+        $title = 'A1:'.$huruf.'2';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A2:F2')->getFont()->setBold(false)->setSize(12);
+        $sheet->getStyle('A2:'.$huruf.'2')->getFont()->setBold(false)->setSize(12);
 
         $styleArray = [
             'borders' => [
@@ -103,7 +108,7 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFF00');
         
-        $namaJenis = 'A5:F5';
+        $namaJenis = 'A5:'.$huruf.'5';
         $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
         $sheet->getStyle($namaJenis)->getFill()
@@ -120,7 +125,7 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             
             $rangeSub += $barang->count();
             $rangeJen = strval($rangeSub);
-            $rangeBar = 'A'.$rangeSub.':F'.$rangeSub;
+            $rangeBar = 'A'.$rangeSub.':'.$huruf.$rangeSub;
 
             if($no != $sub->count() - 1) {
                 $sheet->getStyle($rangeBar)->getFont()->setBold(true)->setSize(12);

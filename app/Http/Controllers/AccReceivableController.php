@@ -77,9 +77,27 @@ class AccReceivableController extends Controller
         if($isi == 1) {
             $ar = AccReceivable::with(['so'])->whereIn('keterangan', [$status[0], $status[1]])
                 ->get();
+
+            $arOffice = AccReceivable::with(['so'])
+                ->select('ar.id', 'ar.id_so', 'ar.keterangan')
+                ->join('so', 'so.id', 'ar.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->where('id_sales', 'SLS03')
+                ->whereIn('keterangan', [$status[0], $status[1]])->get();
         } else {
             $ar = AccReceivable::with(['so'])->join('so', 'so.id', '=', 'ar.id_so')
                 ->select('*', 'so.id as id_so', 'ar.id as id')
+                ->whereIn('keterangan', [$status[0], $status[1]])
+                ->where(function ($q) use ($awal, $akhir, $month) {
+                    $q->whereMonth('so.tgl_so', $month)
+                    ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
+                })->get();
+
+            $arOffice = AccReceivable::with(['so'])
+                ->join('so', 'so.id', '=', 'ar.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->select('*', 'so.id as id_so', 'ar.id as id')
+                ->where('id_sales', 'SLS03')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
@@ -92,6 +110,7 @@ class AccReceivableController extends Controller
         
         $data = [
             'ar' => $ar,
+            'arOffice' => $arOffice,
             'bulan' => $request->bulan,
             'tglAwal' => $request->tglAwal,
             'tglAkhir' => $request->tglAkhir,

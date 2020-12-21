@@ -62,7 +62,7 @@
               @php $i++; @endphp
             @empty
               <tr>
-                <td colspan="7" class="text-center">Tidak Ada Data Approval</td>
+                <td colspan="8" class="text-center text-bold h4 p-2">Tidak Ada Data Notifikasi</td>
               </tr>
             @endforelse
           </tbody>

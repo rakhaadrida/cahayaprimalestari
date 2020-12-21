@@ -26,10 +26,14 @@
                 @else
                   <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($salesAnnOff[0]->sales, 0, "", ".") }}</div>
                 @endif
-              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR'))
                 <div class="text-md font-weight-bold text-primary text-uppercase mb-2">Transaksi (Total)</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $transMonthly }}
                 ({{ $transAnnual }})</div>
+              @elseif(Auth::user()->roles == 'AP')
+                <div class="text-md font-weight-bold text-primary text-uppercase mb-2">Transaksi (Total)</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $buyMonthly }}
+                ({{ $buyAnnual }})</div>
               @endif
             </div>
             <div class="col-auto">
@@ -132,7 +136,7 @@
             <div class="col mr-2">
               @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'OFFICE02'))
                 <div class="text-md font-weight-bold text-warning text-uppercase mb-2">Total Piutang</div>
-                @if(Auth::user()->roles == 'SUPER')
+                @if(Auth::user()->roles != 'OFFICE02')
                   <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($receivable, 0, "", ".") }}</div>
                 @else
                   <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($receivableOff, 0, "", ".") }}</div>
@@ -271,7 +275,7 @@
                     @foreach($bigTagihan as $b)
                       <tr>
                         <td align="center">{{ $i }}</td>
-                        <td align="center">{{ $b->id_bm }}</td>
+                        <td align="center">{{ $b->id_faktur }}</td>
                         <td align="center">
                           {{ \Carbon\Carbon::parse($b->tanggal)->format('d-M-y') }}
                         </td>

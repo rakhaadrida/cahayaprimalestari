@@ -14,4 +14,8 @@ class TransferBarang extends Model
     public function detiltb() {
         return $this->hasMany('App\Models\DetilTB', 'id_tb', 'id');
     }
+
+    public function user() {
+        return $this->belongsTo('App\User', 'id_user', 'id');
+    }
 }

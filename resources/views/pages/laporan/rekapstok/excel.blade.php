@@ -26,7 +26,7 @@
             $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
           @endphp 
           <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-            <td colspan="6" align="center">{{ $s->nama }}</td>
+            <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
           </tr>
           @foreach($barang as $b)
             @php

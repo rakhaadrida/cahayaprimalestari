@@ -20,4 +20,12 @@ class Gudang extends Model
     public function detil_approval() {
         return $this->hasMany('App\Models\DetilApproval', 'id_gudang', 'id');
     }
+
+    public function tbAsal() {
+        return $this->hasMany('App\Models\DetilTB', 'id_asal', 'id');
+    }
+
+    public function tbTuju() {
+        return $this->hasMany('App\Models\DetilTB', 'id_tujuan', 'id');
+    }
 }

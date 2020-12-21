@@ -95,6 +95,7 @@
             <a class="collapse-item" href="{{ route('cetak-bm', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Barang Masuk</a>
             <a class="collapse-item" href="{{ route('bm-change')}}">Ubah Barang Masuk</a>
             <a class="collapse-item" href="{{ route('tb') }}">Transfer Barang</a>
+            <a class="collapse-item" href="{{ route('tb-index') }}">Data Transfer Barang</a>
           </div>
         </div>
       </li>
@@ -135,8 +136,8 @@
         </a>
         <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="py-2 collapse-inner rounded">
+            <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
             @if(Auth::user()->roles != 'GUDANG')
-              <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
               <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Penjualan</a>
             @endif
             <a class="collapse-item" href="{{ route('retur-beli', ['status' => 'false', 'id'=> '0']) }}">Retur Pembelian</a>

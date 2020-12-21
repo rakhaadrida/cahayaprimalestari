@@ -16,6 +16,7 @@ use App\Models\Barang;
 use App\Models\Gudang;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
+use App\Models\DetilTB;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,6 +55,11 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                         $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
                     })->groupBy('id_so', 'id_barang')
                     ->get();
+        $rowTB = DetilTB::where('id_barang', $this->kode)
+                    ->whereHas('tb', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tgl_tb', [$this->awal, $this->akhir]);
+                    })->get();
+
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->where('id_barang', $this->kode)
                         ->groupBy('id_barang')->get();
@@ -78,6 +84,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             'gudang' => $gudang,
             'rowBM' => $rowBM,
             'rowSO' => $rowSO,
+            'rowTB' => $rowTB,
             'awal' => $tglAwal,
             'akhir' => $tglAkhir,
             'stok' => $stok,
@@ -100,22 +107,27 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
         
+        $alpha = range('A', 'Z');
+        $gudang = Gudang::All();
+        $angkaHuruf = $gudang->count() + 10;
+        $huruf = $alpha[$angkaHuruf];
+
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
-        $sheet->mergeCells('A1:N1');
-        $sheet->mergeCells('A2:N2');
-        $sheet->mergeCells('A3:N3');
-        $sheet->mergeCells('A5:N5');
-        $sheet->mergeCells('A6:N6');
+        $sheet->mergeCells('A1:'.$huruf.'1');
+        $sheet->mergeCells('A2:'.$huruf.'2');
+        $sheet->mergeCells('A3:'.$huruf.'3');
+        $sheet->mergeCells('A5:'.$huruf.'5');
+        $sheet->mergeCells('A6:'.$huruf.'6');
 
-        $title = 'A1:N3';
+        $title = 'A1:'.$huruf.'3';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A3:N3')->getFont()->setSize(12);
+        $sheet->getStyle('A3:'.$huruf.'3')->getFont()->setSize(12);
 
-        $infoBrg = 'A5:N6';
+        $infoBrg = 'A5:'.$huruf.'6';
         $sheet->getStyle($infoBrg)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($infoBrg)->getAlignment()->setHorizontal('left');
 
-        $header = 'A7:N9';
+        $header = 'A7:'.$huruf.'9';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center')->setVertical('center');
         $sheet->getStyle($header)->getFill()
@@ -137,11 +149,15 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                         $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
                     })->groupBy('id_so', 'id_barang')
                     ->get();
+        $rowTB = DetilTB::where('id_barang', $this->kode)
+                    ->whereHas('tb', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tgl_tb', [$this->awal, $this->akhir]);
+                    })->get();
 
-        $range = 10 + $rowBM + $rowSO->count() + 2;
+        $range = 10 + $rowBM + $rowSO->count() + $rowTB->count() + 2;
         $rangeStr = strval($range);
         $rangeMinOne = strval($range-1);
-        $rangeTab = 'N'.$rangeStr;
+        $rangeTab = $huruf.$rangeStr;
 
         $styleArray = [
             'borders' => [
@@ -152,7 +168,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
-        $rangeTable = 'A7:N'.$rangeStr;
+        $rangeTable = 'A7:'.$huruf.$rangeStr;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 
         $stokAwal = 'A10:E10';
@@ -165,10 +181,10 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($stokAkhir)->getFont()->setBold(true);
         $sheet->getStyle($stokAkhir)->getAlignment()->setHorizontal('center');
 
-        $awalRow = 'F10:N10';
-        $totalRow = 'F'.$rangeMinOne.':N'.$rangeMinOne;
-        $akhirRow = 'F'.$rangeStr.':N'.$rangeStr;
-        $akhirFull = 'A'.$rangeStr.':N'.$rangeStr;
+        $awalRow = 'F10:'.$huruf.'10';
+        $totalRow = 'F'.$rangeMinOne.':'.$huruf.$rangeMinOne;
+        $akhirRow = 'F'.$rangeStr.':'.$huruf.$rangeStr;
+        $akhirFull = 'A'.$rangeStr.':'.$huruf.$rangeStr;
 
         $sheet->getStyle($awalRow)->getFont()->setBold(true);
         $sheet->getStyle($awalRow)->getAlignment()->setHorizontal('right');
@@ -184,7 +200,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
         for($i = 10; $i <= $range-1; $i+=2) {
-            $rangeRow = 'A'.$i.':N'.$i;
+            $rangeRow = 'A'.$i.':'.$huruf.$i;
             $sheet->getStyle($rangeRow)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('d6d7e2');

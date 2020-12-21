@@ -232,7 +232,7 @@
                   @endphp 
                   @if(($baris + ($barang->count() + 1)) <= 65)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                      <td colspan="6" align="center">{{ $s->nama }}</td>
+                      <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
                     </tr>
                     @php $baris++; array_push($kode, $s->id); @endphp
                     @foreach($barang as $b)
@@ -294,7 +294,7 @@
                   @endphp 
                   @if(($baris + ($barang->count() + 1)) <= 130)
                     <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                      <td colspan="6" align="center">{{ $s->nama }}</td>
+                      <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
                     </tr>
                     @php $baris++; @endphp
                     @foreach($barang as $b)

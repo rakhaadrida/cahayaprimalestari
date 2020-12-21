@@ -60,7 +60,7 @@
               @php $i++; @endphp
             @empty
               <tr>
-                <td colspan="8" class="text-center">Tidak Ada Data</td>
+                <td colspan="8" class="text-center text-bold h4 p-2">Tidak Ada Data</td>
               </tr>
             @endforelse
           </tbody>

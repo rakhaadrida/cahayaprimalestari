@@ -193,8 +193,9 @@
                       <td> 
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
-                        <input type="hidden" name="kodeGudang[]" class="kodeGudang">
-                        <input type="hidden" name="qtyGudang[]" class="qtyGudang">
+                        <input type="hidden" name="teksSat[]" class="teksSat">
+                        <input type="text" name="kodeGudang[]" class="kodeGudang">
+                        <input type="text" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
@@ -290,7 +291,7 @@
                             <h4 class="modal-title text-bold">Notifikasi Stok Barang</h4>
                           </div>
                           <div class="modal-body text-dark">
-                            <h5>Qty input tidak bisa melebihi total stok. Total stok untuk barang <span class="col-form-label text-bold nmbrg"></span> adalah <span class="col-form-label text-bold totalstok"></span> atau <span class="col-form-label text-bold totalsatuan"></span></h5>
+                            <h5>Qty input tidak bisa melebihi total stok. Total stok untuk barang <span class="col-form-label text-bold nmbrg"></span> adalah <span class="col-form-label text-bold totalstok"></span><span class="col-form-label text-bold totalsatuan"></span></h5>
                           </div>
                         </div>
                       </div>
@@ -620,6 +621,7 @@ const satuanUkuran = document.getElementById("satuanUkuran");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
+const teksSat = document.querySelectorAll(".teksSat");
 const satuan = document.querySelectorAll(".satuan");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
 const qtyGudang = document.querySelectorAll(".qtyGudang");
@@ -1225,11 +1227,16 @@ for(let i = 0; i < brgNama.length; i++) {
         kodeBarang[i].value = '{{ $br->id }}';
         brgNama[i].value = '{{ $br->nama }}';
         satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
-        if(satuanUkuran.innerHTML == 'Dus')
+        if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
-        else
-          pcs.innerHTML = 'Meter';
-        ukuran = '{{ $br->ukuran }}';
+          teksSat[i].value = 'Pcs';
+          ukuran = '{{ $br->ukuran }}';
+        }
+        else {
+          pcs.innerHTML = 'Rol';
+          teksSat[i].value = 'Rol';
+          satuanUkuran.innerHTML = 'Meter';
+        }
       }
     @endforeach
 
@@ -1242,6 +1249,7 @@ for(let i = 0; i < brgNama.length; i++) {
     @endforeach
 
     kodeGudang[i].value = 'GDG01';
+    qtyGudang[i].value = '';
     qty[i].value = '';
     satuan[i].value = '';
   }
@@ -1279,11 +1287,14 @@ for(let i = 0; i < qty.length; i++) {
       qty[i].value = "";
       satuan[i].value = "";
     }
-    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (+e.target.value * +ukuran) > totStok)) {
+    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && (+e.target.value * +ukuran) > totStok)) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
-      totalstok[i].textContent = `${totStok} ${pcs.innerHTML}`;
-      totalsatuan[i].textContent = `${totStok / ukuran} ${satuanUkuran.innerHTML}`;
+      totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
+      if(teksSat[i].value == 'Pcs')
+        totalsatuan[i].textContent = ` atau ${totStok / ukuran} ${satuanUkuran.innerHTML}`;
+      else
+        totalsatuan[i].textContent = ``;
 
       qty[i].value = "";
       satuan[i].value = "";
@@ -1293,32 +1304,53 @@ for(let i = 0; i < qty.length; i++) {
       return false;
     }
     else {
-      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (+e.target.value * +ukuran) > stokJohar)) {
+      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && (+e.target.value * +ukuran) > stokJohar)) {
         $('#'+i).modal("show");
         kodeModal = i;
         teksJohar[i].textContent = `${stokJohar}`;
-        teksSatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
-        teksJoharUkuran[i].textContent = `${stokJohar / ukuran}`;
-        teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-        // qtyOrder[i].textContent = `${qty[i].value} ${pcs.innerHTML} / ${qty[i].value / ukuran} ${satuanUkuran.innerHTML}`;
+        teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        if(teksSat[i].value == 'Pcs') {
+          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`;
+          teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
+          teksJoharUkuran[i].textContent = ``;
+          teksUkuran[i].textContent = ``;
+        }
+
         qtyOrder[i].textContent = `${qty[i].value}`;
-        qtySatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
-        qtyOrderUkuran[i].textContent = `${qty[i].value / ukuran}`;
-        qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        if(teksSat[i].value == 'Pcs') {
+          qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran}`;
+          qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
+          qtyOrderUkuran[i].textContent = ``;
+          qtyUkuran[i].textContent = ``;
+        }
 
         sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
-        sisaSatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
-        sisaQtyUkuran[i].textContent = `${(qty[i].value - +stokJohar) / ukuran}`;
-        sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        if(teksSat[i].value == 'Pcs') {
+          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran}`;
+          sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
+          sisaQtyUkuran[i].textContent = ``;
+          sisaUkuran[i].textContent = ``;
+        }
+
         const stokGudang = document.querySelectorAll('.stokGudang'+i);
         const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
         const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
         const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
-        for(let i = 0; i < stokGudang.length; i++) {
-          stokGudang[i].textContent = `${stokLain[i]}`;
-          gudangSatuan[i].textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
-          stokGudangUkuran[i].textContent = `${stokLain[i] / ukuran}`;
-          gudangUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        for(let j = 0; j < stokGudang.length; j++) {
+          stokGudang[j].textContent = `${stokLain[j]}`;
+          gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
+          if(teksSat[i].value == 'Pcs') {
+            stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] / ukuran}`;
+            gudangUkuran[j].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          } else {
+            stokGudangUkuran[j].textContent = ``;
+            gudangUkuran[j].textContent = ``;
+          }
         }
         qtyGudang[i].value = stokJohar;
       }
@@ -1371,15 +1403,26 @@ for(let j = 0; j < modalGudang.length; j++) {
   $('#'+j).on('shown.bs.modal', function(e) {
     const kodeGud = document.querySelectorAll(".kodeGud"+j);
     const stokGudang = document.querySelectorAll('.stokGudang'+j);
+    kodeGudang[j].value = 'GDG01';
+    qtyGudang[j].value = stokJohar;
     
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
+    // $(btnPilih).prop('disabled', false); 
     for(let i = 0; i < btnPilih.length; i++) {
+      btnPilih[i].disabled = false;
       btnPilih[i].addEventListener("click", function (e) {
-        kodeGudang[j].value = 'GDG01';
-        qtyGudang[j].value = stokJohar;
-        totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
-        if(totPast < qtyOrder[j].textContent) {
+        // kodeGudang[j].value = 'GDG01';
+        // qtyGudang[j].value = stokJohar;
+        // totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
+        totPast = +stokGudang[i].textContent;
+        if(+totPast < +sisaQty[j].textContent) {
+          btnPilih[i].disabled = true;
           sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
+          sisaQty[j].textContent = `${sisa}`;
+          qtyGudang[j].value = qtyGudang[j].value.concat(`,${stokGudang[i].textContent}`);
+          kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
+
+          /* sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${stokGudang[i].textContent}`);
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisa}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
@@ -1387,13 +1430,12 @@ for(let j = 0; j < modalGudang.length; j++) {
             if(('{{ $g->id }}' != kodeGud[i].value) && ('{{ $g->id }}' != 'GDG01')) {
               kodeGudang[j].value = kodeGudang[j].value.concat(`,{{ $g->id }}`);
             }
-          @endforeach
-        }
-        else {
+          @endforeach */
+        } else {
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisaQty[j].textContent}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
+          $('#'+j).modal("hide");
         }
-        $('#'+j).modal("hide");
       });
     }
   });

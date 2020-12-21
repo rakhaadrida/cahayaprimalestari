@@ -42,7 +42,7 @@
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Retur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tglRetur" value="{{ $tanggal }}" required>
+                        <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tglRetur" value="{{ $tanggal }}" required autofocus>
                       </div>
                     </div>  
                   </div>
@@ -51,7 +51,7 @@
                   <label for="nama" class="col-2 col-form-label text-bold">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
-                    <input type="text" class="form-control form-control-sm text-bold" name="namaCustomer" id="namaCustomer" required>
+                    <input type="text" tabindex="2" class="form-control form-control-sm text-bold" name="namaCustomer" id="namaCustomer" required>
                   </div>
                   <div class="col-2 mt-1">
                     <input type="text" readonly class="form-control form-control-sm text-bold" name="kodeCustomer" id="kodeCustomer">
@@ -75,19 +75,20 @@
                   <td style="width: 50px">Hapus</td>
                 </thead>
                 <tbody id="tablePO">
+                  @php $tab = 2 @endphp
                   @for($i=1; $i<=5; $i++)
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
+                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
                         value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
                       </td>
                       <td>
-                        <input type="text" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
+                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -104,13 +105,13 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" formaction="{{ route('ret-process-jual', $newcode) }}" formmethod="POST"  class="btn btn-success btn-block text-bold">Submit</button>
+                  <button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ret-process-jual', $newcode) }}" formmethod="POST" id="submitRJ" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
+                  <button type="reset" tabindex="{{ $tab += 2 }}" id="resetRJ" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
                 </div>
                 <div class="col-2">
-                  <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
+                  <a href="{{ url()->previous() }}" tabindex="{{ $tab += 3 }}" id="backRJ" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
@@ -153,6 +154,7 @@ const qty = document.querySelectorAll(".qty");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
+var tab = '{{ $tab }}';
 
 tglRetur.addEventListener("keyup", formatTanggal);
 namaCustomer.addEventListener("keyup", displayCust);
@@ -168,13 +170,13 @@ function displayRow(e) {
     <tr class="text-bold text-dark" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
+        <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
       </td>
       <td>
-        <input type="text" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
+        <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -191,6 +193,10 @@ function displayRow(e) {
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
   const qtyRow = document.getElementById("qtyRow"+newNum);
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
+  kodeRow.focus();
+  document.getElementById("submitRJ").tabIndex = tab++;
+  document.getElementById("resetRJ").tabIndex = tab++;
+  document.getElementById("backRJ").tabIndex = tab++;
 
   /** Tampil Harga **/
   brgRow.addEventListener("keyup", function (e) {   
@@ -236,17 +242,24 @@ function displayRow(e) {
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
+    var numRow;
 
     if(+curNum < +lastNum) {
       $(newRow).remove();
       for(let i = +curNum; i < +lastNum; i++) {
         $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
       }
+      numRow = lastNum;
     }
     else if(+curNum == +lastNum) {
       $(newRow).remove();
+      numRow = +curNum - 1;
     }
     jumBaris.value -= 1;
+    if(jumBaris.value > 5)
+      document.getElementById("kdBrgRow"+numRow).focus();
+    else
+      kodeBarang[4].focus();
   });
 
   /** Autocomplete Nama  Barang **/
@@ -387,15 +400,26 @@ function angkaSaja(evt, inputan) {
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     for(let j = i; j < hapusBaris.length; j++) {
-      qty[j].value = qty[j+1].value;
-      brgNama[j].value = brgNama[j+1].value;
-      kodeBarang[j].value = kodeBarang[j+1].value;
-      if(kodeBarang[j+1].value == "")
-        qty[j].removeAttribute('required');
-      else
-        qty[j+1].removeAttribute('required');
+      if(j+1 != hapusBaris.length) {
+        qty[j].value = qty[j+1].value;
+        brgNama[j].value = brgNama[j+1].value;
+        kodeBarang[j].value = kodeBarang[j+1].value;
+        if(kodeBarang[j+1].value == "")
+          qty[j].removeAttribute('required');
+        else
+          qty[j+1].removeAttribute('required');
+      } else {
+        qty[j].value = '';
+        brgNama[j].value = '';
+        kodeBarang[j].value = '';
+      }
     }
+
     $(this).parents('tr').next().find('input').val('');
+    if(kodeBarang[i].value == '')
+      kodeBarang[i].focus();
+    else
+      kodeBarang[i+1].focus();
   });
 }
 

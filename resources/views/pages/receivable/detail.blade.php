@@ -40,7 +40,7 @@
                   @endif
                   @php $i++; $total += $d->cicil; @endphp
                 @endforeach
-                @if($a->keterangan == 'BELUM LUNAS')
+                @if(($a->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
                   <input type="hidden" name="kurangAwal" class="kurangAwal" value="{{ $kurang }}">
                   <tr class="text-dark">
                     <td class="text-center align-middle">{{ $i }}</td>
@@ -63,7 +63,7 @@
               </tbody>
             </table>
 
-            @if($a->keterangan == 'BELUM LUNAS')
+            @if(($a->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
               <div class="form-row justify-content-center">
                 <div class="col-3">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>

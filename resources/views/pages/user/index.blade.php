@@ -54,7 +54,7 @@
               @php $i++; @endphp
             @empty
               <tr>
-                <td colspan="4" class="text-center text-dark text-bold">Tidak Ada Data</td>
+                <td colspan="4" class="text-center text-bold h4 p-2">Tidak Ada Data</td>
               </tr>
             @endforelse
           </tbody>

@@ -96,7 +96,6 @@ class KartuStokController extends Controller
             'stokAwal' => $stokAwal
         ];
         
-        // var_dump($stok);
         return view('pages.laporan.kartustok.detail', $data);
     }
 

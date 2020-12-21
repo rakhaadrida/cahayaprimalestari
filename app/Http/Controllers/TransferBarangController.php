@@ -47,20 +47,6 @@ class TransferBarangController extends Controller
         return $formatTanggal;
     }
 
-    /* public function create(Request $request, $id) {
-        TempDetilTB::create([
-            'id_tb' => $id,
-            'id_barang' => $request->kodeBarang,
-            'id_asal' => $request->kodeAsal,
-            'id_tujuan' => $request->kodeTujuan,
-            'stok_asal' => $request->qtyAsal,
-            'stok_tujuan' => $request->qtyTujuan,
-            'qty' => $request->qty
-        ]);
-
-        return redirect()->route('tb');
-    } */
-
     public function process(Request $request, $id) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
@@ -99,9 +85,22 @@ class TransferBarangController extends Controller
         return redirect()->route('tb');
     }
 
-    /* public function remove($id, $barang, $asal, $tujuan) {
-        $tempDetil = TempDetilTB::where('id_tb', $id)->where('id_barang', $barang)->where('id_asal', $asal)->where('id_tujuan', $tujuan)->delete();
+    public function indexTab() {
+        $items = TransferBarang::orderBy('id', 'desc')->get();
+        $data = [
+            'items' => $items
+        ];
 
-        return redirect()->route('tb');
-    } */
+        return view('pages.pembelian.transferbarang.indexTab', $data);
+    }
+
+    public function detail(Request $request, $id) {
+        $items = TransferBarang::orderBy('id', 'desc')->get();
+        $data = [
+            'items' => $items,
+            'kode' => $id
+        ];
+
+        return view('pages.pembelian.transferbarang.detail', $data);
+    }
 }

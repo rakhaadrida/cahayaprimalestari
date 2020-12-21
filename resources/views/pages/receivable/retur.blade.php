@@ -57,7 +57,7 @@
                   </tr>
                   @php $i++; $totalQty += $d->qty; $totalRet += (($d->qty * $d->harga) - $d->diskonRp) @endphp
                 @endforeach
-                @if($a->keterangan == 'BELUM LUNAS')
+                @if(($a->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
                   <tr class="text-dark">
                     <td class="text-center align-middle">{{ $i }}</td>
                     <td class="align-middle">
@@ -107,7 +107,7 @@
             </table>
             <hr>
 
-            @if($a->keterangan == 'BELUM LUNAS')
+            @if(($a->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
               <div class="form-row justify-content-center">
                 <div class="col-3">
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-retur') }}" formmethod="POST">Submit</button>

@@ -14,7 +14,7 @@
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Data Retur Penjualan</h1>
       <div class="justify-content-end">
-        <a href="{{ route('ret-index-jual') }}" class="btn btn-sm btn-primary shadow-sm">
+        <a href="{{ route('ret-index-jual') }}" tabindex="1" class="btn btn-sm btn-primary shadow-sm">
           <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Input Retur Penjualan
         </a>
     </div>
@@ -42,12 +42,12 @@
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autofocus>
+                    <input type="text" tabindex="2" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autofocus>
                   </div>
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <select class="form-control form-control-sm mt-1" tabindex="2" name="status">
+                    <select class="form-control form-control-sm mt-1" tabindex="3" name="status">
                       <option value="ALL" selected>ALL</option>
                       <option value="INPUT">INPUT</option>
                       <option value="LENGKAP">LENGKAP</option>
@@ -58,14 +58,14 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
                   <div class="col-2">
-                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="5" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('retur-jual-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="6" formaction="{{ route('retur-jual-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>  
               </div>
@@ -87,7 +87,7 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1; $tab = 5; @endphp
+                  @php $i = 1; $tab = 6; @endphp
                   @forelse($retur as $r)
                     @php 
                       $qtyRetur = App\Models\DetilRJ::selectRaw('sum(qty_retur) as total')

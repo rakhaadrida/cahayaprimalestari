@@ -111,7 +111,7 @@
                         <td rowspan="3" style="width: 60px"class="align-middle">Nomor Transaksi</td>
                         <td rowspan="3" style="width: 120px" class="align-middle">Keterangan</td>
                         <td colspan="3" class="align-middle">Pemasukan</td>
-                        <td colspan="5">Pengeluaran</td>
+                        <td colspan="{{ $gudang->count() + 2 }}">Pengeluaran</td>
                         <td rowspan="3" style="width: 120px" class="align-middle">Pemakai</td>
                       </tr>
                       <tr>
@@ -143,11 +143,12 @@
                         <tr>
                           <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
                           <td class="text-bold text-dark text-right">{{ $stokAwal[$j] }}</td>
-                          <td colspan="9"></td>
+                          <td colspan="{{ $gudang->count() + 5 }}"></td>
                         </tr>
                         @php 
                           $i = 1; $totalBM = 0; $totalSO = 0;
                           $itemsBM = \App\Models\DetilBM::with(['bm', 'barang'])
+                                      ->select('id_bm', 'id_barang', 'qty')
                                       ->where('id_barang', $item->id)
                                       ->whereHas('bm', function($q) use($awal, $akhir) {
                                           $q->whereBetween('tanggal', [$awal, $akhir])
@@ -155,13 +156,17 @@
                                       })->get();
                           $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
                                       ->select('id_so', 'id_barang')
-                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                                      ->selectRaw('sum(qty) as qty')
                                       ->where('id_barang', $item->id)
                                       ->whereHas('so', function($q) use($awal, $akhir) {
                                         $q->whereBetween('tgl_so', [$awal, $akhir])
                                         ->where('status', '!=', 'BATAL');
                                       })->groupBy('id_so', 'id_barang')
                                       ->get();
+                          $itemsTB = \App\Models\DetilTB::where('id_barang', $item->id)
+                                      ->whereHas('tb', function($q) use($awal, $akhir) {
+                                          $q->whereBetween('tgl_tb', [$awal, $akhir]);
+                                      })->get();
                         @endphp
                         @foreach($itemsBM as $ib)
                           <tr class="text-dark">
@@ -173,7 +178,7 @@
                             <td class="align-middle" align="right">{{ $ib->qty }}</td>
                             <td class="align-middle">{{ $ib->bm->gudang->nama }}</td>
                             <td class="align-middle" align="right">
-                              {{ number_format($ib->qty * $ib->harga, 0, "", ".") }}
+                              {{ number_format($ib->bm->total, 0, "", ".") }}
                             </td>
                             <td class="align-middle" align="right"></td>
                             @foreach($gudang as $g)
@@ -210,10 +215,30 @@
                               @endif
                             @endforeach
                             <td class="align-middle" align="right">
-                              {{ number_format($is->qty * $is->harga, 0, "", ".") }}
+                              {{ number_format($is->so->total - $is->so->diskon, 0, "", ".") }}
                             </td>
                             <td class="align-middle" align="left">{{ $is->so->user->name }} - {{ \Carbon\Carbon::parse($is->so->updated_at)->format('H:i:s') }}</td>
                             @php $totalSO += $is->qty @endphp
+                          </tr>
+                          @php $i++; @endphp
+                        @endforeach
+                        @foreach($itemsTB as $it)
+                          <tr class="text-dark">
+                            <td align="center" class="align-middle">{{ $i }}</td>
+                            <td align="center" class="align-middle">{{ \Carbon\Carbon::parse($it->tb->tgl_tb)->format('d-M-y') }}</td>
+                            <td class="align-middle">Transfer Barang</td>
+                            <td class="align-middle">{{ $it->tb->id }}</td>
+                            <td class="align-middle">{{ $it->gudangAsal->nama }}</td>
+                            <td class="align-middle" align="right">{{ $it->qty }}</td>
+                            <td class="align-middle">{{ $it->gudangTuju->nama }}</td>
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="right"></td>
+                            @foreach($gudang as $g)
+                              <td></td>
+                            @endforeach
+                            <td class="align-middle" align="right"></td>
+                            <td class="align-middle" align="left">{{ $it->tb->user->name }} - {{ \Carbon\Carbon::parse($it->tb->updated_at)->format('H:i:s') }}</td>
+                            @php $totalBM += $it->qty @endphp
                           </tr>
                           @php $i++; @endphp
                         @endforeach
@@ -224,12 +249,12 @@
                           </td>
                           <td colspan="2"></td>
                           <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
-                          <td colspan="6"></td>
+                          <td colspan="{{ $gudang->count() + 2 }}"></td>
                         </tr>
                         <tr style="background-color: yellow">
                           <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
                           <td class="text-bold text-dark text-right">{{ $stok[$j]->total }}</td>
-                          <td colspan="9"></td>
+                          <td colspan="{{ $gudang->count() + 5 }}"></td>
                         </tr>
                       @else 
                         <tr>
