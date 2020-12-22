@@ -32,6 +32,10 @@
           <tbody>
             @php $i=1; @endphp
             @forelse ($items as $item)
+              @php 
+                $status = \App\Models\NeedApproval::where('id_dokumen', $item->id_dokumen)
+                ->get();
+              @endphp
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
@@ -41,7 +45,7 @@
                 @else
                   <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
                 @endif
-                <td class="align-middle" align="center">{{ $item->status }}</td>
+                <td class="align-middle" align="center">{{ $status->last()->status }}</td>
                 <td class="align-middle">{{ $item->keterangan }}</td>
                 <td class="align-middle" align="center">
                   <a href="{{ route('app-show', $item->id_dokumen) }}" class="btn btn-success btn-sm"><i class="fas fa-fw fa-eye"></i></a>

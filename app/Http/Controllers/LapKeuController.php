@@ -96,7 +96,7 @@ class LapKeuController extends Controller
     }
 
     public function getHpp($jenis, $month) {
-        $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $h = 0; $hpp = [];
+        $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $h = 0; $hpp = []; $kode = '';
         $hppPerKat = collect();
         foreach($jenis as $j) {
             $barang = Barang::where('id_kategori', $j->id)->get();

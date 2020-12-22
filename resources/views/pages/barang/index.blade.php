@@ -12,15 +12,17 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
     <h1 class="h3 mb-0 text-gray-800 menu-title">Data Barang</h1>
-    <div class="justify-content-end">
-      <a href="{{ route('barang.create') }}" class="btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Barang
-      </a>
-      <span class="vertical-hr mr-2 ml-1"></span>
-      <a href="{{ route('barang-trash') }}" class="btn btn-sm btn-outline-danger shadow-sm">
-        <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Data Tak Terpakai
-      </a>
-    </div>
+    @if(Auth::user()->roles != 'OFFICE02')
+      <div class="justify-content-end">
+        <a href="{{ route('barang.create') }}" class="btn btn-sm btn-primary shadow-sm">
+          <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Barang
+        </a>
+        <span class="vertical-hr mr-2 ml-1"></span>
+        <a href="{{ route('barang-trash') }}" class="btn btn-sm btn-outline-danger shadow-sm">
+          <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Data Tak Terpakai
+        </a>
+      </div>
+    @endif
   </div>
 
   <div class="row">
@@ -32,17 +34,30 @@
               <th>No</th>
               <th>Nama</th>
               @foreach($gudang as $g)
-                <th style="width: 80px">{{ $g->nama }}</th>
+                @if($g->retur == 'T')
+                  @if(Auth::user()->roles != 'OFFICE02')
+                    <th style="width: 40px">{{ substr($g->nama, 0, 3) }}</th>
+                  @endif
+                @else
+                  <th style="width: 40px">{{ substr($g->nama, 0, 3) }}</th>
+                @endif
               @endforeach
               <th>Detail</th>
-              <th>Harga</th>
-              <th>Stok</th>
-              <th>Ubah</th>
-              <th>Hapus</th>
+              @if(Auth::user()->roles != 'OFFICE02')
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Ubah</th>
+                <th>Hapus</th>
+              @endif
             </tr>
           </thead>
           <tbody>
-            @php $i=0; $j=1; @endphp
+            @php $i = 0; $j = 1; 
+              if(Auth::user()->roles != 'OFFICE02')
+                $items = $itemsBrg;
+              else
+                $items = $itemsBrgOff;
+            @endphp
             @forelse($items as $item)
               <tr class="text-dark">
                 <td class="align-middle" align="center" style="width: 10px">{{ $j }}</td>
@@ -58,37 +73,45 @@
                               ->where('id_gudang', $g->id)->get();  
                     }
                   @endphp
-                  <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
+                  @if($g->retur == 'T')
+                    @if(Auth::user()->roles != 'OFFICE02')
+                      <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
+                    @endif
+                  @else
+                    <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
+                  @endif
                 @endforeach
                 <td align="center" style="width: 15px">
                   <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
-                <td align="center" style="width: 15px">
-                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-warning">
-                    <i class="fas fa-fw fa-money-bill-alt"></i>
-                  </a>
-                </td>
-                <td align="center" style="width: 15px">
-                  <a href="{{ route('stokBarang', $item->id) }}" class="btn btn-sm btn-primary">
-                    <i class="fas fa-fw fa-warehouse"></i>
-                  </a>
-                </td>
-                <td align="center" style="width: 15px">
-                  <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-sm btn-info">
-                    <i class="fas fa-fw fa-edit"></i>
-                  </a>
-                </td>
-                <td align="center" style="width: 20px">
-                  <form action="{{ route('barang.destroy', $item->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('delete')
-                    <button class="btn btn-sm btn-danger">
-                      <i class="fas fa-fw fa-trash"></i>
-                    </button>  
-                  </form>
-                </td>
+                @if(Auth::user()->roles != 'OFFICE02')
+                  <td align="center" style="width: 15px">
+                    <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-warning">
+                      <i class="fas fa-fw fa-money-bill-alt"></i>
+                    </a>
+                  </td>
+                  <td align="center" style="width: 15px">
+                    <a href="{{ route('stokBarang', $item->id) }}" class="btn btn-sm btn-primary">
+                      <i class="fas fa-fw fa-warehouse"></i>
+                    </a>
+                  </td>
+                  <td align="center" style="width: 15px">
+                    <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-sm btn-info">
+                      <i class="fas fa-fw fa-edit"></i>
+                    </a>
+                  </td>
+                  <td align="center" style="width: 20px">
+                    <form action="{{ route('barang.destroy', $item->id) }}" method="POST" class="d-inline">
+                      @csrf
+                      @method('delete')
+                      <button class="btn btn-sm btn-danger">
+                        <i class="fas fa-fw fa-trash"></i>
+                      </button>  
+                    </form>
+                  </td>
+                @endif
               </tr>
               @php $j++; @endphp
             @empty

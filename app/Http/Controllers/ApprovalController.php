@@ -14,8 +14,13 @@ use App\Models\DetilApproval;
 use App\Models\AccReceivable;
 use App\Models\AccPayable;
 use App\Models\DetilAR;
+use App\Models\DetilAP;
 use App\Models\StokBarang;
 use App\Models\Gudang;
+use App\Models\AP_Retur;
+use App\Models\AR_Retur;
+use App\Models\DetilRAP;
+use App\Models\DetilRAR;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +31,7 @@ class ApprovalController extends Controller
     public function index() {
         $items = NeedApproval::with(['so', 'bm'])
                 ->select('id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
-                ->groupBy('id_dokumen')->get();
+                ->orderBy('created_at', 'asc')->groupBy('id_dokumen')->get();
         $data = [
             'items' => $items
         ];
@@ -37,7 +42,7 @@ class ApprovalController extends Controller
     public function show($id) {
         $approval = NeedApproval::with(['so', 'bm'])
                 ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
-                ->latest()->take(1)->get();
+                ->orderBy('created_at', 'asc')->groupBy('id_dokumen')->get();
 
         // return response()->json($approval);
         $gudang = Gudang::All();
@@ -49,15 +54,28 @@ class ApprovalController extends Controller
                         ->get();
 
         $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-                        ->select('id_customer', DB::raw('sum(total- retur) as totKredit'))
+                        ->select('id_customer', DB::raw('sum(total) as totKredit'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        $returPerCust = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))
                         ->where('keterangan', 'BELUM LUNAS')
                         ->groupBy('id_customer')
                         ->get();
 
         foreach($totalPerCust as $q) {
+            $q['total'] = $q->totKredit;
             foreach($cicilPerCust as $h) {
                 if($q->id_customer == $h->id_customer) {
-                    $q['total'] = $q->totKredit - $h->totCicil;
+                    $q['total'] -= $h->totCicil;
+                }
+            }
+            foreach($returPerCust as $r) {
+                if($q->id_customer == $r->id_customer) {
+                    $q['total'] -= $h->totCicil;
                 }
             }
         }
@@ -88,10 +106,31 @@ class ApprovalController extends Controller
         }
         elseif($status == 'PENDING_BATAL') {
             $item->{'status'} = "BATAL";
-            if($tipe == 'Faktur')
-                $ar = AccReceivable::where('id_so', $id)->delete();
-            else
-                $ap = AccPayable::where('id_bm', $id)->delete();
+            if($tipe == 'Faktur') {
+                $ar = AccReceivable::where('id_so', $id)->get();
+                $detilar = DetilAR::where('id_ar', $ar[0]->id)->get();
+                if($detilar->count() != 0) {
+                    $arRetur = AR_Retur::where('id_ap', $ar[0]->id)->get();
+                    if($arRetur->count() != 0) {
+                        $detilARR = DetilRAR::where('id_retur', $arRetur[0]->id)->delete();
+                        AR_Retur::where('id_ar', $ar[0]->id)->delete();
+                    }
+                    DetilAR::where('id_ar', $ar[0]->id)->delete();
+                }
+                AccReceivable::where('id_so', $id)->delete(); 
+            } else {
+                $ap = AccPayable::where('id_bm', $item->{'id_faktur'})->get();
+                $detilap = DetilAP::where('id_ap', $ap[0]->id)->get();
+                if($detilap->count() != 0) {
+                    $apRetur = AP_Retur::where('id_ap', $ap[0]->id)->get();
+                    if($apRetur->count() != 0) {
+                        $detilAPR = DetilRAP::where('id_retur', $apRetur[0]->id)->delete();
+                        AP_Retur::where('id_ap', $ap[0]->id)->delete();
+                    }
+                    DetilAP::where('id_ap', $ap[0]->id)->delete();
+                }
+                AccPayable::where('id_bm', $item->{'id_faktur'})->delete(); 
+            }
         }
         elseif($status == 'LIMIT') {
             $item->{'status'} = "APPROVE_LIMIT";

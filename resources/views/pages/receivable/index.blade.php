@@ -122,7 +122,7 @@
                       <td class="align-middle">{{ $a->so->customer->nama }}</td>
                       <td class="align-middle">{{ $a->so->customer->sales->nama }}</td>
                       <td align="center" class="align-middle">{{ $a->so->kategori }}</td>
-                      <td align="center" class="align-middle">{{ $a->id_so }}</td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->so->tgl_so)->format('d-M-y') }}
                       </td>
@@ -138,11 +138,11 @@
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
-                        <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
+                        <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
+                        <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
                     </tr>     
                     @php $i++; @endphp

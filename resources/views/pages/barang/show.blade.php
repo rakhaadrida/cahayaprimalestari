@@ -47,16 +47,12 @@
                 <tr>
                   <td width="150px" class="text-bold">Kategori</td>
                   <td>:</td>
-                  <td>
-                    @if($item->id_kategori != '') {{ $item->jenis->nama }} @endif
-                  </td>
+                  <td>{{ $item->id_kategori != '' ? $item->jenis->nama : '' }}</td>
                 </tr>
                 <tr>
                   <td width="150px" class="text-bold">Sub Kategori</td>
                   <td>:</td>
-                  <td>
-                    @if($item->id_sub != '') {{ $item->subjenis->nama }} @endif
-                  </td>
+                  <td>{{ $item->id_sub != '' ? $item->subjenis->nama : '' }}</td>
                 </tr>
                 <tr>
                   <td width="150px" class="text-bold">Ukuran / Satuan</td>

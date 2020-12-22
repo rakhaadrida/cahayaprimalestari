@@ -171,6 +171,7 @@
                             }
                           @endphp
                         @endforeach
+                        <input type="hidden" name="teksSat[]" class="teksSat" value="{{ substr($item->barang->satuan, 0, 3) }}">
                         <input type="hidden" name="KodeGudangArr[]" class="text-bold text-dark kodeGudangArr" value="{{ $arrKode }}">
                         <input type="hidden" name="qtyAwalArr[]" class="text-bold text-dark qtyAwalArr" value="{{ $arrQty }}">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang" 
@@ -193,12 +194,11 @@
                         @endphp
                         @if($itemGud->count() != 0)
                           <td>
-                            <input type="text" name="{{$g->id}}[]" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark {{$g->id}}" 
-                            value="{{ $itemGud[0]->qty }}">
+                            <input type="text" name="{{$g->id}}[]" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark gud{{$g->id}}" value="{{ $itemGud[0]->qty }}">
                           </td>
                         @else
                           <td>
-                            <input type="text" name="{{$g->id}}[]" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark {{$g->id}}" 
+                            <input type="text" name="{{$g->id}}[]" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark gud{{$g->id}}" 
                             value="">
                           </td>
                         @endif
@@ -418,6 +418,7 @@ const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qtyAwal = document.querySelectorAll(".qtyAwal");
 const qty = document.querySelectorAll(".qty");
+const teksSat = document.querySelectorAll(".teksSat");
 const kodeGudangArr = document.querySelectorAll(".kodeGudangArr");
 const qtyAwalArr = document.querySelectorAll(".qtyAwalArr");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
@@ -430,6 +431,8 @@ const diskonRp = document.querySelectorAll(".diskonRp");
 const netto = document.querySelectorAll(".netto");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const subtotal = document.getElementById('subtotal');
+const diskonFaktur = document.getElementById('diskonFaktur');
+const totalNotPPN = document.getElementById('totalNotPPN');
 const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
 const jumBaris = document.getElementById('jumBaris');
@@ -497,6 +500,9 @@ for(let i = 0; i < qty.length; i++) {
     stokJohar = 0;
     stokLain = [];
     totStok = 0;
+    arrKodeGud = kodeGudangArr[i].value.split(',');
+    arrQtyAwal = qtyAwalArr[i].value.split(',');
+
     @foreach($stok as $s)
       if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
         stokJohar = '{{ $s->stok }}';
@@ -508,16 +514,13 @@ for(let i = 0; i < qty.length; i++) {
       }
     @endforeach
 
-    arrKodeGud = kodeGudangArr[i].value.split(',');
-    arrQtyAwal = qtyAwalArr[i].value.split(',');
-
     @foreach($barang as $br)
       if('{{ $br->id }}' == kodeBarang[i].value) {
         satuanUkuran = '{{ substr($br->satuan, -3) }}';
         if(satuanUkuran == 'Dus')
           pcs = 'Pcs';
         else
-          pcs = 'Meter';
+          pcs = 'Rol';
         ukuran = '{{ $br->ukuran }}';
       }
     @endforeach
@@ -547,43 +550,65 @@ for(let i = 0; i < qty.length; i++) {
         $('#'+i).modal("show");
         kodeModal = i;
         teksJohar[i].textContent = `${+stokJohar + +arrQtyAwal[0]}`;
-        teksSatuan[i].textContent = `\u00A0${pcs} /\u00A0`;
-        teksJoharUkuran[i].textContent = `${(+stokJohar + +arrQtyAwal[0]) / ukuran}`;
-        teksUkuran[i].textContent = `\u00A0${satuanUkuran}`;
-        // qtyOrder[i].textContent = `${qty[i].value} ${pcs.innerHTML} / ${qty[i].value / ukuran} ${satuanUkuran.innerHTML}`;
+        teksSatuan[i].textContent = `\u00A0${pcs} `;
+        if(teksSat[i].value == 'Pcs') {
+          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`;
+          teksUkuran[i].textContent = `\u00A0${satuanUkuran}`;
+        } else {
+          teksJoharUkuran[i].textContent = ``;
+          teksUkuran[i].textContent = ``;
+        }
+
         qtyOrder[i].textContent = `${qty[i].value}`;
-        qtySatuan[i].textContent = `\u00A0${pcs} /\u00A0`;
-        qtyOrderUkuran[i].textContent = `${qty[i].value / ukuran}`;
-        qtyUkuran[i].textContent = `\u00A0${satuanUkuran}`;
+        qtySatuan[i].textContent = `\u00A0${pcs} `;
+        if(teksSat[i].value == 'Pcs') {
+          qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran}`;
+          qtyUkuran[i].textContent = `\u00A0${satuanUkuran}`;
+        } else {
+          qtyOrderUkuran[i].textContent = ``;
+          qtyUkuran[i].textContent = ``;
+        }
 
         sisaQty[i].textContent = `${+qty[i].value - (+stokJohar + +arrQtyAwal[0])}`;
-        sisaSatuan[i].textContent = `\u00A0${pcs} /\u00A0`;
-        sisaQtyUkuran[i].textContent = `${(qty[i].value - (+stokJohar + +arrQtyAwal[0])) / ukuran}`;
-        sisaUkuran[i].textContent = `\u00A0${satuanUkuran}`;
+        sisaSatuan[i].textContent = `\u00A0${pcs} `;
+        if(teksSat[i].value == 'Pcs') {
+          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran}`;
+          sisaUkuran[i].textContent = `\u00A0${satuanUkuran}`;
+        } else {
+          sisaQtyUkuran[i].textContent = ``;
+          sisaUkuran[i].textContent = ``;
+        }
+
         const kodeGud = document.querySelectorAll(".kodeGud"+i);
         const stokGudang = document.querySelectorAll('.stokGudang'+i);
         const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
         const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
         const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
         cek = 0;
-        for(let i = 0; i < stokGudang.length; i++) {
-          console.log(arrKodeGud[cek+1]);
-          if(kodeGud[i].value == arrKodeGud[cek+1]) {
-            stokTambah = +stokLain[i] + +arrQtyAwal[cek+1];
+        for(let j = 0; j < stokGudang.length; j++) {
+          if(kodeGud[j].value == arrKodeGud[cek+1]) {
+            stokTambah = +stokLain[j] + +arrQtyAwal[cek+1];
             cek++;
           } else {
-            stokTambah = stokLain[i];
+            stokTambah = stokLain[j];
           }
 
-          stokGudang[i].textContent = `${stokTambah}`;
-          gudangSatuan[i].textContent = `\u00A0${pcs} /\u00A0`;
-          stokGudangUkuran[i].textContent = `${stokTambah / ukuran}`;
-          gudangUkuran[i].textContent = `\u00A0${satuanUkuran}`;
+          stokGudang[j].textContent = `${stokTambah}`;
+          gudangSatuan[j].textContent = `\u00A0${pcs} `;
+          if(teksSat[i].value == 'Pcs') {
+            stokGudangUkuran[j].textContent = `\u00A0/ ${stokTambah / ukuran}`;
+            gudangUkuran[j].textContent = `\u00A0${satuanUkuran}`;
+          } else {
+            stokGudangUkuran[j].textContent = ``;
+            gudangUkuran[j].textContent = ``;
+          }
+          // stokGudangUkuran[i].textContent = `${stokTambah / ukuran}`;
+          // gudangUkuran[i].textContent = `\u00A0${satuanUkuran}`;
         }
-        qtyGudang[i].value = stokJohar;
+        qtyGudang[i].value = +stokJohar + +arrQtyAwal[0];
       }
       else {
-        kodeGudang[i].value = "GDG01";
+        kodeGudang[i].value = arrKodeGud;
         qtyGudang[i].value = e.target.value;
 
         cek = 0;
@@ -592,11 +617,11 @@ for(let i = 0; i < qty.length; i++) {
           arrQtyGud = qtyGudang[i].value.split(',');
           var kode = '{{ $g->id }}';
           if('{{ $g->id }}' == arrKodeGud[cek]) {
-            const qtyGudangDet = document.querySelectorAll('.'+kode)[i];
+            const qtyGudangDet = document.querySelectorAll('.gud'+kode)[i];
             qtyGudangDet.value = arrQtyGud[cek];
             cek++;
           } else {
-            const qtyGudangDet = document.querySelectorAll('.'+kode)[i];
+            const qtyGudangDet = document.querySelectorAll('.gud'+kode)[i];
             qtyGudangDet.value = '';
           }
         @endforeach
@@ -613,6 +638,7 @@ for(let i = 0; i < qty.length; i++) {
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
+    totalNotPPN.value = subtotal.value;
     grandtotal.value = subtotal.value;
   });
 } 
@@ -622,12 +648,30 @@ for(let j = 0; j < modalGudang.length; j++) {
   $('#'+j).on('shown.bs.modal', function(e) {
     const kodeGud = document.querySelectorAll(".kodeGud"+j);
     const stokGudang = document.querySelectorAll('.stokGudang'+j);
+    kodeGudang[j].value = 'GDG01';
+    qtyGudang[j].value = +stokJohar + +arrQtyAwal[0];
+    var cek = 0;
+
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
     for(let i = 0; i < btnPilih.length; i++) {
+      btnPilih[i].disabled = false;
       btnPilih[i].addEventListener("click", function (e) {
-        kodeGudang[j].value = 'GDG01';
-        qtyGudang[j].value = +stokJohar + +arrQtyAwal[0];
-        totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
+        totPast = +stokGudang[i].textContent;
+        if(+totPast < +sisaQty[j].textContent) {
+          btnPilih[i].disabled = true;
+          // btnPilih[i].removeEventListener('click', unclick, false);
+          sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
+          sisaQty[j].textContent = `${sisa}`;
+          qtyGudang[j].value = qtyGudang[j].value.concat(`,${stokGudang[i].textContent}`);
+          kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
+        } else {
+          qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisaQty[j].textContent}`);
+          kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
+          cek = 1;
+          // $('#'+j).modal("hide");
+        }
+
+        /* totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
         if(totPast < qtyOrder[j].textContent) {
           sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${stokGudang[i].textContent}`);
@@ -642,7 +686,7 @@ for(let j = 0; j < modalGudang.length; j++) {
         else {
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisaQty[j].textContent}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
-        }
+        } */
 
         @foreach($gudang as $g)
           arrKodeGud = kodeGudang[j].value.split(',');
@@ -650,17 +694,18 @@ for(let j = 0; j < modalGudang.length; j++) {
           var kode = '{{ $g->id }}';
           for(k = 0; k < arrKodeGud.length; k++) {
             if('{{ $g->id }}' == arrKodeGud[k]) {
-              const qtyGudangDetil = document.querySelectorAll('.'+kode)[j];
+              const qtyGudangDetil = document.querySelectorAll('.gud'+kode)[j];
               qtyGudangDetil.value = arrQtyGud[k];
               break;
             } else {
-              const qtyGudangDetil = document.querySelectorAll('.'+kode)[j];
+              const qtyGudangDetil = document.querySelectorAll('.gud'+kode)[j];
               qtyGudangDetil.value = '';
             }
           }
         @endforeach
 
-        $('#'+j).modal("hide");
+        if(cek == 1)
+          $('#'+j).modal("hide");
       });
     }
   });
@@ -683,6 +728,7 @@ for(let i = 0; i < diskon.length; i++) {
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
+    totalNotPPN.value = subtotal.value;
     grandtotal.value = subtotal.value;
   });
 }
@@ -773,6 +819,11 @@ for(let i = 0; i < hapusBaris.length; i++) {
         diskon[j].value = diskon[j+1].value;
         jumlah[j].value = jumlah[j+1].value;
         harga[j].value = harga[j+1].value;
+        @foreach($gudang as $g)
+          var kodGud = '{{ $g->id }}';
+          var gud = document.querySelectorAll('.gud'+kodGud);
+          gud[j].value = gud[j+1].value;
+        @endforeach
         qtyGudang[j].value = qtyGudang[j+1].value;
         kodeGudang[j].value = kodeGudang[j+1].value;
         qtyAwalArr[j].value = qtyAwalArr[j+1].value;

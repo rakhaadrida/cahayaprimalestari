@@ -403,7 +403,7 @@
               <td style="width: 50px">Kode</td>
               <td>Nama Barang</td>
               <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
-              <td style="width: 30px">UOM</td>
+              {{-- <td style="width: 30px">UOM</td> --}}
               <td style="width: 55px">Harga</td>
               <td style="width: 70px">Rupiah</td>
               <td colspan="2">Diskon</td>
@@ -417,13 +417,20 @@
                 <td rowspan="2" align="center">{{ $i }}</td>
                 <td rowspan="2">{{ $itemDet->id_barang }}</td>
                 <td rowspan="2">{{ $itemDet->barang->nama }}</td>
-                <td rowspan="2" align="right" style="width: 50px">{{ $itemDet->qty }}</td>
-                <td rowspan="2" align="center" style="width: 50px">
-                  {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
-                </td>
-                <td rowspan="2" align="center">
+                @if($itemDet->barang->satuan == "Pcs / Dus")
+                  <td rowspan="2" align="right" style="width: 50px">{{ $itemDet->qty }} PCS</td>
+                  <td rowspan="2" align="center" style="width: 50px">
+                    {{ $itemDet->qty / $itemDet->barang->ukuran }} Dus
+                  </td>
+                @else
+                  <td rowspan="2" align="right" style="width: 50px">{{ $itemDet->qty }} ROL</td>
+                  <td rowspan="2" align="center" style="width: 50px">
+                    {{ $itemDet->qty * $itemDet->barang->ukuran }} Mtr
+                  </td>
+                @endif
+                {{-- <td rowspan="2" align="center">
                   @if($itemDet->barang->satuan == "Pcs / Dus") PCS @else MTR @endif
-                </td>
+                </td> --}}
                 <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
                 @php 

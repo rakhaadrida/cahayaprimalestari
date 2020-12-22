@@ -42,12 +42,12 @@
                 </div>
               </div>
               <hr>
-              @php $i=0; @endphp
+              @php $i = 0; $tab = 1; @endphp
               @foreach($harga as $h)
                 <div class="form-row">
                   <div class="form-group col-2">
                     <label for="harga" class="col-form-label text-bold">Price List</label>
-                    <input type="text" class="form-control col-form-label-sm harga" id="harga"
+                    <input type="text" tabindex="0" class="form-control col-form-label-sm harga" id="harga"
                     name="harga[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
@@ -59,7 +59,7 @@
                   </div>
                   <div class="form-group col-2 ml-2">
                     <label for="ppn" class="col-form-label text-bold">PPN</label>
-                    <input type="text" class="form-control col-form-label-sm ppn" id="ppn" 
+                    <input type="text" tabindex="0" class="form-control col-form-label-sm ppn" id="ppn" 
                     name="ppn[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
@@ -71,7 +71,7 @@
                   </div>
                   <div class="form-group col-2 ml-2">
                     <label for="hargaPPN" class="col-form-label text-bold">{{ $h->nama }}</label>
-                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required autofocus
+                    <input type="text" tabindex="{{ $tab++ }}" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required @if($i == 0) autofocus @endif
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ number_format($item->harga_ppn, 0, "", ".") }}" 

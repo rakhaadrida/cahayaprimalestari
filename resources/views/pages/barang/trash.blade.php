@@ -28,7 +28,7 @@
               <th style="width: 40px">No</th>
               <th>Nama</th>
               @foreach($gudang as $g)
-                <th style="width: 80px">{{ $g->nama }}</th>
+                <th style="width: 50px">{{ substr($g->nama, 0, 3) }}</th>
               @endforeach
               <th style="width: 70px">Detail</th>
               <th style="width: 80px">Kembalikan</th>
@@ -68,7 +68,7 @@
               @php $j++; @endphp
             @empty
               <tr>
-                <td colspan="8" class="text-center">Tidak Ada Data</td>
+                <td colspan="9" class="text-center">Tidak Ada Data</td>
               </tr>
             @endforelse
           </tbody>

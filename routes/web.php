@@ -29,7 +29,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::resource('barang', 'BarangController');
         Route::resource('gudang', 'GudangController');
         Route::resource('harga', 'HargaController');
-        // Route::resource('po', 'PurchaseOrderController');
 
         // Soft Deletes Suppllier
         Route::get('supplier/trash/all', 'SupplierController@trash')->name('sup-trash');
@@ -124,9 +123,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/po/remove/{po}/{barang}', 'PurchaseController@remove')->name('po-remove');
 
         // Barang Masuk
-        Route::get('/barangmasuk/index/{status}', 'BarangMasukController@index')->name('barangMasuk');
-        Route::post('/barangmasuk/create/{id}', 'BarangMasukController@create')->name('bm-create');
-        Route::post('/barangmasuk/process/{id}/{status}','BarangMasukController@process')->name('bm-process');
+        Route::get('/barangmasuk/index/{status}', 'BarangMasukController@index')
+            ->name('barangMasuk');
+        Route::post('/barangmasuk/create/{id}', 'BarangMasukController@create')
+            ->name('bm-create');
+        Route::post('/barangmasuk/process/{id}/{status}','BarangMasukController@process')
+            ->name('bm-process');
         // Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name('bm-process');
         Route::get('/barangmasuk/cetak/{id}', 'BarangMasukController@cetak')->name('bm-cetak');
         Route::get('/barangmasuke/afterPrint/{id}', 'BarangMasukController@afterPrint')
@@ -194,6 +196,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
+        Route::post('/tandaterima/show', 'TandaTerimaController@show')->name('ttr-show');
         Route::post('/tandaterima/detail/{id}', 'TandaTerimaController@detail')
             ->name('ttr-detail');
         Route::get('/tandaterima/cetak/{status}/{awal}/{akhir}',
@@ -337,6 +340,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Ubah dan Cek Faktur
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
+    });
+
+    Route::group(['roles'=>'OFFICE02'], function() {
+        // Account Payable
+        Route::get('stok/index', 'BarangController@index')->name('stok-office');
     });
 
     // Route::group(['roles'=>['AR', 'SUPER']], function() {

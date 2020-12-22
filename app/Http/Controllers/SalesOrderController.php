@@ -349,6 +349,9 @@ class SalesOrderController extends Controller
         $lastnumber++;
         $newcode = 'APP'.sprintf('%04s', $lastnumber);
 
+        $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)
+                ->orderBy('created_at', 'desc')->get();
+
         NeedApproval::create([
             'id' => $newcode,
             'tanggal' => Carbon::now()->toDateString(),
@@ -357,8 +360,8 @@ class SalesOrderController extends Controller
             'id_dokumen' => $id,
             'tipe' => 'Faktur'
         ]);
-
-        $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)->get();
+   
+        // return response()->json($items);
 
         if($items[0]->need_appdetil->count() != 0) {
             $detil = NeedAppDetil::where('id_app', $items[0]->need_appdetil[0]->id_app)->get();
@@ -384,7 +387,7 @@ class SalesOrderController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('retur', 'F')->get();
         $stok = StokBarang::All();
 
         $data = [

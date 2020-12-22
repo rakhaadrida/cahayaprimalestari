@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Subjenis;
 use App\Models\JenisBarang;
+use App\Models\Barang;
 
 class SubjenisController extends Controller
 {
@@ -79,6 +80,12 @@ class SubjenisController extends Controller
     {
         $item = Subjenis::findOrFail($id);
         $item->delete();
+
+        $item = Barang::where('id_sub', $id)->get();
+        foreach($item as $i) {
+            $i->id_sub = '';
+            $i->save();
+        }
 
         return redirect()->route('subjenis.index');
     }

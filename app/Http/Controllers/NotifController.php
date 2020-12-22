@@ -76,10 +76,31 @@ class NotifController extends Controller
                         ->get();
 
         $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-                        ->select('id_customer', DB::raw('sum(total- retur) as totKredit'))
+                        ->select('id_customer', DB::raw('sum(total) as totKredit'))
                         ->where('keterangan', 'BELUM LUNAS')
                         ->groupBy('id_customer')
                         ->get();
+        
+        $returPerCust = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        foreach($totalPerCust as $q) {
+            $q['total'] = $q->totKredit;
+            foreach($cicilPerCust as $h) {
+                if($q->id_customer == $h->id_customer) {
+                    $q['total'] -= $h->totCicil;
+                }
+            }
+            foreach($returPerCust as $r) {
+                if($q->id_customer == $r->id_customer) {
+                    $q['total'] -= $h->totCicil;
+                }
+            }
+        }
 
         foreach($totalPerCust as $q) {
             foreach($cicilPerCust as $h) {

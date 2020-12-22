@@ -20,6 +20,19 @@ class TandaTerimaController extends Controller
         return view('pages.penjualan.tandaterima.index', $data);
     }
 
+    public function show(Request $request) {
+        $tglAwal = Carbon::parse($request->tglAwal)->format('Y-m-d');
+        $tglAkhir = Carbon::parse($request->tglAkhir)->format('Y-m-d');
+
+        $items = TandaTerima::whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                ->groupBy('id')->get();
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.penjualan.tandaterima.index', $data);
+    }
+
     public function detail(Request $request, $id) {
         $items = TandaTerima::groupBy('id')->get();
         $data = [

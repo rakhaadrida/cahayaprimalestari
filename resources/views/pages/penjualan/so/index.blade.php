@@ -194,8 +194,8 @@
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                         <input type="hidden" name="teksSat[]" class="teksSat">
-                        <input type="text" name="kodeGudang[]" class="kodeGudang">
-                        <input type="text" name="qtyGudang[]" class="qtyGudang">
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang">
+                        <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
@@ -269,10 +269,10 @@
                               @if($g->id != "GDG01")
                                 <div class="row">
                                 <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudang{{$i-1}}"></span><span class="col-form-label text-bold gudangSatuan{{$i-1}}"></span><span class="col-form-label text-bold stokGudangUkuran{{$i-1}}"></span><span class="col-form-label text-bold gudangUkuran{{$i-1}}"></span>)</label>
-                                  <input type="hidden" class="kodeGud{{$i-1}}" value="{{$g->id}}">
-                                  <div class="col-3">
-                                    <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih{{$i-1}}">Pilih</button>
-                                  </div>
+                                <input type="hidden" class="kodeGud{{$i-1}}" value="{{$g->id}}">
+                                <div class="col-3">
+                                  <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih{{$i-1}}">Pilih</button>
+                                </div>
                                 </div>
                               @endif
                             @endforeach
@@ -549,8 +549,8 @@
   //   $("#frameCetak").printPage();
   // });
 
-  const printFrame = document.getElementById("frameCetak");
-  // const printFrame = document.getElementById("frameCetak").contentWindow;
+  // const printFrame = document.getElementById("frameCetak");
+  const printFrame = document.getElementById("frameCetak").contentWindow;
 
   // window.frames[0].parent.onafterprint = function(e) {
   //   alert('ok');
@@ -567,24 +567,24 @@
   // console.log(document.getElementById("frameCetak").contentWindow);
   // console.log(window);
 
-  console.log(frameCetak);
+  // console.log(frameCetak);
 
-  frameCetak.onload = function() {
-    // console.log(frameCetak);
+  // frameCetak.onload = function() {
+  //   // console.log(frameCetak);
 
-    frameCetak.onafterprint = function(e) {
-      // alert('ok');
-      window.location = "{{ route('so-after-print', $lastcode) }}";
-    };
+  //   frameCetak.onafterprint = function(e) {
+  //     // alert('ok');
+  //     window.location = "{{ route('so-after-print', $lastcode) }}";
+  //   };
 
-    window.print();
-  };
+  //   // window.print();
+  // };
 
-  // printFrame.window.onafterprint = function(e) {
-  //   alert('ok');
-  // }
+  printFrame.window.onafterprint = function(e) {
+    alert('ok');
+  }
   
-  // printFrame.window.print();
+  printFrame.window.print();
   // window.print();
 @endif 
 
@@ -745,8 +745,9 @@ function displayRow(e) {
       </td>
       <td>
         <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
-        <input type="hidden" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
-        <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
+        <input type="hidden" name="teksSat[]" class="teksSatRow" id="teksSatRow${newNum}">
+        <input type="text" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
+        <input type="text" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
       <td>
         <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
         value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
@@ -821,8 +822,8 @@ function displayRow(e) {
             @foreach($gudang as $g)
               @if($g->id != "GDG01")
                 <div class="row">
-                <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudangRow${newNum}"></span>)</label>
-                  <input type="hidden" class="kodeGudRow${newNum}" value="{{$g->id}}">
+                <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudangRow${newNum}"></span><span class="col-form-label text-bold gudangSatuanRow${newNum}"></span><span class="col-form-label text-bold stokGudangUkuranRow${newNum}"></span><span class="col-form-label text-bold gudangUkuranRow${newNum}"></span>)</label>
+                <input type="hidden" class="kodeGudRow${newNum}" value="{{$g->id}}">
                   <div class="col-3">
                     <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilihRow${newNum}">Pilih</button>
                   </div>
@@ -844,7 +845,7 @@ function displayRow(e) {
             <h4 class="modal-title text-bold">Notifikasi Stok Barang</h4>
           </div>
           <div class="modal-body text-dark">
-            <h5>Qty input tidak bisa melebihi total stok. Total stok untuk barang <span class="col-form-label text-bold nmbrgRow" id="nmbrgRow${newNum}"></span> adalah <span class="col-form-label text-bold totalstokRow" id="totalstokRow${newNum}"></span> atau <span class="col-form-label text-bold totalsatuanRow" id="totalsatuanRow${newNum}"></span></h5>
+            <h5>Qty input tidak bisa melebihi total stok. Total stok untuk barang <span class="col-form-label text-bold nmbrgRow" id="nmbrgRow${newNum}"></span> adalah <span class="col-form-label text-bold totalstokRow" id="totalstokRow${newNum}"></span><span class="col-form-label text-bold totalsatuanRow" id="totalsatuanRow${newNum}"></span></h5>
           </div>
         </div>
       </div>
@@ -860,6 +861,7 @@ function displayRow(e) {
   const brgRow = document.getElementById("nmBrgRow"+newNum);
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
   const qtyRow = document.getElementById("qtyRow"+newNum);
+  const teksSatRow = document.getElementById("teksSatRow"+newNum);
   const satuanRow = document.getElementById("satuanRow"+newNum);
   const kodeGudangRow = document.getElementById("kodeGudangRow"+newNum);
   const qtyGudangRow = document.getElementById("qtyGudangRow"+newNum);
@@ -915,10 +917,20 @@ function displayRow(e) {
         kodeRow.value = '{{ $br->id }}';
         brgRow.value = '{{ $br->nama }}';
         satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
-        if(satuanUkuran.innerHTML == 'Dus')
+        if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
-        else
-          pcs.innerHTML = 'Meter';
+          teksSatRow.value = 'Pcs';
+          // ukuran = '{{ $br->ukuran }}';
+          satuanRow.value = '';
+          satuanRow.removeAttribute('readonly');
+        }
+        else {
+          pcs.innerHTML = 'Rol';
+          teksSatRow.value = 'Rol';
+          satuanUkuran.innerHTML = 'Meter';
+          satuanRow.value = '{{ $br->ukuran }}';
+          satuanRow.setAttribute('readonly', 'true');
+        }
         ukuranRow = '{{ $br->ukuran }}';
       }
     @endforeach
@@ -933,7 +945,7 @@ function displayRow(e) {
 
     kodeGudangRow.value = 'GDG01';
     qtyRow.value = '';
-    satuanRow.value = '';
+    // satuanRow.value = '';
   } 
 
   /** Inputan hanya bisa angka **/
@@ -968,7 +980,7 @@ function displayRow(e) {
       }
     @endforeach
 
-    hitungQtyRow(e.target.id, e.target.value);
+    hitungQtyRow(e.target.id, e.target.value, teksSatRow.value);
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
@@ -980,11 +992,14 @@ function displayRow(e) {
       qtyRow.value = "";
       satuanRow.value = "";
     }
-    else if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > totStok)) || ((e.target.id == `satuanRow${newNum}`) && (+e.target.value * +ukuranRow) > totStok)) {
+    else if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > totStok)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow) > totStok)) {
       $('#notif'+newNum).modal("show");
       nmbrgRow.textContent = brgRow.value;
       totalstokRow.textContent = `${totStok} ${pcs.innerHTML}`;
-      totalsatuanRow.textContent = `${totStok / ukuranRow} ${satuanUkuran.innerHTML}`;
+      if(teksSatRow.value == 'Pcs')
+        totalsatuanRow.textContent = ` atau ${totStok / ukuranRow} ${satuanUkuran.innerHTML}`;
+      else
+        totalsatuanRow.textContent = ``;
 
       qtyRow.value = "";
       satuanRow.value = "";
@@ -994,26 +1009,53 @@ function displayRow(e) {
       return false;
     }
     else {
-      if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (+e.target.value * +ukuranRow) > stokJohar)) {
+      if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow) > stokJohar)) {
         $('#gud'+newNum).modal("show");
         kodeModal = newNum;
         teksJoharRow.textContent = `${stokJohar}`;
-        teksSatuanRow.textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
-        teksJoharUkuranRow.textContent = `${stokJohar / ukuranRow}`;
-        teksUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        teksSatuanRow.textContent = `\u00A0${pcs.innerHTML} `;
+        if(teksSatRow.value == 'Pcs') {
+          teksJoharUkuranRow.textContent = `\u00A0/ ${stokJohar / ukuranRow}`;
+          teksUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
+          teksJoharUkuranRow.textContent = ``;
+          teksUkuranRow.textContent = ``;
+        }
 
         qtyOrderRow.textContent = `${qtyRow.value}`;
-        qtySatuanRow.textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
-        qtyOrderUkuranRow.textContent = `${qtyRow.value / ukuranRow}`;
-        qtyUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        qtySatuanRow.textContent = `\u00A0${pcs.innerHTML} `;
+        if(teksSatRow.value == 'Pcs') {
+          qtyOrderUkuranRow.textContent = `\u00A0/ ${qtyRow.value / ukuranRow}`;
+          qtyUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
+          qtyOrderUkuranRow.textContent = ``;
+          qtyUkuranRow.textContent = ``;
+        }
 
         sisaQtyRow.textContent = `${+qtyRow.value - +stokJohar}`;
-        sisaSatuanRow.textContent = `\u00A0${pcs.innerHTML} /\u00A0`;
-        sisaQtyUkuranRow.textContent = `${(qtyRow.value - +stokJohar) / ukuranRow}`;
-        sisaUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        sisaSatuanRow.textContent = `\u00A0${pcs.innerHTML} `;
+        if(teksSatRow.value == 'Pcs') {
+          sisaQtyUkuranRow.textContent = `\u00A0/ ${(qtyRow.value - +stokJohar) / ukuranRow}`;
+          sisaUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
+          sisaQtyUkuranRow.textContent = ``;
+          sisaUkuranRow.textContent = ``;
+        }
+
         const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
+        const gudangSatuanRow = document.querySelectorAll('.gudangSatuanRow'+newNum);
+        const stokGudangUkuranRow = document.querySelectorAll('.stokGudangUkuranRow'+newNum);
+        const gudangUkuranRow = document.querySelectorAll('.gudangUkuranRow'+newNum);
         for(let i = 0; i < stokGudangRow.length; i++) {
-          stokGudangRow[i].textContent = `${stokLain[i]} ${pcs.innerHTML} / ${stokLain[i] / ukuranRow} ${satuanUkuran.innerHTML}`;
+          stokGudangRow[i].textContent = `${stokLain[i]}`;
+          gudangSatuanRow[i].textContent = `\u00A0${teksSatRow.value}`;
+          if(teksSatRow.value == 'Pcs') {
+            stokGudangUkuranRow[i].textContent = `\u00A0/ ${stokLain[i] / ukuranRow}`;
+            gudangUkuranRow[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          } else {
+            stokGudangUkuranRow[i].textContent = ``;
+            gudangUkuranRow[i].textContent = ``;
+          }
         }
         qtyGudangRow.value = stokJohar;
       }
@@ -1023,7 +1065,7 @@ function displayRow(e) {
       }
 
       netPast = +nettoRow.value.replace(/\./g, "");
-      jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
+      jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
       if(diskonRow.value != "") {
         var angkaDiskon = hitungDiskon(diskonRow.value)
         diskonRpRow.value = addCommas(angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100);
@@ -1038,9 +1080,13 @@ function displayRow(e) {
     grandtotal.value = totalNotPPN.value;
   }
 
-  function hitungQtyRow(kode, angka) {
-    if(kode == `qtyRow${newNum}`)
-      satuanRow.value = +angka / +ukuranRow;
+  function hitungQtyRow(kode, angka, teks) {
+    if(kode == `qtyRow${newNum}`) {
+      if(teks == 'Pcs')
+        satuanRow.value = +angka / +ukuranRow;
+      else
+        satuanRow.value = +angka * +ukuranRow;
+    }
     else if(kode == `satuanRow${newNum}`) 
       qtyRow.value = +angka * +ukuranRow;
   }
@@ -1048,12 +1094,28 @@ function displayRow(e) {
   $('#gud'+newNum).on('shown.bs.modal', function(e) {
     const kodeGudRow = document.querySelectorAll(".kodeGudRow"+newNum);
     const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
+    kodeGudangRow.value = 'GDG01';
+    qtyGudangRow.value = stokJohar;
+
     const btnPilihRow = document.querySelectorAll(".btnPilihRow"+newNum);
     for(let i = 0; i < btnPilihRow.length; i++) {
+      btnPilihRow[i].disabled = false;
       btnPilihRow[i].addEventListener("click", function (e) {
-        kodeGudangRow.value = 'GDG01';
-        qtyGudangRow.value = stokJohar;
-        totPast = +qtyGudangRow.value + +stokGudangRow[i].textContent;
+        totPast = +stokGudangRow[i].textContent;
+        if(+totPast < +sisaQtyRow.textContent) {
+          btnPilihRow[i].disabled = true;
+          sisa = +sisaQtyRow.textContent - +stokGudangRow[i].textContent;
+          sisaQtyRow.textContent = `${sisa}`;
+          qtyGudangRow.value = qtyGudangRow.value.concat(`,${stokGudangRow[i].textContent}`);
+          kodeGudangRow.value = kodeGudangRow.value.concat(`,${kodeGudRow[i].value}`);
+        } else {
+          qtyGudangRow.value = qtyGudangRow.value.concat(`,${sisaQtyRow.textContent}`);
+          kodeGudangRow.value = kodeGudangRow.value.concat(`,${kodeGudRow[i].value}`);
+          $('#gud'+newNum).modal("hide");
+          tipeRow.focus();
+        }
+
+        /* totPast = +qtyGudangRow.value + +stokGudangRow[i].textContent;
         if(totPast < qtyOrderRow.textContent) {
           sisa = +sisaQtyRow.textContent - +stokGudangRow[i].textContent;
           qtyGudangRow.value = qtyGudangRow.value.concat(`,${stokGudangRow[i].textContent}`);
@@ -1064,12 +1126,12 @@ function displayRow(e) {
               kodeGudangRow.value = kodeGudangRow.value.concat(`,{{ $g->id }}`);
             }
           @endforeach
-        }
+        } 
         else {
           qtyGudangRow.value = qtyGudangRow.value.concat(`,${sisaQtyRow.textContent}`);
           kodeGudangRow.value = kodeGudangRow.value.concat(`,${kodeGudRow[i].value}`);
         }
-        $('#gud'+newNum).modal("hide");
+        $('#gud'+newNum).modal("hide"); */
       });
     }
   });
@@ -1230,13 +1292,18 @@ for(let i = 0; i < brgNama.length; i++) {
         if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
           teksSat[i].value = 'Pcs';
-          ukuran = '{{ $br->ukuran }}';
+          // ukuran = '{{ $br->ukuran }}';
+          satuan[i].value = '';
+          satuan[i].removeAttribute('readonly');
         }
         else {
           pcs.innerHTML = 'Rol';
           teksSat[i].value = 'Rol';
           satuanUkuran.innerHTML = 'Meter';
+          satuan[i].value = '{{ $br->ukuran }}';
+          satuan[i].setAttribute('readonly', 'true');
         }
+        ukuran = '{{ $br->ukuran }}';
       }
     @endforeach
 
@@ -1251,7 +1318,7 @@ for(let i = 0; i < brgNama.length; i++) {
     kodeGudang[i].value = 'GDG01';
     qtyGudang[i].value = '';
     qty[i].value = '';
-    satuan[i].value = '';
+    // satuan[i].value = '';
   }
 }
 
@@ -1275,7 +1342,7 @@ for(let i = 0; i < qty.length; i++) {
       }
     @endforeach
 
-    hitungQty(i, e.target.id, e.target.value);
+    hitungQty(i, e.target.id, e.target.value, teksSat[i].value);
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
@@ -1356,11 +1423,12 @@ for(let i = 0; i < qty.length; i++) {
       }
       else {
         kodeGudang[i].value = "GDG01";
-        qtyGudang[i].value = e.target.value;
+        qtyGudang[i].value = qty[i].value;
       }
 
       netPast = +netto[i].value.replace(/\./g, "");
-      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+      jumlah[i].value = addCommas(qty[i].value * harga[i].value.replace(/\./g, ""));
+
       if(diskon[i].value != "") {
         var angkaDiskon = hitungDiskon(diskon[i].value)
         diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
@@ -1405,18 +1473,24 @@ for(let j = 0; j < modalGudang.length; j++) {
     const stokGudang = document.querySelectorAll('.stokGudang'+j);
     kodeGudang[j].value = 'GDG01';
     qtyGudang[j].value = stokJohar;
+    // function unClick(e) {
+    //   e.preventDefault();
+    // };
     
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
-    // $(btnPilih).prop('disabled', false); 
+    // $(btnPilih).prop('disabled', false);
     for(let i = 0; i < btnPilih.length; i++) {
       btnPilih[i].disabled = false;
       btnPilih[i].addEventListener("click", function (e) {
+        console.log(btnPilih[i]);
+        
         // kodeGudang[j].value = 'GDG01';
         // qtyGudang[j].value = stokJohar;
         // totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
         totPast = +stokGudang[i].textContent;
         if(+totPast < +sisaQty[j].textContent) {
           btnPilih[i].disabled = true;
+          // btnPilih[i].removeEventListener('click', unclick, false);
           sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
           sisaQty[j].textContent = `${sisa}`;
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${stokGudang[i].textContent}`);
@@ -1434,17 +1508,28 @@ for(let j = 0; j < modalGudang.length; j++) {
         } else {
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisaQty[j].textContent}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
+          // btnPilih[i].removeEventListener('click', unclick, false);
           $('#'+j).modal("hide");
+          tipe[j].focus();
         }
       });
     }
   });
+
+  $('#'+j).on('hidden.bs.modal', function(e) {
+    // $('#'+j).find("button").prop('disabled', false).end();
+    // $(e.currentTarget).unbind();
+  });
 }
 
 /** Hitung Qty **/
-function hitungQty(urutan, kode, angka) {
-  if(kode == 'qty')
-    satuan[urutan].value = +angka / +ukuran;
+function hitungQty(urutan, kode, angka, teks) {
+  if(kode == 'qty') {
+    if(teks == 'Pcs')
+      satuan[urutan].value = +angka / +ukuran;
+    else
+      satuan[urutan].value = +angka * +ukuran;
+  }
   else if(kode == 'satuan') 
     qty[urutan].value = +angka * +ukuran;
 }

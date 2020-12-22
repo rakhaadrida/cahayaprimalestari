@@ -141,17 +141,21 @@
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold text-dark">
                   <tr>
-                    <td style="width: 30px" class="align-middle">No</td>
-                    <td style="width: 120px" class="align-middle">Kode Barang</td>
-                    <td @if(Auth::user()->roles == 'ADMIN') style="width: 320px" @endif class="align-middle">Nama Barang</td>
-                    <td style="width: 85px" class="align-middle">Qty</td>
-                    <td style="width: 120px" class="align-middle">Harga</td>
-                    <td style="width: 140px" class="align-middle">Jumlah</td>
+                    <td rowspan="2" style="width: 30px" class="align-middle">No</td>
+                    <td rowspan="2" style="width: 80px" class="align-middle">Kode Barang</td>
+                    <td rowspan="2" @if(Auth::user()->roles == 'ADMIN') style="width: 320px" @endif class="align-middle">Nama Barang</td>
+                    <td colspan="2" class="align-middle">Qty</td>
+                    <td rowspan="2" style="width: 120px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 140px" class="align-middle">Jumlah</td>
                     {{-- @if(Auth::user()->roles == 'SUPER')
                       <td colspan="2">Diskon</td>
                       <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
                     @endif --}}
-                    <td style="width: 50px" class="align-middle">Hapus</td>
+                    <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
+                  </tr>
+                  <tr>
+                    <td>Pcs / Rol</td>
+                    <td>Dus</td>
                   </tr>
                   {{-- @if(Auth::user()->roles == 'SUPER')
                     <tr>
@@ -162,19 +166,21 @@
                 </thead>
                 <tbody id="tablePO">
                   @php $tab = 4; @endphp
-                  @for($i=1; $i<=5; $i++)
+                  @for($i = 1; $i <= 5; $i++)
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" tabindex="{{$tab++}}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
-                        value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
+                        <input type="text" tabindex="{{$tab++}}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
                       </td>
                       <td>
-                        <input type="text" tabindex="{{$tab += 2}}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
-                        value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
+                        <input type="text" tabindex="{{$tab += 2}}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
-                      <td> 
+                      <td style="width: 75px" > 
                         <input type="text" tabindex="{{$tab += 3}}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="hidden" name="teksSat[]" class="teksSat">
+                      </td>
+                      <td style="width: 65px" > 
+                        <input type="text" tabindex="{{$tab += 4}}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -324,8 +330,8 @@
     window.location = "{{ route('bm-after-print', $lastcode) }}";
   }
   
-  // printFrame.window.print();
-  window.print();
+  printFrame.window.print();
+  // window.print();
 @endif
 
 $.fn.datepicker.dates['id'] = {
@@ -354,6 +360,8 @@ const kodeGud = document.getElementById('kodeGudang');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
+const teksSat = document.querySelectorAll(".teksSat");
+const satuan = document.querySelectorAll(".satuan");
 const harga = document.querySelectorAll(".harga");
 const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
@@ -365,7 +373,7 @@ const grandtotal = document.getElementById('grandtotal');
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
-var netPast; var tab = '{{ $tab }}';
+var netPast; var tab = '{{ $tab }}'; var satuanUkuran; var ukuran;
 // const keterangan = document.querySelectorAll(".keterangan");
 
 tanggal.addEventListener("keyup", formatTanggal);
@@ -390,7 +398,11 @@ function displayRow(e) {
         <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="hidden" name="teksSat[]" id="teksSatRow${newNum}" class="teksSatRow">
+      </td>
+      <td> 
+        <input type="text" tabindex="${tab += 3}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
       </td>
       <td>
         <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow">
@@ -412,6 +424,8 @@ function displayRow(e) {
   const brgRow = document.getElementById("nmBrgRow"+newNum);
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
   const qtyRow = document.getElementById("qtyRow"+newNum);
+  const teksSatRow = document.getElementById("teksSatRow"+newNum);
+  const satuanRow = document.getElementById("satuanRow"+newNum);
   const hargaRow = document.getElementById("hargaRow"+newNum);
   const jumlahRow = document.getElementById("jumlahRow"+newNum);
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
@@ -420,41 +434,42 @@ function displayRow(e) {
   document.getElementById("resetBM").tabIndex = tab++;
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keyup", function (e) {   
+  brgRow.addEventListener("keyup", displayHargaRow);
+  kodeRow.addEventListener("keyup", displayHargaRow)
+
+  function displayHargaRow(e) {
     if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
     } 
 
     @foreach($barang as $br)
-      if('{{ $br->nama }}' == e.target.value) {
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
         kodeRow.value = '{{ $br->id }}';
-      }
-    @endforeach
-    displayHargaRow(kodeRow.value);
-  });
-
-  kodeRow.addEventListener("keyup", function (e) {
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      qtyRow.removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if('{{ $br->id }}' == e.target.value) {
         brgRow.value = '{{ $br->nama }}';
+        satuanUkuran = '{{ substr($br->satuan, -3) }}';
+        if(satuanUkuran == 'Rol') {
+          teksSatRow.value = 'Rol';
+          satuanRow.value = '{{ $br->ukuran }}';
+          satuanRow.setAttribute('readonly', 'true');
+        } else {
+          teksSatRow.value = 'Pcs';
+          satuanRow.value = '';
+          satuanRow.removeAttribute('readonly');
+        }
+        ukuran = '{{ $br->ukuran }}';
       }
     @endforeach
-    displayHargaRow(e.target.value);
-  });
 
-  function displayHargaRow(kode) {
     @foreach($harga as $hb)
-      if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+      if(('{{ $hb->id_barang }}' == kodeRow.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
         hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
         qtyRow.setAttribute('required', true);
       }
     @endforeach
+
+    qtyRow.value = '';
   }
 
   /** Inputan hanya bisa angka **/
@@ -471,7 +486,36 @@ function displayRow(e) {
   });
 
   /** Tampil Jumlah **/
-  qtyRow.addEventListener("keyup", function (e) {
+  qtyRow.addEventListener("change", displayQtyRow);
+  satuanRow.addEventListener("change", displayQtyRow);
+
+  function displayQtyRow(e) {
+    hitungQtyRow(e.target.id, e.target.value, teksSatRow.value);
+
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
+      jumlahRow.value = "";
+    }
+    else {  
+      netPast = +jumlahRow.value.replace(/\./g, "");
+      jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
+      checkSubtotal(netPast, +jumlahRow.value.replace(/\./g, ""));
+    }
+    total_ppn(subtotal.value.replace(/\./g, ""));
+  }
+
+  function hitungQtyRow(kode, angka, teks) {
+    if(kode == 'qtyRow'+newNum) {
+      if(teks == 'Pcs')
+        satuanRow.value = +angka / +ukuran;
+      else
+        satuanRow.value = +angka * +ukuran;
+    }
+    else if(kode == 'satuanRow'+newNum) 
+      qtyRow.value = +angka * +ukuran;
+  }
+
+  /* qtyRow.addEventListener("change", function (e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
       jumlahRow.value = "";
@@ -482,7 +526,7 @@ function displayRow(e) {
       checkSubtotal(netPast, +jumlahRow.value.replace(/\./g, ""));
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
-  });
+  }); */
   
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
@@ -614,13 +658,12 @@ function displaySupp(e) {
   @endforeach
 }
 
-function focusTabel(e) {
-  kodeBarang[0].focus();
-}
-
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("keyup", function (e) {
+  brgNama[i].addEventListener("keyup", displayHarga) ;
+  kodeBarang[i].addEventListener("keyup", displayHarga);
+
+  function displayHarga(e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
@@ -628,52 +671,54 @@ for(let i = 0; i < brgNama.length; i++) {
     }
 
     @foreach($barang as $br)
-      if('{{ $br->nama }}' == e.target.value) {
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
         kodeBarang[i].value = '{{ $br->id }}';
-      }
-    @endforeach
-    displayHarga(kodeBarang[i].value);
-  });
-
-  kodeBarang[i].addEventListener("keyup", function (e) {
-    if(e.target.value == "") {
-      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
-      $(this).parents('tr').find('input').val('');
-      qty[i].removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if('{{ $br->id }}' == e.target.value) {
         brgNama[i].value = '{{ $br->nama }}';
+        satuanUkuran = '{{ substr($br->satuan, -3) }}';
+        if(satuanUkuran == 'Rol') {
+          teksSat[i].value = 'Rol';
+          satuan[i].value = '{{ $br->ukuran }}';
+          satuan[i].setAttribute('readonly', 'true');
+          // satuan[i].tabIndex = -1;
+        } else {
+          teksSat[i].value = 'Pcs';
+          satuan[i].value = '';
+          satuan[i].removeAttribute('readonly');
+        }
+        ukuran = '{{ $br->ukuran }}';
       }
     @endforeach
-    displayHarga(e.target.value);
-  });
 
-  function displayHarga(kode) {
     @foreach($harga as $hb)
-      if(('{{ $hb->id_barang }}' == kode) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
         harga[i].value = addCommas('{{ $hb->harga_ppn }}');
         qty[i].setAttribute('required', true);
       }
     @endforeach
+
+    qty[i].value = '';
   }
 }
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("keyup", function (e) {
+  qty[i].addEventListener("change", displayQty);
+  satuan[i].addEventListener("change", displayQty);
+
+  function displayQty(e) {
+    hitungQty(i, e.target.id, e.target.value, teksSat[i].value);
+
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
     }
     else {  
       netPast = +jumlah[i].value.replace(/\./g, "");
-      jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
+      jumlah[i].value = addCommas(qty[i].value * harga[i].value.replace(/\./g, ""));
       checkSubtotal(netPast, +jumlah[i].value.replace(/\./g, ""));
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
-  });
+  }
 
   // qty[i].addEventListener("focusout", focusKode);
   
@@ -681,6 +726,18 @@ for(let i = 0; i < qty.length; i++) {
   //   kodeBarang[i+1].focus();
   // }
 } 
+
+/** Hitung Qty **/
+function hitungQty(urutan, kode, angka, teks) {
+  if(kode == 'qty') {
+    if(teks == 'Pcs')
+      satuan[urutan].value = +angka / +ukuran;
+    else
+      satuan[urutan].value = +angka * +ukuran;
+  }
+  else if(kode == 'satuan') 
+    qty[urutan].value = +angka * +ukuran;
+}
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
@@ -783,16 +840,19 @@ for(let i = 0; i < hapusBaris.length; i++) {
         kodeBarang[j].value = '';
       }
     }
-    $(this).parents('tr').next().find('input').val('');
-    if(kodeBarang[i].value == '')
-      kodeBarang[i].focus();
-    else
-      kodeBarang[i+1].focus();
+
+    // $(this).parents('tr').next().find('input').val('');
+    for(let j = 0; j < kodeBarang.length; j++) {
+      if(kodeBarang[j].value == '') {
+        kodeBarang[j].focus();
+        break;
+      }
+    }
   });
 }
 
 function checkRequired(e) {
-  if((kode.value == "") || (tanggal.value == "") || 
+  if((kodeBarang[0].value == "") || (qty[0].value == "") || (tanggal.value == "") || 
   (namaSup.value == "") || (gudang.value == "")) {
     e.stopPropagation();
   }

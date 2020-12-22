@@ -114,8 +114,8 @@ const btnCetak = document.getElementById('btnCetak');
     window.location = "{{ route('ttr-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
   }
   
-  // printTTR.window.print();
-  window.print();
+  printTTR.window.print();
+  // window.print();
 @endif
 
 function checkRequired(e) {

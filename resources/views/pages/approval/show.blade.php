@@ -117,11 +117,12 @@
                       </div>
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12">
-                          <div class="form-group row customer-detail" @if($item->status == 'PENDING_BATAL') style="margin-top: -20px" @endif>
+                          <div class="form-group row customer-detail" @if($itemsUpdate->last()->status == 'PENDING_BATAL') style="margin-top: -20px" @endif>
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-3">
-                              <input type="text" name="status{{$item->id_dokumen}}" readonly class="form-control-plaintext col-form-label-sm text-bold @if($item->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" value="@if($item->status == 'PENDING_UPDATE')@if($item->tipe == 'Faktur'){{ $item->so->status }}@else{{ $item->bm->status }} @endif @else {{ $item->status }} @endif">
+                              <input type="text" name="status{{$item->id_dokumen}}" readonly class="form-control-plaintext col-form-label-sm text-bold 
+                              @if($itemsUpdate->last()->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" value="@if($itemsUpdate->last() == 'PENDING_UPDATE')@if($item->tipe == 'Faktur'){{ $item->so->status }}@else{{ $item->bm->status }} @endif @else {{ $itemsUpdate->last()->status }} @endif">
                               <input type="hidden" name="tipe{{$item->id_dokumen}}" value="{{ $item->tipe }}">
                             </div>
                           </div>
@@ -140,7 +141,7 @@
                       </div>
                       <div class="row" style="margin-top: 5px;">
                         <div class="col-12">
-                          @if($item->status == 'LIMIT')
+                          @if($itemsUpdate->last()->status == 'LIMIT')
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-2 form-control-sm text-bold text-dark mt-1" style="font-size: 16px">Limit</label>
                               <span class="col-form-label text-bold">:</span>
@@ -150,8 +151,8 @@
                             </div>
                           @endif
                         </div>
-                        @if(($item->status == 'LIMIT') || ($item->status == 'PENDING_BATAL'))
-                          <div class="col" style="margin-left: -450px; @if($item->status == 'LIMIT') margin-top: -10px @else margin-top: -20px @endif">
+                        @if(($itemsUpdate->last()->status == 'LIMIT') || ($itemsUpdate->last()->status == 'PENDING_BATAL'))
+                          <div class="col" style="margin-left: -450px; @if($itemsUpdate->last()->status == 'LIMIT') margin-top: -10px @else margin-top: -20px @endif">
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Keterangan</label>
                               <span class="col-form-label text-bold">:</span>
@@ -291,7 +292,7 @@
                         </div>
                       </div>
                     @endif
-                    @if(($item->status != 'LIMIT') && ($item->status != 'PENDING_BATAL'))
+                    @if(($itemsUpdate->last()->status != 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL'))
                       <div class="row justify-content-center" style="margin-top: -80px">
                         <i class="fas fa-arrow-down fa-4x text-primary"></i>
                       </div>
@@ -299,7 +300,7 @@
                     <hr>
                     <!-- End Tabel Data Awal SO -->
 
-                    @if(($item->status != 'LIMIT') && ($item->status != 'PENDING_BATAL'))
+                    @if(($itemsUpdate->last()->status != 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL'))
                       @foreach($itemsUpdate as $iu)
                         <div class="container so-update-container text-dark" style="margin-top: 40px">
                           <div class="row" >

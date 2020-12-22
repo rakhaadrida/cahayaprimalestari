@@ -15,14 +15,16 @@ use App\Http\Requests\BarangRequest;
 class BarangController extends Controller
 {
     public function index() {
-        $items = Barang::All();
+        $itemsBrg = Barang::All();
+        $itemsBrgOff = Barang::whereIn('id_kategori', ['KAT03', 'KAT08'])->get();
         $gudang = Gudang::All();
         $stok = StokBarang::All();
         $harga = Harga::All();
         $hargaBarang = HargaBarang::All();
         // $items = Barang::with(['hargaBarang', 'stokBarang'])->get();
         $data =  [
-            'items' => $items,
+            'itemsBrg' => $itemsBrg,
+            'itemsBrgOff' => $itemsBrgOff,
             'gudang' => $gudang,
             'stok' => $stok,
             'harga' => $harga,
@@ -89,7 +91,7 @@ class BarangController extends Controller
         $harga = Harga::All();
 
         $j = 0;
-        for($i=0; $i < $harga->count(); $i++) {
+        for($i = 0; $i < $harga->count(); $i++) {
             if($itemsRow == $harga->count()) {
                 $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
             }
@@ -147,16 +149,16 @@ class BarangController extends Controller
 
     public function storeStok(BarangRequest $request) {
         $kode = $request->kode;
-        $items = StokBarang::where('id_barang', $kode)->get();
+        $items = StokBarang::where('id_barang', $kode)->where('status', 'T')->get();
         $itemsRow = StokBarang::where('id_barang', $kode)->count();
         $gudang = Gudang::All();
 
         $j = 0;
         for($i = 0; $i < $gudang->count(); $i++) {
-            if($itemsRow == $gudang->count()) {
+            if($items->count() == $gudang->count()) {
                 $this->updateStok($kode, $gudang[$i]->id, $request->stok[$i]);
             }
-            else if(($itemsRow > 0) && ($j < $itemsRow)) {
+            else if(($items->count() > 0) && ($j < $items->count())) {
                 if($items[$j]->id_gudang == $gudang[$i]->id) {
                     $this->updateStok($kode, $gudang[$i]->id, $request->stok[$i]);
                     $j++;

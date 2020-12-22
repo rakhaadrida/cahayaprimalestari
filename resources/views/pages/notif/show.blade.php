@@ -488,9 +488,9 @@
                     <div class="form-row justify-content-center">
                       <div class="col-3">
                         @if(($item->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
-                          <button type="submit" formaction="" formmethod="POST" class="btn btn-primary btn-block text-bold">Cetak</button>
+                          <button type="submit" formaction="{{ route('so-cetak', $item->id_dokumen) }}" formmethod="GET" class="btn btn-primary btn-block text-bold">Cetak</button>
                         @else
-                          <button type="submit" formaction="{{ route('notif-read', $item->id) }}" formmethod="GET" class="btn btn-info btn-block text-bold">Tandai Sudah Dibaca</button>
+                          <button type="submit" formaction="{{ route('notif-read', $item->id) }}" formmethod="GET" class="btn btn-success btn-block text-bold">Tandai Sudah Dibaca</button>
                         @endif
                       </div>
                       <div class="col-3">

@@ -42,6 +42,11 @@
 
   @if(Auth::user()->roles == 'OFFICE02')
     <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link" href="{{ route('stok-office') }}">
+        <i class="fas fa-fw fa-warehouse"></i>
+        <span>Stok</span></a>
+    </li>
+    <li class="nav-item sidebar-menu-icon" >
       <a class="nav-link" href="{{ route('ar') }}">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Penjualan</span></a>
