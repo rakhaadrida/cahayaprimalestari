@@ -444,13 +444,14 @@
           <tr>
             <th rowspan="2" class="align-middle" style="width: 5px">No.</th>
             <th rowspan="2" class="align-middle" style="width: 60px">No. Faktur</th>
-            <th rowspan="2" class="align-middle" style="width: 60px">Tgl. Faktur</th>
+            <th rowspan="2" class="align-middle" style="width: 80px">Tgl. Faktur</th>
             <th rowspan="2" class="align-middle" style="width: 260px">Customer</th>
-            <th colspan="2">Ttd</th>
+            <th colspan="3">Ttd</th>
           </tr>
           <tr>
             <th style="width: 10px">Gudang</th>
             <th style="width: 10px">Pengiriman</th>
+            <th style="width: 10px">Accounting</th>
           </tr>
         </thead>
         <tbody class="tr-detail-cetak-so">
@@ -465,6 +466,7 @@
               @else
                 <td>{{ $item->customer->nama }}</td>
               @endif
+              <td></td>
               <td></td>
               <td></td>
             </tr>

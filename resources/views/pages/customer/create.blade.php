@@ -71,7 +71,9 @@
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="limit" placeholder="Limit" value="{{ old('limit') }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
+                  <input type="text" class="form-control col-form-label-sm" name="limit" 
+                  value="{{ old('limit') }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required
+                  @if(Auth::user()->roles == 'ADMIN') readonly @endif>
                 </div>
               </div>
               <div class="form-group row">
@@ -79,7 +81,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" placeholder="Sales Cover" value="{{ old('sales_cover') }}" required>
-                  <input type="text" name="id_sales" id="kodeSales">
+                  <input type="hidden" name="id_sales" id="kodeSales">
                 </div>
               </div>
               <div class="form-row justify-content-center">

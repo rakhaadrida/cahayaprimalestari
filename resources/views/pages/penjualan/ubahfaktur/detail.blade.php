@@ -321,12 +321,11 @@
                       <!-- Button Submit dan Reset -->
                       <div class="form-row justify-content-center">
                         <div class="col-2">
-                          <a href="" tabindex="6" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold"> Ganti Status
-                          </a>
+                          <a href="" tabindex="6" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold">Batal</a>
                           {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
                         </div>
                         <div class="col-2">
-                          <button type="submit" tabindex="7" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah Isi Faktur</button>
+                          <button type="submit" tabindex="7" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah</button>
                         </div>
                       </div>
                       <!-- End Button Submit dan Reset -->

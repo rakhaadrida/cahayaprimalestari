@@ -1151,6 +1151,38 @@ function displayRow(e) {
     }
   });
 
+  tipeRow.addEventListener("keyup", displayTipeRow);
+  tipeRow.addEventListener("blur", displayTipeRow);
+
+  function displayTipeRow(e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
+      hargaRow.value = "";
+      jumlahRow.value = "";
+      diskonRpRow.value = "";
+      nettoRow.value = "";
+    }
+
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kodeRow.value) && ('{{ $hb->hargaBarang->tipe }}' == e.target.value)) {
+        hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
+        jumlahRow.value = addCommas(+hargaRow.value.replace(/\./g, "") * qtyRow.value);
+
+        netPast = +nettoRow.value.replace(/\./g, "");
+        if(diskonRow.value != "") {
+          var angkaDiskon = hitungDiskon(diskonRow.value)
+          diskonRpRow.value = addCommas(angkaDiskon * jumlahRow.value.replace(/\./g,"") / 100);
+        }
+
+        nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
+        checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
+        grandtotal.value = totalNotPPN.value;
+      }
+    @endforeach
+  }
+
   /** Inputan hanya bisa angka **/
   diskonRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
@@ -1228,6 +1260,11 @@ function displayRow(e) {
       idBarang.push('{{ $b->id }}');
       nmBarang.push('{{ $b->nama }}');
     @endforeach
+
+    var tipeHrg = [];
+    @foreach($hrg as $h)
+      tipeHrg.push('{{ $h->tipe }}');
+    @endforeach
       
     function split(val) {
       return val.split(/,\s/);
@@ -1277,6 +1314,35 @@ function displayRow(e) {
         var terms = split(this.value);
         terms.pop();
         terms.push(ui.item.value);
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+
+    /*-- Autocomplete Input Tipe Harga --*/
+    $(tipeRow).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        // delegate back to autocomplete, but extract the last term
+        response($.ui.autocomplete.filter(tipeHrg, extractLast(request.term)));
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push(ui.item.value);
+        // add placeholder to get the comma-and-space at the end
         terms.push("");
         this.value = terms.join("");
         return false;
@@ -1471,6 +1537,7 @@ for(let i = 0; i < tipe.length; i++) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
       harga[i].value = "";
       jumlah[i].value = "";
       diskonRp[i].value = "";
@@ -1490,6 +1557,7 @@ for(let i = 0; i < tipe.length; i++) {
 
         netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
         checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+        grandtotal.value = totalNotPPN.value;
       }
     @endforeach
   }

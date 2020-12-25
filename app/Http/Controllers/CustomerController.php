@@ -44,7 +44,7 @@ class CustomerController extends Controller
             'telepon' => $request->telepon,
             'contact_person' => $request->contact_person,
             'npwp' => $request->npwp,
-            'limit' => str_replace(".", "", $request->limit),
+            'limit' => (int) str_replace(".", "", $request->limit),
             'id_sales' => $request->id_sales
         ]);
 

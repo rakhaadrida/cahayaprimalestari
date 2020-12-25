@@ -437,7 +437,8 @@
               <th style="width: 5px">No.</th>
               <th style="width: 20px">Kode</th>
               <th style="width: 220px">Nama Barang</th>
-              <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th>
+              {{-- <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th> --}}
+              <th>Quantity</th>
               <th style="width: 160px">Description</th>
             </tr>
           </thead>
@@ -448,11 +449,11 @@
                 <td align="center">{{ $i }}</td>
                 <td align="center">{{ $itemDet->id_barang }}</td>
                 <td>{{ $itemDet->barang->nama }}</td>
-                <td align="right" style="width: 50px">{{ $itemDet->qty }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @else Mtr @endif</td>
-                <td align="center" style="width: 1px">/</td>
+                <td align="center" style="width: 50px">{{ $itemDet->qty }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @else Rol @endif</td>
+                {{-- <td align="center" style="width: 1px">/</td>
                 <td style="width: 50px">
                   {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Pack @else Rol @endif
-                </td>
+                </td> --}}
                 <td></td>
               </tr>
               @php $i++ @endphp

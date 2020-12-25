@@ -49,8 +49,8 @@
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" value="{{ old('subjenis') }}" required>
                 </div>
-                <input type="text" name="kodeJenis" id="kodeJenis">
-                <input type="text" name="kodeSub" id="kodeSub">
+                <input type="hidden" name="kodeJenis" id="kodeJenis">
+                <input type="hidden" name="kodeSub" id="kodeSub">
               </div>
               <hr>
               <div class="form-group row">

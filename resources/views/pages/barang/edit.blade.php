@@ -51,9 +51,9 @@
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" @if($item->id_sub != '') value="{{$item->subjenis->nama}}" @endif required>
                 </div>
-                <input type="text" name="kodeJenis" id="kodeJenis" 
+                <input type="hidden" name="kodeJenis" id="kodeJenis" 
                 value="@if($item->id_kategori != '') {{$item->id_kategori}} @endif">
-                <input type="text" name="kodeSub" id="kodeSub"
+                <input type="hidden" name="kodeSub" id="kodeSub"
                 value="@if($item->id_sub != '') {{$item->id_sub}} @endif">
               </div>
               <hr>

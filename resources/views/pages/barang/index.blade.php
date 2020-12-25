@@ -33,15 +33,13 @@
             <tr align="center">
               <th>No</th>
               <th>Nama</th>
-              @foreach($gudang as $g)
-                @if($g->retur == 'T')
-                  @if(Auth::user()->roles != 'OFFICE02')
-                    <th style="width: 40px">{{ substr($g->nama, 0, 3) }}</th>
-                  @endif
-                @else
+              @if(Auth::user()->roles != 'OFFICE02')
+                @foreach($gudang as $g)
                   <th style="width: 40px">{{ substr($g->nama, 0, 3) }}</th>
-                @endif
-              @endforeach
+                @endforeach
+              @else
+                <th style="width: 80px">Stok</th>
+              @endif
               <th>Detail</th>
               @if(Auth::user()->roles != 'OFFICE02')
                 <th>Harga</th>
@@ -62,25 +60,29 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center" style="width: 10px">{{ $j }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
-                @foreach($gudang as $g)
-                  @php
-                    if($g->retur == 'T') {
-                      $stok = App\Models\StokBarang::selectRaw('sum(stok) as stok')
-                              ->where('id_barang', $item->id)
-                              ->where('id_gudang', $g->id)->get();   
-                    } else {
-                      $stok = App\Models\StokBarang::where('id_barang', $item->id)
-                              ->where('id_gudang', $g->id)->get();  
-                    }
-                  @endphp
-                  @if($g->retur == 'T')
-                    @if(Auth::user()->roles != 'OFFICE02')
-                      <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
-                    @endif
-                  @else
+                @if(Auth::user()->roles != 'OFFICE02')
+                  @foreach($gudang as $g)
+                    @php
+                      if($g->retur == 'T') {
+                        $stok = App\Models\StokBarang::selectRaw('sum(stok) as stok')
+                                ->where('id_barang', $item->id)
+                                ->where('id_gudang', $g->id)->get();   
+                      } else {
+                        $stok = App\Models\StokBarang::where('id_barang', $item->id)
+                                ->where('id_gudang', $g->id)->get();  
+                      }
+                    @endphp
                     <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
-                  @endif
-                @endforeach
+                  @endforeach
+                @else
+                  @php 
+                    $stok = App\Models\StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
+                            ->selectRaw('sum(stok) as stok')
+                            ->where('id_barang', $item->id)
+                            ->where('retur', 'F')->get();
+                  @endphp
+                  <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
+                @endif
                 <td align="center" style="width: 15px">
                   <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>
