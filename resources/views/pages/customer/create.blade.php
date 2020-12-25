@@ -37,7 +37,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Customer" value="{{ old('nama') }}" required autofocus>
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Customer" value="{{ old('nama') }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <hr>
@@ -52,18 +52,18 @@
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="contact_person" placeholder="Contact Person" 
-                  value="{{ old('contact_person') }}" required>
+                  value="{{ old('contact_person') }}" autocomplete="off" required>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="npwp" class="col-1 col-form-label text-bold">NPWP</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9">
+                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off">
                 </div>
               </div>
               <hr>
@@ -71,7 +71,7 @@
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="limit" placeholder="Limit" value="{{ old('limit') }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
+                  <input type="text" class="form-control col-form-label-sm" name="limit" placeholder="Limit" value="{{ old('limit') }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
               </div>
               <div class="form-group row">
@@ -79,7 +79,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" placeholder="Sales Cover" value="{{ old('sales_cover') }}" required>
-                  <input type="hidden" name="id_sales" id="kodeSales">
+                  <input type="text" name="id_sales" id="kodeSales">
                 </div>
               </div>
               <div class="form-row justify-content-center">
@@ -110,6 +110,7 @@ const npwp = document.getElementById("npwp");
 const limit = document.getElementById("limit");
 
 namaSales.addEventListener("keyup", displayKode);
+namaSales.addEventListener("blur", displayKode);
 telepon.addEventListener("keyup", formatPhone);
 limit.addEventListener("keyup", formatNominal);
 

@@ -137,13 +137,21 @@ class AccReceivableController extends Controller
                     ->where('ar.id_so', $request->kode)
                     ->groupBy('ar.id')->get();
         $so = SalesOrder::where('id', $request->kode)->get();
+        $retur = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                ->selectRaw('sum(total) as totRetur')
+                ->where('id_so', $request->kode)->get();
 
         if($total->count() == 0) 
             $totCicil = 0;
         else 
             $totCicil = $total[0]->totCicil;
 
-        if($so[0]->total == str_replace(",", "", $request->{"cicil".$request->kode}) + $totCicil)
+        if($retur->count() == 0) 
+            $totRetur = 0;
+        else 
+            $totRetur = $retur[0]->totRetur;
+
+        if($so[0]->total == str_replace(",", "", $request->{"cicil".$request->kode}) + $totCicil + $totRetur)
                 $status = 'LUNAS';
             else 
                 $status = 'BELUM LUNAS';

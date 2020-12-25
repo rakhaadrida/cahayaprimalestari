@@ -30,23 +30,25 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              <div class="container so-container">  
-                <div class="form-group row justify-content-center" >
-                  <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}" required>
-                  </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
-                  <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" required>
-                  </div>
-                  <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
-                  </div>
-                </div>  
-              </div>
-              <hr>
+              @if(Auth::user()->roles != 'AR')
+                <div class="container so-container">  
+                  <div class="form-group row justify-content-center" >
+                    <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
+                    <span class="col-form-label text-bold">:</span>
+                    <div class="col-2">
+                      <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}" autocomplete="off" required>
+                    </div>
+                    <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
+                    <div class="col-2">
+                      <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" autocomplete="off" required>
+                    </div>
+                    <div class="col-1 mt-1" style="margin-left: -10px">
+                      <button type="submit" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    </div>
+                  </div>  
+                </div>
+                <hr>
+              @endif
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">

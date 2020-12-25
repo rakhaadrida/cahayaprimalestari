@@ -38,7 +38,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold ">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" value="{{ $item->nama }}" required autofocus>
+                  <input type="text" class="form-control col-form-label-sm" name="nama" value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <hr>  
@@ -46,14 +46,14 @@
                 <label for="alamat" class="col-1 col-form-label text-bold ">Alamat</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-8">
-                  <textarea class="form-control col-form-label-sm" name="alamat"required>{{ $item->alamat }}</textarea>
+                  <textarea class="form-control col-form-label-sm" name="alamat" required>{{ $item->alamat }}</textarea>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" onkeypress="return angkaSaja(event)" id="telepon" required>
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" onkeypress="return angkaSaja(event)" id="telepon" autocomplete="off" required>
                 </div>
               </div>
               <div class="form-group row">
@@ -62,7 +62,7 @@
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="npwp" 
                   value ="@if($item->npwp != ""){{ $item->npwp }}@else-@endif"
-                  onkeypress="return angkaSaja(event)" >
+                  onkeypress="return angkaSaja(event)" autocomplete="off" >
                 </div>
               </div>
               <div class="form-row justify-content-center">

@@ -387,6 +387,7 @@ class SalesOrderController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $hrg = Harga::All();
         $gudang = Gudang::where('retur', 'F')->get();
         $stok = StokBarang::All();
 
@@ -396,6 +397,7 @@ class SalesOrderController extends Controller
             'tanggal' => $tanggal,
             'barang' => $barang,
             'harga' => $harga,
+            'hrg' => $hrg,
             'gudang' => $gudang,
             'stok' => $stok,
             'id' => $request->id,

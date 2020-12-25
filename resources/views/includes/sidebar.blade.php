@@ -113,7 +113,7 @@
         </a>
         <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="py-2 collapse-inner rounded">
-            <a class="collapse-item" href="{{ route('so', 'false') }}">Sales Order</a>
+            <a class="collapse-item" href="{{ route('so', 'false') }}">Input Faktur</a>
             <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
             <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
             <a class="collapse-item" href="{{route('ttr-index-cetak', ['status' => 'false', 'awal' => '0', 'akhir' => '0'])}}">Cetak Tanda Terima</a>
@@ -143,9 +143,9 @@
           <div class="py-2 collapse-inner rounded">
             <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
             @if(Auth::user()->roles != 'GUDANG')
-              <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Penjualan</a>
+              <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Customer</a>
             @endif
-            <a class="collapse-item" href="{{ route('retur-beli', ['status' => 'false', 'id'=> '0']) }}">Retur Pembelian</a>
+            <a class="collapse-item" href="{{ route('retur-beli', ['status' => 'false', 'id'=> '0']) }}">Retur Supplier</a>
           </div>
         </div>
       </li>

@@ -42,7 +42,7 @@
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Retur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tglRetur" value="{{ $tanggal }}" required autofocus>
+                        <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tglRetur" value="{{ $tanggal }}" autocomplete="off" required autofocus>
                       </div>
                     </div>  
                   </div>
@@ -92,7 +92,7 @@
                         <input type="text" name="stok[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-center stok" value="{{ old('stok[]') }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -163,6 +163,7 @@ var tab = '{{ $tab }}';
 
 tglRetur.addEventListener("keyup", formatTanggal);
 namaSupplier.addEventListener("keyup", displaySupp);
+namaSupplier.addEventListener("blur", displaySupp);
 newRow.addEventListener('click', displayRow);
 
 /** Add New Table Line **/
@@ -184,7 +185,7 @@ function displayRow(e) {
         <input type="text" name="stok[]" id="stokRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center stokRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -208,33 +209,25 @@ function displayRow(e) {
   document.getElementById("backRB").tabIndex = tab++;
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keyup", function (e) {   
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      qtyRow.removeAttribute('required');
-    } 
+  kodeRow.addEventListener("keyup", displayBarangRow);
+  brgRow.addEventListener("keyup", displayBarangRow);
+  kodeRow.addEventListener("blur", displayBarangRow);
+  brgRow.addEventListener("blur", displayBarangRow);
 
-    @foreach($barang as $br)
-      if('{{ $br->barang->nama }}' == e.target.value) {
-        kodeRow.value = '{{ $br->id_barang }}';
-        stokRow.value = '{{ $br->stok }}';
-      }
-    @endforeach
-  });
-
-  kodeRow.addEventListener("keyup", function (e) {
+  function displayBarangRow(e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
     }
 
     @foreach($barang as $br)
-      if('{{ $br->id_barang }}' == e.target.value) {
+      if(('{{ $br->id_barang }}' == e.target.value) || ('{{ $br->barang->nama }}' == e.target.value)) {
+        kodeRow.value = '{{ $br->id_barang }}';
         brgRow.value = '{{ $br->barang->nama }}';
         stokRow.value = '{{ $br->stok }}';
       }
     @endforeach
-  });
+  }
 
   /** Inputan hanya bisa angka **/
   qtyRow.addEventListener("keypress", function (e, evt) {
@@ -365,33 +358,25 @@ function displaySupp(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("keyup", function (e) {
+  kodeBarang[i].addEventListener("keyup", displayBarang);
+  brgNama[i].addEventListener("keyup", displayBarang);
+  kodeBarang[i].addEventListener("blur", displayBarang);
+  brgNama[i].addEventListener("blur", displayBarang);
+
+  function displayBarang(e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
     }
 
     @foreach($barang as $br)
-      if('{{ $br->barang->nama }}' == e.target.value) {
+      if(('{{ $br->id_barang }}' == e.target.value) || ('{{ $br->barang->nama }}' == e.target.value)) {
         kodeBarang[i].value = '{{ $br->id_barang }}';
-        stok[i].value = '{{ $br->stok }}';
-      }
-    @endforeach
-  });
-
-  kodeBarang[i].addEventListener("keyup", function (e) {
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      qty[i].removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if('{{ $br->id_barang }}' == e.target.value) {
         brgNama[i].value = '{{ $br->barang->nama }}';
         stok[i].value = '{{ $br->stok }}';
       }
     @endforeach
-  });
+  }
 }
 
 /** Inputan hanya bisa angka **/

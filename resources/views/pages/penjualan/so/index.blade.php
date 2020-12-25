@@ -80,7 +80,7 @@
                       <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="2" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" required />
+                        <input type="text" tabindex="2" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" autocomplete="off" required />
                         <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                       </div>
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
@@ -106,7 +106,7 @@
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="4" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" readonly >
+                        <input type="text" tabindex="4" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo', 'tem')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" readonly >
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
@@ -192,14 +192,14 @@
                       </td>
                       <td> 
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
-                        value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                         <input type="hidden" name="teksSat[]" class="teksSat">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang">
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
-                        value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'sat')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 5 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
@@ -213,7 +213,7 @@
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
-                        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
+                        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
                       </td>
                       <td>
                         <input type="text" name="diskonRp[]" id="diskonRp" class="form-control form-control-sm text-bold text-right text-dark diskonRp" 
@@ -662,13 +662,14 @@ const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
 var netPast; var ukuran; var tab = '{{ $tab }}';
-var kodeModal;
-var totPast;
+var kodeModal; var totPast;
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keyup', displayCust);
+namaCust.addEventListener('blur', displayCust);
 tanggalKirim.addEventListener("keyup", formatTanggal);
+
 newRow.addEventListener("click", displayRow);
 diskonFaktur.addEventListener('keyup', formatNominal);
 diskonFaktur.addEventListener('keyup', displayTotal);
@@ -695,6 +696,7 @@ function displayCust(e) {
     else if(e.target.value == '') {
       kodeCust.value = '';
       limit.value = '';
+      piutang.value = '';
       namaSales.value = '';
       npwp.value = '';
     }
@@ -744,13 +746,14 @@ function displayRow(e) {
         <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td>
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" value="{{ old('qty[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
         <input type="hidden" name="teksSat[]" class="teksSatRow" id="teksSatRow${newNum}">
-        <input type="text" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
-        <input type="text" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
+        <input type="hidden" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
+        <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
       <td>
         <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
-        value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        value="{{ old('satuan[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
+        autocomplete="off">
       </td>
       <td>
         <input type="text" tabindex="${tab += 5}" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow" 
@@ -764,7 +767,7 @@ function displayRow(e) {
       </td>
       <td style="width: 60px">
         <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
-        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
+        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
       </td>
       <td style="width: 120px">
         <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRpRow" 
@@ -895,6 +898,8 @@ function displayRow(e) {
   /** Tampil Harga **/
   brgRow.addEventListener("keyup", displayHargaRow); 
   kodeRow.addEventListener("keyup", displayHargaRow);
+  brgRow.addEventListener("blur", displayHargaRow); 
+  kodeRow.addEventListener("blur", displayHargaRow);
   
   function displayHargaRow(e) {
     if(e.target.value == "") {
@@ -953,8 +958,18 @@ function displayRow(e) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
-      $(qtyRow).tooltip('show');
-      
+      $(qtyRow).tooltip('show');  
+      e.preventDefault();
+    }
+    
+    return true;
+  });  
+
+  satuanRow.addEventListener("keypress", function (e, evt) {
+    evt = (evt) ? evt : window.event;
+    var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
+    if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
+      $(satuanRow).tooltip('show');  
       e.preventDefault();
     }
     
@@ -962,8 +977,8 @@ function displayRow(e) {
   });  
 
   /** Tampil Jumlah **/
-  qtyRow.addEventListener("change", displayQtyRow);
-  satuanRow.addEventListener("change", displayQtyRow);
+  qtyRow.addEventListener("blur", displayQtyRow);
+  satuanRow.addEventListener("blur", displayQtyRow);
 
   function displayQtyRow(e) {
     stokJohar = 0;
@@ -1274,6 +1289,8 @@ function displayRow(e) {
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
+  brgNama[i].addEventListener("blur", displayHarga) ;
+  kodeBarang[i].addEventListener("blur", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
@@ -1324,8 +1341,8 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("change", displayQty);
-  satuan[i].addEventListener("change", displayQty);
+  qty[i].addEventListener("blur", displayQty);
+  satuan[i].addEventListener("blur", displayQty);
 
   function displayQty(e) {
     stokJohar = 0;
@@ -1348,6 +1365,7 @@ for(let i = 0; i < qty.length; i++) {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
+      diskonRp[i].value = "";
       netto[i].value = "";
       kodeGudang[i].value = "GDG01";
       qtyGudang[i].value = "";
@@ -1443,6 +1461,39 @@ for(let i = 0; i < qty.length; i++) {
     grandtotal.value = totalNotPPN.value;
   }
 }  
+
+// Pilih Tipe
+for(let i = 0; i < tipe.length; i++) {
+  tipe[i].addEventListener("keyup", displayTipe);
+  tipe[i].addEventListener("blur", displayTipe);
+
+  function displayTipe(e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      harga[i].value = "";
+      jumlah[i].value = "";
+      diskonRp[i].value = "";
+      netto[i].value = "";
+    }
+
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->hargaBarang->tipe }}' == e.target.value)) {
+        harga[i].value = addCommas('{{ $hb->harga_ppn }}');
+        jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * qty[i].value);
+
+        netPast = +netto[i].value.replace(/\./g, "");
+        if(diskon[i].value != "") {
+          var angkaDiskon = hitungDiskon(diskon[i].value)
+          diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100);
+        }
+
+        netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+        checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+      }
+    @endforeach
+  }
+}
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
@@ -1568,7 +1619,7 @@ function displayTotal(e) {
 }
 
 /** Inputan hanya bisa angka **/
-function angkaSaja(evt, inputan) {
+function angkaSaja(evt, inputan, teks) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -1577,8 +1628,12 @@ function angkaSaja(evt, inputan) {
     }
     else {
       for(let i = 1; i <= qty.length; i++) {
-        if(inputan == i)
-          $(qty[inputan-1]).tooltip('show');
+        if(inputan == i) {
+          if(teks == 'qty')
+            $(qty[inputan-1]).tooltip('show');
+          else
+            $(satuan[inputan-1]).tooltip('show');
+        }
       }
     }
     return false;

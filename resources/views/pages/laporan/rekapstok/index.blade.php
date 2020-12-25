@@ -106,7 +106,7 @@
                               @if($stok->count() != 0)
                                 <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
                               @else
-                                <td>0</td>
+                                <td align="right">0</td>
                               @endif
                               @foreach($gudang as $g)
                                 @php

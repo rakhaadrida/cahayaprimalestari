@@ -67,10 +67,10 @@
                       <input type="text" class="form-control form-control-sm text-bold text-dark namaBarang" name="namaBarang{{$a->id}}" id="namaBarang{{$a->id}}">
                     </td>
                     <td class="align-middle">
-                      <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglRetur" name="tglRetur{{$a->id}}" id="tglRetur{{$a->id}}" placeholder="DD-MM-YYYY">
+                      <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglRetur" name="tglRetur{{$a->id}}" id="tglRetur{{$a->id}}" placeholder="DD-MM-YYYY" autocomplete="off">
                     </td>
                     <td class="align-middle">
-                      <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qty{{$a->id}}" id="qty{{$a->id}}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                      <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qty{{$a->id}}" id="qty{{$a->id}}" onkeypress="return angkaSaja(event)" autocomplete="off">
                     </td>
                     <td class="align-middle">
                       <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" name="harga{{$a->id}}" id="harga{{$a->id}}">
@@ -79,7 +79,7 @@
                       <input type="text" name="jumlah{{$a->id}}" id="jumlah{{$a->id}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah">
                     </td>
                     <td class="align-middle" style="width: 90px">
-                      <input type="text" name="diskon{{$a->id}}" id="diskon{{$a->id}}" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +">
+                      <input type="text" name="diskon{{$a->id}}" id="diskon{{$a->id}}" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event)" autocomplete="off">
                     </td>
                     <td class="text-right align-middle" style="width: 110px">
                       <input type="text" name="diskonRp{{$a->id}}" id="diskonRp{{$a->id}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp">
@@ -199,6 +199,8 @@ const total = document.querySelectorAll('.total');
 for(let i = 0; i < kodeBarang.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
+  brgNama[i].addEventListener("blur", displayHarga) ;
+  kodeBarang[i].addEventListener("blur", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
@@ -243,6 +245,7 @@ for(let i = 0; i < qty.length; i++) {
     if(e.target.value == "") {
       // total[i].value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
+      diskonRp[i].value = "";
       netto[i].value = "";
     }
     else {  
@@ -294,14 +297,10 @@ function hitungDiskon(angka) {
 }
 
 /** Inputan hanya bisa angka **/
-function angkaSaja(evt, inputan) {
+function angkaSaja(evt) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-    for(let i = 1; i <= qty.length; i++) {
-      if(inputan == i)
-        $(qty[inputan-1]).tooltip('show');
-    }
     return false;
   }
   return true;
@@ -312,10 +311,6 @@ function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && charCode != 43  && (charCode < 48 || charCode > 57)) {
-    for(let i = 1; i <= diskon.length; i++) {
-      if(inputan == i)
-        $(diskon[inputan-1]).tooltip('show');
-    }
     return false;
   }
   return true;

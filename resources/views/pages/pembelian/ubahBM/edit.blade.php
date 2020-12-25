@@ -132,7 +132,7 @@
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required>
                       </td>
                       <td align="right">
                         <input type="text" name="harga[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" readonly>
@@ -219,6 +219,8 @@ const jumBaris = document.getElementById('jumBaris');
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
+  brgNama[i].addEventListener("blur", displayHarga) ;
+  kodeBarang[i].addEventListener("blur", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {

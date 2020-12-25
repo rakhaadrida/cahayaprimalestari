@@ -42,7 +42,7 @@
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Retur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tglRetur" value="{{ $tanggal }}" required autofocus>
+                        <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tglRetur" value="{{ $tanggal }}" autocomplete="off" required autofocus>
                       </div>
                     </div>  
                   </div>
@@ -80,15 +80,13 @@
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang"
-                        value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
+                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ old('kodeBarang[]') }}" @if($i == 1) required @endif >
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
-                        value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
+                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -158,6 +156,7 @@ var tab = '{{ $tab }}';
 
 tglRetur.addEventListener("keyup", formatTanggal);
 namaCustomer.addEventListener("keyup", displayCust);
+namaCustomer.addEventListener("blur", displayCust);
 newRow.addEventListener('click', displayRow);
 
 /** Add New Table Line **/
@@ -176,7 +175,7 @@ function displayRow(e) {
         <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -199,31 +198,24 @@ function displayRow(e) {
   document.getElementById("backRJ").tabIndex = tab++;
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keyup", function (e) {   
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      qtyRow.removeAttribute('required');
-    } 
+  kodeRow.addEventListener("keyup", displayBarangRow);
+  brgRow.addEventListener("keyup", displayBarangRow);
+  kodeRow.addEventListener("blur", displayBarangRow);
+  brgRow.addEventListener("blur", displayBarangRow);
 
-    @foreach($barang as $br)
-      if('{{ $br->nama }}' == e.target.value) {
-        kodeRow.value = '{{ $br->id }}';
-      }
-    @endforeach
-  });
-
-  kodeRow.addEventListener("keyup", function (e) {
+  function displayBarangRow(e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
     }
 
     @foreach($barang as $br)
-      if('{{ $br->id }}' == e.target.value) {
+      if(('{{ $br->id }}' == e.target.value) || ('{{ $br->nama }}' == e.target.value)) {
+        kodeRow.value = '{{ $br->id }}';
         brgRow.value = '{{ $br->nama }}';
       }
     @endforeach
-  });
+  }
 
   /** Inputan hanya bisa angka **/
   qtyRow.addEventListener("keypress", function (e, evt) {
@@ -354,31 +346,24 @@ function displayCust(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("keyup", function (e) {
+  kodeBarang[i].addEventListener("keyup", displayBarang);
+  brgNama[i].addEventListener("keyup", displayBarang);
+  kodeBarang[i].addEventListener("blur", displayBarang);
+  brgNama[i].addEventListener("blur", displayBarang);
+
+  function displayBarang(e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
     }
 
     @foreach($barang as $br)
-      if('{{ $br->nama }}' == e.target.value) {
+      if(('{{ $br->id }}' == e.target.value) || ('{{ $br->nama }}' == e.target.value)) {
         kodeBarang[i].value = '{{ $br->id }}';
-      }
-    @endforeach
-  });
-
-  kodeBarang[i].addEventListener("keyup", function (e) {
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      qty[i].removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if('{{ $br->id }}' == e.target.value) {
         brgNama[i].value = '{{ $br->nama }}';
       }
     @endforeach
-  });
+  }
 }
 
 /** Inputan hanya bisa angka **/

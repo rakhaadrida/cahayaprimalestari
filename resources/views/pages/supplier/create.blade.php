@@ -36,7 +36,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold ">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" id="nama" placeholder="Nama Supplier" value="{{ old('nama') }}" required autofocus>
+                  <input type="text" class="form-control col-form-label-sm" name="nama" id="nama" placeholder="Nama Supplier" value="{{ old('nama') }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <hr>  
@@ -52,14 +52,14 @@
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" placeholder="021-xxxxx" value="{{ old('telepon') }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="npwp" class="col-1 col-form-label text-bold">NPWP</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9">
+                  <input type="text" class="form-control col-form-label-sm" name="npwp" placeholder="Nomor NPWP" value="{{ old('npwp') }}" onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off">
                 </div>
               </div>
               <hr>

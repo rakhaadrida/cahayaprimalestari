@@ -41,7 +41,7 @@
                     <label for="nama" class="col-auto col-form-label text-bold ">Tanggal TB</label>
                     <span class="col-form-label text-bold ml-3">:</span>
                     <div class="col-2">
-                      <input type="text" tabindex="1" class="form-control datepicker col-form-label-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
+                      <input type="text" tabindex="1" class="form-control datepicker col-form-label-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" autocomplete="off" required>
                     </div>
                     <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                   </div> 
@@ -146,7 +146,7 @@
                         <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuan" value="{{ old('stokTujuan[]') }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 5 }}" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -298,7 +298,7 @@ function displayRow(e) {
         <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuanRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 5}" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 5}" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -326,39 +326,34 @@ function displayRow(e) {
   document.getElementById("resetTB").tabIndex = tab++;
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keyup", function (e) {   
+  kodeRow.addEventListener("keyup", displayBarangRow);
+  brgRow.addEventListener("keyup", displayBarangRow);
+  kodeRow.addEventListener("blur", displayBarangRow);
+  brgRow.addEventListener("blur", displayBarangRow);
+
+  function displayBarangRow(e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsalRow.removeAttribute('required');
       gdgTujuanRow.removeAttribute('required');
+      qtyTransferRow.removeAttribute('required');
     } 
 
     @foreach($barang as $br)
-      if('{{ $br->nama }}' == e.target.value) {
+      if(('{{ $br->id }}' == e.target.value) || ('{{ $br->nama }}' == e.target.value)) {
         kodeRow.value = '{{ $br->id }}';
-        gdgAsalRow.setAttribute('required', true);
-        gdgTujuanRow.setAttribute('required', true);
-      }
-    @endforeach
-  });
-
-  kodeRow.addEventListener("keyup", function (e) {
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      gdgAsalRow.removeAttribute('required');
-      gdgTujuanRow.removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if('{{ $br->id }}' == e.target.value) {
         brgRow.value = '{{ $br->nama }}';
         gdgAsalRow.setAttribute('required', true);
         gdgTujuanRow.setAttribute('required', true);
+        qtyTransferRow.setAttribute('required', true);
       }
     @endforeach
-  });
+  }
 
-  gdgAsalRow.addEventListener("keyup", function (e) {
+  gdgAsalRow.addEventListener("keyup", displayAsalRow);
+  gdgAsalRow.addEventListener("blur", displayAsalRow);
+
+  function displayAsalRow(e) {
     if(e.target.value == "") {
       kodeAsalRow.value = "";
       stokAsalRow.value = "";
@@ -370,9 +365,12 @@ function displayRow(e) {
       }
     @endforeach
     displayStokRow(kodeAsalRow.value, stokAsalRow);
-  });
+  }
 
-  gdgTujuanRow.addEventListener("keyup", function (e) {
+  gdgTujuanRow.addEventListener("keyup", displayTujuanRow);
+  gdgTujuanRow.addEventListener("blur", displayTujuanRow);
+
+  function displayTujuanRow(e) {
     if(e.target.value == "") {
       kodeTujuanRow.value = "";
       stokTujuanRow.value = "";
@@ -384,7 +382,7 @@ function displayRow(e) {
       }
     @endforeach
     displayStokRow(kodeTujuanRow.value, stokTujuanRow);
-  });
+  }
 
   function displayStokRow(kode, stok) {
     @foreach($stok as $s)
@@ -557,7 +555,12 @@ function displayRow(e) {
 
 /** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
-  brgNama[i].addEventListener("keyup", function (e) {
+  brgNama[i].addEventListener("keyup", displayBarang);
+  kodeBarang[i].addEventListener("keyup", displayBarang);
+  brgNama[i].addEventListener("blur", displayBarang);
+  kodeBarang[i].addEventListener("blur", displayBarang);
+
+  function displayBarang(e) {
     if(e.target.value == "") {
       $(this).parents('tr').find('input').val('');
       gdgAsal[i].removeAttribute('required');
@@ -566,37 +569,23 @@ for(let i = 0; i < brgNama.length; i++) {
     }
 
     @foreach($barang as $br)
-      if('{{ $br->nama }}' == e.target.value) {
+      if(('{{ $br->id }}' == e.target.value) || ('{{ $br->nama }}' == e.target.value)) {
         kodeBarang[i].value = '{{ $br->id }}';
-        gdgAsal[i].setAttribute('required', true);
-        gdgTujuan[i].setAttribute('required', true);
-        qtyTransfer[i].setAttribute('required', true);
-      }
-    @endforeach
-  });
-
-  kodeBarang[i].addEventListener("keyup", function (e) {
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      gdgAsal[i].removeAttribute('required');
-      gdgTujuan[i].removeAttribute('required');
-      qtyTransfer[i].removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if('{{ $br->id }}' == e.target.value) {
         brgNama[i].value = '{{ $br->nama }}';
         gdgAsal[i].setAttribute('required', true);
         gdgTujuan[i].setAttribute('required', true);
         qtyTransfer[i].setAttribute('required', true);
       }
     @endforeach
-  });
+  }
 }
 
 /** Tampil Stok Gudang **/
 for(let i = 0; i < gdgAsal.length; i++) {
-  gdgAsal[i].addEventListener("keyup", function (e) {
+  gdgAsal[i].addEventListener("keyup", displayAsal);
+  gdgAsal[i].addEventListener("blur", displayAsal);
+
+  function displayAsal(e) {
     if(e.target.value == "") {
       kodeAsal[i].value = "";
       stokAsal[i].value = "";
@@ -608,9 +597,12 @@ for(let i = 0; i < gdgAsal.length; i++) {
       }
     @endforeach
     displayStok(kodeAsal[i].value, stokAsal[i]);
-  });
+  }
 
-  gdgTujuan[i].addEventListener("keyup", function (e) {
+  gdgTujuan[i].addEventListener("keyup", displayTujuan);
+  gdgTujuan[i].addEventListener("blur", displayTujuan);
+
+  function displayTujuan(e) {
     if(e.target.value == "") {
       kodeTujuan[i].value = "";
       stokTujuan[i].value = "";
@@ -622,7 +614,7 @@ for(let i = 0; i < gdgAsal.length; i++) {
       }
     @endforeach
     displayStok(kodeTujuan[i].value, stokTujuan[i]);
-  });
+  }
 
   function displayStok(kode, stok) {
     @foreach($stok as $s)

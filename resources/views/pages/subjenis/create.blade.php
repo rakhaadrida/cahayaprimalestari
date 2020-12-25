@@ -36,7 +36,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Sub Jenis Barang" value="{{ old('nama') }}" required autofocus>
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Sub Jenis Barang" value="{{ old('nama') }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <div class="form-group row">
@@ -51,7 +51,7 @@
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-1">
-                  <input type="text" class="form-control col-form-label-sm" name="limit" id="limit" value="{{ old('limit') }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="limit" id="limit" value="{{ old('limit') }}" autocomplete="off" required>
                 </div>
                 <span class="col-form-label text-bold" id="labelUkuran"></span>
               </div>
@@ -81,7 +81,10 @@ const kategori = document.getElementById('kategori');
 const kodeJenis = document.getElementById('kodeJenis');
 const labelUkuran = document.getElementById('labelUkuran');
 
-kategori.addEventListener("keyup", function(e) {
+kategori.addEventListener("keyup", displayKategori);
+kategori.addEventListener("blur", displayKategori);
+
+function displayKategori(e) {
   @foreach($jenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeJenis.value = '{{ $j->id }}';
@@ -96,7 +99,7 @@ kategori.addEventListener("keyup", function(e) {
       labelUkuran.textContent = '';
     }
   @endforeach
-});
+}
 
 /** Autocomplete Input Text **/
 $(function() {

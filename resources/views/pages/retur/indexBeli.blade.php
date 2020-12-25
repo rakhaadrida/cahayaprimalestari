@@ -12,10 +12,10 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Retur Pembelian</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Retur Supplier</h1>
       <div class="justify-content-end">
         <a href="{{ route('ret-index-beli') }}" tabindex="1" class="btn btn-sm btn-primary shadow-sm">
-          <i class="fas fa-plus fa-sm text-dark-50 mr-1"></i>  Input Retur Pembelian
+          <i class="fas fa-plus fa-sm text-dark-50 mr-1"></i>  Input Retur Supplier
         </a>
       </div>
   </div>
@@ -58,11 +58,11 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" autocomplete="off">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
                   <div class="col-2">
-                    <input type="text" tabindex="5" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="5" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY" autocomplete="off">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('retur-beli-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>

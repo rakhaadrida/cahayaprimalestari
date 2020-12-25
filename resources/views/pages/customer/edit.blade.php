@@ -38,7 +38,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
                   <input type="text" class="form-control col-form-label-sm" name="nama" 
-                  value="{{ $item->nama }}" required autofocus>
+                  value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <hr>
@@ -53,10 +53,10 @@
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
+                  <input type="text" class="form-control col-form-label-sm" name="telepon" value="{{ $item->telepon }}" onkeypress="return angkaSaja(event, telepon)" id="telepon" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="contact_person" value="{{ $item->contact_person }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="contact_person" value="{{ $item->contact_person }}" autocomplete="off" required>
                 </div>
               </div>
               <div class="form-group row">
@@ -65,7 +65,7 @@
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="npwp" 
                   onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9"
-                  value ="@if($item->npwp != ""){{ $item->npwp }}@else-@endif">
+                  value ="@if($item->npwp != ""){{ $item->npwp }}@else-@endif" autocomplete="off">
                 </div>
               </div>
               <hr>
@@ -74,7 +74,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="limit" 
-                  value="{{ number_format($item->limit, 0, "", ".") }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required>
+                  value="{{ number_format($item->limit, 0, "", ".") }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
               </div>
               <div class="form-group row">
@@ -114,6 +114,7 @@ const npwp = document.getElementById("npwp");
 const limit = document.getElementById("limit");
 
 namaSales.addEventListener('keyup', displayKode);
+namaSales.addEventListener('blur', displayKode);
 telepon.addEventListener("keyup", formatPhone);
 limit.addEventListener("keyup", formatNominal);
 

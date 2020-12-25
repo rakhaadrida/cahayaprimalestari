@@ -191,8 +191,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Transaksi Harian
         Route::get('/transaksi', 'TransaksiController@index')->name('trans');
         Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
-        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
-            ->name('trans-detail');
+        // Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
+        //     ->name('trans-detail');
         
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
@@ -294,6 +294,9 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
+        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
+            ->name('trans-detail');
+
         // Account Receivable
         Route::get('/retur/index-jual', 'ReturController@createPenjualan')
             ->name('ret-index-jual');

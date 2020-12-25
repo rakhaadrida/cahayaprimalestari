@@ -48,10 +48,10 @@
                   <tr class="text-dark">
                     <td class="text-center align-middle">{{ $i }}</td>
                     <td class="text-center align-middle">
-                      <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$a->id_bm}}" id="tglBayar{{$a->id_bm}}" placeholder="DD-MM-YYYY">
+                      <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$a->id_bm}}" id="tglBayar{{$a->id_bm}}" placeholder="DD-MM-YYYY" autocomplete="off">
                     </td>
                     <td class="text-right align-middle">
-                      <input type="text" name="bayar{{$a->id_bm}}" id="bayar{{$a->id_bm}}" class="form-control form-control-sm text-bold text-dark text-right bayarModal">
+                      <input type="text" name="bayar{{$a->id_bm}}" id="bayar{{$a->id_bm}}" class="form-control form-control-sm text-bold text-dark text-right bayarModal" autocomplete="off">
                     </td>
                     <td class="text-right align-middle">
                       <input type="text" name="kurang{{$a->id_bm}}" id="kurang{{$a->id_bm}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
@@ -130,7 +130,7 @@ for(let i = 0; i < bayarModal.length; i++) {
     });
   });
 
-  bayarModal[i].addEventListener("change", function(e) {
+  bayarModal[i].addEventListener("blur", function(e) {
     kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
   });
 }

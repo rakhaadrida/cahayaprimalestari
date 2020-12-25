@@ -146,7 +146,7 @@
                         <input type="hidden" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" required>
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required>
                         @php $arrKode = ''; $arrQty = ''; @endphp
                         @foreach($gudang as $g)
                           @php
@@ -224,7 +224,7 @@
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($item->qty * $item->harga, 0, "", ".") }}" >
                       </td>
                       <td align="right" style="width: 60px">
-                        <input type="text" tabindex="{{ $tab += 5 }}" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" required>
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off" required>
                       </td>
                       @php 
                         $diskon = 100;
@@ -462,6 +462,8 @@ var sisa; var stokJohar; var stokLain; var totStok;
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
+  brgNama[i].addEventListener("blur", displayHarga) ;
+  kodeBarang[i].addEventListener("blur", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
@@ -496,7 +498,7 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("change", function (e) {
+  qty[i].addEventListener("blur", function (e) {
     stokJohar = 0;
     stokLain = [];
     totStok = 0;
@@ -608,7 +610,7 @@ for(let i = 0; i < qty.length; i++) {
         qtyGudang[i].value = +stokJohar + +arrQtyAwal[0];
       }
       else {
-        kodeGudang[i].value = arrKodeGud;
+        kodeGudang[i].value = 'GDG01';
         qtyGudang[i].value = e.target.value;
 
         cek = 0;
@@ -617,11 +619,11 @@ for(let i = 0; i < qty.length; i++) {
           arrQtyGud = qtyGudang[i].value.split(',');
           var kode = '{{ $g->id }}';
           if('{{ $g->id }}' == arrKodeGud[cek]) {
-            const qtyGudangDet = document.querySelectorAll('.gud'+kode)[i];
+            var qtyGudangDet = document.querySelectorAll('.gud'+kode)[i];
             qtyGudangDet.value = arrQtyGud[cek];
             cek++;
           } else {
-            const qtyGudangDet = document.querySelectorAll('.gud'+kode)[i];
+            var qtyGudangDet = document.querySelectorAll('.gud'+kode)[i];
             qtyGudangDet.value = '';
           }
         @endforeach
@@ -642,6 +644,42 @@ for(let i = 0; i < qty.length; i++) {
     grandtotal.value = subtotal.value;
   });
 } 
+
+// Pilih Tipe
+for(let i = 0; i < tipe.length; i++) {
+  tipe[i].addEventListener("keyup", displayTipe);
+  tipe[i].addEventListener("blur", displayTipe);
+
+  function displayTipe(e) {
+    if(e.target.value == "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+      totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
+      harga[i].value = "";
+      jumlah[i].value = "";
+      diskonRp[i].value = "";
+      netto[i].value = "";
+    }
+
+    @foreach($harga as $hb)
+      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->hargaBarang->tipe }}' == e.target.value)) {
+        harga[i].value = addCommas('{{ $hb->harga_ppn }}');
+        jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * qty[i].value);
+
+        netPast = +netto[i].value.replace(/\./g, "");
+        if(diskon[i].value != "") {
+          var angkaDiskon = hitungDiskon(diskon[i].value)
+          diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100);
+        }
+
+        netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+        checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+        totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") + +diskonFaktur.value.replace(/\./g, ""));
+        grandtotal.value = totalNotPPN.value;
+      }
+    @endforeach
+  }
+}
 
 /** Tampil Kode Gudang Tambahan **/
 for(let j = 0; j < modalGudang.length; j++) {
@@ -850,6 +888,11 @@ $(function() {
     kodeBrg.push('{{ $b->id }}');
     namaBrg.push('{{ $b->nama }}');
   @endforeach
+
+  var tipeHarga = [];
+  @foreach($hrg as $h)
+    tipeHarga.push('{{ $h->tipe }}');
+  @endforeach
     
   function split(val) {
     return val.split(/,\s*/);
@@ -901,6 +944,37 @@ $(function() {
       source: function(request, response) {
         // delegate back to autocomplete, but extract the last term
         response($.ui.autocomplete.filter(kodeBrg, extractLast(request.term)));
+      },
+      focus: function() {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split(this.value);
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push(ui.item.value);
+        // add placeholder to get the comma-and-space at the end
+        terms.push("");
+        this.value = terms.join("");
+        return false;
+      }
+    });
+  }
+
+  /*-- Autocomplete Input Tipe Harga --*/
+  for(let i = 0; i < tipe.length; i++) {
+    $(tipe[i]).on("keydown", function(event) {
+      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function(request, response) {
+        // delegate back to autocomplete, but extract the last term
+        response($.ui.autocomplete.filter(tipeHarga, extractLast(request.term)));
       },
       focus: function() {
         // prevent value inserted on focus

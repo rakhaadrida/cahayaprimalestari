@@ -54,11 +54,11 @@
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" autocomplete="off">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
                   <div class="col-2">
-                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY" autocomplete="off">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ap-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -89,7 +89,6 @@
                     <th style="width: 50px" class="align-middle">No. Faktur</th>
                     <th style="width: 65px" class="align-middle">Tgl. BM</th>
                     <th style="width: 60px" class="align-middle">Discount</th>
-                    <th style="width: 70px" class="align-middle">HPP</th>
                     <th style="width: 75px" class="align-middle">Total</th>
                     <th style="width: 70px" class="align-middle">Transfer</th>
                     <th style="width: 70px" class="align-middle">Retur</th>
@@ -114,9 +113,6 @@
                       <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $a->id_bm) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $a->id_bm }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->bm->tanggal)->format('d-M-y') }}
-                      </td>
-                      <td align="center" class="align-middle" @if($a->bm->detilbm[0]->diskon != '') style="background-color: lightgreen" @endif>
-                        {{ $a->bm->diskon == 'T' ? 'INPUT' : 'KOSONG' }}
                       </td>
                       <td align="center" class="align-middle" @if($a->bm->detilbm[0]->diskon != '') style="background-color: lightgreen" @endif>
                         {{ $a->bm->diskon == 'T' ? 'INPUT' : 'KOSONG' }}

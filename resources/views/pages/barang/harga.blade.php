@@ -29,16 +29,14 @@
                 <label for="kode" class="col-auto col-form-label text-bold">Kode Barang</label>
                 <span class="col-form-label text-bold ml-1">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
-                  value="{{ $barang->id }}" readonly>
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" value="{{ $barang->id }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="nama" class="col-auto col-form-label text-bold">Nama Barang</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="nama" 
-                  value="{{ $barang->nama }}" readonly>
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="nama" value="{{ $barang->nama }}" readonly>
                 </div>
               </div>
               <hr>
@@ -47,8 +45,7 @@
                 <div class="form-row">
                   <div class="form-group col-2">
                     <label for="harga" class="col-form-label text-bold">Price List</label>
-                    <input type="text" tabindex="0" class="form-control col-form-label-sm harga" id="harga"
-                    name="harga[]" readonly
+                    <input type="text" tabindex="0" class="form-control col-form-label-sm harga" id="harga" name="harga[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ number_format($item->harga, 0, "", ".") }}" 
@@ -59,8 +56,7 @@
                   </div>
                   <div class="form-group col-2 ml-2">
                     <label for="ppn" class="col-form-label text-bold">PPN</label>
-                    <input type="text" tabindex="0" class="form-control col-form-label-sm ppn" id="ppn" 
-                    name="ppn[]" readonly
+                    <input type="text" tabindex="0" class="form-control col-form-label-sm ppn" id="ppn" name="ppn[]" readonly
                       @foreach($items as $item)
                         @if($item->id_harga == $h->id)
                           value="{{ number_format($item->ppn, 0, "", ".") }}" 
@@ -102,10 +98,10 @@
               <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" class="btn btn-success btn-block text-bold">Update</button>
+                  <button type="submit" tabindex="{{ $tab++ }}" class="btn btn-success btn-block text-bold">Update</button>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" tabindex="{{ $tab+= 2 }} " class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
             </form>

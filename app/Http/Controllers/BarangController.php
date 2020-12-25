@@ -92,10 +92,10 @@ class BarangController extends Controller
 
         $j = 0;
         for($i = 0; $i < $harga->count(); $i++) {
-            if($itemsRow == $harga->count()) {
+            if($items->count() == $harga->count()) {
                 $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
             }
-            else if(($itemsRow > 0) && ($j < $itemsRow)) {
+            else if(($items->count() > 0) && ($j < $items->count())) {
                 if($items[$j]->id_harga == $harga[$i]->id) {
                     $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], 
                     $request->ppn[$i], $request->hargaPPN[$i]);

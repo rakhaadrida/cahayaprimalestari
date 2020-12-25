@@ -39,7 +39,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
                   <input type="text" class="form-control col-form-label-sm" name="nama" 
-                  value="{{ $item->nama }}" required autofocus>
+                  value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <div class="form-group row">
@@ -51,9 +51,9 @@
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" @if($item->id_sub != '') value="{{$item->subjenis->nama}}" @endif required>
                 </div>
-                <input type="hidden" name="kodeJenis" id="kodeJenis" 
+                <input type="text" name="kodeJenis" id="kodeJenis" 
                 value="@if($item->id_kategori != '') {{$item->id_kategori}} @endif">
-                <input type="hidden" name="kodeSub" id="kodeSub"
+                <input type="text" name="kodeSub" id="kodeSub"
                 value="@if($item->id_sub != '') {{$item->id_sub}} @endif">
               </div>
               <hr>
@@ -77,7 +77,7 @@
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ number_format($item->ukuran, 0, "", ".") }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" required>
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ number_format($item->ukuran, 0, "", ".") }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
                 <span class="col-form-label text-bold" id="labelUkuran">{{ $item->satuan }}</span>
               </div>
@@ -115,7 +115,16 @@ Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayUkuran);
 });
 
-kategori.addEventListener("keyup", function(e) {
+kategori.addEventListener("keyup", displayKategori);
+kategori.addEventListener("blur", displayKategori); 
+
+function displayKategori(e) {
+  if(e.target.value == '') {
+    kodeJenis.value = '';
+    subjenis.value = '';
+    kodeSub.value = '';
+  }
+
   @foreach($jenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeJenis.value = '{{ $j->id }}';
@@ -169,9 +178,12 @@ kategori.addEventListener("keyup", function(e) {
       kodeJenis.value = '';
     }
   @endforeach
-});
+}
 
-subjenis.addEventListener("keyup", function(e) {
+subjenis.addEventListener("keyup", displaySubjenis);
+subjenis.addEventListener("blur", displaySubjenis); 
+
+function displaySubjenis(e) {
   @foreach($subjenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeSub.value = '{{ $j->id }}';
@@ -180,7 +192,7 @@ subjenis.addEventListener("keyup", function(e) {
       kodeSub.value = '';
     }
   @endforeach
-});
+}
 
 /** Tampil Label Satuan Ukuran **/
 function displayUkuran(e) {

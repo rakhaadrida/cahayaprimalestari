@@ -34,16 +34,16 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group row">
-                      <label for="kode" class="col-2 col-form-label text-bold ">Nomor BM</label>
+                      <label for="kode" class="col-2 col-form-label text-bold ">Nomor Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold" name="kode" id="kode" value="" required autofocus>
+                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold" name="kode" id="kode" value="" autofocus autocomplete="off" required >
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" required>
+                        <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tanggal" value="{{ $tanggal }}" autocomplete="off" required>
                       </div>
                     </div>   
                   </div>
@@ -176,11 +176,11 @@
                         <input type="text" tabindex="{{$tab += 2}}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td style="width: 75px" > 
-                        <input type="text" tabindex="{{$tab += 3}}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{$tab += 3}}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                         <input type="hidden" name="teksSat[]" class="teksSat">
                       </td>
                       <td style="width: 65px" > 
-                        <input type="text" tabindex="{{$tab += 4}}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+                        <input type="text" tabindex="{{$tab += 4}}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'sat')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" >
                       </td>
                       <td>
                         <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
@@ -378,8 +378,9 @@ var netPast; var tab = '{{ $tab }}'; var satuanUkuran; var ukuran;
 
 tanggal.addEventListener("keyup", formatTanggal);
 gudang.addEventListener("keyup", displayGud);
+gudang.addEventListener("blur", displayGud);
 namaSup.addEventListener("keyup", displaySupp);
-// namaSup.addEventListener("focusout", focusTabel);
+namaSup.addEventListener("blur", displaySupp);
 newRow.addEventListener('click', displayRow);
 
 /** Add New Table Line **/
@@ -398,11 +399,12 @@ function displayRow(e) {
         <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
         <input type="hidden" name="teksSat[]" id="teksSatRow${newNum}" class="teksSatRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9">
+        <input type="text" tabindex="${tab += 3}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
+        autocomplete="off">
       </td>
       <td>
         <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow">
@@ -435,7 +437,9 @@ function displayRow(e) {
 
   /** Tampil Harga **/
   brgRow.addEventListener("keyup", displayHargaRow);
-  kodeRow.addEventListener("keyup", displayHargaRow)
+  kodeRow.addEventListener("keyup", displayHargaRow);
+  brgRow.addEventListener("blur", displayHargaRow);
+  kodeRow.addEventListener("blur", displayHargaRow);
 
   function displayHargaRow(e) {
     if(e.target.value == "") {
@@ -478,7 +482,17 @@ function displayRow(e) {
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
       $(qtyRow).tooltip('show');
-      
+      e.preventDefault();
+    }
+    
+    return true;
+  });
+
+   satuanRow.addEventListener("keypress", function (e, evt) {
+    evt = (evt) ? evt : window.event;
+    var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
+    if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
+      $(satuanRow).tooltip('show');
       e.preventDefault();
     }
     
@@ -486,8 +500,8 @@ function displayRow(e) {
   });
 
   /** Tampil Jumlah **/
-  qtyRow.addEventListener("change", displayQtyRow);
-  satuanRow.addEventListener("change", displayQtyRow);
+  qtyRow.addEventListener("blur", displayQtyRow);
+  satuanRow.addEventListener("blur", displayQtyRow);
 
   function displayQtyRow(e) {
     hitungQtyRow(e.target.id, e.target.value, teksSatRow.value);
@@ -662,6 +676,8 @@ function displaySupp(e) {
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
+  brgNama[i].addEventListener("blur", displayHarga) ;
+  kodeBarang[i].addEventListener("blur", displayHarga);
 
   function displayHarga(e) {
     if(e.target.value == "") {
@@ -702,8 +718,8 @@ for(let i = 0; i < brgNama.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("change", displayQty);
-  satuan[i].addEventListener("change", displayQty);
+  qty[i].addEventListener("blur", displayQty);
+  satuan[i].addEventListener("blur", displayQty);
 
   function displayQty(e) {
     hitungQty(i, e.target.id, e.target.value, teksSat[i].value);
@@ -799,13 +815,17 @@ function addCommas(nStr) {
 }
 
 /** Inputan hanya bisa angka **/
-function angkaSaja(evt, inputan) {
+function angkaSaja(evt, inputan, jenis) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= qty.length; i++) {
-      if(inputan == i)
-        $(qty[inputan-1]).tooltip('show');
+      if(inputan == i) {
+        if(jenis == 'qty')
+          $(qty[inputan-1]).tooltip('show');
+        else
+          $(satuan[inputan-1]).tooltip('show');
+      }
     }
 
     return false;

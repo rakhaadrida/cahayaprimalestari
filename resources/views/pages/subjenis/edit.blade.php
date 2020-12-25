@@ -39,7 +39,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
                   <input type="text" class="form-control col-form-label-sm" name="nama" 
-                  value="{{ $item->nama }}" required autofocus>
+                  value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <div class="form-group row">
@@ -54,7 +54,7 @@
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-1">
-                  <input type="text" class="form-control col-form-label-sm" name="limit" id="limit" value="{{ $item->limit }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="limit" id="limit" value="{{ $item->limit }}" autocomplete="off" required>
                 </div>
                 <span class="col-form-label text-bold" id="labelUkuran">
                   @if(($item->id_kategori == 'KAT02') || ($item->id_kategori == 'KAT03')) ROL @else PCS @endif
@@ -86,7 +86,10 @@ const kategori = document.getElementById('kategori');
 const kodeJenis = document.getElementById('kodeJenis');
 const labelUkuran = document.getElementById('labelUkuran');
 
-kategori.addEventListener("keyup", function(e) {
+kategori.addEventListener("keyup", displayKategori);
+kategori.addEventListener("blur", displayKategori);
+
+function displayKategori(e) {
   @foreach($jenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeJenis.value = '{{ $j->id }}';
@@ -101,7 +104,7 @@ kategori.addEventListener("keyup", function(e) {
       labelUkuran.textContent = '';
     }
   @endforeach
-});
+}
 
 $(function() {
   $("[autofocus]").on("focus", function() {

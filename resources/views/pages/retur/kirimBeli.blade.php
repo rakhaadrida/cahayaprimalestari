@@ -12,7 +12,8 @@
         <div class="modal-body text-dark">
           <form action="" method="POST">
             @csrf
-            <input type="hidden" name="kode" value="{{ $r->id }}">
+            <input type="hidden" name="kode" id="kode" value="{{ $r->id }}">
+            <input type="hidden" name="angka" id="angka" value="{{ $j }}">
             @php 
               $detail = \App\Models\DetilRB::where('id_retur', $r->id)->get();
             @endphp
@@ -32,7 +33,7 @@
                 </thead>
                 <tbody class="table-ar">
                   @php 
-                    $i = 1; $totalTerima = 0; $totalBatal = 0;
+                    $i = 1; $totalTerima = 0; $totalBatal = 0; $kode = $r->id;
                     $returTerima = App\Models\DetilRT::join('returterima', 'returterima.id',
                                   'detilrt.id_terima')->where('id_retur', $r->id)
                                   ->where('id_barang', $d->id_barang)->get();
@@ -62,13 +63,13 @@
                       <td class="align-middle">{{ $d->barang->nama }}</td>
                       <td class="align-middle text-center">{{ $d->qty_retur }}</td>
                       <td class="text-center align-middle">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$d->id_barang}}" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY">
+                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$d->id_barang}}" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="terima{{$r->id}}{{$d->id_barang}}" id="bayar{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal">
+                        <input type="text" name="terima{{$r->id}}{{$d->id_barang}}" id="bayar{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="batal{{$r->id}}{{$d->id_barang}}" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal">
+                        <input type="text" name="batal{{$r->id}}{{$d->id_barang}}" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td class="text-right align-middle">
                         <input type="text" name="kurang{{$d->id_barang}}" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
@@ -113,6 +114,7 @@
       </div>
     </div>
   </div>
+  @php $j++ @endphp
 @endforeach
 
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
@@ -140,6 +142,7 @@ const batalModal = document.querySelectorAll('.batalModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const btnCetak = document.querySelectorAll('.btnCetak');
+const kodeRB = document.getElementById('angka');
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {
@@ -185,6 +188,16 @@ for(let i = 0; i < btnCetak.length; i++) {
     printFrame.window.print();
     // window.print();
   });
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, nomor, inputan, jenis) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    return false;
+  }
+  return true;
 }
 
 /** Add Thousand Separators **/

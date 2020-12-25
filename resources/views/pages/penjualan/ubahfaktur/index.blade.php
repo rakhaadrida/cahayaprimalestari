@@ -52,12 +52,12 @@
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" autocomplete="off">
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">Tanggal Akhir</label>
                   <span class="col-form-label text-bold ml-3">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY">
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY" autocomplete="off">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('so-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -106,6 +106,7 @@ const kodeSO = document.getElementById('kode');
 tglAwal.addEventListener("keyup", formatTanggal);
 tglAkhir.addEventListener("keyup", formatTanggal);
 namaCust.addEventListener("keyup", displayKode);
+namaCust.addEventListener("blur", displayKode);
 
 /** Call Fungsi Setelah Inputan Terisi **/
 function formatTanggal(e) {

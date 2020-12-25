@@ -37,7 +37,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Barang" value="{{ old('nama') }}" required autofocus>
+                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Barang" value="{{ old('nama') }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <div class="form-group row">
@@ -49,8 +49,8 @@
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" value="{{ old('subjenis') }}" required>
                 </div>
-                <input type="hidden" name="kodeJenis" id="kodeJenis">
-                <input type="hidden" name="kodeSub" id="kodeSub">
+                <input type="text" name="kodeJenis" id="kodeJenis">
+                <input type="text" name="kodeSub" id="kodeSub">
               </div>
               <hr>
               <div class="form-group row">
@@ -73,7 +73,7 @@
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran per Satuan" value="{{ old('ukuran') }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" readonly>
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran per Satuan" value="{{ old('ukuran') }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off" readonly>
                 </div>
                 <span class="col-form-label text-bold" id="labelUkuran"></span>
               </div>
@@ -114,7 +114,16 @@ Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayUkuran);
 });
 
-kategori.addEventListener("keyup", function(e) {
+kategori.addEventListener("keyup", displayKategori);
+kategori.addEventListener("blur", displayKategori); 
+
+function displayKategori(e) {
+  if(e.target.value == '') {
+    kodeJenis.value = '';
+    subjenis.value = '';
+    kodeSub.value = '';
+  }
+
   @foreach($jenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeJenis.value = '{{ $j->id }}';
@@ -164,13 +173,17 @@ kategori.addEventListener("keyup", function(e) {
         });
       });
     }
-    else if(e.target.value == '') {
-      kodeJenis.value = '';
-    }
   @endforeach
-});
+}
 
-subjenis.addEventListener("keyup", function(e) {
+subjenis.addEventListener("keyup", displaySubjenis);
+subjenis.addEventListener("blur", displaySubjenis); 
+
+function displaySubjenis(e) {
+  if(e.target.value = '') {
+    kodeSub.value = '';
+  }
+
   @foreach($subjenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeSub.value = '{{ $j->id }}';
@@ -179,7 +192,7 @@ subjenis.addEventListener("keyup", function(e) {
       kodeSub.value = '';
     }
   @endforeach
-});
+}
 
 /** Tampil Label Satuan Ukuran **/
 function displayUkuran(e) {

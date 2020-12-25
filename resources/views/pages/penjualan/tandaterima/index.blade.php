@@ -36,11 +36,11 @@
                   <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" autofocus>
+                    <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" autocomplete="off" autofocus>
                   </div>
                   <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
                   <div class="col-2">
-                    <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir">
+                    <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" autocomplete="off">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="3" formaction="{{ route('ttr-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>

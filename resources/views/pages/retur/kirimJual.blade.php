@@ -50,10 +50,10 @@
                     <td class="align-middle text-right">{{ $dr->qty_retur }}</td>
                     <td class="align-middle text-right">{{ $stok->count() != 0 ? $stok[0]->stok : '0' }}</td>
                     <td class="text-center align-middle">
-                      <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$dr->id_barang}}" id="tglBayar{{$dr->id_barang}}" placeholder="DD-MM-YYYY" @if($dr->tgl_kirim != '') value ="{{ \Carbon\Carbon::parse($dr->tgl_kirim)->format('d-M-y') }}" readonly @endif>
+                      <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$r->id}}{{$dr->id_barang}}" id="tglBayar{{$dr->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off" @if($dr->tgl_kirim != '') value ="{{ \Carbon\Carbon::parse($dr->tgl_kirim)->format('d-M-y') }}" readonly @endif>
                     </td>
                     <td class="text-right align-middle">
-                      <input type="text" name="kirim{{$r->id}}{{$dr->id_barang}}" id="kirim{{$r->id}}{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
+                      <input type="text" name="kirim{{$r->id}}{{$dr->id_barang}}" id="kirim{{$r->id}}{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" autocomplete="off"
                       @if($dr->qty_kirim != '') value ="{{ $dr->qty_kirim }}" readonly @endif>
                     </td>
                   </tr>
@@ -190,15 +190,10 @@ for(let i = 0; i < btnCetak.length; i++) {
 }
 
 /** Inputan hanya bisa angka **/
-function angkaSaja(evt, inputan) {
+function angkaSaja(evt) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-    for(let i = 1; i <= kirimModal.length; i++) {
-      if(inputan == i)
-        $(kirimModal[inputan-1]).tooltip('show');
-    }
-
     return false;
   }
   return true;
