@@ -7,6 +7,7 @@ use App\Models\SalesOrder;
 use App\Models\BarangMasuk;
 use App\Models\AccReceivable;
 use App\Models\DetilAR;
+use App\Models\AR_Retur;
 use App\Models\Approval;
 use App\Models\Gudang;
 use Illuminate\Support\Facades\DB;

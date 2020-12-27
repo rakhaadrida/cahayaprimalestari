@@ -14,7 +14,7 @@ class AccPayable extends Model
     public $incrementing = false;
 
     public function bm() {
-        return $this->belongsTo('App\Models\BarangMasuk', 'id_bm', 'id_faktur');
+        return $this->hasMany('App\Models\BarangMasuk', 'id_faktur', 'id_bm');
     }
 
     public function detilap() {

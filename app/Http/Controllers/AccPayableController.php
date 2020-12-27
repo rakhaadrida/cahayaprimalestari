@@ -21,6 +21,7 @@ class AccPayableController extends Controller
 {
     public function index() {
         $ap = AccPayable::with(['bm'])->orderBy('created_at', 'desc')->get();
+        // return response()->json($ap);
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
@@ -127,6 +128,7 @@ class AccPayableController extends Controller
             }
 
             // $i->total = str_replace(".", "", $request->subtotal);
+            $i->tempo = $request->tempo != '' ? $request->tempo : 0;
             $i->total = $total;
             $i->diskon = 'T';
             $i->save();

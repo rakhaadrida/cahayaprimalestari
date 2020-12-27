@@ -85,6 +85,7 @@ class BarangMasukController extends Controller
             'total' => str_replace(".", "", $request->subtotal),
             'id_gudang' => $request->kodeGudang,
             'id_supplier' => $request->kodeSupplier,
+            'tempo' => $request->tempo != '' ? $request->tempo : 0,
             'status' => 'INPUT',
             'diskon' => 'F',
             'id_user' => Auth::user()->id

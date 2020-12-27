@@ -39,11 +39,12 @@
                   </div>
                   <div class="col" style="margin-left: -380px">
                     <div class="form-group row sj-first-line">
-                      <label for="tglSO" class="col-5 col-form-label text-bold text-right text-dark">Tanggal BM</label>
+                      <label for="namaSales" class="col-5 col-form-label text-bold text-right text-dark">Nama Gudang</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-4">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tglBM" 
-                        value="{{ \Carbon\Carbon::parse($items[0]->tanggal)->format('d-M-y') }}">
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
+                        value="{{ $items[0]->gudang->nama }}">
+                        <input type="hidden" name="kodeGudang" value="{{ $items[0]->id_gudang }}">
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
@@ -57,21 +58,23 @@
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
-                      <label for="namaSales" class="col-5 col-form-label text-bold text-right text-dark">Nama Gudang</label>
+                      <label for="namaSales" class="col-5 col-form-label text-bold text-right text-dark">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
-                        value="{{ $items[0]->gudang->nama }}">
-                        <input type="hidden" name="kodeGudang" value="{{ $items[0]->id_gudang }}">
+                        {{-- <input type="text" tabindex="2" class="form-control col-form-label-sm text-bold text-dark mt-1" onkeypress="return angkaSaja(event, 'tempo')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" name="tempo" id="tempo"
+                        value="{{ $items[0]->tempo }}"> --}}
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tempo" id="tempo"
+                        value="{{ \Carbon\Carbon::parse($items[0]->tanggal)->add($items[0]->tempo, 'days')->format('d-M-y') }}">
                       </div>
+                      {{-- <span class="col-form-label text-bold">Hari</span> --}}
                     </div>
                   </div>
                 </div>
                 <div class="form-group row so-update-left">
-                  <label for="nama" class="col-2 col-form-label text-bold text-dark">Tanggal Update</label>
+                  <label for="nama" class="col-2 col-form-label text-bold text-dark">Tanggal BM</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="tanggal" value="{{ $tanggal }}">
+                    <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($items[0]->tanggal)->format('d-M-y') }}">
                   </div>
                 </div>
                 <div class="form-group row so-update-input">
@@ -112,7 +115,7 @@
                 </thead>
                 <tbody id="tablePO">
                   @php 
-                    $i = 1; $subtotal = 0; $tab = 1;
+                    $i = 1; $subtotal = 0; $tab = 2;
                     if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
                       $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
                                   ->where('id_app', $items[0]->need_approval->last()->id)
@@ -282,10 +285,15 @@ function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {   
-    for(let i = 1; i <= qty.length; i++) {
-      if(inputan == i)
-        $(qty[inputan-1]).tooltip('show');
-    }
+    // if(inputan == "tempo") {
+    //   $(tempo).tooltip('show');
+    // }
+    // else {
+      for(let i = 1; i <= qty.length; i++) {
+        if(inputan == i)
+          $(qty[inputan-1]).tooltip('show');
+      }
+    // }
 
     return false;
   }

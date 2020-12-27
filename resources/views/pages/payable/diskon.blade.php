@@ -111,6 +111,16 @@
                           </div>
                         </div>
                       </div>
+                      <div class="col" style="margin-left: -520px">
+                        <div class="form-group row customer-detail">
+                          <label for="tempo" class="col-4 form-control-sm text-bold mt-1 text-right">Tempo</label>
+                          <span class="col-form-label text-bold">:</span>
+                          <div class="col-2">
+                            <input type="text" tabindex="1" class="form-control form-control-sm text-bold text-dark mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ $item->tempo != null ? $item->tempo : '' }}" autofocus>
+                          </div>
+                          <span class="col-form-label text-bold"> Hari</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 @else
@@ -168,7 +178,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @php $i = 1; $subtotal = 0; @endphp
+                    @php $i = 1; $subtotal = 0; $tab = 1; @endphp
                     @foreach($item->detilbm as $detil)
                       <tr class="text-dark text-bold">
                         <td align="center" class="align-middle">{{ $i }}</td>
@@ -182,8 +192,7 @@
                           <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format(($detil->qty * $detil->harga), 0, "", ".") }}">
                         </td>
                         <td align="right">
-                          <input type="text" name="dis{{$item->id}}{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off" @if($detil->diskon != null) 
-                          value="{{ $detil->diskon }}" @endif required>
+                          <input type="text" tabindex="{{ $tab++ }}" name="dis{{$item->id}}{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off" @if($detil->diskon != null) value="{{ $detil->diskon }}" @endif required>
                           <input type="hidden" name="diskon{{$item->id}}{{$detil->id_barang}}" class="disAngka" @if($detil->diskon != null) value="{{ $detil->disPersen }}" @endif>
                         </td>
                         @if($detil->diskon != null)
@@ -252,10 +261,10 @@
                   <!-- Button Submit dan Reset -->
                   <div class="form-row justify-content-center">
                     <div class="col-2">
-                      <button type="submit" formaction="{{ route('ap-process') }}" formmethod="POST" class="btn btn-success btn-block text-bold">Simpan</button>
+                      <button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-process') }}" formmethod="POST" class="btn btn-success btn-block text-bold">Simpan</button>
                     </div>
                     <div class="col-2">
-                      <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
+                      <a href="{{ url()->previous() }}" tabindex="{{$tab += 2 }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                     </div>
                   </div>
                   {{-- <div class="form-row justify-content-center">
@@ -278,6 +287,7 @@
 
 @push('addon-script')
 <script type="text/javascript">
+const tempo = document.getElementById("tempo");
 const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
 const disAngka = document.querySelectorAll(".disAngka");
@@ -341,6 +351,17 @@ function addCommas(nStr) {
 		x1 = x1.replace(rgx, '$1' + '.' + '$2');
 	}
 	return x1 + x2;
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    $(tempo).tooltip('show');
+    return false;
+  }
+  return true;
 }
 
 /** Inputan hanya bisa angka dan plus **/

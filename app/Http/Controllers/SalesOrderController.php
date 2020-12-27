@@ -243,7 +243,9 @@ class SalesOrderController extends Controller
 
         $paper = array(0,0,686,394);
         $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
+        // $pdf->setOptions(['isJavascriptEnabled' => true]);
         ob_end_clean();
+        
         return $pdf->stream('cetak-so.pdf');
     }
 

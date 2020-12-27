@@ -81,12 +81,18 @@
                     <input type="text" tabindex="3" name="namaGudang" id="namaGudang" class="form-control form-control-sm text-bold" required>
                     <input type="hidden" name="kodeGudang" id="kodeGudang"> 
                   </div>
+                  <label for="tempo" class="col-auto col-form-label text-bold text-right ml-4">Tempo</label>
+                  <span class="col-form-label text-bold ml-3">:</span>
+                  <div class="col-1 mt-1">
+                    <input type="text" tabindex="4" name="tempo" id="tempo" class="form-control form-control-sm text-bold" onkeypress="return angkaSaja(event, 'tempo', 'tem')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                  </div>
+                  <span class="col-form-label text-bold"> Hari</span>
                 </div>
                 <div class="form-group row subtotal-so">
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Supplier</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
-                    <input type="text" tabindex="4" name="namaSupplier" id="namaSupplier"  class="form-control form-control-sm text-bold" required />
+                    <input type="text" tabindex="5" name="namaSupplier" id="namaSupplier"  class="form-control form-control-sm text-bold" required />
                     <input type="hidden" name="kodeSupplier" id="kodeSupplier" />
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="5">
@@ -165,7 +171,7 @@
                   @endif --}}
                 </thead>
                 <tbody id="tablePO">
-                  @php $tab = 4; @endphp
+                  @php $tab = 5; @endphp
                   @for($i = 1; $i <= 5; $i++)
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
@@ -357,6 +363,7 @@ const kodeSup = document.getElementById('kodeSupplier');
 const tanggal = document.getElementById('tanggal');
 const gudang = document.getElementById('namaGudang');
 const kodeGud = document.getElementById('kodeGudang');
+const tempo = document.getElementById('tempo');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
@@ -719,7 +726,8 @@ for(let i = 0; i < brgNama.length; i++) {
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("blur", displayQty);
-  satuan[i].addEventListener("blur", displayQty);
+  if(teksSat[i].value == 'Pcs')
+    satuan[i].addEventListener("blur", displayQty);
 
   function displayQty(e) {
     hitungQty(i, e.target.id, e.target.value, teksSat[i].value);
@@ -819,12 +827,17 @@ function angkaSaja(evt, inputan, jenis) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-    for(let i = 1; i <= qty.length; i++) {
-      if(inputan == i) {
-        if(jenis == 'qty')
-          $(qty[inputan-1]).tooltip('show');
-        else
-          $(satuan[inputan-1]).tooltip('show');
+    if(inputan == "tempo") {
+      $(tempo).tooltip('show');
+    }
+    else {
+      for(let i = 1; i <= qty.length; i++) {
+        if(inputan == i) {
+          if(teks == 'qty')
+            $(qty[inputan-1]).tooltip('show');
+          else
+            $(satuan[inputan-1]).tooltip('show');
+        }
       }
     }
 

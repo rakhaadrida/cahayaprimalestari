@@ -86,12 +86,12 @@
                         </div> 
                         <div class="col" style="margin-left: -480px">
                           <div class="form-group row">
-                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Supplier</label>
+                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Gudang</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-8">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
+                            <div class="col-4">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                               @if($items->count() != 0)
-                                value="{{ $item->supplier->nama }} ({{ $item->id_supplier }})"
+                                value="{{ $item->gudang->nama }}"
                               @endif
                               >
                             </div>
@@ -114,12 +114,12 @@
                         </div> 
                         <div class="col" style="margin-left: -480px">
                           <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Gudang</label>
+                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Supplier</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
+                            <div class="col-8">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
                               @if($items->count() != 0)
-                                value="{{ $item->gudang->nama }}"
+                                value="{{ $item->supplier->nama }} ({{ $item->id_supplier }})"
                               @endif
                               >
                             </div>
@@ -139,6 +139,19 @@
                               @else
                                 value="{{ $item->status }}"
                                 @php $status = $item->status; @endphp
+                              @endif
+                              >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col" style="margin-left: -480px">
+                          <div class="form-group row customer-detail">
+                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Jatuh Tempo</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-4">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
+                              @if($items->count() != 0)
+                                value="{{ \Carbon\Carbon::parse($item->tanggal)->add($item->tempo, 'days')->format('d-M-y') }}"
                               @endif
                               >
                             </div>

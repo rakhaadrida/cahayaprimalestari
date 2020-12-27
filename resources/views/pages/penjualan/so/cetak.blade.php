@@ -1,6 +1,7 @@
-<html>
+{{-- <!DOCTYPE html> --}}
+<html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
     {{-- <link href="backend/css/sb-admin-2.css" rel="stylesheet">
     <link href="backend/css/main.css" rel="stylesheet"> --}}
@@ -325,7 +326,7 @@
   </head>
   <body>
     @foreach($items as $item)
-      <div class="cetak-all-container" @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif>
+      <div class="cetak-all-container">
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
@@ -535,18 +536,16 @@
       </div>
     @endforeach
 
-    <script type="text/javascript">
-    //  window.onload = function() {
-    //     // console.log(frameCetak);
+    {{-- <script type="text/javascript">
+      // window.onafterprint = function(e) {
+      //   alert('ok');
+      // };
 
-    //     window.onafterprint = function(e) {
-    //       alert('ok');
-    //     };
+      // window.print();
+      console.log('2');
+    </script> --}}
 
-    //     window.print();
-
-    //     window.onload = null
-    //   };
-    </script>
+    {{-- <script type="text/javascript"> try { this.print(); } catch (e) { window.onload = window.print; } </script> --}}
   </body>
+  
 </html>
