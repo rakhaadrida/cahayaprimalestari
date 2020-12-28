@@ -217,6 +217,7 @@ class AccReceivableController extends Controller
     }
 
     public function retur(Request $request) {
+        $jumBaris = $request->jumBaris;
         $gudang = Gudang::where('retur', 'T')->get();
 
         $lastcode = AR_Retur::max('id');
@@ -225,45 +226,54 @@ class AccReceivableController extends Controller
         $newcode = 'RTT'.sprintf("%04s", $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
-        $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
-                $request->{"qty".$request->kode}) - str_replace(".", "", $request->{"diskonRp".$request->kode});
+        // $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
+        //         $request->{"qty".$request->kode}) - str_replace(".", "", $request->{"diskonRp".$request->kode});
 
         AR_Retur::create([
             'id' => $newcode,
             'id_ar' => $request->kode,
             'tanggal' => $tanggal,
-            'total' => $total,
+            'total' => 0,
             'id_user' => Auth::user()->id
         ]);
+        
+        $total = 0;
+        for($i = 0; $i < $jumBaris; $i++) {
+            $tglRetur = $request->{"tglRetur".$request->kode}[$i];
+            $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
 
-        $tglRetur = $request->{"tglRetur".$request->kode};
-        $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
-
-        DetilRAR::create([
-            'id_retur' => $newcode,
-            'id_barang' => $request->{"kodeBarang".$request->kode},
-            'tgl_retur' => $tglRetur,
-            'qty' => $request->{"qty".$request->kode},
-            'harga' => str_replace(".", "", $request->{"harga".$request->kode}),
-            'diskon' => $request->{"diskon".$request->kode},
-            'diskonRp' => str_replace(".", "", $request->{"diskonRp".$request->kode}),
-        ]);
-
-        $stok = StokBarang::where('id_barang', $request->{"kodeBarang".$request->kode})
-                        ->where('id_gudang', $gudang[0]->id)
-                        ->where('status', 'F')->first();
-            
-        if($stok == NULL) {
-            StokBarang::create([
-                'id_barang' => $request->{"kodeBarang".$request->kode},
-                'id_gudang' => $gudang[0]->id,
-                'status' => 'F',
-                'stok' => $request->{"qty".$request->kode}
+            DetilRAR::create([
+                'id_retur' => $newcode,
+                'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
+                'tgl_retur' => $tglRetur,
+                'qty' => $request->{"qty".$request->kode}[$i],
+                'harga' => str_replace(".", "", $request->{"harga".$request->kode}[$i]),
+                'diskon' => $request->{"diskon".$request->kode}[$i],
+                'diskonRp' => str_replace(".", "", $request->{"diskonRp".$request->kode}[$i]),
             ]);
-        } else {
-            $stok->{'stok'} += $request->{"qty".$request->kode};
-            $stok->save();
+
+            $stok = StokBarang::where('id_barang', $request->{"kodeBarang".$request->kode}[$i])
+                            ->where('id_gudang', $gudang[0]->id)
+                            ->where('status', 'F')->first();
+                
+            if($stok == NULL) {
+                StokBarang::create([
+                    'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
+                    'id_gudang' => $gudang[0]->id,
+                    'status' => 'F',
+                    'stok' => $request->{"qty".$request->kode}[$i]
+                ]);
+            } else {
+                $stok->{'stok'} += $request->{"qty".$request->kode}[$i];
+                $stok->save();
+            }
+
+            $total += str_replace(".", "", $request->{"netto".$request->kode}[$i]);
         }
+
+        $ret = AR_Retur::where('id', $newcode)->first();
+        $ret->{'total'} = $total;
+        $ret->save();
 
         return redirect()->route('ar');
     }
