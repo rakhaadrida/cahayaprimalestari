@@ -14,6 +14,13 @@
             @csrf
             <input type="hidden" name="kode" id="kode" value="{{ $r->id }}">
             <input type="hidden" name="angka" id="angka" value="{{ $j }}">
+            @if($r->status == 'INPUT')
+              <div class="form-row justify-content-center mb-3">
+                <div class="col-3">
+                  <a href="{{ route('retur-potong-beli', $r->id) }}" id="backRJ" class="btn btn-outline-primary btn-block text-bold">Potong Tagihan</a>
+                </div>
+              </div>
+            @endif
             @php 
               $detail = \App\Models\DetilRB::where('id_retur', $r->id)->get();
             @endphp

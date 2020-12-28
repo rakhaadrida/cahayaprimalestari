@@ -10,7 +10,14 @@ use Carbon\Carbon;
 class TransaksiController extends Controller
 {
     public function index() {
-        return view('pages.penjualan.transaksiharian.index');
+        $tanggal = Carbon::now()->toDateString();
+
+        $items = SalesOrder::where('tgl_so', $tanggal)->get(); 
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.penjualan.transaksiharian.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {

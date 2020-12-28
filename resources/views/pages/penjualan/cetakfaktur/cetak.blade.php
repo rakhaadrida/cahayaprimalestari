@@ -316,6 +316,22 @@
         font-size: 13px;
       }
 
+      .waktu-cetak-so {
+        margin-left: 30px;
+        margin-right: 30px;
+        margin-top: 80px;
+      }
+
+      .waktu-cetak {
+        font-size: 10px !important;
+        margin-left: -15px;
+        margin-right: 10px;
+      }
+
+      .cetak-ke {
+        font-size: 10px !important;
+      }
+
       /* @media print {
         @page {
           size: 24.2cm 13.8cm;
@@ -325,7 +341,7 @@
   </head>
   <body>
     @foreach($items as $item)
-      <div class="cetak-all-container" @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif>
+      <div class="cetak-all-container" style="margin-bottom: -55px; @if($items[$items->count()-1]->id != $item->id) page-break-after: always; @endif " >
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
@@ -456,6 +472,14 @@
             @endforeach
           </tbody>
         </table>
+
+        @php 
+          $cetak = 1;
+          if($item->status != 'INPUT') {
+            $ubah = App\Models\Approval::where('id_dokumen', $item->id)->count();
+            $cetak += $ubah; 
+          }
+        @endphp
         
         <div class="container-fluid footer-cetak-so">
           <table class="table-footer">
@@ -475,6 +499,11 @@
                     <span>Rekening Bank BCA</span>
                     <br>
                     <span>a/n Irianti Irawan 0911276444</span>
+                    {{-- <span>Waktu Cetak : </span>
+                    <br>
+                    <span>{{ $today }} - {{ $waktu }}</span>
+                    <br>
+                    <span>Cetak ke : {{ $cetak }}</span> --}}
                   </div>
                 </td>
                 <td style="width: 85px">
@@ -530,6 +559,10 @@
               </tr>
             </thead>
           </table>
+        </div>
+        <div class="float-right waktu-cetak-so">
+          <span class="waktu-cetak">Waktu Cetak : {{ $today }} {{ $waktu }}</span>
+          <span class="cetak-ke">Cetak ke: {{ $cetak }}</span>
         </div>
       </div>
     @endforeach

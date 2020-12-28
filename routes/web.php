@@ -282,6 +282,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ar/retur', 'AccReceivableController@retur')->name('ar-retur');
     });
 
+    Route::group(['roles'=>['AR', 'SUPER']], function() {
+        // Account Receivable
+        Route::post('ar/excel', 'AccReceivableController@excel')->name('ar-excel');
+        Route::post('ar/excelNow', 'AccReceivableController@excelNow')->name('ar-excel-now');
+    });
+
     Route::group(['roles'=>['AP', 'SUPER']], function() {
         // Account Payable
         Route::get('ap', 'AccPayableController@index')->name('ap');
@@ -297,7 +303,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
             ->name('trans-detail');
 
-        // Account Receivable
+        Route::post('ar/cetak', 'AccReceivableController@cetak')->name('ar-cetak');
+        Route::post('ar/cetakNow', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
+
+        // Retur
         Route::get('/retur/index-jual', 'ReturController@createPenjualan')
             ->name('ret-index-jual');
         Route::post('/retur/index-jual/detail', 'ReturController@showCreateJual')
@@ -335,6 +344,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('retur-beli-show');
         Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')
             ->name('retur-beli-process');
+        Route::get('/retur/pembelian/tagihan/{id}', 'ReturController@potongTagihanBeli')
+            ->name('retur-potong-beli');
         Route::get('/retur/pembelian/cetak/{id}', 'ReturController@cetakTerimaBeli')
             ->name('retur-beli-cetak');
     });

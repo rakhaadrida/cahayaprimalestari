@@ -15,16 +15,20 @@ use App\Models\StokBarang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TransHarianExport;
+use App\Exports\TransAllExport;
+use PDF;
 
 class AccReceivableController extends Controller
 {
     public function index() {
-        $ar = AccReceivable::with(['so'])->get();
+        $ar = AccReceivable::with(['so'])->orderBy('created_at', 'desc')->get();
         $arOffice = AccReceivable::with(['so'])
                 ->select('ar.id', 'ar.id_so', 'ar.keterangan')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->where('id_sales', 'SLS03')->get();
+                ->where('id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
         
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -55,9 +59,12 @@ class AccReceivableController extends Controller
         }
 
         $awal = $request->tglAwal;
-        $awal = $this->formatTanggal($awal, 'Y-m-d');
         $akhir = $request->tglAkhir;
-        $akhir = $this->formatTanggal($akhir, 'Y-m-d');
+
+        if($awal != NULL) {
+            $awal = $this->formatTanggal($awal, 'Y-m-d');
+            $akhir = $this->formatTanggal($akhir, 'Y-m-d');
+        }
 
         $isi = 2;
         if(($request->bulan == '') && ($request->tglAwal == ''))
@@ -76,14 +83,15 @@ class AccReceivableController extends Controller
 
         if($isi == 1) {
             $ar = AccReceivable::with(['so'])->whereIn('keterangan', [$status[0], $status[1]])
-                ->get();
+                ->orderBy('created_at', 'desc')->get();
 
             $arOffice = AccReceivable::with(['so'])
                 ->select('ar.id', 'ar.id_so', 'ar.keterangan')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->where('id_sales', 'SLS03')
-                ->whereIn('keterangan', [$status[0], $status[1]])->get();
+                ->whereIn('keterangan', [$status[0], $status[1]])
+                ->orderBy('tgl_so', 'desc')->get();
         } else {
             $ar = AccReceivable::with(['so'])->join('so', 'so.id', '=', 'ar.id_so')
                 ->select('*', 'so.id as id_so', 'ar.id as id')
@@ -91,7 +99,7 @@ class AccReceivableController extends Controller
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
-                })->get();
+                })->orderBy('tgl_so', 'desc')->get();
 
             $arOffice = AccReceivable::with(['so'])
                 ->join('so', 'so.id', '=', 'ar.id_so')
@@ -102,8 +110,10 @@ class AccReceivableController extends Controller
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
-                })->get();
+                })->orderBy('tgl_so', 'desc')->get();
         }
+
+        // return response()->json($ar);
 
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -256,5 +266,108 @@ class AccReceivableController extends Controller
         }
 
         return redirect()->route('ar');
+    }
+
+    public function cetak(Request $request) {
+        $awal = $request->tglAwal;
+        $awal = $this->formatTanggal($awal, 'Y-m-d');
+        $akhir = $request->tglAkhir;
+        $akhir = $this->formatTanggal($akhir, 'Y-m-d');
+        $tahun = Carbon::now('+07:00');
+        $waktu = $tahun->format('d F Y, H:i:s');
+
+        if($request->bulan != '') {
+            $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                'September', 'Oktober', 'November', 'Desember'];
+            for($i = 0; $i < sizeof($bulan); $i++) {
+                if($request->bulan == $bulan[$i]) {
+                    $month = $i+1;
+                    $angkaMonth = $i+1;
+                    break;
+                }    
+            }
+            if($month < 10)
+                $month = '0'.$month;
+
+            $awal = $tahun->year.'-'.$month.'-01';
+            $akhir = $tahun->year.'-'.$month.'-31';
+
+            $request->tglAwal = '01-'.$month.'-'.$tahun->year;
+            if((($angkaMonth % 2 == 0) && ($angkaMonth < 8)) || (($angkaMonth % 2 != 0) && ($angkaMonth > 8)))
+                $request->tglAkhir = '30-'.$month.'-'.$tahun->year;
+            else
+                $request->tglAkhir = '31-'.$month.'-'.$tahun->year;
+        }
+
+        $request->tglAwal = $this->formatTanggal($request->tglAwal, 'd-M-y');
+        $request->tglAkhir = $this->formatTanggal($request->tglAkhir, 'd-M-y');
+
+        $items = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->whereBetween('tgl_so', [$awal, $akhir])->get();
+        
+        $data = [
+            'items' => $items,
+            'awal' => $request->tglAwal,
+            'akhir' => $request->tglAkhir, 
+            'waktu' => $waktu
+        ];
+
+        $pdf = PDF::loadview('pages.receivable.cetak', $data)
+                ->setPaper('a4', 'landscape');
+        ob_end_clean();
+        return $pdf->stream('cetak-all.pdf');
+    }
+
+    public function cetakNow(Request $request) {
+        $tahun = Carbon::now('+07:00');
+        $waktu = $tahun->format('d F Y, H:i:s');
+        $tanggal = Carbon::now()->toDateString();
+
+        $items = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('tgl_so', $tanggal)->get();
+
+        $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
+        
+        $data = [
+            'items' => $items,
+            'awal' => $tanggal,
+            'akhir' => $tanggal, 
+            'waktu' => $waktu
+        ];
+
+        $pdf = PDF::loadview('pages.receivable.cetak', $data)
+                ->setPaper('a4', 'landscape');
+        ob_end_clean();
+        return $pdf->stream('cetak-all.pdf');
+    }
+
+    public function excel(Request $request) {
+        $tglAwal = $request->tglAwal;
+        $awal = $this->formatTanggal($request->tglAwal, 'Y-m-d');
+        $tglAkhir= $request->tglAkhir;
+        $akhir = $this->formatTanggal($request->tglAkhir, 'Y-m-d');
+        if($request->bulan == '')
+            $bul = 'KOSONG';
+        else
+            $bul = $request->bulan;
+
+        if($request->tglAwal == '')
+            $tglAwal = 'KOSONG';
+        else
+            $tglAwal = $request->tglAwal;
+        
+        if($request->tglAkhir == '')
+            $tglAkhir = 'KOSONG';
+        else
+            $tglAkhir = $request->tglAkhir;
+
+        return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul), 'trans-bulanan.xlsx');
+    }
+
+    public function excelNow() {
+        $tanggal = Carbon::now()->toDateString();
+        $tanggalStr = $this->formatTanggal($tanggal, 'd-M-y');
+
+        return Excel::download(new TransHarianExport($tanggal, $tanggalStr), 'trans-harian.xlsx');
     }
 }

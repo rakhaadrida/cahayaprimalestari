@@ -123,7 +123,7 @@ class ReturController extends Controller
     }
 
     public function dataReturJual($status, $id) {
-        $retur = ReturJual::All();
+        $retur = ReturJual::orderBy('id', 'desc')->get();
         $gudang = Gudang::where('retur', 'T')->get();
 
         $data = [
@@ -384,7 +384,7 @@ class ReturController extends Controller
     }
 
     public function dataReturBeli($status, $id) {
-        $retur = ReturBeli::All();
+        $retur = ReturBeli::orderBy('id', 'desc')->get();
         $gudang = Gudang::where('retur', 'T')->get();
 
         $data = [
@@ -537,6 +537,58 @@ class ReturController extends Controller
         $data = [
             'status' => 'true',
             'id' => $query,
+        ];
+
+        return redirect()->route('retur-beli', $data);
+    }
+
+    public function potongTagihanBeli($id) {
+        $lastcode = ReturTerima::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'TRM'.sprintf("%04s", $lastnumber);
+        $items = DetilRB::where('id_retur', $id)->get();
+
+        foreach($items as $i) {
+            $tglTerima = Carbon::now()->toDateString();
+            // $tglTerima = $this->formatTanggal($tglTerima, 'Y-m-d');
+
+            $rt = ReturTerima::where('id', $newcode)->get();
+            if($rt->count() == 0) {
+                ReturTerima::create([
+                    'id' => $newcode,
+                    'id_retur' => $id,
+                    'tanggal' => $tglTerima
+                ]);
+            } 
+            elseif($rt->last()->tanggal != $tglTerima) {
+                $lastcode = ReturTerima::max('id');
+                $lastnumber = (int) substr($lastcode, 3, 4);
+                $lastnumber++;
+                $newcode = 'TRM'.sprintf("%04s", $lastnumber);
+
+                ReturTerima::create([
+                    'id' => $newcode,
+                    'id_retur' => $id,
+                    'tanggal' => $tglTerima
+                ]);
+            }
+
+            DetilRT::create([
+                'id_terima' => $newcode,
+                'id_barang' => $i->id_barang,
+                'qty_terima' => NULL,
+                'qty_batal' => $i->qty_retur
+            ]);
+        }
+
+        $retur = ReturBeli::where('id', $id)->first();
+        $retur->{'status'} = 'LENGKAP';
+        $retur->save();
+
+        $data = [
+            'status' => 'false',
+            'id' => '0',
         ];
 
         return redirect()->route('retur-beli', $data);

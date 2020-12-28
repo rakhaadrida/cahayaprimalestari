@@ -237,8 +237,14 @@ class SalesOrderController extends Controller
 
     public function cetak(Request $request, $id) {
         $items = SalesOrder::with(['customer'])->where('id', $id)->get();
+        $today = Carbon::now()->isoFormat('dddd, D MMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
+
         $data = [
-            'items' => $items
+            'items' => $items,
+            'today' => $today,
+            'waktu' => $waktu
         ];
 
         $paper = array(0,0,686,394);
