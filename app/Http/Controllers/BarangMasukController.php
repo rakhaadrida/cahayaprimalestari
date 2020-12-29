@@ -113,7 +113,7 @@ class BarangMasukController extends Controller
                     'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $request->qty[$i],
                     'diskon' => NULL,
-                    'hpp' => NULL,
+                    'disPersen' => NULL
                 ]);
 
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
@@ -360,7 +360,6 @@ class BarangMasukController extends Controller
             'tipe' => 'Dokumen'
         ]); 
 
-        
         for($i = 0; $i < $jumlah; $i++) {
             NeedAppDetil::create([
                 'id_app' => $newcode,
@@ -368,7 +367,7 @@ class BarangMasukController extends Controller
                 'id_gudang' => $request->kodeGudang,
                 'harga' => str_replace(".", "", $request->harga[$i]),
                 'qty' => $request->qty[$i],
-                'diskon' => NULL,
+                'diskon' => $request->diskon[$i],
             ]); 
 
             if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {

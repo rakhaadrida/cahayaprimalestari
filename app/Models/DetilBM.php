@@ -11,7 +11,7 @@ class DetilBM extends Model
     protected $table = "detilbm";
     protected $primaryKey = ['id_bm', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_bm', 'id_barang', 'harga', 'qty', 'diskon', 'disPersen', 'hpp'];
+    protected $fillable = ['id_bm', 'id_barang', 'harga', 'qty', 'diskon', 'disPersen'];
 
     public $incrementing = false;
 

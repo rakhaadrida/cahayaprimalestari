@@ -121,15 +121,13 @@ class AccPayableController extends Controller
             foreach($detil as $d) {
                 $d->diskon = $request->{"dis".$i->id.$d->id_barang};
                 $d->disPersen = (float) (str_replace(",", "", $request->{"diskon".$i->id.$d->id_barang}));
-                $d->hpp = (int) (str_replace(".", "", $request->{"hpp".$i->id.$d->id_barang}) / $d->qty);
                 $d->save();
 
-                $total += (int) (str_replace(".", "", $request->{"hpp".$i->id.$d->id_barang}));
+                // $total += (int) (str_replace(".", "", $request->{"hpp".$i->id.$d->id_barang}));
             }
 
-            // $i->total = str_replace(".", "", $request->subtotal);
             $i->tempo = $request->tempo != '' ? $request->tempo : 0;
-            $i->total = $total;
+            $i->total = str_replace(".", "", $request->grandtotal);
             $i->diskon = 'T';
             $i->save();
         }

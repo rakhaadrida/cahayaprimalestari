@@ -22,4 +22,8 @@ class NeedAppDetil extends Model
     public function need_app() {
         return $this->belongsTo('App\Models\NeedApproval', 'id_app', 'id');
     }
+
+    public function gudang() {
+        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id');
+    }
 }

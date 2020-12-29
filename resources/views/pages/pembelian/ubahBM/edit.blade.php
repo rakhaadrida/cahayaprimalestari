@@ -139,6 +139,7 @@
                       </td>
                       <td align="right">
                         <input type="text" name="harga[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" readonly>
+                        <input type="hidden" name="diskon[]" value="{{ $item->diskon != NULL ? $item->diskon : '' }}">
                       </td>
                       <td align="right">
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($item->qty * $item->harga, 0, "", ".") }}" >

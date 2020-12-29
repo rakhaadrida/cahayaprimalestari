@@ -396,8 +396,9 @@ class SalesOrderController extends Controller
         $barang = Barang::All();
         $harga = HargaBarang::All();
         $hrg = Harga::All();
+        $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
+                ->where('retur', 'F')->get();
         $gudang = Gudang::where('retur', 'F')->get();
-        $stok = StokBarang::All();
 
         $data = [
             'items' => $items,

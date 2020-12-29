@@ -192,6 +192,18 @@ class ApprovalController extends Controller
             $items = DetilApproval::where('id_app', $newcode)->get();
 
         foreach($items as $item) {
+            if($item->diskon != '') {
+                $diskon = 100;
+                $arrDiskon = explode("+", $item->diskon);
+                for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                    $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                } 
+                $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
+                $diskonRp = (($item->qty * $item->harga) * $diskon) / 100;
+            } else {
+                $diskon = NULL;
+            }
+
             if(($tipe == 'Faktur') && ($statusApp == 'PENDING_UPDATE')) {
                 DetilSO::create([
                     'id_so' => $id,
@@ -199,7 +211,8 @@ class ApprovalController extends Controller
                     'id_gudang' => $item->id_gudang,
                     'harga' => $item->harga,
                     'qty' => $item->qty,
-                    'diskon' => $item->diskon
+                    'diskon' => $item->diskon,
+                    'diskonRp' => $diskonRp
                 ]);
             }
             elseif(($tipe == 'Dokumen') && ($statusApp == 'PENDING_UPDATE')) {
@@ -209,8 +222,7 @@ class ApprovalController extends Controller
                     'harga' => $item->harga,
                     'qty' => $item->qty,
                     'diskon' => $item->diskon,
-                    'disPersen' => NULL,
-                    'hpp' => NULL
+                    'disPersen' => $diskon
                 ]);
             }
         } 
@@ -370,7 +382,9 @@ class ApprovalController extends Controller
     }
 
     public function histori() {
-        $items = Approval::with(['so', 'bm'])->get();
+        $items = Approval::with(['so', 'bm'])
+                ->select('id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
+                ->orderBy('created_at', 'desc')->groupBy('id_dokumen')->get();
         
         $data = [
             'items' => $items
@@ -379,7 +393,11 @@ class ApprovalController extends Controller
     }
 
     public function detail($id) {
-        $approval = Approval::with(['so', 'bm'])->get();
+        $approval = Approval::with(['so', 'bm'])
+                    ->select(DB::raw('max(id) as id'), 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
+                    ->orderBy('created_at', 'asc')->groupBy('id_dokumen')->get();
+
+        // return response()->json($items);
         $gudang = Gudang::All();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
@@ -389,7 +407,14 @@ class ApprovalController extends Controller
                         ->get();
 
         $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-                        ->select('id_customer', DB::raw('sum(total- retur) as totKredit'))
+                        ->select('id_customer', DB::raw('sum(total) as totKredit'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        $returPerCust = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))
                         ->where('keterangan', 'BELUM LUNAS')
                         ->groupBy('id_customer')
                         ->get();
@@ -398,6 +423,11 @@ class ApprovalController extends Controller
             foreach($cicilPerCust as $h) {
                 if($q->id_customer == $h->id_customer) {
                     $q['total'] = $q->totKredit - $h->totCicil;
+                }
+            }
+            foreach($returPerCust as $r) {
+                if($q->id_customer == $r->id_customer) {
+                    $q['total'] -= $h->totCicil;
                 }
             }
         }
