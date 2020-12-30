@@ -92,7 +92,7 @@
       }
 
       .table {
-          width: 100%;
+          width: 107%;
           margin-bottom: 1rem;
           color: #858796;
       }
@@ -115,15 +115,15 @@
       .table-sm th {
         padding-top: 0.4rem;
         padding-bottom: 0.4rem;
-        padding-left: 0.1rem;
-        /* padding-right: 0.1rem; */
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
       }
 
       .table-sm td {
         padding-top: 0.4rem;
         padding-bottom: 0.15rem;
-        padding-left: 0.2rem;
-        /* padding-right: 0.2rem; */
+        padding-left: 0.1rem;
+        padding-right: 0.1rem;
       }
 
       .table tbody tr:last-child td {
@@ -156,26 +156,26 @@
       }
 
       .header-cetak-so {
-          display: inline-block;
-          padding-top: 5px;
-          padding-bottom: 10px;
-          margin-top: 10px;
-          margin-left: -35px;
-          margin-right: 30px;
+        display: inline-block;
+        padding-top: 5px;
+        padding-bottom: 10px;
+        margin-top: 10px;
+        margin-left: -35px;
+        margin-right: 30px;
       }
 
       .title-header {
-        font-size: 24px;
+        font-size: 28px;
         font-family: Arial, Helvetica, sans-serif;
-        margin-top: 40px;
-        margin-left: -55px;
+        margin-top: 60px;
+        margin-left: 65px;
       }
 
       .subtitle-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
         margin-top: 10px;
         margin-left: -3px;
-        font-size: 13px;
+        font-size: 15px;
       }
 
       .subtitle-second {
@@ -184,35 +184,35 @@
 
       .detail-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 12px;
+        font-size: 14px;
         margin-top: -80px;
-        margin-left: 550px;
+        margin-left: 633px;
         line-height: 15px;
       }
 
       .detail-second {
-        margin-left: -17.5px;
+        margin-left: -20px;
       }
 
       .detail-third {
-        margin-left: 5.5px;
+        margin-left: 6.5px;
       }
 
       .detail-fourth {
-        margin-left: -12px;
+        margin-left: -13.5px;
       }
 
       .logo-cetak-so img {
-        width: 132px;
-        height: 50px;
-        margin-top: -140px;
+        width: 155px;
+        height: 60px;
+        margin-top: -165px;
         margin-left: -30px;
       }
 
       .logo-address {
-        margin-top: -88px;
+        margin-top: -102px;
         margin-left: -25px !important;
-        font-size: 11px;
+        font-size: 13px;
         font-family: 'Courier New', Courier, monospace;
       }
 
@@ -222,68 +222,35 @@
 
       .customer-cetak-so {
         font-family: 'Courier New', Courier, monospace;
-        font-size: 11px;
-        width: 300px;
-        margin-top: -145px;
-        margin-right: 63px;
+        font-size: 13px;
+        width: 320px;
+        margin-top: -163px;
+        margin-right: -10px;
         line-height: 14px;
       }
 
       .waktu-second {
-        margin-left: 26.5px;
+        margin-left: 31.5px;
       }
 
       .waktu-third {
-        margin-left: 40px;
-      }
-
-      .nama-cetak-so {
-          margin-top: 10px;
-          margin-bottom: 10px;
-          font-size: 14px;
-      }
-
-      .alamat-cetak-so {
-          margin-bottom: -10px;
-          line-height: 15px;
-      }
-
-      .telepon-cetak-so {
-          /* margin-bottom: -15px; */
-          line-height: 13px;
-      }
-
-      .table-info-cetak-so {
-          margin-top: -25px;
-          font-size: 11px;
-          border: dotted;
-          border-spacing: 0px;
-          margin-left: 29px;
-          margin-right: 29px;
-      }
-
-      .th-info-cetak-so {
-          line-height: 5px;
-      }
-
-      .tr-info-cetak-so {
-          line-height: 10px;
+        margin-left: 47px;
       }
 
       .page-number {
         float: right;
         margin-top: -20px;
-        margin-right: 77px;
+        margin-right: -25px;
         font-family: 'Courier New', Courier, monospace;
-        font-size: 14px;
+        font-size: 16px;
       }
 
       .table-cetak {
-          font-size: 11px;
-          /* height: 200px; */
-          margin-left: -25px;
-          margin-right: 41px;
-          margin-top: -18px;
+        font-size: 13px;
+        /* height: 200px; */
+        margin-left: -25px;
+        margin-right: 21px;
+        margin-top: -18px;
       }
 
       .th-detail-cetak-so {
@@ -294,14 +261,14 @@
         border-right: none;
         color: black !important;
         font-family: 'Courier New', Courier, monospace;
-        font-size: 16px;
+        font-size: 18px;
       }
 
       .tr-detail-cetak-so {
         line-height: 13px;
         color: black !important;
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 14px;
+        font-size: 16px;
       }
 
       .footer-cetak-so {
@@ -313,7 +280,7 @@
       }
 
       .table-footer {
-          margin-left: -75px;
+          margin-left: -88px;
       }
 
       @media print {
@@ -390,10 +357,10 @@
           <tr>
             <th style="width: 5px">No.</th>
             <th style="width: 30px">Kode</th>
-            <th style="width: 300px">Nama Barang</th>
+            <th style="width: 330px">Nama Barang</th>
             {{-- <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th> --}}
             <th><span style="margin-left: 10px !important">Quantity</span> </th>
-            <th style="width: 230px">Description</th>
+            <th style="width: 250px">Description</th>
           </tr>
         </thead>
         <tbody class="tr-detail-cetak-so">
@@ -420,7 +387,7 @@
           <thead>
             <tr>
               <td align="center" style="width: 200px">KEPALA GUDANG</td>
-              <td align="center" style="width: 220px">ADMIN SALES</td>
+              <td align="center" style="width: 280px">ADMIN SALES</td>
               <td align="center" style="width: 160px">GUDANG</td>
             </tr>
             <tr>

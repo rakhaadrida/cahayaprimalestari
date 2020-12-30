@@ -247,12 +247,13 @@ class SalesOrderController extends Controller
             'waktu' => $waktu
         ];
 
-        $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
-        // $pdf->setOptions(['isJavascriptEnabled' => true]);
-        ob_end_clean();
+        return view('pages.penjualan.so.cetakPdf', $data);
+
+        // $paper = array(0,0,686,394);
+        // $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
+        // ob_end_clean();
         
-        return $pdf->stream('cetak-so.pdf');
+        // return $pdf->stream('cetak-so.pdf');
     }
 
     public function tandaterima($id) {
