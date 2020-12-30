@@ -171,10 +171,12 @@ class BarangMasukController extends Controller
             'waktu' => $waktu
         ];
 
-        $paper = array(0,0,612,394);
-        $pdf = PDF::loadview('pages.pembelian.barangmasuk.cetak', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-bm.pdf');
+        return view('pages.pembelian.barangmasuk.cetakPdf', $data);
+
+        // $paper = array(0,0,612,394);
+        // $pdf = PDF::loadview('pages.pembelian.barangmasuk.cetak', $data)->setPaper($paper);
+        // ob_end_clean();
+        // return $pdf->stream('cetak-bm.pdf');
     }
 
     public function afterPrint($id) {

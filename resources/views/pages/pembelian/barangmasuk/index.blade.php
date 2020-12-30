@@ -305,13 +305,13 @@
               </div>
               <!-- End Modal Konfirmasi -->
 
-              {{-- @if($status == 'true') --}}
+              @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                {{-- <iframe src="{{url('barangmasuk/cetak/'.$lastcode)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe> --}}
+                <iframe src="{{url('barangmasuk/cetak/'.$lastcode)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
                 {{-- <div class="col-2">
                   <button type="reset" onclick="printPage('{{url('barangmasuk/cetak/'.$lastcode)}}')" tabindex="{{ $tab++ }}" id="resetBM" class="btn btn-outline-danger btn-block text-bold">Reset All </button>
                 </div> --}}
-              {{-- @endif --}}
+              @endif
 
             </form>
           </div>
@@ -332,20 +332,31 @@
   //   $("#frameCetak").printPage();
   // });
 
-  // const printFrame = document.getElementById("frameCetak").contentWindow;
+  /* function popuponclick() {
+      my_window = window.open('{{url('barangmasuk/cetak/'.$lastcode)}}', 'printWindow', 'status=1, resizable');
+      my_window.document.onafterprint = function(e) {
+        self.close();
+      }
+      // my_window.document.write('cetak.blade.php');
+      // my_window.document.write('<body onafterprint="self.close()">');
+      // my_window.document.write('<p>When you print this window, it will close afterward.</p>');
+      // my_window.document.write('</body></html>');
+  } */
 
-  // window.onafterprint = function(e) {
-  //   alert('ok');
-    // window.location = "{{ route('bm-after-print', $lastcode) }}";
-  // }
+  const printFrame = document.getElementById("frameCetak").contentWindow;
+
+  printFrame.onafterprint = function(e) {
+    // alert('ok');
+    window.location = "{{ route('bm-after-print', $lastcode) }}";
+  }
   
-  // printFrame.print();
+  printFrame.print();
   // window.print();
 
-  function closePrint () {
+  /* function closePrint () {
     // alert('ok');
     // document.body.removeChild(this.__container__);
-    window.location.reload = "{{ route('bm-after-print', $lastcode) }}";
+    window.location = "{{ route('bm-after-print', $lastcode) }}";
   }
 
   function setPrint () {
@@ -370,7 +381,8 @@
     document.body.appendChild(oHiddFrame);
   }
 
-  window.onload = printPage("{{url('barangmasuk/cetak/'.$lastcode)}}");
+  window.onload = printPage("{{url('barangmasuk/cetak/'.$lastcode)}}"); */
+  // window.onload = popuponclick();
 @endif
 
 $.fn.datepicker.dates['id'] = {

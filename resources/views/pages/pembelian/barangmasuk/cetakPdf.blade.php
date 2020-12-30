@@ -7,8 +7,8 @@
     <style>
       body {
           margin: 0;
-          /* width: 816px;
-          height: 526px; */
+          width: 816px;
+          height: 520px;
           font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
           font-size: 1rem;
           font-weight: 400;
@@ -16,7 +16,7 @@
           color: #131313;
           text-align: left;
           background-color: #fff;
-          /* margin-left: 60px; */
+          margin-left: 150px;
       }
 
       h1,
@@ -116,14 +116,14 @@
         padding-top: 0.4rem;
         padding-bottom: 0.4rem;
         padding-left: 0.1rem;
-        padding-right: 0.1rem;
+        /* padding-right: 0.1rem; */
       }
 
       .table-sm td {
         padding-top: 0.4rem;
         padding-bottom: 0.15rem;
         padding-left: 0.2rem;
-        padding-right: 0.2rem;
+        /* padding-right: 0.2rem; */
       }
 
       .table tbody tr:last-child td {
@@ -159,7 +159,7 @@
           display: inline-block;
           padding-top: 5px;
           padding-bottom: 10px;
-          margin-top: -30px;
+          margin-top: 10px;
           margin-left: -35px;
           margin-right: 30px;
       }
@@ -168,7 +168,7 @@
         font-size: 24px;
         font-family: Arial, Helvetica, sans-serif;
         margin-top: 40px;
-        margin-left: 60px;
+        margin-left: -55px;
       }
 
       .subtitle-cetak-so {
@@ -185,8 +185,8 @@
       .detail-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 12px;
-        margin-top: -75px;
-        margin-left: 555px;
+        margin-top: -80px;
+        margin-left: 550px;
         line-height: 15px;
       }
 
@@ -205,12 +205,12 @@
       .logo-cetak-so img {
         width: 132px;
         height: 50px;
-        margin-top: 5px;
+        margin-top: -140px;
         margin-left: -30px;
       }
 
       .logo-address {
-        margin-top: -3px;
+        margin-top: -88px;
         margin-left: -25px !important;
         font-size: 11px;
         font-family: 'Courier New', Courier, monospace;
@@ -224,8 +224,8 @@
         font-family: 'Courier New', Courier, monospace;
         font-size: 11px;
         width: 300px;
-        margin-top: -4px;
-        margin-right: -25px;
+        margin-top: -145px;
+        margin-right: 63px;
         line-height: 14px;
       }
 
@@ -272,8 +272,8 @@
 
       .page-number {
         float: right;
-        margin-top: -37px;
-        margin-right: -7px;
+        margin-top: -20px;
+        margin-right: 77px;
         font-family: 'Courier New', Courier, monospace;
         font-size: 14px;
       }
@@ -308,60 +308,12 @@
         font-size: 13px;
         margin-top: -13px;
         margin-bottom: -50px;
-        margin-left: 50px;
+        margin-left: 65px;
         margin-right: 30px;
       }
 
       .table-footer {
           margin-left: -75px;
-      }
-
-      .ttd-penerima {
-          font-size: 12px;
-          padding-left: -5px;
-          margin-bottom: 15px;
-      }
-
-      .info_bayar {
-          margin-top: -20px;
-          margin-left: 5px;
-          margin-right: 30px;
-          font-size: 12px;
-          line-height: 24px;
-      }
-
-      .ttd-gudang {
-          font-size: 12px;
-          margin-top: 1px;
-          margin-left: 2px;
-      }
-
-      .ttd-mengetahui {
-          font-size: 12px;
-          margin-top: -7px;
-          line-height: 13px;
-      }
-
-      .tgl-ttd {
-          font-size: 11px;
-      }
-
-      .total-faktur {
-          margin-top: -3px;
-          margin-left: 5px;
-          font-size: 12px;
-      }
-
-      .tabel-total-faktur {
-          line-height: 16px;
-      }
-
-      .title-total {
-          width: 160px;
-      }
-
-      .angka-total {
-          font-size: 14px;
       }
 
       @media print {
@@ -437,11 +389,11 @@
         <thead class="text-center text-bold th-detail-cetak-so">
           <tr>
             <th style="width: 5px">No.</th>
-            <th style="width: 20px">Kode</th>
-            <th style="width: 220px">Nama Barang</th>
+            <th style="width: 30px">Kode</th>
+            <th style="width: 300px">Nama Barang</th>
             {{-- <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th> --}}
             <th><span style="margin-left: 10px !important">Quantity</span> </th>
-            <th style="width: 160px">Description</th>
+            <th style="width: 230px">Description</th>
           </tr>
         </thead>
         <tbody class="tr-detail-cetak-so">
