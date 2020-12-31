@@ -16,7 +16,7 @@
           color: #131313;
           text-align: left;
           background-color: #fff;
-          margin-left: 150px;
+          margin-left: 35px;
       }
 
       h1,
@@ -92,7 +92,7 @@
       }
 
       .table {
-          width: 107%;
+          width: 116%;
           margin-bottom: 1rem;
           color: #858796;
       }
@@ -121,7 +121,7 @@
 
       .table-sm td {
         padding-top: 0.4rem;
-        padding-bottom: 0.15rem;
+        padding-bottom: 0.8rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
       }
@@ -159,23 +159,23 @@
         display: inline-block;
         padding-top: 5px;
         padding-bottom: 10px;
-        margin-top: 10px;
-        margin-left: -35px;
+        margin-top: -5px;
+        margin-left: 13px;
         margin-right: 30px;
       }
 
       .title-header {
-        font-size: 28px;
+        font-size: 31px;
         font-family: Arial, Helvetica, sans-serif;
-        margin-top: 60px;
-        margin-left: 65px;
+        margin-top: 65px;
+        margin-left: 85px;
       }
 
       .subtitle-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
-        margin-top: 10px;
-        margin-left: -3px;
-        font-size: 15px;
+        margin-top: 17px;
+        margin-left: -50px;
+        font-size: 17px;
       }
 
       .subtitle-second {
@@ -184,10 +184,11 @@
 
       .detail-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 14px;
-        margin-top: -80px;
-        margin-left: 633px;
-        line-height: 15px;
+        font-size: 17px;
+        width: 180px;
+        margin-top: -95px;
+        margin-left: 723px;
+        line-height: 20px;
       }
 
       .detail-second {
@@ -203,54 +204,54 @@
       }
 
       .logo-cetak-so img {
-        width: 155px;
-        height: 60px;
-        margin-top: -165px;
+        width: 170px;
+        height: 65px;
+        margin-top: -177px;
         margin-left: -30px;
       }
 
       .logo-address {
-        margin-top: -102px;
-        margin-left: -25px !important;
-        font-size: 13px;
+        margin-top: -109px;
+        margin-left: -22.5px !important;
+        font-size: 14px;
         font-family: 'Courier New', Courier, monospace;
       }
 
       .address-line-two {
-        margin-top: -7px !important;
+        margin-top: -8px !important;
       }
 
       .customer-cetak-so {
         font-family: 'Courier New', Courier, monospace;
-        font-size: 13px;
-        width: 320px;
-        margin-top: -163px;
-        margin-right: -10px;
-        line-height: 14px;
+        font-size: 15px;
+        width: 350px;
+        margin-top: -175px;
+        margin-right: -95px;
+        line-height: 16px;
       }
 
       .waktu-second {
-        margin-left: 31.5px;
+        margin-left: 36px;
       }
 
       .waktu-third {
-        margin-left: 47px;
+        margin-left: 54px;
       }
 
       .page-number {
         float: right;
-        margin-top: -20px;
-        margin-right: -25px;
+        margin-top: -23px;
+        margin-right: -105px;
         font-family: 'Courier New', Courier, monospace;
         font-size: 16px;
       }
 
       .table-cetak {
-        font-size: 13px;
+        font-size: 18px;
         /* height: 200px; */
         margin-left: -25px;
         margin-right: 21px;
-        margin-top: -18px;
+        margin-top: -0px;
       }
 
       .th-detail-cetak-so {
@@ -261,33 +262,34 @@
         border-right: none;
         color: black !important;
         font-family: 'Courier New', Courier, monospace;
-        font-size: 18px;
+        font-size: 21px;
       }
 
       .tr-detail-cetak-so {
         line-height: 13px;
         color: black !important;
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 16px;
+        font-size: 18px;
       }
 
       .footer-cetak-so {
-        font-size: 13px;
+        
         margin-top: -13px;
         margin-bottom: -50px;
-        margin-left: 65px;
+        margin-left: 90px;
         margin-right: 30px;
       }
 
       .table-footer {
           margin-left: -88px;
+          font-size: 18px;
       }
 
-      @media print {
+      /* @media print {
         @page {
           size: 21.59cm 13.9cm;
         }
-      }
+      } */
     </style>
   </head>
   <body>

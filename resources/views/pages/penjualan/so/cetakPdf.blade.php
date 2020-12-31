@@ -48,14 +48,14 @@
 
       h5,
       .h5 {
-          font-size: 1.45rem;
+          font-size: 1.35rem;
       }
 
       .container-fluid {
-          width: 100%;
+          width: 81%;
           padding-right: 0.75rem;
           padding-left: 0.75rem;
-          margin-right: auto;
+          /* margin-right: auto; */
           margin-left: auto;
       }
 
@@ -92,7 +92,7 @@
       }
 
       .table {
-          width: 103.4%;
+          width: 84.4%;
           margin-bottom: 1rem;
           color:#252525;
       }
@@ -113,15 +113,15 @@
           border-top: 1px solid #afbbc5;
       }
 
-      /* .table-sm th,
+      .table-sm th,
       .table-sm td {
         padding-top: 0.4rem;
-        padding-bottom: 0.3rem;
+        padding-bottom: 0.5rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
-      } */
+      }
 
-      .table-sm th {
+      /* .table-sm th {
         padding-top: 0.4rem;
         padding-bottom: 0.4rem;
         padding-left: 0.3rem;
@@ -133,7 +133,7 @@
         padding-bottom: 0.3rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
-      }
+      } */
 
       .table-bordered {
           border: 1px solid #afbbc5;
@@ -166,9 +166,13 @@
           border-top-right-radius: 10px;
           padding-top: 5px;
           padding-bottom: 10px;
-          margin-top: 15px;
+          margin-top: 0px;
           margin-left: 30px;
           margin-right: 30px;
+      }
+
+      .title-header {
+        margin-left: 10px !important;
       }
 
       .subtitle-cetak-so-one {
@@ -186,18 +190,18 @@
       }
 
       .logo-cetak-so img {
-        width: 160px;
-        height: 60px;
-        margin-top: -113px;
+        width: 140px;
+        height: 55px;
+        margin-top: -108px;
         margin-left: 35px;
       }
 
       .customer-cetak-so {
         font-family: 'Courier New', Courier, monospace;
         font-size: 12px;
-        width: 220px;
-        margin-top: -115px;
-        margin-right: -55px;
+        width: 205px;
+        margin-top: -110px;
+        margin-right: 125px;
       }
 
       .kode-cetak-so {
@@ -206,12 +210,13 @@
 
       .nama-cetak-so {
           margin-top: 10px;
+          margin-bottom: 5px;
           font-size: 14px;
       }
 
       .alamat-cetak-so {
         margin-bottom: -10px;
-        line-height: 20px;
+        line-height: 16px;
       }
 
       .telepon-cetak-so {
@@ -228,6 +233,10 @@
           margin-right: 30px;
       }
 
+      .table-info-cetak-so thead td {
+        padding-bottom: 0.3rem !important;
+      }
+
       .th-info-cetak-so {
         font-family: 'Courier New', Courier, monospace;
         line-height: 5px;
@@ -238,11 +247,16 @@
       }
 
       .table-cetak {
-          font-size: 13px;
-          height: 225px;
-          margin-left: 30px;
-          margin-right: 34.5px;
-          margin-top: -13px;
+        font-size: 13px;
+        height: 245px;
+        margin-left: 30px;
+        margin-right: 34.5px;
+        margin-top: -13px;
+      }
+
+      .table-cetak thead td {
+        padding-top: 0.2rem !important;
+        padding-bottom: 0.4rem !important;
       }
 
       .th-detail-cetak-so {
@@ -251,7 +265,16 @@
       }
 
       .tr-detail-cetak-so {
-          line-height: 10px;
+          line-height: 7px;
+      }
+
+      tr.baris-so {
+        height: 15px !important;
+      }
+
+      .table-cetak td:empty {
+        border-left: 0;
+        border-right: 0;
       }
 
       .footer-cetak-so {
@@ -268,20 +291,23 @@
 
       .table-footer {
           margin-left: -15px;
+          /* border: solid black; */
+          width: 920px;
+          margin-right: -50px;
       }
 
       .ttd-penerima {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 11px;
-        padding-left: -5px;
+        font-size: 13px;
+        padding-left: 5px;
         margin-bottom: 15px;
-        margin-top: 0px;
+        margin-top: 5px;
       }
 
       .info_bayar {
         font-family: 'Courier New', Courier, monospace;
         color: black;
-        margin-top: -15px;
+        margin-top: -7px;
         margin-left: 5px;
         margin-right: 30px;
         font-size: 12px;
@@ -290,53 +316,59 @@
 
       .ttd-gudang {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 11px;
+        font-size: 13px;
         margin-top: -5px;
-        margin-left: 2px;
+        margin-left: 1px;
         line-height: 14px;
       }
 
       .ttd-mengetahui {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 11px;
-        margin-top: -12px;
+        font-size: 13px;
+        margin-top: -10px;
         line-height: 10px;
       }
 
       .tgl-ttd {
-        font-size: 10px;
+        font-size: 11px;
+        line-height: 3px;
+        padding-left: 0.4rem; 
+        padding-bottom: 0.01rem;
       }
 
       .total-faktur {
         font-family: Arial, Helvetica, sans-serif;
-          margin-top: 1px;
-          margin-left: 5px;
-          font-size: 10px;
+        margin-top: 2px;
+        margin-left: 5px;
+        /* border: solid black; */
+        font-size: 12px;
       }
 
       .tabel-total-faktur {
-          line-height: 12px;
-          margin-bottom: 3px;
+        line-height: 14px;
+        margin-bottom: 3px;
       }
 
       .title-total {
-          width: 168px;
+        width: 163px;
+        font-size: 11px;
       }
 
       .angka-total {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 12px;
+        font-size: 13px;
+        padding-right: 0.01rem !important;
       }
 
       .angka-total-akhir {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 13px;
+        font-size: 14px;
       }
 
       .waktu-cetak-so {
         margin-left: 30px;
-        margin-right: 30px;
-        margin-top: 80px;
+        margin-right: 120px;
+        margin-top: 32px;
       }
 
       .waktu-cetak {
@@ -396,17 +428,17 @@
         <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
           <thead class="text-center text-bold">
             <tr class="th-info-cetak-so">
-              <td style="border: dotted; width: 140px">No. Order</td>
-              <td style="border: dotted; width: 140px">Tgl. Order</td>
-              <td style="border: dotted; width: 140px">Kredit Term</td>
-              <td style="border: dotted; width: 140px">Jatuh Tempo</td>
-              <td style="border: dotted; width: 200px">Sales</td>
+              <td style="border: dotted; width: 110px">No. Order</td>
+              <td style="border: dotted; width: 110px">Tgl. Order</td>
+              <td style="border: dotted; width: 110px">Kredit Term</td>
+              <td style="border: dotted; width: 110px">Jatuh Tempo</td>
+              <td style="border: dotted; width: 180px">Sales</td>
               <td style="border: dotted">Route</td>
             </tr>
           </thead>
           <tbody class="text-bold">
             <tr class="tr-info-cetak-so">
-              <td align="center" style="border: dotted">{{ $item->id }}</td>
+              <td align="center" style="border: dotted;">{{ $item->id }}</td>
               <td align="center" style="border: dotted">
                 {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
               </td>
@@ -429,27 +461,27 @@
                           ->get();
         @endphp
         <!-- Tabel Data Detil BM-->
-        <table class="table table-sm table-responsive-sm table-cetak">
+        <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
           <thead class="text-center text-bold th-detail-cetak-so">
             <tr>
               <td style="width: 10px">No</td>
-              <td style="width: 50px">Kode</td>
-              <td style="width: 305px">Nama Barang</td>
+              <td style="width: 70px">Kode</td>
+              <td style="width: 285px">Nama Barang</td>
               <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
               {{-- <td style="width: 30px">UOM</td> --}}
-              <td style="width: 65px">Harga</td>
+              <td style="width: 60px">Harga</td>
               <td style="width: 85px">Rupiah</td>
               <td colspan="2">Diskon</td>
-              <td style="width: 95px">Netto Rp</td>
+              <td style="width: 85px">Netto Rp</td>
             </tr>
           </thead>
           <tbody class="tr-detail-cetak-so">
             @php $i = 1; @endphp
             @foreach($itemsDet as $itemDet)
-              <tr >
-                <td rowspan="2" align="center">{{ $i }}</td>
-                <td rowspan="2">{{ $itemDet->id_barang }}</td>
-                <td rowspan="2">{{ $itemDet->barang->nama }}</td>
+              {{-- <tr class="baris-so">
+                <td style="border: solid black !important" rowspan="2" align="center">{{ $i }}</td>
+                <td style="border: solid black !important" rowspan="2">{{ $itemDet->id_barang }}</td>
+                <td style="border: solid black !important" rowspan="2">{{ $itemDet->barang->nama }}</td>
                 @if($itemDet->barang->satuan == "Pcs / Dus")
                   <td rowspan="2" align="right" style="width: 60px">{{ $itemDet->qty }} PCS</td>
                   <td rowspan="2" align="center" style="width: 60px">
@@ -461,9 +493,6 @@
                     {{ $itemDet->qty * $itemDet->barang->ukuran }} Mtr
                   </td>
                 @endif
-                {{-- <td rowspan="2" align="center">
-                  @if($itemDet->barang->satuan == "Pcs / Dus") PCS @else MTR @endif
-                </td> --}}
                 <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
                 @php 
@@ -474,7 +503,7 @@
                   } 
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
-                <td style="width: 80px; border-bottom: none !important" align="right">
+                <td style="width: 80px; height: 15px; border-bottom: none !important; border: solid black" align="right">
                   {{ $itemDet->diskon }} 
                 </td>
                 <td rowspan="2" style="width: 70px" align="right">
@@ -482,12 +511,61 @@
                 </td>
                 <td rowspan="2" align="right">
                   {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
+              </tr> --}}
+              <tr class="baris-so">
+                <td align="center">{{ $i }}</td>
+                <td>{{ $itemDet->id_barang }}</td>
+                <td>{{ $itemDet->barang->nama }}</td>
+                @if($itemDet->barang->satuan == "Pcs / Dus")
+                  <td align="right" style="width: 60px">{{ $itemDet->qty }} PCS</td>
+                  <td align="center" style="width: 60px">
+                    {{ $itemDet->qty / $itemDet->barang->ukuran }} Dus
+                  </td>
+                @else
+                  <td align="right" style="width: 60px">{{ $itemDet->qty }} ROL</td>
+                  <td align="center" style="width: 60px">
+                    {{ $itemDet->qty * $itemDet->barang->ukuran }} Mtr
+                  </td>
+                @endif
+                <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
+                <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
+                @php 
+                  $diskon = 100;
+                  $arrDiskon = explode("+", $itemDet->diskon);
+                  for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                    $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                  } 
+                  $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                @endphp
+                <td style="width: 115px; border-bottom: none !important;" align="right">
+                  {{ $itemDet->diskon }} ({{ $diskon }}%)
+                </td>
+                {{-- <td style="width: 55px;" align="right">({{ $diskon }}%)</td> --}}
+                <td style="width: 70px" align="right">
+                  {{ number_format($itemDet->diskonRp, 0, "", ".") }}
+                </td>
+                <td align="right">
+                  {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
               </tr>
-              <tr >
-                <td style="width: 70px; border-top: none !important; margin-top: -138px;" align="right">({{ $diskon }}%)</td>
-              </tr>
+              {{-- <tr class="baris-so">
+                <td style="width: 70px; border: solid black" align="right">({{ $diskon }}%)</td>
+              </tr> --}}
               @php $i++ @endphp
             @endforeach
+            {{-- @for($j = $i; $j <= 10; $j++)
+              <tr class="text-center">
+                <td colspan="8">{{ $j }}</td>
+                <td>0</td>
+                <td colspan="2">0</td>
+              </tr>
+            @endfor --}}
+            @if($i < 10)
+              <tr class="text-center">
+                <td colspan="8"></td>
+                <td></td>
+                <td colspan="2"></td>
+              </tr>
+            @endif
           </tbody>
         </table>
         
@@ -504,11 +582,24 @@
             <thead>
               <tr>
                 <td style="border-right: dotted; width: 87px"> 
-                  <div class="ttd-penerima text-center">
+                  <div class="ttd-penerima">
+                    <table style="font-size: 12px !important">
+                      <tr>
+                        <td class="text-center">Penerima,</td>
+                      </tr>
+                      <tr>
+                        <td style="height: 38px"></td>
+                      </tr>
+                      <tr>
+                        <td class="text-center">(__________)</td>
+                      </tr>
+                    </table>
+                  </div>
+                  {{-- <div class="ttd-penerima text-center">
                     <span>Penerima,</span>
                     <br><br><br>
                     <span class="form-ttd">(___________)</span>
-                  </div>
+                  </div> --}}
                 </td>
                 <td style="border-right: dotted; width: 253px">
                   <div class="info_bayar">
@@ -524,21 +615,49 @@
                     <span>Cetak ke : 1</span> --}}
                   </div>
                 </td>
-                <td style="width: 85px">
+                <td style="width: 90px">
                   <div class="ttd-gudang">
-                    <center><span class="nama-gudang">Gudang,</span></center>
+                    <table style="font-size: 12px !important">
+                      <tr>
+                        <td class="text-center">Gudang,</td>
+                      </tr>
+                      <tr>
+                        <td style="height: 30px"></td>
+                      </tr>
+                      <tr>
+                        <td class="text-center">(___________)</td>
+                      </tr>
+                    </table>
+                    {{-- <center><span class="nama-gudang">Gudang,</span></center>
                     <br><br>
-                    <span class="form-ttd">(___________)</span>
+                    <span class="form-ttd">(___________)</span> --}}
                   </div>
                 </td>
-                <td style="border-right: dotted; width: 80px">
+                <td style="border-right: dotted; width: 85px">
                   <div class="ttd-mengetahui">
-                    <span class="tgl-ttd">
+                    {{-- <span class="tgl-ttd">
+                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
+                    </span> --}}
+                    <table style="font-size: 12px !important">
+                      <tr>
+                        <td class="tgl-ttd">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-center">Mengetahui,</td>
+                      </tr>
+                      <tr>
+                        <td style="height: 30px"></td>
+                      </tr>
+                      <tr>
+                        <td class="text-center">(__________)</td>
+                      </tr>
+                    </table>
+                    {{-- <span class="tgl-ttd">
                       {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
                     </span>
                     <span>Mengetahui,</span> 
                     <br><br><br><br>
-                    <span class="form-ttd">(__________)</span>
+                    <span class="form-ttd">(__________)</span>  --}}
                   </div>
                 </td>
                 <td>
@@ -565,7 +684,7 @@
                         <td></td>
                       </tr>
                       <tr>
-                        <td colspan="2" style="height: 2px"></td>
+                        <td colspan="2" style="height: 5px"></td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>

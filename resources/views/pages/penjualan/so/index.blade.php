@@ -525,7 +525,7 @@
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('so/cetak/'.$lastcode)}}" id="frameCetak" name="frameCetak" frameborder="0" ></iframe>
+                <iframe src="{{url('so/cetak/'.$lastcode)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
                 {{-- <iframe src="{{url('so/cetak-ttr/'.$lastcode)}}" id="frameTTR" frameborder="0" hidden></iframe> --}}
               @endif
 
@@ -584,6 +584,7 @@
     alert('ok');
   }
   
+  printFrame.window.focus();
   printFrame.window.print();
   // window.print();
 @endif 

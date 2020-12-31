@@ -160,7 +160,7 @@
           padding-top: 5px;
           padding-bottom: 10px;
           margin-top: -30px;
-          margin-left: -35px;
+          margin-left: 30px;
           margin-right: 30px;
       }
 
