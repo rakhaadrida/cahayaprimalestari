@@ -131,7 +131,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('bm-process');
         // Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name('bm-process');
         Route::get('/barangmasuk/cetak/{id}', 'BarangMasukController@cetak')->name('bm-cetak');
-        Route::get('/barangmasuke/afterPrint/{id}', 'BarangMasukController@afterPrint')
+        Route::get('/barangmasuk/afterPrint/{id}', 'BarangMasukController@afterPrint')
             ->name('bm-after-print');
         Route::post('/barangmasuk/update/{bm}/{barang}/{id}', 'BarangMasukController@update')
             ->name('bm-update');
@@ -271,6 +271,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
         Route::get('notif/read/{id}', 'NotifController@markAsRead')->name('notif-read');
+        Route::get('notif/afterPrint/{id}/{kode}', 'NotifController@afterPrint')
+            ->name('notif-after-print');
     });
 
     Route::group(['roles'=>['AR', 'SUPER', 'OFFICE02']], function() {
@@ -356,7 +358,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
     });
 
-    Route::group(['roles'=>'OFFICE02'], function() {
+    Route::group(['roles'=>['OFFICE02', 'GUDANG']], function() {
         // Account Payable
         Route::get('stok/index', 'BarangController@index')->name('stok-office');
     });

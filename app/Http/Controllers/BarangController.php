@@ -179,8 +179,8 @@ class BarangController extends Controller
         StokBarang::create([
             'id_barang' => $kode,
             'id_gudang' => $id,
+            'status' => 'T',
             'stok' => $stok,
-            'status' => 'T'
         ]);
     }
 

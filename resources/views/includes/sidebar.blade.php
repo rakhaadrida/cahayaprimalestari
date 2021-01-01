@@ -57,6 +57,14 @@
   <!-- Divider -->
   <hr class="sidebar-divider">
 
+  @if(Auth::user()->roles == 'GUDANG')
+    <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link" href="{{ route('stok-office') }}">
+        <i class="fas fa-fw fa-warehouse"></i>
+        <span>Stok</span></a>
+    </li>
+  @endif
+
   @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'GUDANG') || (Auth::user()->roles == 'AR'))
     @if((Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR'))
       <!-- Heading Sales and Purchases -->

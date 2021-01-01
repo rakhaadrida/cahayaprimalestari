@@ -64,7 +64,7 @@ class NotifController extends Controller
         //     return $sort->approval[0]->created_at;
         // });
 
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
         $items = Approval::with(['so', 'bm'])
                 ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'baca')
                 ->where('baca', 'F')->get();
@@ -124,6 +124,18 @@ class NotifController extends Controller
     public function markAsRead($id) {
         $item = Approval::where('id', $id)->first();
         // return response()->json($item);
+        $item->{'baca'} = 'T';
+        $item->save();
+
+        return redirect()->route('notif');
+    }
+
+    public function afterPrint($id, $kode) {
+        $item = SalesOrder::where('id', $id)->first();
+        $item->{'status'} = 'CETAK';
+        $item->save();
+
+        $item = Approval::where('id', $kode)->first();
         $item->{'baca'} = 'T';
         $item->save();
 

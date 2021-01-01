@@ -397,7 +397,7 @@
   </head>
   <body>
     @foreach($items as $item)
-      <div class="cetak-all-container" style="margin-bottom: -55px">
+      <div class="cetak-all-container" style="margin-bottom: -55px; @if($items[$items->count()-1]->id != $item->id) page-break-after: always; @endif ">
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
@@ -485,40 +485,6 @@
           <tbody class="tr-detail-cetak-so">
             @php $i = 1; @endphp
             @foreach($itemsDet as $itemDet)
-              {{-- <tr class="baris-so">
-                <td style="border: solid black !important" rowspan="2" align="center">{{ $i }}</td>
-                <td style="border: solid black !important" rowspan="2">{{ $itemDet->id_barang }}</td>
-                <td style="border: solid black !important" rowspan="2">{{ $itemDet->barang->nama }}</td>
-                @if($itemDet->barang->satuan == "Pcs / Dus")
-                  <td rowspan="2" align="right" style="width: 60px">{{ $itemDet->qty }} PCS</td>
-                  <td rowspan="2" align="center" style="width: 60px">
-                    {{ $itemDet->qty / $itemDet->barang->ukuran }} Dus
-                  </td>
-                @else
-                  <td rowspan="2" align="right" style="width: 60px">{{ $itemDet->qty }} ROL</td>
-                  <td rowspan="2" align="center" style="width: 60px">
-                    {{ $itemDet->qty * $itemDet->barang->ukuran }} Mtr
-                  </td>
-                @endif
-                <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
-                <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
-                @php 
-                  $diskon = 100;
-                  $arrDiskon = explode("+", $itemDet->diskon);
-                  for($j = 0; $j < sizeof($arrDiskon); $j++) {
-                    $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                  } 
-                  $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
-                @endphp
-                <td style="width: 80px; height: 15px; border-bottom: none !important; border: solid black" align="right">
-                  {{ $itemDet->diskon }} 
-                </td>
-                <td rowspan="2" style="width: 70px" align="right">
-                  {{ number_format($itemDet->diskonRp, 0, "", ".") }}
-                </td>
-                <td rowspan="2" align="right">
-                  {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
-              </tr> --}}
               <tr class="baris-so">
                 <td align="center">{{ $i }}</td>
                 <td>{{ $itemDet->id_barang }}</td>

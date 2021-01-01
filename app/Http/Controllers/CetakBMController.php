@@ -56,11 +56,13 @@ class CetakBMController extends Controller
             'waktu' => $waktu
         ];
 
-        $paper = array(0,0,612,394);
-        // $paper = letter, portrait;
-        $pdf = PDF::loadview('pages.pembelian.cetakBM.cetak', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-all.pdf');
+        return view('pages.pembelian.cetakBM.cetakPdf', $data);
+
+        // $paper = array(0,0,612,394);
+        // // $paper = letter, portrait;
+        // $pdf = PDF::loadview('pages.pembelian.cetakBM.cetak', $data)->setPaper($paper);
+        // ob_end_clean();
+        // return $pdf->stream('cetak-all.pdf');
     } 
 
     /* public function cetak(Request $request) {

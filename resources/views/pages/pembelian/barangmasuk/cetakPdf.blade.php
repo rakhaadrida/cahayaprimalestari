@@ -185,22 +185,22 @@
       .detail-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 17px;
-        width: 180px;
+        width: 195px;
         margin-top: -95px;
-        margin-left: 723px;
+        margin-left: 693px;
         line-height: 20px;
       }
 
       .detail-second {
-        margin-left: -20px;
+        margin-left: -24px;
       }
 
       .detail-third {
-        margin-left: 6.5px;
+        margin-left: 8.5px;
       }
 
       .detail-fourth {
-        margin-left: -13.5px;
+        margin-left: -15.5px;
       }
 
       .logo-cetak-so img {
@@ -285,11 +285,11 @@
           font-size: 18px;
       }
 
-      @media print {
+      /* @media print {
         @page {
           size: 21.59cm 13.9cm;
         }
-      }
+      } */
     </style>
   </head>
   <body>

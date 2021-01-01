@@ -48,18 +48,23 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label for="satuan" class="col-1 col-form-label text-bold">Retur</label>
+                <label for="satuan" class="col-1 col-form-label text-bold">Tipe</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
                   <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="radio" name="retur" 
-                    value="T">
-                    <label class="form-check-label font-weight-bold text-dark" for="retur1">Ya</label>
+                    <input class="form-check-input" type="radio" name="tipe" 
+                    value="BIASA" required>
+                    <label class="form-check-label font-weight-bold text-dark" for="tipe1">Biasa</label>
                   </div>
                   <div class="form-check form-check-inline ml-4">
-                    <input class="form-check-input" type="radio" name="retur" 
-                    value="F">
-                    <label class="form-check-label font-weight-bold text-dark" for="retur2">Tidak</label>
+                    <input class="form-check-input" type="radio" name="tipe" 
+                    value="RETUR">
+                    <label class="form-check-label font-weight-bold text-dark" for="tipe2">Retur</label>
+                  </div>
+                  <div class="form-check form-check-inline ml-4">
+                    <input class="form-check-input" type="radio" name="tipe" 
+                    value="KENARI">
+                    <label class="form-check-label font-weight-bold text-dark" for="tipee">Kenari</label>
                   </div>
                 </div>
               </div>

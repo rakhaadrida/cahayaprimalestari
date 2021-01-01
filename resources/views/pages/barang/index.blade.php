@@ -12,7 +12,7 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
     <h1 class="h3 mb-0 text-gray-800 menu-title">Data Barang</h1>
-    @if(Auth::user()->roles != 'OFFICE02')
+    @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG'))
       <div class="justify-content-end">
         <a href="{{ route('barang.create') }}" class="btn btn-sm btn-primary shadow-sm">
           <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Barang
@@ -41,7 +41,7 @@
                 <th style="width: 80px">Stok</th>
               @endif
               <th>Detail</th>
-              @if(Auth::user()->roles != 'OFFICE02')
+              @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG'))
                 <th>Harga</th>
                 <th>Stok</th>
                 <th>Ubah</th>
@@ -51,7 +51,7 @@
           </thead>
           <tbody>
             @php $i = 0; $j = 1; 
-              if(Auth::user()->roles != 'OFFICE02')
+              if(Auth::user()->roles != 'OFFICE02') 
                 $items = $itemsBrg;
               else
                 $items = $itemsBrgOff;
@@ -88,7 +88,7 @@
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
-                @if(Auth::user()->roles != 'OFFICE02')
+                @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG'))
                   <td align="center" style="width: 15px">
                     <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-warning">
                       <i class="fas fa-fw fa-money-bill-alt"></i>

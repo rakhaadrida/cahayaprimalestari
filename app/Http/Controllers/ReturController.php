@@ -22,9 +22,9 @@ use PDF;
 class ReturController extends Controller
 {
     public function index() {
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $items = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
-                ->where('retur', 'T')->groupBy('id_barang')->get();
+                ->where('tipe', 'RETUR')->groupBy('id_barang')->get();
 
         $data = [
             'gudang' => $gudang,
@@ -43,10 +43,15 @@ class ReturController extends Controller
         $customer = Customer::All();
         $barang = Barang::All();
 
-        $lastcode = ReturJual::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = ReturJual::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
-        $newcode = 'RTJ'.sprintf('%04s', $lastnumber);
+        $newcode = 'RTJ'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -76,7 +81,7 @@ class ReturController extends Controller
     } */
 
     public function storeJual(Request $request, $id) {
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
         ReturJual::create([
@@ -124,7 +129,7 @@ class ReturController extends Controller
 
     public function dataReturJual($status, $id) {
         $retur = ReturJual::orderBy('id', 'desc')->get();
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [
             'retur' => $retur,
@@ -184,7 +189,7 @@ class ReturController extends Controller
                     })->get();
         }
 
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [
             'retur' => $retur,
@@ -204,7 +209,7 @@ class ReturController extends Controller
         $lastnumber++;
         $newcode = 'KRM'.sprintf("%04s", $lastnumber);
 
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $retur = ReturJual::where('id', $request->kode)->first();
         $items = DetilRJ::where('id_retur', $request->kode)->get();
 
@@ -265,14 +270,22 @@ class ReturController extends Controller
     
     public function cetakKirimJual(Request $request, $id) {
         $items = DetilRJ::where('id_kirim', $id)->get();
+        $today = Carbon::now()->isoFormat('dddd, D MMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
+
         $data = [
-            'items' => $items
+            'items' => $items,
+            'today' => $today,
+            'waktu' => $waktu
         ];
 
-        $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.retur.cetakJual', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-so.pdf');
+        return view('pages.retur.cetakJual', $data);
+
+        // $paper = array(0,0,686,394);
+        // $pdf = PDF::loadview('pages.retur.cetakJual', $data)->setPaper($paper);
+        // ob_end_clean();
+        // return $pdf->stream('cetak-so.pdf');
     }
 
     /* public function ttrKirimJual($id) {
@@ -302,14 +315,19 @@ class ReturController extends Controller
 
     public function createPembelian() {
         $supplier = Supplier::All();
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $barang = StokBarang::where('id_gudang', $gudang[0]->id)
                 ->where('status', 'F')->get();
 
-        $lastcode = ReturBeli::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = ReturBeli::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
-        $newcode = 'RTB'.sprintf('%04s', $lastnumber);
+        $newcode = 'RTB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -339,7 +357,7 @@ class ReturController extends Controller
     }
 
     public function storeBeli(Request $request, $id) {
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
         ReturBeli::create([
@@ -385,7 +403,7 @@ class ReturController extends Controller
 
     public function dataReturBeli($status, $id) {
         $retur = ReturBeli::orderBy('id', 'desc')->get();
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [
             'retur' => $retur,
@@ -463,7 +481,7 @@ class ReturController extends Controller
         $newcode = 'TRM'.sprintf("%04s", $lastnumber);
 
         $id = [];
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $retur = ReturBeli::where('id', $request->kode)->first();
 
         $items = DetilRB::where('id_retur', $request->kode)->get();
@@ -608,9 +626,11 @@ class ReturController extends Controller
             'waktu' => $waktu
         ];
 
-        $paper = array(0,0,612,394);
-        $pdf = PDF::loadview('pages.retur.cetakBeli', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-bm.pdf');
+        return view('pages.retur.cetakBeli', $data);
+
+        // $paper = array(0,0,612,394);
+        // $pdf = PDF::loadview('pages.retur.cetakBeli', $data)->setPaper($paper);
+        // ob_end_clean();
+        // return $pdf->stream('cetak-bm.pdf');
     }
 }

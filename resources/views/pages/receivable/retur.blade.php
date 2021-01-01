@@ -152,7 +152,7 @@
               <input type="text" name="namaBarang{{$a->id}}[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
             </td>
             <td class="align-middle"> 
-              <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglReturRow" name="tglRetur{{$a->id}}[]" id="tglReturRow${newNum}" placeholder="DD-MM-YYYY" autocomplete="off">
+              <input type="text" class="form-control datepickerRow form-control-sm text-bold text-dark text-center tglReturRow" name="tglRetur{{$a->id}}[]" id="tglReturRow${newNum}" placeholder="DD-MM-YYYY" autocomplete="off">
             </td>
             <td class="align-middle"> 
               <input type="text" class="form-control form-control-sm text-bold text-dark text-right qtyRow" name="qty{{$a->id}}[]" id="qtyRow${newNum}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
@@ -175,13 +175,6 @@
           </tr>
         `; 
 
-        $('.datepicker').datepicker({
-          format: 'dd-mm-yyyy',
-          autoclose: true,
-          todayHighlight: true,
-          language: 'id',
-        });
-
         $('#tablePO'+'{{$a->id}}').append(window['newTr'+'{{$a->id}}']);
         window['jumBaris'+'{{$a->id}}'].value = newNum;
         const newRow = document.getElementById(newNum);
@@ -202,6 +195,13 @@
         brgRow.addEventListener("keyup", displayHargaRow);
         kodeRow.addEventListener("blur", displayHargaRow);
         brgRow.addEventListener("blur", displayHargaRow);
+
+        $('.datepickerRow').datepicker({
+          format: 'dd-mm-yyyy',
+          autoclose: true,
+          todayHighlight: true,
+          language: 'id',
+        });
 
         function displayHargaRow(e) {
           if(e.target.value == "") {

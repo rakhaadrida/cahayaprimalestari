@@ -10,7 +10,7 @@ class Gudang extends Model
     use SoftDeletes;
     protected $table = 'gudang';
     protected $keyType = "string";
-    protected $fillable = ['id', 'nama', 'alamat', 'retur'];
+    protected $fillable = ['id', 'nama', 'alamat', 'tipe'];
     public $incrementing = false;
 
     public function stokBarang() {

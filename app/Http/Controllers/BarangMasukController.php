@@ -25,20 +25,25 @@ class BarangMasukController extends Controller
         $supplier = Supplier::All();
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
+
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
 
         // autonumber
-        $lastcode = BarangMasuk::max('id');
-        $lastnumber = (int) substr($lastcode, 2, 4);
+        $lastcode = BarangMasuk::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'BM'.sprintf('%04s', $lastnumber);
+        $newcode = 'BM'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         // $items = TempDetilBM::with(['barang', 'supplier'])->where('id_bm', $newcode)
         //             ->orderBy('created_at','asc')->get();
         // $itemsRow = TempDetilBM::where('id_bm', $newcode)->count();
 
         // date now
-        $tanggal = Carbon::now()->toDateString();
+        $tanggal = Carbon::now('+07:00')->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
 
         $data = [
@@ -122,6 +127,7 @@ class BarangMasukController extends Controller
                     StokBarang::create([
                         'id_barang' => $request->kodeBarang[$i],
                         'id_gudang' => $request->kodeGudang,
+                        'status' => 'T',
                         'stok' => $request->qty[$i]
                     ]);
                 } else {
@@ -161,8 +167,8 @@ class BarangMasukController extends Controller
 
     public function cetak(Request $request, $id) {
         $items = BarangMasuk::where('id', $id)->get();
-        $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
-        $waktu = Carbon::now();
+        $today = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y');
+        $waktu = Carbon::now('+07:00');
         $waktu = Carbon::parse($waktu)->format('H:i:s');
 
         $data = [

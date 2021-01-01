@@ -307,7 +307,7 @@
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('barangmasuk/cetak/'.$lastcode)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
                 {{-- <div class="col-2">
                   <button type="reset" onclick="printPage('{{url('barangmasuk/cetak/'.$lastcode)}}')" tabindex="{{ $tab++ }}" id="resetBM" class="btn btn-outline-danger btn-block text-bold">Reset All </button>
                 </div> --}}
@@ -332,57 +332,14 @@
   //   $("#frameCetak").printPage();
   // });
 
-  /* function popuponclick() {
-      my_window = window.open('{{url('barangmasuk/cetak/'.$lastcode)}}', 'printWindow', 'status=1, resizable');
-      my_window.document.onafterprint = function(e) {
-        self.close();
-      }
-      // my_window.document.write('cetak.blade.php');
-      // my_window.document.write('<body onafterprint="self.close()">');
-      // my_window.document.write('<p>When you print this window, it will close afterward.</p>');
-      // my_window.document.write('</body></html>');
-  } */
-
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
-  printFrame.onafterprint = function(e) {
+  printFrame.window.onafterprint = function(e) {
     // alert('ok');
-    window.location = "{{ route('bm-after-print', $lastcode) }}";
+    window.location = "{{ route('bm-after-print', $lastcode[0]->id) }}";
   }
   
-  printFrame.print();
-  // window.print();
-
-  /* function closePrint () {
-    // alert('ok');
-    // document.body.removeChild(this.__container__);
-    window.location = "{{ route('bm-after-print', $lastcode) }}";
-  }
-
-  function setPrint () {
-    // console.log(oHiddFrame);
-    this.contentWindow.__container__ = this;
-    // this.contentWindow.onbeforeunload = closePrint;
-    this.contentWindow.onafterprint = closePrint;
-    this.contentWindow.focus(); // Required for IE
-    this.contentWindow.print();
-  }
-
-  function printPage (sURL) {
-    var oHiddFrame = document.createElement("iframe");
-    oHiddFrame.onload = setPrint;
-    oHiddFrame.style.position = "fixed";
-    oHiddFrame.style.right = "0";
-    oHiddFrame.style.bottom = "0";
-    oHiddFrame.style.width = "0";
-    oHiddFrame.style.height = "0";
-    oHiddFrame.style.border = "0";
-    oHiddFrame.src = sURL;
-    document.body.appendChild(oHiddFrame);
-  }
-
-  window.onload = printPage("{{url('barangmasuk/cetak/'.$lastcode)}}"); */
-  // window.onload = popuponclick();
+  printFrame.window.print();
 @endif
 
 $.fn.datepicker.dates['id'] = {

@@ -525,7 +525,7 @@
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('so/cetak/'.$lastcode)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('so/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
                 {{-- <iframe src="{{url('so/cetak-ttr/'.$lastcode)}}" id="frameTTR" frameborder="0" hidden></iframe> --}}
               @endif
 
@@ -545,48 +545,15 @@
 <script type="text/javascript">
 
 @if($status == 'true')
-  // $(document).ready(function() {
-  //   $("#frameCetak").printPage();
-  // });
-
-  // const printFrame = document.getElementById("frameCetak");
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
-  // window.frames[0].parent.onafterprint = function(e) {
-  //   alert('ok');
-  // }
-  
-  // window.frames[0].print();
-  // printFrame.print();
-  // console.log(printFrame);
-
-  // window.onafterprint = function(e) {
-  //   alert('ok');
-  // }
-
-  // console.log(document.getElementById("frameCetak").contentWindow);
-  // console.log(window);
-
-  // console.log(frameCetak);
-
-  // frameCetak.onload = function() {
-  //   // console.log(frameCetak);
-
-  //   frameCetak.onafterprint = function(e) {
-  //     // alert('ok');
-  //     window.location = "{{ route('so-after-print', $lastcode) }}";
-  //   };
-
-  //   // window.print();
-  // };
-
   printFrame.window.onafterprint = function(e) {
-    alert('ok');
+    // alert('ok');
+    window.location = "{{ route('so-after-print', $lastcode[0]->id) }}";
   }
   
   printFrame.window.focus();
   printFrame.window.print();
-  // window.print();
 @endif 
 
 $.fn.datepicker.dates['id'] = {

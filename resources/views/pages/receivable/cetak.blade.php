@@ -210,7 +210,7 @@
             </tr> 
             @php $i++ @endphp
           @endforeach
-          @for($j = 1; $j <= 50; $j++)
+          {{-- @for($j = 1; $j <= 50; $j++)
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $j }}</td>
               <td class="align-middle"></td>
@@ -222,7 +222,7 @@
               <td align="right" class="align-middle"></td>
               <td></td>
             </tr> 
-          @endfor
+          @endfor --}}
         </tbody>
       </table>
     </div>

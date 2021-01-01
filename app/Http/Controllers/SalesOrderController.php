@@ -32,13 +32,18 @@ class SalesOrderController extends Controller
         $harga = HargaBarang::All();
         $hrg = Harga::All();
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
-                ->where('retur', 'F')->get();
-        $gudang = Gudang::where('retur', 'F')->get();
+                ->where('tipe', 'BIASA')->get();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
 
-        $lastcode = SalesOrder::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
-        $newcode = 'INV'.sprintf('%04s', $lastnumber);
+        $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -332,7 +337,7 @@ class SalesOrderController extends Controller
         }
         
         $customer = Customer::All();
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
         $stok = StokBarang::All();
         $so = SalesOrder::All();
         
@@ -372,11 +377,12 @@ class SalesOrderController extends Controller
    
         // return response()->json($items);
 
-        if($items[0]->need_appdetil->count() != 0) {
+        if($items->first()->need_appdetil->count() != 0) {
             $detil = NeedAppDetil::where('id_app', $items[0]->need_appdetil[0]->id_app)->get();
         } else {
             $detil = DetilSO::with(['so'])->where('id_so', $id)->get();
         }
+
         foreach($detil as $item) {
             $updateStok = StokBarang::where('id_barang', $item->id_barang)
                     ->where('id_gudang', $item->id_gudang)->first();
@@ -398,8 +404,8 @@ class SalesOrderController extends Controller
         $harga = HargaBarang::All();
         $hrg = Harga::All();
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
-                ->where('retur', 'F')->get();
-        $gudang = Gudang::where('retur', 'F')->get();
+                ->where('tipe', 'BIASA')->get();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
 
         $data = [
             'items' => $items,

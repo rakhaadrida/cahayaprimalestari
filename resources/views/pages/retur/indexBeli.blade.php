@@ -162,7 +162,6 @@
   }
   
   printFrame.window.print();
-  // window.print();
 @endif
 
 $.fn.datepicker.dates['id'] = {

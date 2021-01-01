@@ -114,66 +114,15 @@ const btnCetak = document.getElementById('btnCetak');
 
 @if($status == "true")
   const printFrame = document.getElementById("frameCetak").contentWindow;
-  const printTTR = document.getElementById("frameTTR").contentWindow;
-  // const kodeAwal = document.querySelectorAll(".kodeAwal");
-  // const kodeAkhir = document.querySelectorAll(".kodeAkhir");
-
-  /** Cara 1 **/
-  // const printFrame = document.createElement('iframe');
-  // printFrame.src = "{{url('cetak/'.$awal.'/'.$akhir)}}";
-  // printFrame.id = 'print_pdf';
-  // printFrame.name = 'print_pdf';
-
-  // printFrame.onload = () => {
-  //   printFrame.contentWindow.onafterprint = function(e) {
-  //     alert('ok');
-  //   }
-    // printFrame.focus();
-    // printFrame.print();
-  // };
-
-  // document.body.appendChild(printFrame);
-  // window.frames['print_pdf'].focus();
-  // window.frames['print_pdf'].print();
-  /** End Cara 1 **/
-
-
-  /** Cara 2 **/
-  printTTR.window.onafterprint = function(e) {
-    alert('ok');
-    // window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+  // const printTTR = document.getElementById("frameTTR").contentWindow;
+  
+  printFrame.window.onafterprint = function(e) {
+    // alert('ok');
+    window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
   }
 
-  
-  // window.frames["frameCetak"].window.print();
-  
-  // printTTR.window.print();
   printFrame.window.print();
-  // window.print();
-  /** End Cara 2 **/
 
-
-  /** Cara 3 **/
-  /* var afterPrint = function(e) {
-    // clearTimeout(timer);
-    // window.focus();
-    kodeAwal[0].focus();
-    window.onfocus = function() {
-      window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
-    }
-    // kodeAwal[0].removeAttribute("required");
-    // kodeAkhir[0].removeAttribute("required");
-    // document.getElementById("updateCetak").click();
-  } */
-  
-  // if(printFrame.contentWindow.onafterprint) { 
-  //   $(printFrame).contentWindow.on("afterprint", afterPrint);  
-  // }
-  // else { 
-  //   // var timer = setTimeout(afterPrint, 5000);
-  //   setTimeout(afterPrint, 0);
-  // }
-  /** End Cara 3 **/
 @endif
 
 function checkRequired(e) {

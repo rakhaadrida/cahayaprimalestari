@@ -611,7 +611,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     data: {
       labels: ["Prime", "Extrana", "Cash"],
       datasets: [{
-        data: ['{{$salesPerType[2]->total}}', '{{$salesPerType[1]->total}}', '{{$salesPerType[0]->total}}'],
+        data: ['{{$salesPerType[2]}}', '{{$salesPerType[1]}}', '{{$salesPerType[0]}}'],
         backgroundColor: ['#36b9cc', '#1cc88a', '#4e73df'],
         hoverBackgroundColor: ['#2c9faf', '#17a673', '#2e59d9'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -642,7 +642,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     data: {
       labels: ["Prime", "Extrana", "Cash"],
       datasets: [{
-        data: ['{{$salesPerTypeOff[2]->total}}', '{{$salesPerTypeOff[1]->total}}', '{{$salesPerTypeOff[0]->total}}'],
+        data: ['{{$salesPerTypeOff[2]}}', '{{$salesPerTypeOff[1]}}', '{{$salesPerTypeOff[0]}}'],
         backgroundColor: ['#36b9cc', '#1cc88a', '#4e73df'],
         hoverBackgroundColor: ['#2c9faf', '#17a673', '#2e59d9'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",

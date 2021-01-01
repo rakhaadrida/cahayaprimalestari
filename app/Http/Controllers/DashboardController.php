@@ -26,22 +26,29 @@ class DashboardController extends Controller
         $bulan = $tanggal->month;
         $tanggal = $tanggal->toDateString();
         $salesAnnual = SalesOrder::selectRaw('sum(total) as sales')
-                        ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
+                        ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->get();
         $salesMonthly = SalesOrder::selectRaw('sum(total) as sales')
                         ->whereMonth('tgl_so', $bulan)
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
-        $transAnnual = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->count();
+        $transAnnual = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->count();
         $transMonthly = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereMonth('tgl_so', $bulan)->count();
-        $buyAnnual = BarangMasuk::where('status', '!=', 'BATAL')->count();
+        $buyAnnual = BarangMasuk::where('status', '!=', 'BATAL')
+                    ->whereYear('tanggal', $tahun)->count();
         $buyMonthly = BarangMasuk::where('status', '!=', 'BATAL')
                     ->whereMonth('tanggal', $bulan)->count();
-        $retur = AR_Retur::selectRaw('sum(total) as total')->get();
+        $retur = AR_Retur::selectRaw('sum(total) as total')
+                ->whereYear('tanggal', $tahun)->get();
         $returMon = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->selectRaw('sum(ar_retur.total) as total')
                 ->whereMonth('tgl_so', $bulan)->get();
-        $cicil = DetilAR::selectRaw('sum(cicil) as total')->get();
+        $cicil = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
+                ->join('so', 'so.id', 'ar.id_so')
+                ->selectRaw('sum(cicil) as total')
+                ->whereYear('tgl_so', $tahun)->get();
         $receivable = $salesAnnual[0]->sales - $retur[0]->total - $cicil[0]->total;
         $salesAnnual[0]->sales -= $retur[0]->total;
         $salesMonthly[0]->sales -= $returMon[0]->total;
@@ -61,17 +68,28 @@ class DashboardController extends Controller
             }
         }
 
-        $salesPerType = SalesOrder::selectRaw('kategori, count(kategori) as total')
-                        ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
-                        ->groupBy('kategori')->get();
+        // $salesPerType = SalesOrder::selectRaw('kategori, count(kategori) as total')
+        //                 ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
+        //                 ->groupBy('kategori')->get();
+
+        $tipeCount = [];
+        $tipe = ['CASH', 'EXTRANA', 'PRIME'];
+        for($i = 0; $i < sizeof($tipe); $i++) {
+            $salesPerType = SalesOrder::where('kategori', $tipe[$i])
+                        ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->count();
+            $tipeCount[$i] = $salesPerType;
+        }
+
         $needPrint = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
                     ->count();
         $stillPending = NeedApproval::where('tipe', 'Faktur')->count();
         $barang = Barang::All(); 
         $restok = 0;
         foreach($barang as $b) {
-            $stok = StokBarang::selectRaw('id_barang, sum(stok) as total')
-                    ->where('id_barang', $b->id)->get();
+            $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
+                    ->selectRaw('id_barang, sum(stok) as total')
+                    ->where('id_barang', $b->id)->where('tipe', 'BIASA')->get();
             if($stok[0]->total <= $b->subjenis->limit) 
                 $restok++;
         }   
@@ -176,7 +194,8 @@ class DashboardController extends Controller
         $salesAnnOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                         ->selectRaw('sum(total) as sales')
                         ->where('customer.id_sales', 'SLS03')
-                        ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
+                        ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->get();
         $salesMonOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                         ->selectRaw('sum(total) as sales')
                         ->where('customer.id_sales', 'SLS03')
@@ -184,7 +203,8 @@ class DashboardController extends Controller
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
         $transAnnOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                         ->where('customer.id_sales', 'SLS03')
-                        ->whereNotIn('status', ['BATAL', 'LIMIT'])->count();
+                        ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->count();
         $transMonOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                         ->where('customer.id_sales', 'SLS03')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
@@ -193,7 +213,8 @@ class DashboardController extends Controller
                     ->join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->selectRaw('sum(ar_retur.total) as total')
-                    ->where('id_sales', 'SLS03')->get();
+                    ->where('id_sales', 'SLS03')
+                    ->whereYear('tanggal', $tahun)->get();
         $returMonOff = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
                     ->join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
@@ -204,7 +225,8 @@ class DashboardController extends Controller
                     ->join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->selectRaw('sum(cicil) as total')
-                    ->where('id_sales', 'SLS03')->get();
+                    ->where('id_sales', 'SLS03')
+                    ->whereYear('tgl_so', $tahun)->get();
         $receivableOff = $salesAnnOff[0]->sales - $returOff[0]->total - $cicilOff[0]->total;
         $salesAnnOff[0]->sales -= $returOff[0]->total;
         $salesMonOff[0]->sales -= $returMonOff[0]->total;
@@ -226,11 +248,21 @@ class DashboardController extends Controller
             }
         }
 
-        $salesPerTypeOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                        ->selectRaw('kategori, count(kategori) as total')
+        // $salesPerTypeOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+        //                 ->selectRaw('kategori, count(kategori) as total')
+        //                 ->where('customer.id_sales', 'SLS03')
+        //                 ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
+        //                 ->groupBy('kategori')->get();
+        
+        $tipeCountOff = [];
+        for($i = 0; $i < sizeof($tipe); $i++) {
+            $salesPerTypeOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                         ->where('customer.id_sales', 'SLS03')
-                        ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
-                        ->groupBy('kategori')->get();
+                        ->where('kategori', $tipe[$i])
+                        ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->count();
+            $tipeCountOff[$i] = $salesPerTypeOff;
+        }
 
         $data = [
             'salesAnnual' => $salesAnnual,
@@ -242,7 +274,7 @@ class DashboardController extends Controller
             'receivable' => $receivable,
             'salesPerMonth' => $salesPerMonth,
             'arrTotal' => $arrTotal,
-            'salesPerType' => $salesPerType,
+            'salesPerType' => $tipeCount,
             'needPrint' => $needPrint,
             'stillPending' => $stillPending,
             'restock' => $restok,
@@ -264,7 +296,7 @@ class DashboardController extends Controller
             'transMonOff' => $transMonOff,
             'receivableOff' => $receivableOff,
             'arrTotalOff' => $arrTotalOff,
-            'salesPerTypeOff' => $salesPerTypeOff,
+            'salesPerTypeOff' => $tipeCountOff,
         ];
 
         return view('pages.dashboard', $data);

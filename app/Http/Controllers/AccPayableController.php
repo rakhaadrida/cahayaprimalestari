@@ -212,7 +212,7 @@ class AccPayableController extends Controller
 
     public function retur(Request $request) {
         $jumBaris = $request->jumBaris;
-        $gudang = Gudang::where('retur', 'T')->get();
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $lastcode = AP_Retur::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
@@ -233,36 +233,38 @@ class AccPayableController extends Controller
 
         $total = 0;
         for($i = 0; $i < $jumBaris; $i++) {
-            $tglRetur = $request->{"tglRetur".$request->kode}[$i];
-            $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
+            if(($request->{"kodeBarang".$request->kode}[$i] != '') && ($request->{"qty".$request->kode}[$i] != '')) {
+                $tglRetur = $request->{"tglRetur".$request->kode}[$i];
+                $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
 
-            DetilRAP::create([
-                'id_retur' => $newcode,
-                'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
-                'tgl_retur' => $tglRetur,
-                'qty' => $request->{"qty".$request->kode}[$i],
-                'harga' => str_replace(".", "", $request->{"harga".$request->kode}[$i]),
-                'diskon' => $request->{"diskon".$request->kode}[$i],
-                'diskonRp' => str_replace(".", "", $request->{"diskonRp".$request->kode}[$i]),
-            ]);
-
-            $stok = StokBarang::where('id_barang', $request->{"kodeBarang".$request->kode}[$i])
-                            ->where('id_gudang', $gudang[0]->id)
-                            ->where('status', 'F')->first();
-                
-            if($stok == NULL) {
-                StokBarang::create([
+                DetilRAP::create([
+                    'id_retur' => $newcode,
                     'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
-                    'id_gudang' => $gudang[0]->id,
-                    'status' => 'F',
-                    'stok' => $request->{"qty".$request->kode}[$i]
+                    'tgl_retur' => $tglRetur,
+                    'qty' => $request->{"qty".$request->kode}[$i],
+                    'harga' => str_replace(".", "", $request->{"harga".$request->kode}[$i]),
+                    'diskon' => $request->{"diskon".$request->kode}[$i],
+                    'diskonRp' => str_replace(".", "", $request->{"diskonRp".$request->kode}[$i]),
                 ]);
-            } else {
-                $stok->{'stok'} -= $request->{"qty".$request->kode}[$i];
-                $stok->save();
-            }
 
-            $total += str_replace(".", "", $request->{"netto".$request->kode}[$i]);
+                $stok = StokBarang::where('id_barang', $request->{"kodeBarang".$request->kode}[$i])
+                                ->where('id_gudang', $gudang[0]->id)
+                                ->where('status', 'F')->first();
+                    
+                if($stok == NULL) {
+                    StokBarang::create([
+                        'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
+                        'id_gudang' => $gudang[0]->id,
+                        'status' => 'F',
+                        'stok' => $request->{"qty".$request->kode}[$i]
+                    ]);
+                } else {
+                    $stok->{'stok'} -= $request->{"qty".$request->kode}[$i];
+                    $stok->save();
+                }
+
+                $total += str_replace(".", "", $request->{"netto".$request->kode}[$i]);
+            }
         }
 
         $ret = AP_Retur::where('id', $newcode)->first();

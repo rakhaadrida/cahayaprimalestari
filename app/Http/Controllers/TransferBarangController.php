@@ -18,10 +18,15 @@ class TransferBarangController extends Controller
         $gudang = Gudang::All();
         $stok = StokBarang::with(['gudang'])->get();
 
-        $lastcode = TransferBarang::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = TransferBarang::selectRaw('max(id) as id')->whereMonth('tgl_tb', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'TB'.sprintf('%04s', $lastnumber);
+        $newcode = 'TB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         // $items = TempDetilTB::with(['barang', 'gudangAsal', 'gudangTujuan'])->where('id_tb', $newcode)->orderBy('created_at', 'asc')->get();
         // $itemsRow = TempDetilTB::where('id_tb', $newcode)->count();

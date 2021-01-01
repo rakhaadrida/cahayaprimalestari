@@ -73,10 +73,15 @@ class TandaTerimaController extends Controller
         $items = SalesOrder::where('status', 'CETAK')->whereBetween('id', [$awal, $akhir])
                 ->get();
 
-        $lastcode = TandaTerima::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = TandaTerima::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 3);
         $lastnumber++;
-        $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+        $newcode = 'TTR'.$tahun.$bulan.sprintf('%03s', $lastnumber);
 
         $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $waktu = Carbon::now();
@@ -98,10 +103,15 @@ class TandaTerimaController extends Controller
     public function update($awal, $akhir) {
         $items = SalesOrder::whereBetween('id', [$awal, $akhir])->get();
 
-        $lastcode = TandaTerima::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = TandaTerima::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 3);
         $lastnumber++;
-        $newcode = 'TTR'.sprintf('%04s', $lastnumber);
+        $newcode = 'TTR'.$tahun.$bulan.sprintf('%03s', $lastnumber);
 
         foreach($items as $item) {
             TandaTerima::create([
@@ -118,6 +128,6 @@ class TandaTerimaController extends Controller
             'akhir' => 0
         ];
 
-        return redirect()->route('cetak-faktur', $data);
+        return redirect()->route('ttr-index-cetak', $data);
     }
 }

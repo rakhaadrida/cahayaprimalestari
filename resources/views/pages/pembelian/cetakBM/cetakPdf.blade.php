@@ -302,7 +302,7 @@
           <div class="subtitle-cetak-so">
             <span class="text-right">Supplier</span>
             <span>:</span>
-            <span>{{ $item->returbeli->supplier->nama }}</span>
+            <span>{{ $item->supplier->nama }}</span>
           </div>
           <div class="subtitle-cetak-so subtitle-second">
             <span class="text-right">We had accepted these following item(s) :</span>
@@ -333,7 +333,7 @@
           <br>
           <span class="detail-second text-right">GRN Number</span>
           <span>:</span>
-          <span>{{ $item->id_retur }}</span>
+          <span>{{ $item->id }}</span>
           <br>
           <span class="detail-third text-right">DO. Date</span>
           <span>:</span>
@@ -341,12 +341,17 @@
           <br>
           <span class="detail-fourth text-right">DO. Number</span>
           <span>:</span>
-          <span></span>
+          <span>{{ $item->id_faktur }}</span>
         </div>
         <br>
         
         @php 
-        $itemsDet = \App\Models\DetilRT::where('id_terima', $item->id)->get();
+        $itemsDet = \App\Models\DetilBM::with(['barang'])
+                          ->select('id_barang', 'diskon')
+                          ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                          ->where('id_bm', $item->id)
+                          ->groupBy('id_barang', 'diskon')
+                          ->get();
         @endphp
         <!-- Tabel Data Detil BM-->
         <span class="page-number text-right">Page  :   1</span>
@@ -373,7 +378,7 @@
                 <td style="width: 50px">
                   {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
                 </td> --}}
-                <td align="center">RETUR</td>
+                <td></td>
               </tr>
               @php $i++ @endphp
             @endforeach

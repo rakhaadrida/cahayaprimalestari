@@ -45,10 +45,12 @@ class CetakFakturController extends Controller
             'waktu' => $waktu
         ];
 
-        $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.penjualan.cetakfaktur.cetak', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-all.pdf');
+        return view('pages.penjualan.cetakfaktur.cetakPdf', $data);
+
+        // $paper = array(0,0,686,394);
+        // $pdf = PDF::loadview('pages.penjualan.cetakfaktur.cetak', $data)->setPaper($paper);
+        // ob_end_clean();
+        // return $pdf->stream('cetak-all.pdf');
     } 
 
     public function tandaterima($awal, $akhir) {

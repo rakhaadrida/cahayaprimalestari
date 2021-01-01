@@ -45,7 +45,7 @@ class ApprovalController extends Controller
                 ->orderBy('created_at', 'asc')->groupBy('id_dokumen')->get();
 
         // return response()->json($approval);
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
                         ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
@@ -398,7 +398,7 @@ class ApprovalController extends Controller
                     ->orderBy('created_at', 'asc')->groupBy('id_dokumen')->get();
 
         // return response()->json($items);
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
                         ->select('id_customer', DB::raw('sum(cicil) as totCicil'))

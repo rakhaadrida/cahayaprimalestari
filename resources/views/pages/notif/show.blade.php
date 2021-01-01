@@ -193,7 +193,7 @@
                       </thead>
                       <tbody>
                         @php 
-                          $no = 1; $subtotal = 0;
+                          $no = 1; $subtotal = 0; $totalKredit = 0;
                         @endphp
                         @foreach($itemsUpdate as $i)
                           <tr class="text-bold text-dark">
@@ -488,7 +488,7 @@
                     <div class="form-row justify-content-center">
                       <div class="col-3">
                         @if(($item->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
-                          <button type="submit" formaction="{{ route('so-cetak', $item->id_dokumen) }}" formmethod="GET" class="btn btn-primary btn-block text-bold">Cetak</button>
+                          <button type="submit" onclick="printFaktur()" class="btn btn-primary btn-block text-bold">Cetak</button>
                         @else
                           <button type="submit" formaction="{{ route('notif-read', $item->id) }}" formmethod="GET" class="btn btn-success btn-block text-bold">Tandai Sudah Dibaca</button>
                         @endif
@@ -498,6 +498,25 @@
                       </div>
                     </div>
                     <!-- End Button Submit dan Reset -->
+
+                    @if($item->tipe == 'Faktur')
+                      <!-- Tampilan Cetak -->
+                      <iframe src="{{url('so/cetak/'.$item->id_dokumen)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+                    @endif
+
+                    <script type="text/javascript">
+                      function printFaktur() {
+                        const printFrame = document.getElementById("frameCetak").contentWindow;
+
+                        printFrame.window.onafterprint = function(e) {
+                          // alert('ok');
+                          window.location = "{{ route('notif-after-print', ['id' => $item->id_dokumen, 'kode' => $item->id]) }}";
+                        }
+                        
+                        printFrame.window.focus();
+                        printFrame.window.print();
+                      }
+                    </script>
 
                   </div>
                   @endforeach
@@ -526,7 +545,5 @@
 @endsection
 
 @push('addon-script')
-<script type="text/javascript">
 
-</script>
 @endpush

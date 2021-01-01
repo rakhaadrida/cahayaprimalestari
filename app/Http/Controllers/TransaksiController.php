@@ -48,7 +48,7 @@ class TransaksiController extends Controller
         $items = SalesOrder::with('customer')->where('id', $id)
                 ->orWhereBetween('tgl_so', [$request->tglAwal, $request->tglAkhir])
                 ->orderBy('id', 'asc')->get();
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
         
         $data = [
             'items' => $items,

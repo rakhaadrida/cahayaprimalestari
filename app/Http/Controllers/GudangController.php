@@ -42,7 +42,7 @@ class GudangController extends Controller
             'id' => $request->kode,
             'nama' => $request->nama,
             'alamat' => $request->alamat,
-            'retur' => $request->retur
+            'tipe' => $request->tipe
         ]);
 
         return redirect()->route('gudang.index');
