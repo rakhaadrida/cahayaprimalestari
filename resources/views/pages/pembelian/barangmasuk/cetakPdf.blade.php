@@ -285,11 +285,11 @@
           font-size: 18px;
       }
 
-      /* @media print {
+      @media print {
         @page {
           size: 21.59cm 13.9cm;
         }
-      } */
+      }
     </style>
   </head>
   <body>

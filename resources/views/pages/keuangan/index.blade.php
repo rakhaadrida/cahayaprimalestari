@@ -39,7 +39,7 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" id="bulan" name="bulan">
                   </div>
-                  <div class="col-1 mt-1" style="margin-left: -10px">
+                  <div class="col-2 col-xl-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('lap-keu-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>   

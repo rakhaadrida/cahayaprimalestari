@@ -51,36 +51,37 @@
                     @endphp
                     <div class="container so-update-container text-dark">
                       <div class="row">
-                        <div class="col-12">
-                          <div class="form-group row" >
-                            <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor @if($item->tipe == 'Faktur') SO @else BM @endif</label>
+                        <div class="col-12 col-lg-6">
+                          <div class="form-group row kode-dokumen">
+                            <label for="kode" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nomor @if($item->tipe == 'Faktur') SO @else BM @endif</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-2">
+                            <div class="col-4 col-md-3">
                               <input type="text" name="kode" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id_dokumen }}" >
                             </div>
                           </div>
                         </div> 
-                        <div class="col" style="margin-left: -450px">
+                        <div class="col-12 col-lg-6">
                           <div class="form-group row">
-                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama @if($item->tipe != 'Dokumen') Customer @else Supplier @endif</label>
+                            <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nama @if($item->tipe != 'Dokumen') Customer @else Supplier @endif</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-7">
+                            <div class="col-6 col-sm-5 col-md-7">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($item->tipe != 'Dokumen')
-                                value="{{ $item->so->customer->nama }} ({{ $item->so->id_customer }})" >
+                                value="{{ $item->so->customer->nama }}" 
                               @else
-                                value="{{ $item->bm->supplier->nama }} ({{ $item->bm->id_supplier }})" >
+                                value="{{ $item->bm->supplier->nama }}" 
                               @endif
+                              >
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="row" style="margin-top: -5px">
-                        <div class="col-12">
-                          <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal @if($item->tipe != 'Dokumen') SO @else BM @endif</label>
+                        <div class="col-12 col-lg-6">
+                          <div class="form-group row tanggal-dokumen customer-detail">
+                            <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Tanggal @if($item->tipe != 'Dokumen') SO @else BM @endif</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-2">
+                            <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                               @if($item->tipe != 'Dokumen')
                                 value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" >
@@ -91,22 +92,22 @@
                           </div>
                         </div>
                         @if($item->tipe != 'Dokumen')   
-                          <div class="col" style="margin-left: -450px">
+                          <div class="col-12 col-lg-6">
                             <div class="form-group row customer-detail">
-                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
+                              <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nama Sales</label>
                               <span class="col-form-label text-bold">:</span>
-                              <div class="col-4">
+                              <div class="col-6 col-sm-5 col-md-7">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                                 value="{{ $item->so->customer->sales->nama }}" >
                               </div>
                             </div>
                           </div>
                         @else
-                          <div class="col" style="margin-left: -450px">
+                          <div class="col-12 col-lg-6">
                             <div class="form-group row customer-detail">
-                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Gudang</label>
+                              <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4  form-control-sm text-bold text-right mt-1">Nama Gudang</label>
                               <span class="col-form-label text-bold">:</span>
-                              <div class="col-4">
+                              <div class="col-6 col-sm-5 col-md-7">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
                                 value="{{ $item->bm->gudang->nama }}" >
                                 <input type="hidden" name="{{$item->id}}" value="{{ $item->bm->id_gudang }}">
@@ -116,23 +117,23 @@
                         @endif
                       </div>
                       <div class="row" style="margin-top: -5px">
-                        <div class="col-12">
-                          <div class="form-group row customer-detail" @if($itemsUpdate->last()->status == 'PENDING_BATAL') style="margin-top: -20px" @endif>
-                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
+                        <div class="col-12 col-lg-6">
+                          <div class="form-group row tanggal-dokumen customer-detail" @if($itemsUpdate->last()->status == 'PENDING_BATAL') style="margin-top: -20px" @endif>
+                            <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Status</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-3">
+                            <div class="col-6 col-md-7">
                               <input type="text" name="status{{$item->id_dokumen}}" readonly class="form-control-plaintext col-form-label-sm text-bold 
-                              @if($itemsUpdate->last()->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" value="@if($itemsUpdate->last() == 'PENDING_UPDATE')@if($item->tipe == 'Faktur'){{ $item->so->status }}@else{{ $item->bm->status }} @endif @else {{ $itemsUpdate->last()->status }} @endif">
+                              @if($itemsUpdate->last()->status == 'PENDING_BATAL') bg-warning text-danger @else text-dark @endif" value="@if($itemsUpdate->last() == 'PENDING_UPDATE')@if($item->tipe == 'Faktur'){{ $item->so->status }}@else{{ $item->bm->status }}@endif @else{{ $itemsUpdate->last()->status }}@endif">
                               <input type="hidden" name="tipe{{$item->id_dokumen}}" value="{{ $item->tipe }}">
                             </div>
                           </div>
                         </div>
                         @if($item->tipe != 'Dokumen') 
-                          <div class="col" style="margin-left: -450px">
+                          <div class="col-12 col-lg-6" >
                             <div class="form-group row customer-detail">
-                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
+                              <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Jatuh Tempo</label>
                               <span class="col-form-label text-bold">:</span>
-                              <div class="col-4">
+                              <div class="col-6 col-sm-5 col-md-7">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')->format('d-M-y') }}" >
                               </div>
                             </div>
@@ -140,23 +141,23 @@
                         @endif
                       </div>
                       <div class="row" style="margin-top: 5px;">
-                        <div class="col-12">
+                        <div class="col-12 col-lg-6">
                           @if($itemsUpdate->last()->status == 'LIMIT')
                             <div class="form-group row customer-detail">
-                              <label for="tanggal" class="col-2 form-control-sm text-bold text-dark mt-1" style="font-size: 16px">Limit</label>
+                              <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-dark text-right mt-1" style="font-size: 16px">Limit</label>
                               <span class="col-form-label text-bold">:</span>
-                              <div class="col-2">
+                              <div class="col-6 col-md-7">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-md bg-warning text-danger text-bold text-lg" value="{{ number_format($item->so->customer->limit, 0, "", ".") }}" >
                               </div>
                             </div>
                           @endif
                         </div>
                         @if(($itemsUpdate->last()->status == 'LIMIT') || ($itemsUpdate->last()->status == 'PENDING_BATAL'))
-                          <div class="col" style="margin-left: -450px; @if($itemsUpdate->last()->status == 'LIMIT') margin-top: -10px @else margin-top: -20px @endif">
+                          <div class="col-12 col-lg-6" @if($itemsUpdate->last()->status == 'LIMIT') margin-top: -10px @else margin-top: -20px @endif">
                             <div class="form-group row customer-detail">
-                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Keterangan</label>
+                              <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Keterangan</label>
                               <span class="col-form-label text-bold">:</span>
-                              <div class="col-6">
+                              <div class="col-6 col-sm-5 col-md-7">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->keterangan }}" >
                               </div>
                             </div>
@@ -187,7 +188,7 @@
                       </thead>
                       <tbody>
                         @php 
-                          $no = 1; $subtotal = 0;
+                          $no = 1; $subtotal = 0; $totalKredit = 0;
                         @endphp
                         @foreach($items as $i)
                           <tr class="text-bold text-dark">
@@ -249,31 +250,31 @@
                     </table>
 
                     <div class="form-group row justify-content-end subtotal-so">
-                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
+                      <label for="totalNotPPN" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
+                      <div class="col-4 col-sm-4 col-md-2 mr-1">
                         <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" />
                       </div>
                     </div>
                     <div class="form-group row justify-content-end total-so">
-                      <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
+                      <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">PPN</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
+                      <div class="col-4 col-sm-4 col-md-2 mr-1">
                         <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
                       </div>
                     </div>
                     <div class="form-group row justify-content-end grandtotal-so">
-                      <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">@if($item->status != 'LIMIT') Total Tagihan @else Total SO @endif</label>
+                      <label for="grandtotal" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">@if($itemsUpdate->last()->status == 'LIMIT') Total Tagihan @else Total SO @endif</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
-                        <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($item->status != 'LIMIT') && ($item->status != 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
+                      <div class="col-4 col-sm-4 col-md-2 mr-1">
+                        <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($itemsUpdate->last()->status == 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
                       </div>
                     </div>
-                    @if($item->status == 'LIMIT')
+                    @if($itemsUpdate->last()->status == 'LIMIT')
                       <div class="form-group row justify-content-end" style="margin-top: 5px">
-                        <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Kredit</label>
+                        <label for="grandtotal" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Total Kredit</label>
                         <span class="col-form-label text-bold">:</span>
-                        <div class="col-2 mr-1">
+                        <div class="col-4 col-sm-4 col-md-2 mr-1">
                           <input type="text" name="totalKredit" id="totalKredit" readonly class="form-control-plaintext text-bold text-dark text-lg text-right" @foreach($total as $t)
                             @if($t->id_customer == $item->so->id_customer)
                               value="{{number_format($t->total, 0, "", ".")}}" 
@@ -285,15 +286,15 @@
                       </div>
                       <br>
                       <div class="form-group row justify-content-end" style="margin-top: -40px">
-                        <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
+                        <label for="grandtotal" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                         <span class="col-form-label text-bold">:</span>
-                        <div class="col-2 mr-1">
+                        <div class="col-4 col-sm-4 col-md-2 mr-1">
                           <input type="text" name="totalTagihan" id="totalTagihan" readonly class="form-control-plaintext text-bold bg-warning text-danger text-lg text-right" value="{{number_format($subtotal + $totalKredit, 0, "", ".")}}" />
                         </div>
                       </div>
                     @endif
                     @if(($itemsUpdate->last()->status != 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL'))
-                      <div class="row justify-content-center" style="margin-top: -80px">
+                      <div class="row justify-content-center panah-biru" style="margin-top: -80px">
                         <i class="fas fa-arrow-down fa-4x text-primary"></i>
                       </div>
                     @endif
@@ -304,31 +305,31 @@
                       @foreach($itemsUpdate as $iu)
                         <div class="container so-update-container text-dark" style="margin-top: 40px">
                           <div class="row" >
-                            <div class="col-12">
-                              <div class="form-group row customer-detail">
-                                <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal Ubah</label>
+                            <div class="col-12 col-lg-6">
+                              <div class="form-group row tanggal-dokumen customer-detail">
+                                <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Tanggal Ubah</label>
                                 <span class="col-form-label text-bold">:</span>
-                                <div class="col-3">
+                                <div class="col-4">
                                   <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($iu->tanggal)->format('d-M-y') }}" >
                                 </div>
                               </div>
                             </div>
-                            <div class="col" style="margin-left: -450px">
+                            <div class="col-12 col-lg-6">
                               <div class="form-group row customer-detail">
-                                <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Keterangan</label>
+                                <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Keterangan</label>
                                 <span class="col-form-label text-bold">:</span>
-                                <div class="col-7">
+                                <div class="col-6 col-sm-5 col-md-7">
                                   <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $iu->keterangan }}" >
                                 </div>
                               </div>
                             </div>
                           </div>
                           <div class="row" style="margin-top: -5px">
-                            <div class="col-12">
+                            <div class="col-12 col-lg-6">
                               <div class="form-group row customer-detail">
-                                <label for="keterangan" class="col-2 form-control-sm text-bold mt-1">Status</label>
+                                <label for="keterangan" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Status</label>
                                 <span class="col-form-label text-bold">:</span>
-                                <div class="col-5">
+                                <div class="col-6 col-md-7">
                                   <input type="text" name="statusApp{{$item->id_dokumen}}" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $iu->status }}" >
                                 </div>
                               </div>
@@ -450,23 +451,23 @@
                         </table>
 
                         <div class="form-group row justify-content-end subtotal-so">
-                          <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
+                          <label for="totalNotPPN" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                           <span class="col-form-label text-bold">:</span>
-                          <div class="col-2 mr-1">
+                          <div class="col-4 col-sm-4 col-md-2 mr-1">
                             <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotalUpdate, 0, "", ".") }}" />
                           </div>
                         </div>
                         <div class="form-group row justify-content-end total-so">
-                          <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
+                          <label for="ppn" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">PPN</label>
                           <span class="col-form-label text-bold">:</span>
-                          <div class="col-2 mr-1">
+                          <div class="col-4 col-sm-4 col-md-2 mr-1">
                             <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
                           </div>
                         </div>
                         <div class="form-group row justify-content-end grandtotal-so">
-                          <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
+                          <label for="grandtotal" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                           <span class="col-form-label text-bold">:</span>
-                          <div class="col-2 mr-1">
+                          <div class="col-4 col-sm-4 col-md-2 mr-1">
                             <input type="text" name="grandtotal{{$item->id_dokumen}}" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right
                             @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{number_format($subtotalUpdate, 0, "", ".")}}" />
                           </div>
@@ -483,10 +484,10 @@
 
                     <!-- Button Submit dan Reset -->
                     <div class="form-row justify-content-center">
-                      <div class="col-2">
+                      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                         <button type="submit" formaction="{{route('app-process', $item->id_dokumen)}}" formmethod="POST" class="btn btn-success btn-block text-bold">Approve</button>
                       </div>
-                      <div class="col-2">
+                      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                         <button type="submit" formaction="{{route('app-batal', ['id' => $item->id, 'kode' => $item->id_dokumen])}}" formmethod="POST" class="btn btn-danger btn-block text-bold">Batal Ubah</button>
                       </div>
                     </div>

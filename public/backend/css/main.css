@@ -437,3 +437,54 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     position: relative;
     z-index: 2;
 }
+
+@media only screen and (max-width: 1000px) {
+    .so-update-container {
+        font-size: 13px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .kode-dokumen {
+        margin-bottom: -20px;
+    }
+
+    .tanggal-dokumen {
+        margin-bottom: 10px;
+    }
+
+    .tempo-dokumen {
+        margin-bottom: 50px;
+    }
+
+    .limit-dokumen {
+        margin-bottom: 25px;
+    }
+}
+
+@media only screen and (max-width: 850px) {
+    .container-fluid {
+        overflow-x: scroll;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .btn-block {
+        margin-bottom: 5px;
+    }
+    
+    .table,
+    .subtotal-so,
+    .total-so,
+    .grandtotal-so {
+        font-size: 13px;
+    }
+
+    .form-control-plaintext {
+        font-size: 13.5px;
+    }
+
+    .panah-biru {
+        margin-top: 20px !important;
+    }
+}
