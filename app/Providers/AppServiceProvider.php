@@ -25,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
     {
         config(['app.locale' => 'id']);
         \Carbon\Carbon::setLocale('id');
-        \Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
+        // \Carbon\Carbon::now()->formatLocalized("%A, %d %B %Y");
     }
 }

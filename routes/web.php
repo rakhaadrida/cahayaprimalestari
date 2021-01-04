@@ -239,6 +239,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('rekap/pdf', 'RekapStokController@cetak_pdf')->name('rs-pdf');
         Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');
 
+        // Rekap Value
+        Route::get('value', 'RekapValueController@index')->name('value');
+        Route::post('value/pdf', 'RekapValueController@cetak_pdf')->name('val-pdf');
+        Route::post('value/excel', 'RekapValueController@cetak_excel')->name('val-excel');
+
         // Laporan Keuangan
         Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
         Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');

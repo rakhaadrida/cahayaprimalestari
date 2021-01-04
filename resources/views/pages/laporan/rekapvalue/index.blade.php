@@ -10,7 +10,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Rekap Stok Barang</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Rekap Value Barang</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -44,14 +44,11 @@
               </div>   --}}
 
               <div class="row justify-content-center" style="margin-bottom: 15px">
-                {{-- <div class="col-2">
-                  <a href="{{ url('/rekap/cetak') }}" class="btn btn-primary btn-block text-bold btnprnt">Print</a>
-                </div> --}}
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                  <button type="submit" formaction="{{ route('rs-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
+                  <button type="submit" formaction="{{ route('val-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                  <button type="submit" formaction="{{ route('rs-excel') }}" formmethod="POST"  class="btn btn-danger btn-block text-bold">Download Excel</>
+                  <button type="submit" formaction="{{ route('val-excel') }}" formmethod="POST"  class="btn btn-danger btn-block text-bold">Download Excel</>
                 </div>
               </div>
               <hr>
@@ -62,7 +59,7 @@
                   <div class="carousel-item @if($item->id == $jenis[0]->id) active @endif"/>
                     <div class="container" style="margin-bottom: 0px">
                       <div class="row justify-content-center">
-                        <h4 class="text-bold text-dark">Rekap Stok {{ $item->nama }}</h4>
+                        <h4 class="text-bold text-dark">Rekap Value {{ $item->nama }}</h4>
                       </div>
                       <div class="row justify-content-center" style="margin-top: -5px">
                         <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, H:mm:ss') }}</h6>
@@ -72,13 +69,12 @@
                     <!-- Tabel Data Detil BM-->
                     <table class="table table-sm table-bordered table-responsive-sm table-hover">
                       <thead class="text-center text-dark text-bold">
-                        <td style="width: 40px" class="align-middle">No</td>
-                        <td style="width: 100px">Kode Barang</td>
+                        <td style="width: 50px" class="align-middle">No</td>
+                        <td style="width: 110px">Kode Barang</td>
                         <td class="align-middle">Nama Barang</td>
-                        <td style="width: 90px; background-color: yellow" class="align-middle">Total Stok</td>
-                        @foreach($gudang as $g)
-                          <td style="width: 80px" class="align-middle">{{ $g->nama }}</td>
-                        @endforeach
+                        <td style="width: 110px" class="align-middle">Harga</td>
+                        <td style="width: 80px;" class="align-middle">Stok</td>
+                        <td style="width: 140px;" class="align-middle">Total Value</td>
                       </thead>
                       <tbody id="tablePO">
                         @php $i = 1; 
@@ -89,34 +85,25 @@
                             $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                           @endphp
                           <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                            <td colspan="{{ $gudang->count() + 4 }}" align="center">
+                            <td colspan="6" align="center">
                               <button type="button" class="btn btn-link btn-sm text-dark text-bold" data-toggle="collapse" data-target="#collapseSub{{$s->id}}" aria-expanded="false" aria-controls="collapseSub{{$s->id}}" style="padding: 0; font-size: 15px; width: 100%">{{ $s->nama }}</button>
                             </td>
                           </tr>
                           @foreach($barang as $b)
                             @php
+                              $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
+                                  ->where('id_harga', 'HRG01')->get();
                               $stok = \App\Models\StokBarang::with(['barang'])
                                   ->select('id_barang', DB::raw('sum(stok) as total'))
-                                  ->where('id_barang', $b->id)->groupBy('id_barang')->get();
+                                  ->where('id_barang', $b->id)->where('status', 'T')->get();
                             @endphp
                             <tr class="text-dark text-bold collapse show" id="collapseSub{{$s->id}}">
                               <td align="center">{{ $i }}</td>
                               <td align="center">{{ $b->id }}</td>
                               <td>{{ $b->nama }}</td>
-                              <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
-                              @foreach($gudang as $g)
-                                @php
-                                  if($g->tipe != 'RETUR') {
-                                    $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                              ->where('id_gudang', $g->id)->get();
-                                  } else {
-                                    $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
-                                              stok')->where('id_barang', $b->id)
-                                              ->where('id_gudang', $g->id)->get();
-                                  }
-                                @endphp
-                                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
-                              @endforeach
+                              <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
+                              <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
+                              <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
                             </tr>
                             @php $i++; @endphp
                           @endforeach

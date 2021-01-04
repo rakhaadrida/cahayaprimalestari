@@ -204,7 +204,7 @@
       <div class="cetak-rekap-all" @if($jenis[$jenis->count()-1]->id != $item->id) style="page-break-after: always" @endif>
         <center>
           <div class="title-rekap-all">
-            <h5 class="text-bold text-dark title-rekap">REKAP STOK {{$item->nama}}</h5>
+            <h5 class="text-bold text-dark title-rekap">REKAP VALUE {{$item->nama}}</h5>
             <h6 class="text-dark waktu-cetak">Waktu Cetak : {{$waktu}}</h6>
           </div>
         </center>
@@ -217,10 +217,9 @@
               <tr>
                 <td style="width: 5px" class="align-middle">No</td>
                 <td class="align-middle" class="align-middle">Nama Barang</td>
-                <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
-                @foreach($gudang as $g)
-                  <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
-                @endforeach
+                <td style="width: 45px;" class="align-middle">Harga</td>
+                <td style="width: 22px;" class="align-middle">Stok</td>
+                <td style="width: 55px;" class="align-middle">Value</td>
               </tr>
             </thead>
             <tbody>
@@ -228,19 +227,6 @@
                 $i = 1; $baris = 1; $kode = []; $status = 0; $kodeBrg = [];
                 $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)->get();
               @endphp
-              {{-- @for($j = 1; $j <= 66; $j++)
-                @if($baris <= 66)
-                  <tr class="text-dark ">
-                    <td align="center">{{ $j }}</td>
-                    <td>Phillips</td>
-                    <td>300</td>
-                    <td>100</td>
-                    <td>100</td>
-                    <td>100</td>
-                  </tr>
-                  @php $baris++ @endphp
-                @endif
-              @endfor --}}
               @foreach($sub as $s)
                 @if($status != 1)
                   @php
@@ -249,7 +235,7 @@
                   @if($baris <= 67)
                     @if($baris != 67)
                       <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                        <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
+                        <td colspan="5" align="center">{{ $s->nama }}</td>
                       </tr>
                       @php $kodeSub = $s->id; @endphp
                     @endif
@@ -261,27 +247,18 @@
                     @foreach($barang as $b)
                       @if($baris <= 67)
                         @php
+                          $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
+                                  ->where('id_harga', 'HRG01')->get();
                           $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
                                     DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
-                                    ->groupBy('id_barang')->get();
+                                    ->where('status', 'T')->get();
                         @endphp
                         <tr class="text-dark ">
                           <td align="center">{{ $i }}</td>
                           <td>{{ $b->nama }}</td>
-                          <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
-                          @foreach($gudang as $g)
-                            @php
-                              if($g->tipe != 'RETUR') {
-                                $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                          ->where('id_gudang', $g->id)->get();
-                              } else {
-                                $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
-                                          stok')->where('id_barang', $b->id)
-                                          ->where('id_gudang', $g->id)->get();
-                              }
-                            @endphp
-                            <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
-                          @endforeach
+                          <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
+                          <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
+                          <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
                         </tr>
                         @php $i++; $baris++; array_push($kodeBrg, $b->id); @endphp
                       @else
@@ -303,10 +280,9 @@
                 <tr>
                   <td style="width: 5px" class="align-middle">No</td>
                   <td class="align-middle" class="align-middle">Nama Barang</td>
-                  <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
-                  @foreach($gudang as $g)
-                    <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
-                  @endforeach
+                  <td style="width: 40px;" class="align-middle">Harga</td>
+                  <td style="width: 25px;" class="align-middle">Stok</td>
+                  <td style="width: 55px;" class="align-middle">Value</td>
                 </tr>
               </thead>
               <tbody id="tablePO">
@@ -318,17 +294,13 @@
                   @foreach($sub as $s)
                   @if($status != 1)
                     @php
-                      // if($s->id != 'SUB31') {
-                        $barang = \App\Models\Barang::where('id_sub', $s->id)
-                                  ->whereNotIn('id', $kodeBrg)->get();
-                      // } else {
-                      //   $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
-                      // }
+                      $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                ->whereNotIn('id', $kodeBrg)->get();
                     @endphp 
                     @if($baris <= 134)
                       @if(($s->id != $kodeSub) && ($baris != 134))
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                          <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
+                          <td colspan="5" align="center">{{ $s->nama }}</td>
                         </tr>
                         @php $kodeSub = $s->id; @endphp
                       @endif
@@ -340,27 +312,18 @@
                       @foreach($barang as $b)
                         @if($baris <= 134)
                           @php
+                            $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
+                                    ->where('id_harga', 'HRG01')->get();
                             $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
-                                      DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
-                                      ->groupBy('id_barang')->get();
+                                    DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                                    ->where('status', 'T')->get();
                           @endphp
                           <tr class="text-dark ">
-                            <td align="center">{{ $j }}</td>
+                            <td align="center">{{ $i }}</td>
                             <td>{{ $b->nama }}</td>
-                            <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
-                            @foreach($gudang as $sg)
-                              @php
-                                if($sg->tipe != 'RETUR') {
-                                  $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                            ->where('id_gudang', $sg->id)->get();
-                                } else {
-                                  $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
-                                            stok')->where('id_barang', $b->id)
-                                            ->where('id_gudang', $sg->id)->get();
-                                }
-                              @endphp
-                              <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
-                            @endforeach
+                            <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
+                            <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
+                            <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else
@@ -383,10 +346,9 @@
                 <tr>
                   <td style="width: 5px" class="align-middle">No</td>
                   <td class="align-middle" class="align-middle">Nama Barang</td>
-                  <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
-                  @foreach($gudang as $g)
-                    <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
-                  @endforeach
+                  <td style="width: 40px;" class="align-middle">Harga</td>
+                  <td style="width: 25px;" class="align-middle">Stok</td>
+                  <td style="width: 55px;" class="align-middle">Value</td>
                 </tr>
               </thead>
               <tbody id="tablePO">
@@ -404,34 +366,25 @@
                     @if($baris <= 201)
                       @if(($s->id != $kodeSub) && ($baris != 201))
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                          <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
+                          <td colspan="5" align="center">{{ $s->nama }}</td>
                         </tr>
                       @endif
                       @php $baris++; @endphp
                       @foreach($barang as $b)
                         @if($baris <= 201)
                           @php
+                            $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
+                                    ->where('id_harga', 'HRG01')->get();
                             $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
-                                      DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
-                                      ->groupBy('id_barang')->get();
+                                    DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                                    ->where('status', 'T')->get();
                           @endphp
                           <tr class="text-dark ">
-                            <td align="center">{{ $j }}</td>
+                            <td align="center">{{ $i }}</td>
                             <td>{{ $b->nama }}</td>
-                            <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
-                            @foreach($gudang as $sg)
-                              @php
-                                if($sg->tipe != 'RETUR') {
-                                  $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                            ->where('id_gudang', $sg->id)->get();
-                                } else {
-                                  $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
-                                            stok')->where('id_barang', $b->id)
-                                            ->where('id_gudang', $sg->id)->get();
-                                }
-                              @endphp
-                              <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
-                            @endforeach
+                            <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
+                            <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
+                            <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else

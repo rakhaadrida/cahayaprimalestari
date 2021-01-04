@@ -22,15 +22,10 @@ class RekapStokController extends Controller
     public function index() {
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
-        $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
-                        ->groupBy('id_barang')->get();
-
-        // return response()->json($jenis);
 
         $data = [
             'jenis' => $jenis,
             'gudang' => $gudang,
-            'stok' => $stok,
         ];
         
         return view('pages.laporan.rekapstok.index', $data);
@@ -99,8 +94,7 @@ class RekapStokController extends Controller
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
-        $waktu = Carbon::now('+07:00');
-        $waktu = $waktu->format('d F Y, H:i:s');
+        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, H:mm:ss');
 
         foreach($jenis as $j) {
             $sub = Subjenis::where('id_kategori', $j->id)->count();
@@ -134,8 +128,6 @@ class RekapStokController extends Controller
 
         $jenis = $jenis->values();
 
-        // return response()->json($jenis);
-
         $data = [
             'jenis' => $jenis,
             'gudang' => $gudang,
@@ -144,7 +136,6 @@ class RekapStokController extends Controller
         ];
 
         $pdf = PDF::loadview('pages.laporan.rekapstok.pdf', $data)->setPaper('A4', 'portrait');
-        // $pdf->setOption('enable-local-file-access', true);
         ob_end_clean();
         return $pdf->stream('rekap-stok.pdf');
     }

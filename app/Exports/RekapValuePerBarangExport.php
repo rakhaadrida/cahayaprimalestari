@@ -18,7 +18,7 @@ use App\Models\Barang;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
+class RekapValuePerBarangExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
@@ -31,27 +31,24 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
     public function view(): View
     {
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, H:mm:ss');
-        // $waktu = $waktu->format('d F Y, H:i:s');
         $sub = Subjenis::where('id_kategori', $this->kode)->get();
-        $gudang = Gudang::All();
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
 
         $data = [
             'waktu' => $waktu,
             'sub' => $sub,
-            'gudang' => $gudang,
             'nama' => $this->nama,
             'tahun' => $tahun,
             'sejak' => $sejak
         ];
         
-        return view('pages.laporan.rekapstok.excel', $data);
+        return view('pages.laporan.rekapvalue.excel', $data);
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->setTitle('RS-'.$this->nama);
+        $sheet->setTitle('RV-'.$this->nama);
 
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
         $drawing->setName('Logo');
@@ -67,26 +64,21 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
             $totSub += $barang->count();
         } 
-
-        $alpha = range('A', 'Z');
-        $gudang = Gudang::All();
-        $angkaHuruf = $gudang->count() + 2;
-        $huruf = $alpha[$angkaHuruf];
         
         $range = 4 + $totSub + $sub->count();
         $rangeStr = strval($range);
         $rangeTot = 'C'.$rangeStr;
-        $rangeTab = $huruf.$rangeStr;
+        $rangeTab = 'E'.$rangeStr;
 
-        $header = 'A4:'.$huruf.'4';
+        $header = 'A4:E4';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
         
-        $sheet->mergeCells('A1:'.$huruf.'1');
-        $sheet->mergeCells('A2:'.$huruf.'2');
-        $title = 'A1:'.$huruf.'2';
+        $sheet->mergeCells('A1:E1');
+        $sheet->mergeCells('A2:E2');
+        $title = 'A1:E2';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A2:'.$huruf.'2')->getFont()->setBold(false)->setSize(12);
+        $sheet->getStyle('A2:E2')->getFont()->setBold(false)->setSize(12);
 
         $styleArray = [
             'borders' => [
@@ -103,12 +95,13 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
-        $rangeBarang = 'C4:'.$rangeTot;
-        $sheet->getStyle($rangeBarang)->getFill()
-            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('FFFF00');
+        $rangeHarga = 'C6:'.$rangeTot;
+        $sheet->getStyle($rangeHarga)->getNumberFormat()->setFormatCode('#,##0');
+
+        $rangeValue = 'E6:'.$rangeTab;
+        $sheet->getStyle($rangeValue)->getNumberFormat()->setFormatCode('#,##0');
         
-        $namaJenis = 'A5:'.$huruf.'5';
+        $namaJenis = 'A5:E5';
         $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
         $sheet->getStyle($namaJenis)->getFill()
@@ -125,7 +118,7 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             
             $rangeSub += $barang->count();
             $rangeJen = strval($rangeSub);
-            $rangeBar = 'A'.$rangeSub.':'.$huruf.$rangeSub;
+            $rangeBar = 'A'.$rangeSub.':E'.$rangeSub;
 
             if($no != $sub->count() - 1) {
                 $sheet->getStyle($rangeBar)->getFont()->setBold(true)->setSize(12);

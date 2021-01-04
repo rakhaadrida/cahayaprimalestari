@@ -37,21 +37,19 @@
             <tr class="text-dark ">
               <td align="center">{{ $i }}</td>
               <td>{{ $b->nama }}</td>
-              @if($stok->count() != 0)
-                <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
-              @else
-                <td>0</td>
-              @endif
+               <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
               @foreach($gudang as $g)
                 @php
-                  $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                          ->where('id_gudang', $g->id)->get();
+                  if($g->tipe != 'RETUR') {
+                    $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                              ->where('id_gudang', $g->id)->get();
+                  } else {
+                    $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
+                              stok')->where('id_barang', $b->id)
+                              ->where('id_gudang', $g->id)->get();
+                  }
                 @endphp
-                @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
-                  <td align="right">{{$stokGd[0]->stok}}</td>
-                @else
-                  <td></td>
-                @endif
+                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
               @endforeach
             </tr>
             @php $i++ @endphp

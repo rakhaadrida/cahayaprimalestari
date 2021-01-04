@@ -169,6 +169,7 @@
           <div class="py-2 collapse-inner rounded">
             <a class="collapse-item" href="{{ route('kartu') }}">Kartu Stok</a>
             <a class="collapse-item" href="{{ route('rekap') }}">Rekap Stok</a>
+            <a class="collapse-item" href="{{ route('value') }}">Rekap Value</a>
             <a class="collapse-item" href="{{ route('lap-keu') }}">Rekap Penjualan</a>
           </div>
         </div>
