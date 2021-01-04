@@ -12,7 +12,6 @@ use App\Models\DetilBM;
 use App\Models\DetilSO;
 use Illuminate\Support\Facades\DB;
 use PDF;
-// use PDFSnappy;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapStokExport;
 use Carbon\Carbon;
@@ -103,21 +102,39 @@ class RekapStokController extends Controller
         $waktu = Carbon::now('+07:00');
         $waktu = $waktu->format('d F Y, H:i:s');
 
-        /* $kode = []; $baris = 1;
-        $sub = Subjenis::All();
-        foreach($sub as $s) {
-            if($baris <= 3) {
-                $barang = Barang::where('id_sub', $s->id)->get();
-                if(($barang->count() + 1) <= 3) {
-                    $baris++;
-                    array_push($kode, $s->id);
-                    foreach($barang as $b) {
-                        $baris++;
+        foreach($jenis as $j) {
+            $sub = Subjenis::where('id_kategori', $j->id)->count();
+            $brg = Barang::where('id_kategori', $j->id)->count();
+            $j->{'total'} = $brg + $sub;
+        }
+
+        $el = 0; $k = $jenis->count(); $gabung = 0;
+        foreach($jenis as $j) {
+            if($j->total <= 80) {
+                for($i = $el+1; $i < $k; $i++) { 
+                    if($jenis[$el]->total + $jenis[$i]->total <= 127) {
+                        if($jenis[$i]->nama != 'PRIME') {
+                            $jenis[$el]->total += $jenis[$i]->total;
+                            $jenis[$el]->id = $jenis[$el]->id.','.$jenis[$i]->id;
+                            $jenis[$el]->nama = $jenis[$el]->nama.', '.$jenis[$i]->nama;
+                            $kode = $jenis[$i]->id;
+
+                            $jenis = $jenis->filter(function($item) use($kode) {
+                                return $item->id != $kode;
+                            });
+                        }
+                        $gabung++;
                     }
                 }
-            }
+                $k -= $gabung;
+            } 
+
+            $el++;
         }
-        $subRest = Subjenis::whereNotIn('id', $kode)->get(); */
+
+        $jenis = $jenis->values();
+
+        // return response()->json($jenis);
 
         $data = [
             'jenis' => $jenis,

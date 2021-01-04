@@ -113,10 +113,7 @@
 
       .table-sm th,
       .table-sm td {
-          padding-top: 0.3rem;
-          padding-bottom: 0.3rem;
-          padding-left: 0.15rem;
-          padding-right: 0.15rem;
+          padding: 0.3rem;
       }
 
       .table-bordered {
@@ -131,6 +128,21 @@
       .table-bordered thead th,
       .table-bordered thead td {
           border-bottom-width: 2px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      .cetak-rekap-all:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      .column {
+        float: left;
+        width: 50%;
       }
 
       .kode-cetak-stok {
@@ -156,14 +168,12 @@
       } */
 
       .table-cetak {
-        left: 0%;
-        width: 50%;
         font-size: 8.5px;
-        margin-left: -15px;
-        margin-right: 3px;
+        /* margin-left: -15px; */
+        margin-right: 10px;
         margin-top: -28px;
         position: absolute;
-        /* border: 0.5px solid #292a2b !important; */
+        border: 0.5px solid #292a2b !important;
         border-width: thin !important;
       }
 
@@ -176,14 +186,11 @@
       }
 
       .table-cetak-right {
-        left: 50%;
-        width: 50%;
         font-size: 8.5px;
-        margin-left: 3px;
         margin-right: -15px;
-        /* margin-top: -0px; */
+        margin-top: -28px;
         position: absolute;
-        /* border: 0.5px solid #292a2b !important; */
+        border: 0.5px solid #292a2b !important;
         border-width: thin !important;
       }
 
@@ -198,9 +205,6 @@
   </head>
   <body>
     @foreach($jenis as $item)
-      @php
-        $kodeJen = explode(",", $item->id);
-      @endphp
       <div class="cetak-rekap-all" @if($jenis[$jenis->count()-1]->id != $item->id) style="page-break-after: always" @endif>
         <center>
           <div class="title-rekap-all">
@@ -210,12 +214,12 @@
         </center>
         <br>
         
-        <div id="container">
+        <div class="column">
           <!-- Tabel Data Detil BM-->
           <table class="table table-sm table-bordered table-cetak">
             <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
               <tr>
-                <td style="width: 5px" class="align-middle">No</td>
+                <td style="width: 8px" class="align-middle">No</td>
                 <td class="align-middle" class="align-middle">Nama Barang</td>
                 <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
                 @foreach($gudang as $g)
@@ -226,40 +230,24 @@
             <tbody>
               @php 
                 $i = 1; $baris = 1; $kode = []; $status = 0; $kodeBrg;
-                $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)->get();
+                $sub = \App\Models\Subjenis::where('id_kategori', $item->id)->get();
               @endphp
-              {{-- @for($j = 1; $j <= 66; $j++)
-                @if($baris <= 66)
-                  <tr class="text-dark ">
-                    <td align="center">{{ $j }}</td>
-                    <td>Phillips</td>
-                    <td>300</td>
-                    <td>100</td>
-                    <td>100</td>
-                    <td>100</td>
-                  </tr>
-                  @php $baris++ @endphp
-                @endif
-              @endfor --}}
               @foreach($sub as $s)
                 @if($status != 1)
                   @php
                     $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                   @endphp 
-                  @if($baris <= 67)
-                    @if($baris != 67)
-                      <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                        <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
-                      </tr>
-                    @endif
+                  @if($baris <= 66)
+                    <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+                      <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
+                    </tr>
                     @php 
-                      $kodeSub = $s->id;
-                      if(($baris + $barang->count()) <= 67)
-                        array_push($kode, $s->id); 
                       $baris++; 
+                      if(($baris + $barang->count()) <= 66)
+                        array_push($kode, $s->id); 
                     @endphp
                     @foreach($barang as $b)
-                      @if($baris <= 67)
+                      @if($baris <= 66)
                         @php
                           $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
                                     DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
@@ -303,10 +291,13 @@
               @endforeach
             </tbody>
           </table>
-          <table class="table table-sm table-bordered table-cetak-right">
+        </div>
+         <div class="column">
+          <!-- Tabel Data Detil BM-->
+          <table class="table table-sm table-bordered table-cetak">
             <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
               <tr>
-                <td style="width: 5px" class="align-middle">No</td>
+                <td style="width: 8px" class="align-middle">No</td>
                 <td class="align-middle" class="align-middle">Nama Barang</td>
                 <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
                 @foreach($gudang as $g)
@@ -314,53 +305,49 @@
                 @endforeach
               </tr>
             </thead>
-            <tbody id="tablePO">
-              @php $j = $i; $status = 0;
-                  $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
-                        ->whereNotIn('id', $kode)->get();
+            <tbody>
+              @php 
+                $i = 1; $baris = 1; $kode = []; $status = 0; $kodeBrg;
+                $sub = \App\Models\Subjenis::where('id_kategori', $item->id)->get();
               @endphp
-              @if($baris <= 134)
-                @foreach($sub as $s)
+              @foreach($sub as $s)
                 @if($status != 1)
                   @php
-                    if($s->id != 'SUB31') {
-                      $barang = \App\Models\Barang::where('id_sub', $s->id)
-                                ->where('id', '>', $kodeBrg)->get();
-                    } else {
-                      $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
-                    }
+                    $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
                   @endphp 
-                  @if($baris <= 134)
-                    @if(($s->id != $kodeSub) && ($baris != 134))
-                      <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-                        <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
-                      </tr>
-                    @endif
-                    @php $baris++; @endphp
+                  @if($baris <= 66)
+                    <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+                      <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
+                    </tr>
+                    @php 
+                      $baris++; 
+                      if(($baris + $barang->count()) <= 66)
+                        array_push($kode, $s->id); 
+                    @endphp
                     @foreach($barang as $b)
-                      @if($baris <= 134)
+                      @if($baris <= 66)
                         @php
                           $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
                                     DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
                                     ->groupBy('id_barang')->get();
                         @endphp
                         <tr class="text-dark ">
-                          <td align="center">{{ $j }}</td>
+                          <td align="center">{{ $i }}</td>
                           <td>{{ $b->nama }}</td>
                           @if($stok->count() != 0)
                             <td align="right" style="background-color: yellow">{{$stok[0]->total}}</td>
                           @else
                             <td align="right" style="background-color: yellow">0</td>
                           @endif
-                          @foreach($gudang as $sg)
+                          @foreach($gudang as $g)
                             @php
-                              if($sg->retur != 'T') {
+                              if($g->retur != 'T') {
                                 $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                                          ->where('id_gudang', $sg->id)->get();
+                                          ->where('id_gudang', $g->id)->get();
                               } else {
                                 $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
                                           stok')->where('id_barang', $b->id)
-                                          ->where('id_gudang', $sg->id)->get();
+                                          ->where('id_gudang', $g->id)->get();
                               }
                             @endphp
                             @if(($stokGd->count() != 0) && ($stokGd[0]->stok != 0))
@@ -370,7 +357,7 @@
                             @endif
                           @endforeach
                         </tr>
-                        @php $j++; $baris++; @endphp
+                        @php $i++; $baris++; $kodeBrg = $b->id; @endphp
                       @else
                         @break
                       @endif
@@ -380,7 +367,6 @@
                   @endif
                 @endif
               @endforeach
-              @endif
             </tbody>
           </table>
         </div>

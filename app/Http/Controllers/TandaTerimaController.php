@@ -94,10 +94,12 @@ class TandaTerimaController extends Controller
             'waktu' => $waktu
         ];
 
-        $paper = array(0,0,612,394);
-        $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-ttr.pdf');
+        return view('pages.penjualan.tandaterima.cetakPdf', $data);
+
+        // $paper = array(0,0,612,394);
+        // $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
+        // ob_end_clean();
+        // return $pdf->stream('cetak-ttr.pdf');
     }
 
     public function update($awal, $akhir) {
