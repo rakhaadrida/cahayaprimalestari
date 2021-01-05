@@ -69,7 +69,12 @@
                   <div class="form-check form-check-inline ml-4">
                     <input class="form-check-input" type="radio" name="satuan" 
                     value="Meter / Rol" @if($item->satuan == "Meter / Rol") checked @endif>
-                    <label class="form-check-label font-weight-normal" for="satuan2">Meter / Rol</label>
+                    <label class="form-check-label font-weight-normal" for="satuan2">Rol</label>
+                  </div>
+                  <div class="form-check form-check-inline ml-4">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Meter" @if($item->satuan == "Meter") checked @endif>
+                    <label class="form-check-label font-weight-normal" for="satuan3">Meter</label>
                   </div>
                 </div>
               </div>

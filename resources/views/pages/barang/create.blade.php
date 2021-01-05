@@ -65,7 +65,12 @@
                   <div class="form-check form-check-inline ml-4">
                     <input class="form-check-input" type="radio" name="satuan" 
                     value="Meter / Rol">
-                    <label class="form-check-label font-weight-normal" for="satuan2">Meter / Rol</label>
+                    <label class="form-check-label font-weight-normal" for="satuan2">Rol</label>
+                  </div>
+                  <div class="form-check form-check-inline ml-4">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Meter">
+                    <label class="form-check-label font-weight-normal" for="satuan3">Meter</label>
                   </div>
                 </div>
               </div>
@@ -180,16 +185,13 @@ subjenis.addEventListener("keyup", displaySubjenis);
 subjenis.addEventListener("blur", displaySubjenis); 
 
 function displaySubjenis(e) {
-  if(e.target.value = '') {
+  if(e.target.value == '') {
     kodeSub.value = '';
   }
 
   @foreach($subjenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeSub.value = '{{ $j->id }}';
-    }
-    else if(e.target.value == '') {
-      kodeSub.value = '';
     }
   @endforeach
 }

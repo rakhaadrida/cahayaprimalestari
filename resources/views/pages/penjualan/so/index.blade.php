@@ -547,10 +547,10 @@
 @if($status == 'true')
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
-  printFrame.window.onafterprint = function(e) {
+  // printFrame.window.onafterprint = function(e) {
     // alert('ok');
-    window.location = "{{ route('so-after-print', $lastcode[0]->id) }}";
-  }
+    // window.location = "{{ route('so-after-print', $lastcode[0]->id) }}";
+  // }
   
   printFrame.window.focus();
   printFrame.window.print();
@@ -882,13 +882,6 @@ function displayRow(e) {
       if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
         kodeRow.value = '{{ $br->id }}';
         brgRow.value = '{{ $br->nama }}';
-      }
-    @endforeach
-
-    @foreach($barang as $br)
-      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-        kodeRow.value = '{{ $br->id }}';
-        brgRow.value = '{{ $br->nama }}';
         satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
         if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
@@ -897,12 +890,18 @@ function displayRow(e) {
           satuanRow.value = '';
           satuanRow.removeAttribute('readonly');
         }
-        else {
+        else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
           teksSatRow.value = 'Rol';
           satuanUkuran.innerHTML = 'Meter';
           satuanRow.value = '{{ $br->ukuran }}';
           satuanRow.setAttribute('readonly', 'true');
+        }
+        else {
+          pcs.innerHTML = 'Rol';
+          teksSatRow.value = 'Meter';
+          satuanUkuran.innerHTML = 'Meter';
+          satuanRow.value = '{{ $br->ukuran }}';
         }
         ukuranRow = '{{ $br->ukuran }}';
       }
@@ -917,6 +916,7 @@ function displayRow(e) {
     @endforeach
 
     kodeGudangRow.value = 'GDG01';
+    qtyGudangRow.value = '';
     qtyRow.value = '';
     // satuanRow.value = '';
   } 
@@ -946,7 +946,10 @@ function displayRow(e) {
 
   /** Tampil Jumlah **/
   qtyRow.addEventListener("blur", displayQtyRow);
-  satuanRow.addEventListener("blur", displayQtyRow);
+  if(teksSatRow.value == 'Pcs')
+    satuanRow.addEventListener("blur", displayQtyRow);
+  else 
+    satuanRow.addEventListener("change", displayQtyRow);
 
   function displayQtyRow(e) {
     stokJohar = 0;
@@ -1048,7 +1051,11 @@ function displayRow(e) {
       }
 
       netPast = +nettoRow.value.replace(/\./g, "");
-      jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
+      if(teksSatRow.value != 'Meter')
+        jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
+      else
+        jumlahRow.value = addCommas(satuanRow.value * hargaRow.value.replace(/\./g, ""));
+
       if(diskonRow.value != "") {
         var angkaDiskon = hitungDiskon(diskonRow.value)
         diskonRpRow.value = addCommas(angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100);
@@ -1070,8 +1077,12 @@ function displayRow(e) {
       else
         satuanRow.value = +angka * +ukuranRow;
     }
-    else if(kode == `satuanRow${newNum}`) 
-      qtyRow.value = +angka * +ukuranRow;
+    else if(kode == `satuanRow${newNum}`) {
+      if(teks == 'Pcs')
+        qtyRow.value = +angka * +ukuranRow;
+      else
+        qtyRow.value = +angka / +ukuranRow;
+    }
   }
 
   $('#gud'+newNum).on('shown.bs.modal', function(e) {
@@ -1136,7 +1147,10 @@ function displayRow(e) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeRow.value) && ('{{ $hb->hargaBarang->tipe }}' == e.target.value)) {
         hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
-        jumlahRow.value = addCommas(+hargaRow.value.replace(/\./g, "") * qtyRow.value);
+        if(teksSatRow.value != 'Meter')
+          jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
+        else
+          jumlahRow.value = addCommas(satuanRow.value * hargaRow.value.replace(/\./g, ""));
 
         netPast = +nettoRow.value.replace(/\./g, "");
         if(diskonRow.value != "") {
@@ -1327,6 +1341,8 @@ for(let i = 0; i < brgNama.length; i++) {
   kodeBarang[i].addEventListener("blur", displayHarga);
 
   function displayHarga(e) {
+    satuan[i].removeAttribute('readonly');
+
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
@@ -1345,14 +1361,19 @@ for(let i = 0; i < brgNama.length; i++) {
           teksSat[i].value = 'Pcs';
           // ukuran = '{{ $br->ukuran }}';
           satuan[i].value = '';
-          satuan[i].removeAttribute('readonly');
         }
-        else {
+        else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
           teksSat[i].value = 'Rol';
           satuanUkuran.innerHTML = 'Meter';
           satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
+        }
+        else {
+          pcs.innerHTML = 'Rol';
+          teksSat[i].value = 'Meter';
+          satuanUkuran.innerHTML = 'Meter';
+          satuan[i].value = '{{ $br->ukuran }}';
         }
         ukuran = '{{ $br->ukuran }}';
       }
@@ -1376,7 +1397,11 @@ for(let i = 0; i < brgNama.length; i++) {
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("blur", displayQty);
-  satuan[i].addEventListener("blur", displayQty);
+
+  if(teksSat[i].value == 'Pcs')
+    satuan[i].addEventListener("blur", displayQty);
+  else 
+    satuan[i].addEventListener("change", displayQty);
 
   function displayQty(e) {
     stokJohar = 0;
@@ -1406,12 +1431,18 @@ for(let i = 0; i < qty.length; i++) {
       qty[i].value = "";
       satuan[i].value = "";
     }
-    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && (+e.target.value * +ukuran) > totStok)) {
+    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Meter') && ((+e.target.value / +ukuran) > totStok))) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
-      totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
+      if(teksSat[i].value != 'Meter')
+        totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
+      else
+        totalstok[i].textContent = `${totStok} Rol`;
+
       if(teksSat[i].value == 'Pcs')
         totalsatuan[i].textContent = ` atau ${totStok / ukuran} ${satuanUkuran.innerHTML}`;
+      else if(teksSat[i].value == 'Meter')
+        totalsatuan[i].textContent = ` atau ${totStok * ukuran} ${satuanUkuran.innerHTML}`;
       else
         totalsatuan[i].textContent = ``;
 
@@ -1423,35 +1454,53 @@ for(let i = 0; i < qty.length; i++) {
       return false;
     }
     else {
-      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && (+e.target.value * +ukuran) > stokJohar)) {
+      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Meter') && ((+e.target.value / +ukuran) > stokJohar))) {
         $('#'+i).modal("show");
         kodeModal = i;
         teksJohar[i].textContent = `${stokJohar}`;
-        teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        if(teksSat[i].value == 'Pcs') {
-          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`;
-          teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-        } else {
+        if(teksSat[i].value != 'Meter')
+          teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        else
+          teksSatuan[i].textContent = `\u00A0Rol `;
+
+        teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        if(teksSat[i].value == 'Pcs') 
+          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`;          
+        else if(teksSat[i].value == 'Meter')
+          teksJoharUkuran[i].textContent = `\u00A0/ ${ukuran}`;
+        else {
           teksJoharUkuran[i].textContent = ``;
           teksUkuran[i].textContent = ``;
         }
 
         qtyOrder[i].textContent = `${qty[i].value}`;
-        qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        if(teksSat[i].value == 'Pcs') {
+        if(teksSat[i].value != 'Meter')
+          qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        else
+          qtySatuan[i].textContent = `\u00A0Rol `;
+
+        qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        if(teksSat[i].value == 'Pcs') 
           qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran}`;
-          qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-        } else {
+        else if(teksSat[i].value == 'Meter')
+          qtyOrderUkuran[i].textContent = `\u00A0/ ${ukuran}`;
+        else {
           qtyOrderUkuran[i].textContent = ``;
           qtyUkuran[i].textContent = ``;
         }
 
         sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
-        sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        if(teksSat[i].value == 'Pcs') {
-          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran}`;
-          sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-        } else {
+        if(teksSat[i].value != 'Meter')
+          sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        else
+          sisaSatuan[i].textContent = `\u00A0Rol`;
+
+        sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        if(teksSat[i].value == 'Pcs')
+          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran}`; 
+        else if(teksSat[i].value == 'Meter')
+          sisaQtyUkuran[i].textContent = `\u00A0/ ${ukuran}`;
+        else {
           sisaQtyUkuran[i].textContent = ``;
           sisaUkuran[i].textContent = ``;
         }
@@ -1462,11 +1511,17 @@ for(let i = 0; i < qty.length; i++) {
         const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
         for(let j = 0; j < stokGudang.length; j++) {
           stokGudang[j].textContent = `${stokLain[j]}`;
-          gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
-          if(teksSat[i].value == 'Pcs') {
+          if(teksSat[i].value != 'Meter')
+            gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
+          else
+            gudangSatuan[j].textContent = `\u00A0Rol`;
+
+          gudangUkuran[j].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          if(teksSat[i].value == 'Pcs')
             stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] / ukuran}`;
-            gudangUkuran[j].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-          } else {
+          else if(teksSat[i].value == 'Meter')
+            stokGudangUkuran[j].textContent = `\u00A0/ ${ukuran}`;
+          else {
             stokGudangUkuran[j].textContent = ``;
             gudangUkuran[j].textContent = ``;
           }
@@ -1479,7 +1534,10 @@ for(let i = 0; i < qty.length; i++) {
       }
 
       netPast = +netto[i].value.replace(/\./g, "");
-      jumlah[i].value = addCommas(qty[i].value * harga[i].value.replace(/\./g, ""));
+      if(teksSat[i].value != 'Meter')
+        jumlah[i].value = addCommas(qty[i].value * harga[i].value.replace(/\./g, ""));
+      else
+        jumlah[i].value = addCommas(satuan[i].value * harga[i].value.replace(/\./g, ""));
 
       if(diskon[i].value != "") {
         var angkaDiskon = hitungDiskon(diskon[i].value)
@@ -1515,7 +1573,10 @@ for(let i = 0; i < tipe.length; i++) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->hargaBarang->tipe }}' == e.target.value)) {
         harga[i].value = addCommas('{{ $hb->harga_ppn }}');
-        jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * qty[i].value);
+        if(teksSat[i].value != 'Meter')
+          jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * qty[i].value);
+        else
+          jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * satuan[i].value);
 
         netPast = +netto[i].value.replace(/\./g, "");
         if(diskon[i].value != "") {
@@ -1617,8 +1678,12 @@ function hitungQty(urutan, kode, angka, teks) {
     else
       satuan[urutan].value = +angka * +ukuran;
   }
-  else if(kode == 'satuan') 
-    qty[urutan].value = +angka * +ukuran;
+  else if(kode == 'satuan') {
+    if(teks == 'Pcs')
+      qty[urutan].value = +angka * +ukuran;
+    else
+      qty[urutan].value = +angka / +ukuran;
+  }
 }
 
 /** Hitung Diskon **/
@@ -1733,6 +1798,9 @@ for(let i = 0; i < hapusBaris.length; i++) {
         harga[j].value = harga[j+1].value;
         tipe[j].value = tipe[j+1].value;
         satuan[j].value = satuan[j+1].value;
+        teksSat[j].value = teksSat[j+1].value;
+        qtyGudang[j].value = qtyGudang[j+1].value;
+        kodeGudang[j].value = kodeGudang[j+1].value;
         qty[j].value = qty[j+1].value;
         brgNama[j].value = brgNama[j+1].value;
         kodeBarang[j].value = kodeBarang[j+1].value;
@@ -1748,17 +1816,22 @@ for(let i = 0; i < hapusBaris.length; i++) {
         harga[j].value = '';
         tipe[j].value = '';
         satuan[j].value = '';
+        teksSat[j].value = '';
+        qtyGudang[j].value = '';
+        kodeGudang[j].value = '';
         qty[j].value = '';
         brgNama[j].value = '';
         kodeBarang[j].value = '';
       }
     }
 
-    $(this).parents('tr').next().find('input').val('');
-    if(kodeBarang[i].value == '')
-      kodeBarang[i].focus();
-    else
-      kodeBarang[i+1].focus();
+    // $(this).parents('tr').next().find('input').val('');
+    for(let j = 0; j < kodeBarang.length; j++) {
+      if(kodeBarang[j].value == '') {
+        kodeBarang[j].focus();
+        break;
+      }
+    }
   });
 }
 
