@@ -76,12 +76,20 @@
                   @if(Auth::user()->roles == 'ADMIN') readonly @endif>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" style="margin-top: -10px">
                 <label for="sales_cover" class="col-1 col-form-label text-bold" style="margin-top: -7px">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" placeholder="Sales Cover" value="{{ old('sales_cover') }}" required>
                   <input type="hidden" name="id_sales" id="kodeSales">
+                </div>
+              </div>
+              <div class="form-group row" style="margin-top: -20px">
+                <label for="ktp" class="col-1 col-form-label text-bold">Scan KTP</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-3">
+                  <input type="file" name="ktp" value="{{ old('ktp') }}" accept="image/*" class="form-control col-form-label-sm @error('ktp') is-invalid @enderror">
+                  @error('ktp') <div class="text-muted">{{ $message }}</div> @enderror
                 </div>
               </div>
               <div class="form-row justify-content-center">

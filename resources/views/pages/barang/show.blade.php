@@ -91,7 +91,7 @@
                   <tr>
                     <td width="100px" class="text-bold">{{ $g->nama }}</td>
                     <td>:</td>
-                    <td class="align-middle" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
+                    <td class="align-middle" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }} @if($stok->count() != 0) @if($item->satuan == "Pcs / Dus") Pcs @elseif($item->satuan == "Meter / Rol") Rol @else Meter @endif @endif</td>
                   </tr>
                 @endforeach
               </tbody>

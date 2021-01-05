@@ -898,10 +898,11 @@ function displayRow(e) {
           satuanRow.setAttribute('readonly', 'true');
         }
         else {
-          pcs.innerHTML = 'Rol';
+          pcs.innerHTML = 'Meter';
           teksSatRow.value = 'Meter';
-          satuanUkuran.innerHTML = 'Meter';
+          satuanUkuran.innerHTML = '';
           satuanRow.value = '{{ $br->ukuran }}';
+          satuanRow.setAttribute('readonly', 'true');
         }
         ukuranRow = '{{ $br->ukuran }}';
       }
@@ -1051,10 +1052,7 @@ function displayRow(e) {
       }
 
       netPast = +nettoRow.value.replace(/\./g, "");
-      if(teksSatRow.value != 'Meter')
-        jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
-      else
-        jumlahRow.value = addCommas(satuanRow.value * hargaRow.value.replace(/\./g, ""));
+      jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
 
       if(diskonRow.value != "") {
         var angkaDiskon = hitungDiskon(diskonRow.value)
@@ -1074,15 +1072,11 @@ function displayRow(e) {
     if(kode == `qtyRow${newNum}`) {
       if(teks == 'Pcs')
         satuanRow.value = +angka / +ukuranRow;
-      else
+      else if(teks == 'Rol')
         satuanRow.value = +angka * +ukuranRow;
     }
-    else if(kode == `satuanRow${newNum}`) {
-      if(teks == 'Pcs')
-        qtyRow.value = +angka * +ukuranRow;
-      else
-        qtyRow.value = +angka / +ukuranRow;
-    }
+    else if(kode == `satuanRow${newNum}`) 
+      qtyRow.value = +angka * +ukuranRow;
   }
 
   $('#gud'+newNum).on('shown.bs.modal', function(e) {
@@ -1147,10 +1141,7 @@ function displayRow(e) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeRow.value) && ('{{ $hb->hargaBarang->tipe }}' == e.target.value)) {
         hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
-        if(teksSatRow.value != 'Meter')
-          jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
-        else
-          jumlahRow.value = addCommas(satuanRow.value * hargaRow.value.replace(/\./g, ""));
+        jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
 
         netPast = +nettoRow.value.replace(/\./g, "");
         if(diskonRow.value != "") {
@@ -1370,10 +1361,11 @@ for(let i = 0; i < brgNama.length; i++) {
           satuan[i].setAttribute('readonly', 'true');
         }
         else {
-          pcs.innerHTML = 'Rol';
+          pcs.innerHTML = 'Meter';
           teksSat[i].value = 'Meter';
-          satuanUkuran.innerHTML = 'Meter';
+          satuanUkuran.innerHTML = '';
           satuan[i].value = '{{ $br->ukuran }}';
+          satuan[i].setAttribute('readonly', 'true');
         }
         ukuran = '{{ $br->ukuran }}';
       }
@@ -1431,18 +1423,13 @@ for(let i = 0; i < qty.length; i++) {
       qty[i].value = "";
       satuan[i].value = "";
     }
-    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Meter') && ((+e.target.value / +ukuran) > totStok))) {
+    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > totStok))) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
-      if(teksSat[i].value != 'Meter')
-        totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
-      else
-        totalstok[i].textContent = `${totStok} Rol`;
+      totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
 
       if(teksSat[i].value == 'Pcs')
         totalsatuan[i].textContent = ` atau ${totStok / ukuran} ${satuanUkuran.innerHTML}`;
-      else if(teksSat[i].value == 'Meter')
-        totalsatuan[i].textContent = ` atau ${totStok * ukuran} ${satuanUkuran.innerHTML}`;
       else
         totalsatuan[i].textContent = ``;
 
@@ -1454,53 +1441,35 @@ for(let i = 0; i < qty.length; i++) {
       return false;
     }
     else {
-      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Meter') && ((+e.target.value / +ukuran) > stokJohar))) {
+      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > stokJohar))) {
         $('#'+i).modal("show");
         kodeModal = i;
         teksJohar[i].textContent = `${stokJohar}`;
-        if(teksSat[i].value != 'Meter')
-          teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        else
-          teksSatuan[i].textContent = `\u00A0Rol `;
-
-        teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-        if(teksSat[i].value == 'Pcs') 
-          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`;          
-        else if(teksSat[i].value == 'Meter')
-          teksJoharUkuran[i].textContent = `\u00A0/ ${ukuran}`;
-        else {
+        teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        if(teksSat[i].value == 'Pcs') {
+          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`; 
+          teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;         
+        } else {
           teksJoharUkuran[i].textContent = ``;
           teksUkuran[i].textContent = ``;
         }
 
         qtyOrder[i].textContent = `${qty[i].value}`;
-        if(teksSat[i].value != 'Meter')
-          qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        else
-          qtySatuan[i].textContent = `\u00A0Rol `;
-
-        qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-        if(teksSat[i].value == 'Pcs') 
+        qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        if(teksSat[i].value == 'Pcs') {
           qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran}`;
-        else if(teksSat[i].value == 'Meter')
-          qtyOrderUkuran[i].textContent = `\u00A0/ ${ukuran}`;
-        else {
+          qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
           qtyOrderUkuran[i].textContent = ``;
           qtyUkuran[i].textContent = ``;
         }
 
         sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
-        if(teksSat[i].value != 'Meter')
-          sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        else
-          sisaSatuan[i].textContent = `\u00A0Rol`;
-
-        sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-        if(teksSat[i].value == 'Pcs')
+        sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+        if(teksSat[i].value == 'Pcs') {
           sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran}`; 
-        else if(teksSat[i].value == 'Meter')
-          sisaQtyUkuran[i].textContent = `\u00A0/ ${ukuran}`;
-        else {
+          sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+        } else {
           sisaQtyUkuran[i].textContent = ``;
           sisaUkuran[i].textContent = ``;
         }
@@ -1511,17 +1480,11 @@ for(let i = 0; i < qty.length; i++) {
         const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
         for(let j = 0; j < stokGudang.length; j++) {
           stokGudang[j].textContent = `${stokLain[j]}`;
-          if(teksSat[i].value != 'Meter')
-            gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
-          else
-            gudangSatuan[j].textContent = `\u00A0Rol`;
-
-          gudangUkuran[j].textContent = `\u00A0${satuanUkuran.innerHTML}`;
-          if(teksSat[i].value == 'Pcs')
+          gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
+          if(teksSat[i].value == 'Pcs') {
             stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] / ukuran}`;
-          else if(teksSat[i].value == 'Meter')
-            stokGudangUkuran[j].textContent = `\u00A0/ ${ukuran}`;
-          else {
+            gudangUkuran[j].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          } else {
             stokGudangUkuran[j].textContent = ``;
             gudangUkuran[j].textContent = ``;
           }
@@ -1534,10 +1497,7 @@ for(let i = 0; i < qty.length; i++) {
       }
 
       netPast = +netto[i].value.replace(/\./g, "");
-      if(teksSat[i].value != 'Meter')
-        jumlah[i].value = addCommas(qty[i].value * harga[i].value.replace(/\./g, ""));
-      else
-        jumlah[i].value = addCommas(satuan[i].value * harga[i].value.replace(/\./g, ""));
+      jumlah[i].value = addCommas(qty[i].value * harga[i].value.replace(/\./g, ""));
 
       if(diskon[i].value != "") {
         var angkaDiskon = hitungDiskon(diskon[i].value)
@@ -1573,10 +1533,7 @@ for(let i = 0; i < tipe.length; i++) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->hargaBarang->tipe }}' == e.target.value)) {
         harga[i].value = addCommas('{{ $hb->harga_ppn }}');
-        if(teksSat[i].value != 'Meter')
-          jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * qty[i].value);
-        else
-          jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * satuan[i].value);
+        jumlah[i].value = addCommas(+harga[i].value.replace(/\./g, "") * qty[i].value);
 
         netPast = +netto[i].value.replace(/\./g, "");
         if(diskon[i].value != "") {
@@ -1675,14 +1632,11 @@ function hitungQty(urutan, kode, angka, teks) {
   if(kode == 'qty') {
     if(teks == 'Pcs')
       satuan[urutan].value = +angka / +ukuran;
-    else
+    else if(teks == 'Rol')
       satuan[urutan].value = +angka * +ukuran;
   }
   else if(kode == 'satuan') {
-    if(teks == 'Pcs')
-      qty[urutan].value = +angka * +ukuran;
-    else
-      qty[urutan].value = +angka / +ukuran;
+    qty[urutan].value = +angka * +ukuran;
   }
 }
 

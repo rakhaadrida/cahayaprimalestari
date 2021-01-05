@@ -494,11 +494,13 @@
                   <td align="center" style="width: 60px">
                     {{ $itemDet->qty / $itemDet->barang->ukuran }} Dus
                   </td>
-                @else
+                @elseif($itemDet->barang->satuan == "Meter / Rol")
                   <td align="right" style="width: 65px">{{ $itemDet->qty }} ROL</td>
                   <td align="center" style="width: 65px">
                     {{ $itemDet->qty * $itemDet->barang->ukuran }} Mtr
                   </td>
+                @else
+                  <td colspan="2" align="center" style="width: 120px">{{ $itemDet->qty }} METER</td>
                 @endif
                 <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>

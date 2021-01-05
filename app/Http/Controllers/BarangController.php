@@ -58,7 +58,7 @@ class BarangController extends Controller
             'id_kategori' => $request->kodeJenis,
             'id_sub' => $request->kodeSub,
             'satuan' => $request->satuan,
-            'ukuran' => str_replace(".", "", $request->ukuran)
+            'ukuran' => $request->ukuran
         ]);
 
         return redirect()->route('barang.index');
@@ -210,7 +210,7 @@ class BarangController extends Controller
         $item->{'id_kategori'} = $request->kodeJenis;
         $item->{'id_sub'} = $request->kodeSub;
         $item->{'satuan'} = $request->satuan;
-        $item->{'ukuran'} = str_replace(".", "", $request->ukuran);
+        $item->{'ukuran'} = $request->ukuran;
         $item->save();
 
         return redirect()->route('barang.index');

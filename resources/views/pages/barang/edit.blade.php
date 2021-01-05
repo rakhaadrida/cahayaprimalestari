@@ -82,9 +82,9 @@
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ number_format($item->ukuran, 0, "", ".") }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off" required>
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}" id="ukuran" onkeypress="return angkaSaja(event)" id="ukuran" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off" required @if($item->satuan == "Meter") readonly @endif>
                 </div>
-                <span class="col-form-label text-bold" id="labelUkuran">{{ $item->satuan }}</span>
+                <span class="col-form-label text-bold" id="labelUkuran">{{ $item->satuan != "Meter" ? $item->satuan : '' }}</span>
               </div>
               <hr>
               <div class="form-row justify-content-center">
@@ -201,7 +201,17 @@ function displaySubjenis(e) {
 
 /** Tampil Label Satuan Ukuran **/
 function displayUkuran(e) {
-  labelUkuran.textContent = e.target.value;
+  if(e.target.value != 'Meter') {
+    ukuran.removeAttribute('readonly');
+    ukuran.setAttribute('required', 'true');
+    ukuran.setAttribute('placeholder', '');
+    labelUkuran.textContent = e.target.value;
+  } else {
+    ukuran.setAttribute('readonly', 'true');
+    ukuran.removeAttribute('required');
+    ukuran.value = '';
+    labelUkuran.textContent = '';
+  }
 }
 
 /** Inputan hanya bisa angka **/

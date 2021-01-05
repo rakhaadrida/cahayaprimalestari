@@ -198,10 +198,17 @@ function displaySubjenis(e) {
 
 /** Tampil Label Satuan Ukuran **/
 function displayUkuran(e) {
-  ukuran.removeAttribute('readonly');
-  ukuran.setAttribute('required', 'true');
-  ukuran.setAttribute('placeholder', '');
-  labelUkuran.textContent = e.target.value;
+  if(e.target.value != 'Meter') {
+    ukuran.removeAttribute('readonly');
+    ukuran.setAttribute('required', 'true');
+    ukuran.setAttribute('placeholder', '');
+    labelUkuran.textContent = e.target.value;
+  } else {
+    ukuran.setAttribute('readonly', 'true');
+    ukuran.removeAttribute('required');
+    ukuran.value = '';
+    labelUkuran.textContent = '';
+  }
 }
 
 /** Inputan hanya bisa angka **/

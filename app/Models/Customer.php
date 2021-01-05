@@ -11,7 +11,7 @@ class Customer extends Model
     protected $table = 'customer';
     protected $keyType = "string";
     protected $fillable = ['id', 'nama', 'alamat', 'telepon', 'contact_person', 'npwp',
-                        'limit', 'id_sales'];
+                        'limit', 'id_sales', 'ktp'];
     public $incrementing = false;
     
     public function sales() {
