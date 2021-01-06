@@ -88,6 +88,7 @@ class BarangMasukController extends Controller
             'id_faktur' => $request->kode,
             'tanggal' => $tanggal,
             'total' => str_replace(".", "", $request->subtotal),
+            'potongan' => 0,
             'id_gudang' => $request->kodeGudang,
             'id_supplier' => $request->kodeSupplier,
             'tempo' => $request->tempo != '' ? $request->tempo : 0,
@@ -292,7 +293,8 @@ class BarangMasukController extends Controller
             'status' => 'PENDING_BATAL',
             'keterangan' => $request->input("ket".$id),
             'id_dokumen' => $id,
-            'tipe' => 'Dokumen'
+            'tipe' => 'Dokumen',
+            'id_user' => Auth::user()->id
         ]);
 
         $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)->get();
@@ -365,7 +367,8 @@ class BarangMasukController extends Controller
             'status' => 'PENDING_UPDATE',
             'keterangan' => $request->keterangan,
             'id_dokumen' => $request->kode,
-            'tipe' => 'Dokumen'
+            'tipe' => 'Dokumen',
+            'id_user' => Auth::user()->id
         ]); 
 
         for($i = 0; $i < $jumlah; $i++) {

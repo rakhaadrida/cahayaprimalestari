@@ -11,7 +11,7 @@ class BarangMasuk extends Model
 
     protected $table = "barangmasuk";
     protected $keyType = "string";
-    protected $fillable = ['id', 'id_faktur', 'tanggal', 'total', 'id_gudang', 'id_supplier', 'tempo', 'status', 'diskon', 'id_user'];
+    protected $fillable = ['id', 'id_faktur', 'tanggal', 'total', 'potongan', 'id_gudang', 'id_supplier', 'tempo', 'status', 'diskon', 'id_user'];
     public $incrementing = false;
 
     public function gudang() {

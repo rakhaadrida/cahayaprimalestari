@@ -35,6 +35,12 @@ class DashboardController extends Controller
                         ->whereYear('tgl_so', $tahun)->count();
         $transMonthly = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereMonth('tgl_so', $bulan)->count();
+        $transAnnualKen = SalesOrder::join('users', 'users.id', 'so.id_user')
+                        ->where('roles', 'KENARI')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->count();
+        $transMonthlyKen = SalesOrder::join('users', 'users.id', 'so.id_user')
+                        ->where('roles', 'KENARI')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereMonth('tgl_so', $bulan)->count();
         $buyAnnual = BarangMasuk::where('status', '!=', 'BATAL')
                     ->whereYear('tanggal', $tahun)->count();
         $buyMonthly = BarangMasuk::where('status', '!=', 'BATAL')
@@ -68,10 +74,6 @@ class DashboardController extends Controller
             }
         }
 
-        // $salesPerType = SalesOrder::selectRaw('kategori, count(kategori) as total')
-        //                 ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
-        //                 ->groupBy('kategori')->get();
-
         $tipeCount = [];
         $tipe = ['CASH', 'EXTRANA', 'PRIME'];
         for($i = 0; $i < sizeof($tipe); $i++) {
@@ -83,28 +85,51 @@ class DashboardController extends Controller
 
         $needPrint = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
                     ->count();
+        $needPrintKen = SalesOrder::join('users', 'users.id', 'so.id_user')
+                        ->where('roles', 'KENARI')->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
+                        ->count();
         $stillPending = NeedApproval::where('tipe', 'Faktur')->count();
+        $stillPendingKen = NeedApproval::join('users', 'users.id', 'need_approval.id_user')
+                        ->where('roles', 'KENARI')->where('tipe', 'Faktur')->count();
         $barang = Barang::All(); 
-        $restok = 0;
+        $restok = 0; $restokKen = 0;
         foreach($barang as $b) {
             $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                     ->selectRaw('id_barang, sum(stok) as total')
                     ->where('id_barang', $b->id)->where('tipe', 'BIASA')->get();
             if($stok[0]->total <= $b->subjenis->limit) 
                 $restok++;
+            
+            $stokKen = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
+                        ->selectRaw('id_barang, sum(stok) as total')
+                        ->where('id_barang', $b->id)->where('tipe', 'KENARI')->get();
+            if($stok[0]->total <= ($b->subjenis->limit / 2)) 
+                $restokKen++;
         }   
 
-        $fakturCount = [];
+        $fakturCount = []; $fakturCountKen = [];
         $status = ['APPROVE_LIMIT', 'BATAL', 'CETAK', 'INPUT', 'UPDATE', 'LIMIT'];
         for($i = 0; $i < sizeof($status); $i++) {
             $fakturPerStatus = SalesOrder::where('status', $status[$i])
                         ->whereYear('tgl_so', $tahun)->count();
             $fakturCount[$i] = $fakturPerStatus;
+
+            $fakturPerStatusKen = SalesOrder::join('users', 'users.id', 'so.id_user')
+                                ->where('roles', 'KENARI')->where('status', $status[$i])
+                                ->whereYear('tgl_so', $tahun)->count();
+            $fakturCountKen[$i] = $fakturPerStatusKen;
         }
-        // $fakturPerStatus = SalesOrder::selectRaw('status, count(status) as total')
-        //                 ->whereYear('tgl_so', $tahun)->groupBy('status')->get();
+
         $lastTrans = SalesOrder::latest()->take(6)->get();
         foreach($lastTrans as $l) {
+            $totalQty = DetilSO::selectRaw('sum(qty) as qty')->where('id_so', $l->id)->get();
+            $l->{'qty'} = $totalQty[0]->qty;
+            $l->tgl_so = Carbon::parse($l->tgl_so)->format('d-M-y');
+        }
+
+        $lastTransKen = SalesOrder::join('users', 'users.id', 'so.id_user')->select('so.id as id', 'so.*')
+                        ->where('roles', 'KENARI')->latest('so.created_at')->take(6)->get();
+        foreach($lastTransKen as $l) {
             $totalQty = DetilSO::selectRaw('sum(qty) as qty')->where('id_so', $l->id)->get();
             $l->{'qty'} = $totalQty[0]->qty;
             $l->tgl_so = Carbon::parse($l->tgl_so)->format('d-M-y');
@@ -269,6 +294,8 @@ class DashboardController extends Controller
             'salesMonthly' => $salesMonthly,
             'transAnnual' => $transAnnual,
             'transMonthly' => $transMonthly,
+            'transAnnualKen' => $transAnnualKen,
+            'transMonthlyKen' => $transMonthlyKen,
             'buyAnnual' => $buyAnnual,
             'buyMonthly' => $buyMonthly,
             'receivable' => $receivable,
@@ -276,10 +303,15 @@ class DashboardController extends Controller
             'arrTotal' => $arrTotal,
             'salesPerType' => $tipeCount,
             'needPrint' => $needPrint,
+            'needPrintKen' => $needPrintKen,
             'stillPending' => $stillPending,
+            'stillPendingKen' => $stillPendingKen,
             'restock' => $restok,
+            'restockKen' => $restokKen,
             'fakturPerStatus' => $fakturCount,
+            'fakturPerStatusKen' => $fakturCountKen,
             'lastTrans' => $lastTrans,
+            'lastTransKen' => $lastTransKen,
             'receivCount' => $receivCount,
             'receivTempo' => $receivTempo,
             'receiv' => $receiv,

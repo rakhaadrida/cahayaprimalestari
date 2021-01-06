@@ -30,7 +30,7 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              @if(Auth::user()->roles != 'AR')
+              @if((Auth::user()->roles != 'AR') && (Auth::user()->roles != 'OFFICE02'))
                 <div class="container so-container">  
                   <div class="form-group row justify-content-center" >
                     <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
@@ -73,7 +73,7 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Customer</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->customer->nama }} ({{ $item->id_customer }})" >
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->customer->nama }}" >
                             </div>
                           </div>
                         </div>
@@ -127,9 +127,11 @@
                         <td style="width: 80px">Kode</td>
                         <td>Nama Barang</td>
                         <td style="width: 50px">Qty</td>
-                        @foreach($gudang as $g)
-                          <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
-                        @endforeach
+                        @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER'))
+                          @foreach($gudang as $g)
+                            <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
+                          @endforeach
+                        @endif
                         <td>Harga</td>
                         <td>Jumlah</td>
                         <td style="width: 100px">Diskon(%)</td>
@@ -152,18 +154,20 @@
                               <td align="center">{{ $itemDet->id_barang }} </td>
                               <td>{{ $itemDet->barang->nama }}</td>
                               <td align="right">{{ $itemDet->qty }}</td>
-                              @foreach($gudang as $g)
-                                @php
-                                  $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
-                                            ->where('id_barang', $itemDet->id_barang)
-                                            ->where('id_gudang', $g->id)->get();
-                                @endphp
-                                @if($itemGud->count() != 0)
-                                  <td align="right">{{ $itemGud[0]->qty }}</td>
-                                @else
-                                  <td></td>
-                                @endif
-                              @endforeach
+                              @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER'))
+                                @foreach($gudang as $g)
+                                  @php
+                                    $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
+                                              ->where('id_barang', $itemDet->id_barang)
+                                              ->where('id_gudang', $g->id)->get();
+                                  @endphp
+                                  @if($itemGud->count() != 0)
+                                    <td align="right">{{ $itemGud[0]->qty }}</td>
+                                  @else
+                                    <td></td>
+                                  @endif
+                                @endforeach
+                              @endif
                               <td align="right">
                                 {{ number_format($itemDet->harga, 0, "", ".") }}
                               </td>

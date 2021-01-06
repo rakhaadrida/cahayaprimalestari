@@ -15,6 +15,7 @@ use App\Models\AccReceivable;
 use App\Models\DetilAR;
 use App\Models\AR_Retur;
 use App\Models\NeedApproval;
+use App\Models\NeedAppDetil;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -366,6 +367,7 @@ class KenariController extends Controller
         $hrg = Harga::All();
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'KENARI')->get();
+        $gudang = Gudang::where('tipe', 'KENARI')->get();
 
         $data = [
             'items' => $items,
@@ -375,6 +377,7 @@ class KenariController extends Controller
             'harga' => $harga,
             'hrg' => $hrg,
             'stok' => $stok,
+            'gudang' => $gudang,
             'id' => $request->id,
             'nama' => $request->nama,
             'tglAwal' => $request->tglAwal,
@@ -382,6 +385,120 @@ class KenariController extends Controller
         ];
 
         return view('pages.kenari.ubahfaktur.edit', $data);
+    }
+
+    public function update(Request $request) {
+        $tanggal = $request->tanggal;
+        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+        $jumlah = $request->jumBaris;
+
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        $items = SalesOrder::with(['customer', 'need_approval'])
+                ->where('id', $request->kode)->get();
+        if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE'))
+            $kode = $items[0]->need_approval->last()->id;
+
+        NeedApproval::create([
+            'id' => $newcode,
+            'tanggal' => Carbon::now(),
+            'status' => 'PENDING_UPDATE',
+            'keterangan' => $request->keterangan,
+            'id_dokumen' => $request->kode,
+            'tipe' => 'Faktur'
+        ]);
+
+        for($i = 0; $i < $jumlah; $i++) {
+            NeedAppDetil::create([
+                'id_app' => $newcode,
+                'id_barang' => $request->kodeBarang[$i],
+                'id_gudang' => $request->kodeGudang[$i],
+                'harga' => str_replace(".", "", $request->harga[$i]),
+                'qty' => $request->qty[$i],
+                'diskon' => $request->diskon[$i],
+                'diskonRp' => str_replace(".", "", $request->diskonRp[$i])
+            ]);
+
+            if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                $stokAwal = NeedAppDetil::where('id_app', $kode)
+                                ->where('id_barang', $request->kodeBarang[$i])
+                                ->where('id_gudang', $request->kodeGudang[$i])->first();
+            } else {
+                $stokAwal = DetilSO::where('id_so', $request->kode)
+                        ->where('id_barang', $request->kodeBarang[$i])
+                        ->where('id_gudang', $request->kodeGudang[$i])->first();
+            }
+            
+            $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                        ->where('id_gudang', $request->kodeGudang[$i])->first();
+
+            if($stokAwal != NULL) {
+                if($stokAwal->{'qty'} > $request->qty[$i])
+                    $updateStok->{'stok'} += ($stokAwal->{'qty'} - $request->qty[$i]);
+                else 
+                    $updateStok->{'stok'} -= ($request->qty[$i] - $stokAwal->{'qty'});
+            } else {
+                $updateStok->{'stok'} -= $request->qty[$i];
+            }
+            
+            $updateStok->save();
+        }
+
+        $items = SalesOrder::with(['customer', 'need_approval'])
+                ->where('id', $request->kode)->get();
+        
+        if(($items[0]->need_approval->count() > 1) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+            $itemsApp = NeedApproval::where('id_dokumen', $request->kode)
+                        ->latest()->skip(1)->take(1)->get();
+            $items = $itemsApp->last()->need_appdetil;
+
+            $detilApp = NeedApproval::where('id_dokumen', $request->kode)->latest()->get();
+            $detil = $detilApp->first()->need_appdetil;
+        } else { 
+            $items = DetilSO::where('id_so', $request->kode)->get();
+            $detil = NeedAppDetil::where('id_app', $newcode)->get();
+        }
+
+        if($items->count() != $detil->count()) {
+            foreach($items as $item) {
+                $cek = 0;
+                foreach($detil as $d) {
+                    if($item->id_barang == $d->id_barang) {
+                        $cek = 1; 
+                        break;
+                    }
+                }
+
+                if($cek == 0) {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $item->id_gudang)->first();
+                    $updateStok->{'stok'} += $item->qty;
+                    $updateStok->save();
+                }
+            }
+        } else {
+            for($i = 0; $i < $items->count(); $i++) {
+                if($items[$i]->id_barang != $detil[$i]->id_barang) {
+                    $updateStok = StokBarang::where('id_barang', $items[$i]->id_barang)
+                                ->where('id_gudang', $items[$i]->id_gudang)->first();
+                    $updateStok->{'stok'} += $items[$i]->qty;
+                    $updateStok->save();
+                }
+            }
+        }
+
+        $data = [
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
+        ];
+
+        $url = Route('so-show-kenari', $data);
+        return redirect($url);
     }
 
     public function indexCetak($status, $awal, $akhir) {
@@ -442,5 +559,40 @@ class KenariController extends Controller
         ];
 
         return redirect()->route('cetak-faktur-kenari', $data);
+    }
+
+    public function indexTrans() {
+        $tanggal = Carbon::now()->toDateString();
+
+        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', 'KENARI')
+                ->where('tgl_so', $tanggal)->get(); 
+
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.kenari.transaksiharian.index', $data);
+    }
+
+    public function showTrans(Request $request) {
+        $tglAwal = $request->tglAwal;
+        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+        $tglAkhir = $request->tglAkhir;
+        $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
+        
+        $items = SalesOrder::with('customer')
+                ->join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', 'KENARI')
+                ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
+                ->orderBy('id', 'asc')->get();
+        
+        $data = [
+            'items' => $items,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
+        ];
+
+        return view('pages.penjualan.transaksiharian.show', $data);
     }
 }

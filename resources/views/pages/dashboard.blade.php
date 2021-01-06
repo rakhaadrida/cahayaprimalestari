@@ -34,12 +34,16 @@
                 <div class="text-md font-weight-bold text-primary text-uppercase mb-2">Transaksi (Total)</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $buyMonthly }}
                 ({{ $buyAnnual }})</div>
+              @elseif(Auth::user()->roles == 'KENARI')
+                <div class="text-md font-weight-bold text-primary text-uppercase mb-2">Transaksi (Total)</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $transMonthlyKen }}
+                ({{ $transAnnualKen }})</div>
               @endif
             </div>
             <div class="col-auto">
               @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'OFFICE02'))
                 <i class="fas fa-chart-line fa-2x text-gray-300"></i>
-              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP') || (Auth::user()->roles == 'KENARI'))
                 <i class="fas fa-check fa-2x text-gray-300"></i>
               @endif
             </div>
@@ -61,9 +65,9 @@
                 @else
                   <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($salesMonOff[0]->sales, 0, "", ".") }}</div>
                 @endif
-              @elseif(Auth::user()->roles == 'ADMIN') 
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI')) 
                 <div class="text-md font-weight-bold text-success text-uppercase mb-2">Faktur Belum Dicetak</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $needPrint }}</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Auth::user()->roles == 'ADMIN' ? $needPrint : $needPrintKen }}</div>
               @elseif(Auth::user()->roles == 'AR') 
                 <div class="text-md font-weight-bold text-success text-uppercase mb-2">Jumlah Piutang</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $receivCount }}</div>
@@ -75,7 +79,7 @@
             <div class="col-auto">
               @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'OFFICE02'))
                 <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-              @elseif(Auth::user()->roles == 'ADMIN')
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
                 <i class="fas fa-print fa-2x text-gray-300"></i>
               @elseif((Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
                 <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
@@ -101,9 +105,9 @@
                   <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $transMonOff }}
                   ({{ $transAnnOff }})</div>
                 @endif
-              @elseif(Auth::user()->roles == 'ADMIN')
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI')) 
                 <div class="text-md font-weight-bold text-info text-uppercase mb-2">Faktur Pending</div>
-                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $stillPending }}</div>
+                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ Auth::user()->roles == 'ADMIN' ? $stillPending : $stillPendingKen }}</div>
               @elseif(Auth::user()->roles == 'AR') 
                 <div class="text-md font-weight-bold text-info text-uppercase mb-2">Piutang Lewat Tempo</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $receivTempo }}</div>
@@ -115,7 +119,7 @@
             <div class="col-auto">
               @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'OFFICE02'))
                 <i class="fas fa-check fa-2x text-gray-300"></i>
-              @elseif(Auth::user()->roles == 'ADMIN')
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
                 <i class="fas fa-spinner fa-2x text-gray-300"></i>
               @elseif(Auth::user()->roles == 'AR')
                 <i class="fas fa-calendar-times fa-2x text-gray-300"></i>
@@ -141,9 +145,9 @@
                 @else
                   <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($receivableOff, 0, "", ".") }}</div>
                 @endif
-              @elseif(Auth::user()->roles == 'ADMIN')
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI')) 
                 <div class="text-md font-weight-bold text-warning text-uppercase mb-2">Re-stok Barang</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $restock }}</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Auth::user()->roles == 'ADMIN' ? $restock : $restockKen }}</div>
                @elseif(Auth::user()->roles == 'AP')
                 <div class="text-md font-weight-bold text-warning text-uppercase mb-2">Total Tagihan</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">Rp {{ number_format($payable, 0, "", ".") }}</div>
@@ -152,7 +156,7 @@
             <div class="col-auto">
               @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP') || (Auth::user()->roles == 'OFFICE02'))
                 <i class="fas fa-donate fa-2x text-gray-300"></i>
-              @elseif(Auth::user()->roles == 'ADMIN')
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
                 <i class="fas fa-recycle fa-2x text-gray-300"></i>
               @endif
             </div>
@@ -172,7 +176,7 @@
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'OFFICE02'))
             <h6 class="m-0 font-weight-bold text-dark">Grafik Penjualan</h6>
-          @elseif(Auth::user()->roles == 'ADMIN')
+          @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
             <h6 class="m-0 font-weight-bold text-dark">Transaksi Terakhir</h6>
           @elseif(Auth::user()->roles == 'AR')
             <h6 class="m-0 font-weight-bold text-dark">Piutang Terbesar</h6>
@@ -187,7 +191,7 @@
               <canvas id="myAreaChart"></canvas>
             @elseif(Auth::user()->roles == 'OFFICE02')
               <canvas id="myAreaChartOffice"></canvas>
-            @elseif(Auth::user()->roles == 'ADMIN')
+            @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
               <div class="table-stats order-table">
                 <table class="table table-striped">
                   <thead class="bg-info text-center">
@@ -202,7 +206,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @php $i = 1 @endphp
+                    @php $i = 1; 
+                      if(Auth::user()->roles == 'ADMIN')
+                        $lastTrans = $lastTrans;
+                      else
+                        $lastTrans = $lastTransKen;
+                    @endphp
                     @foreach($lastTrans as $l)
                       <tr>
                         <td align="center">{{ $i }}</td>
@@ -306,7 +315,7 @@
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'OFFICE02'))
             <h6 class="m-0 font-weight-bold text-dark">Tipe Transaksi</h6>
-          @elseif(Auth::user()->roles == 'ADMIN')
+          @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
             <h6 class="m-0 font-weight-bold text-dark">Status Faktur</h6>
           @elseif(Auth::user()->roles == 'AR')
             <h6 class="m-0 font-weight-bold text-dark">Progress Cicil Piutang</h6>
@@ -323,6 +332,8 @@
               <canvas id="myPieChartOffice"></canvas>
             @elseif(Auth::user()->roles == 'ADMIN')
               <canvas id="myPieChartAdmin"></canvas>
+            @elseif(Auth::user()->roles == 'KENARI')
+              <canvas id="myPieChartKenari"></canvas>
             @elseif(Auth::user()->roles == 'AR')
               <canvas id="myPieChartPiutang"></canvas>
             @elseif(Auth::user()->roles == 'AP')
@@ -341,7 +352,7 @@
                 <i class="fas fa-circle text-info"></i> Prime
               </span>
             </div>
-          @elseif(Auth::user()->roles == 'ADMIN')
+          @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
             <div class="mt-2 text-center small">
               <span class="mr-2">
                 <i class="fas fa-circle text-primary"></i> Input
@@ -674,6 +685,37 @@ function number_format(number, decimals, dec_point, thousands_sep) {
       labels: ["Batal", "Limit", "Approve_limit", "Update", "Cetak", "Input"],
       datasets: [{
         data: ['{{$fakturPerStatus[1]}}', '{{$fakturPerStatus[4]}}', '{{$fakturPerStatus[0]}}', '{{$fakturPerStatus[5]}}', '{{$fakturPerStatus[2]}}', '{{$fakturPerStatus[3]}}'],
+        backgroundColor: ['#e74a3b', '#f6c23e', '#858796', '#36b9cc', '#1cc88a', '#4e73df'],
+        hoverBackgroundColor: ['#d13224', '#e0ab22', '#858796', '#2c9faf', '#17a673', '#2e59d9'],
+        hoverBorderColor: "rgba(234, 236, 244, 1)",
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        borderColor: '#dddfeb',
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        caretPadding: 10,
+      },
+      legend: {
+        display: false,
+      },
+      cutoutPercentage: 70,
+    },
+  });
+@elseif(Auth::user()->roles == 'KENARI')
+  var ctxKen = document.getElementById("myPieChartKenari");
+  var myPieChartKen = new Chart(ctxKen, {
+    type: 'doughnut',
+    data: {
+      labels: ["Batal", "Limit", "Approve_limit", "Update", "Cetak", "Input"],
+      datasets: [{
+        data: ['{{$fakturPerStatusKen[1]}}', '{{$fakturPerStatusKen[4]}}', '{{$fakturPerStatusKen[0]}}', '{{$fakturPerStatusKen[5]}}', '{{$fakturPerStatusKen[2]}}', '{{$fakturPerStatusKen[3]}}'],
         backgroundColor: ['#e74a3b', '#f6c23e', '#858796', '#36b9cc', '#1cc88a', '#4e73df'],
         hoverBackgroundColor: ['#d13224', '#e0ab22', '#858796', '#2c9faf', '#17a673', '#2e59d9'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",

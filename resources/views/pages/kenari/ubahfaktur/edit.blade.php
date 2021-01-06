@@ -114,7 +114,7 @@
                     $i = 1; $tab = 1;
                     if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
                       $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
-                                  ->select('id_barang', 'diskon')
+                                  ->select('id_barang', 'id_gudang', 'diskon')
                                   ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
                                   ->where('id_app', $items[0]->need_approval->last()->id)
                                   ->groupBy('id_barang', 'diskon')
@@ -133,15 +133,17 @@
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
                         <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ $item->id_barang }}" required>
+                        <span class="kodeAwal" hidden>{{ $item->id_barang }}</span>
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
-                        <input type="text" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
+                        {{-- <input type="text" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}"> --}}
+                        <span class="qtyAwal" hidden>{{ $item->qty }}</span>
                       </td>
                       <td> 
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required>
                         <input type="hidden" name="teksSat[]" class="teksSat" value="{{ substr($item->barang->satuan, 0, 3) }}">
-                        <input type="text" name="kodeGudang[]" class="kodeGudang" value="{{ $item->id_gudang }}">
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang" value="{{ $item->id_gudang }}">
                       </td>
                       @php
                         foreach($harga as $hb) {
@@ -281,12 +283,11 @@
 @push('addon-script')
 <script type="text/javascript">
 const kodeBarang = document.querySelectorAll('.kodeBarang');
+const kodeAwal = document.querySelectorAll(".kodeAwal");
 const brgNama = document.querySelectorAll(".namaBarang");
 const qtyAwal = document.querySelectorAll(".qtyAwal");
 const qty = document.querySelectorAll(".qty");
 const teksSat = document.querySelectorAll(".teksSat");
-const kodeGudangArr = document.querySelectorAll(".kodeGudangArr");
-const qtyAwalArr = document.querySelectorAll(".qtyAwalArr");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
 const qtyGudang = document.querySelectorAll(".qtyGudang");
 const tipe = document.querySelectorAll(".tipe");
@@ -352,7 +353,7 @@ for(let i = 0; i < brgNama.length; i++) {
       grandtotal.value = totalNotPPN.value;
     }
 
-    kodeGudang[i].value = 'GDG01';
+    kodeGudang[i].value = '{{ $gudang[0]->id }}';
   }
 }
 
@@ -362,20 +363,10 @@ for(let i = 0; i < qty.length; i++) {
     stokJohar = 0;
     stokLain = []; kodeLain = [];
     totStok = 0;
-    arrKodeGud = kodeGudangArr[i].value.split(',');
-    arrQtyAwal = qtyAwalArr[i].value.split(',');
 
     @foreach($stok as $s)
-      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == arrKodeGud[0]))
-      {
-        stokJohar = '{{ $s->stok }}';
-        totStok = +totStok + +stokJohar;
-      }
-      else if('{{ $s->id_barang }}' == kodeBarang[i].value){
-        stokLain.push('{{ $s->stok }}');
-        kodeLain.push('{{ $s->id_gudang }}');
-        totStok = +totStok + +'{{ $s->stok }}';
-      }
+      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == kodeGudang[i].value))
+        totStok = '{{ $s->stok }}';
     @endforeach
 
     @foreach($barang as $br)
@@ -393,13 +384,16 @@ for(let i = 0; i < qty.length; i++) {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
       netto[i].value = "";
-      kodeGudang[i].value = "GDG01";
+      kodeGudang[i].value = '{{ $gudang[0]->id }}';
       qtyGudang[i].value = "";
       qty[i].value = "";
     }
-    else if((+e.target.value - +qtyAwal[i].value) > totStok) {
+    else if(((kodeBarang[i].value == kodeAwal[i].textContent) && (+e.target.value - +qtyAwal[i].textContent) > totStok) || ((kodeBarang[i].value != kodeAwal[i].textContent) && (+e.target.value > totStok))) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
+      if(kodeBarang[i].value == kodeAwal[i].textContent)
+        totStok = +totStok + +qtyAwal[i].textContent;
+
       totalstok[i].textContent = `${totStok} ${pcs}`;
       totalsatuan[i].textContent = `${totStok / ukuran} ${satuanUkuran}`;
 
@@ -410,112 +404,6 @@ for(let i = 0; i < qty.length; i++) {
       return false;
     }
     else {
-      if((+e.target.value - +qtyAwal[i].value) > stokJohar) {
-        $('#'+i).modal("show");
-        kodeModal = i;
-        teksJohar[i].textContent = `${+stokJohar + +arrQtyAwal[0]}`;
-        teksSatuan[i].textContent = `\u00A0${pcs} `;
-        if(teksSat[i].value == 'Pcs') {
-          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`;
-          teksUkuran[i].textContent = `\u00A0${satuanUkuran}`;
-        } else {
-          teksJoharUkuran[i].textContent = ``;
-          teksUkuran[i].textContent = ``;
-        }
-
-        qtyOrder[i].textContent = `${qty[i].value}`;
-        qtySatuan[i].textContent = `\u00A0${pcs} `;
-        if(teksSat[i].value == 'Pcs') {
-          qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran}`;
-          qtyUkuran[i].textContent = `\u00A0${satuanUkuran}`;
-        } else {
-          qtyOrderUkuran[i].textContent = ``;
-          qtyUkuran[i].textContent = ``;
-        }
-
-        sisaQty[i].textContent = `${+qty[i].value - (+stokJohar + +arrQtyAwal[0])}`;
-        sisaSatuan[i].textContent = `\u00A0${pcs} `;
-        if(teksSat[i].value == 'Pcs') {
-          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran}`;
-          sisaUkuran[i].textContent = `\u00A0${satuanUkuran}`;
-        } else {
-          sisaQtyUkuran[i].textContent = ``;
-          sisaUkuran[i].textContent = ``;
-        }
-
-        const kodeGud = document.querySelectorAll(".kodeGud"+i);
-        const stokGudang = document.querySelectorAll('.stokGudang'+i);
-        const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
-        const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
-        const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
-        cek = 0;
-        for(let j = 0; j < stokGudang.length; j++) {
-          if(kodeGud[j].value == arrKodeGud[cek+1]) {
-            stokTambah = +stokLain[j] + +arrQtyAwal[cek+1];
-            cek++;
-          } else {
-            stokTambah = stokLain[j];
-          }
-
-          stokGudang[j].textContent = `${stokTambah}`;
-          gudangSatuan[j].textContent = `\u00A0${pcs} `;
-          if(teksSat[i].value == 'Pcs') {
-            stokGudangUkuran[j].textContent = `\u00A0/ ${stokTambah / ukuran}`;
-            gudangUkuran[j].textContent = `\u00A0${satuanUkuran}`;
-          } else {
-            stokGudangUkuran[j].textContent = ``;
-            gudangUkuran[j].textContent = ``;
-          }
-          // stokGudangUkuran[i].textContent = `${stokTambah / ukuran}`;
-          // gudangUkuran[i].textContent = `\u00A0${satuanUkuran}`;
-        }
-        qtyGudang[i].value = +stokJohar + +arrQtyAwal[0];
-      }
-      else {
-        if(+e.target.value < +qtyAwal[i].value) {
-          var sisa = e.target.value;
-          for(let j = 0; j < arrQtyAwal.length; j++) {
-            if((+sisa - +arrQtyAwal[j]) > 0) 
-              sisa -= +arrQtyAwal[j];
-            else {
-              arrQtyAwal[j] = sisa;
-              sisa = 0;
-            }
-
-            if(j == 0) 
-              qtyGudang[i].value = arrQtyAwal[j];
-            else
-              qtyGudang[i].value = qtyGudang[i].value.concat(`,${arrQtyAwal[j]}`);
-          }
-          // qtyJohar = +arrQtyAwal[0] - (+qtyAwal[i].value - +e.target.value);
-        }
-        else {
-          kodeGudang[i].value = kodeGudangArr[i].value;
-          if(arrKodeGud[0] == 'GDG01') {
-            qtyJohar = +arrQtyAwal[0] + (+e.target.value - +qtyAwal[i].value);
-            for(let j = 0; j < arrQtyAwal.length; j++) {
-              if(j == 0) 
-                qtyGudang[i].value = qtyJohar;
-              else
-                qtyGudang[i].value = qtyGudang[i].value.concat(`,${arrQtyAwal[j]}`);
-            }
-          } else {
-            qtyLebih = +e.target.value - +qtyAwal[i].value;
-            for(let j = 0; j < stokLain.length; j++) {
-              kodeGudang[i].value = kodeGudang[i].value.concat(`,${kodeLain[j]}`);
-              if(qtyLebih < stokLain[j]) {
-                // kodeGudang[i].value = kodeGudang[i].value.concat(`,${kodeLain[j]}`);
-                qtyGudang[i].value = qtyGudang[i].value.concat(`,${qtyLebih}`);
-                break;
-              } else {
-                qtyLebih -= stokLain[j];
-                qtyGudang[i].value = qtyGudang[i].value.concat(`,${stokLain[j]}`);
-              }
-            }
-          }
-        }
-      }
-
       netPast = +netto[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
       if(diskon[i].value != "") {

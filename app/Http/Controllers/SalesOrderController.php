@@ -166,7 +166,8 @@ class SalesOrderController extends Controller
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
                 'id_dokumen' => $id,
-                'tipe' => 'Faktur'
+                'tipe' => 'Faktur',
+                'id_user' => Auth::user()->id
             ]);
         }
 
@@ -368,7 +369,8 @@ class SalesOrderController extends Controller
             'status' => 'PENDING_BATAL',
             'keterangan' => $request->input("ket".$id),
             'id_dokumen' => $id,
-            'tipe' => 'Faktur'
+            'tipe' => 'Faktur',
+            'id_user' => Auth::user()->id
         ]);
    
         // return response()->json($items);
@@ -442,7 +444,8 @@ class SalesOrderController extends Controller
             'status' => 'PENDING_UPDATE',
             'keterangan' => $request->keterangan,
             'id_dokumen' => $request->kode,
-            'tipe' => 'Faktur'
+            'tipe' => 'Faktur',
+            'id_user' => Auth::user()->id
         ]);
 
         for($i = 0; $i < $jumlah; $i++) {

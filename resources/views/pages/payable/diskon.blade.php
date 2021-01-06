@@ -225,7 +225,7 @@
                       </tr>
                       @php $i++; @endphp
                     @endforeach
-                    @php $total += $subtotal; @endphp
+                    @php $total += $item->total; @endphp
                   </tbody>
                 </table>
 
@@ -238,18 +238,31 @@
                     </div>
                   </div>
                   <div class="form-group row justify-content-end total-so">
+                    <label for="ppn" class="col-2 col-form-label text-bold text-right text-dark">Potongan Lain-lain</label>
+                    <span class="col-form-label text-bold">:</span>
+                    <div class="col-2 mr-1">
+                      <input type="text" name="potongan" id="potongan" class="form-control col-form-label-sm text-bold text-dark text-right mt-1 diskon-faktur" placeholder="Input Potongan" onkeypress="return angkaSaja(event, 'OKE')" autocomplete="off" />
+                    </div>
+                  </div>
+                  <div class="form-group row justify-content-end total-so">
+                    <label for="ppn" class="col-3 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                    <span class="col-form-label text-bold">:</span>
+                    <div class="col-2 mr-1">
+                      <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
+                    </div>
+                  </div>
+                  <div class="form-group row justify-content-end total-so">
                     <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
                       <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
-                      {{-- value="{{ number_format($subtotal * 10 / 100, 0, "", ".") }}"  --}}
                     </div>
                   </div>
                   <div class="form-group row justify-content-end grandtotal-so">
                     <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{ number_format($total, 0, "", ".") }}" />
+                      <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{ number_format($total - $item->potongan, 0, "", ".") }}" />
                       {{-- value="{{number_format($subtotal + ($subtotal * 10 / 100),0,"",".")}}" --}}
                     </div>
                   </div>
@@ -294,8 +307,13 @@ const disAngka = document.querySelectorAll(".disAngka");
 const diskonRp = document.querySelectorAll(".diskonRp");
 const netto = document.querySelectorAll(".netto");
 const subtotal = document.getElementById('subtotal');
+const potongan = document.getElementById('potongan');
+const totalNotPPN = document.getElementById('totalNotPPN');
 const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
+
+potongan.addEventListener('keyup', formatNominal);
+potongan.addEventListener('keyup', displayTotal);
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
@@ -329,6 +347,21 @@ function hitungDiskon(angka) {
   totDiskon = ((totDiskon - 100) * -1).toFixed(2);
   console.log(totDiskon);
   return totDiskon;
+}
+
+/** Add Nominal Separators **/
+function formatNominal(e){
+  $(this).val(function(index, value) {
+    return value
+    .replace(/\D/g, "")
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    ;
+  });
+}
+
+function displayTotal(e) {
+  totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +e.target.value.replace(/\./g, ""));
+  grandtotal.value = totalNotPPN.value;
 }
 
 /** Check Jumlah Netto onChange **/

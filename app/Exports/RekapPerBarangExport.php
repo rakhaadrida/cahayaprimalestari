@@ -30,7 +30,7 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
     
     public function view(): View
     {
-        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, H:mm:ss');
+        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
         // $waktu = $waktu->format('d F Y, H:i:s');
         $sub = Subjenis::where('id_kategori', $this->kode)->get();
         $gudang = Gudang::All();

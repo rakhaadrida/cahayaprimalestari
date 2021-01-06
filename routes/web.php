@@ -393,6 +393,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('kenari/cetak-faktur/process', 'KenariController@processFaktur')->name('cetak-process-kenari');
         Route::get('kenari/cetak/{awal}/{akhir}', 'KenariController@cetakFaktur')->name('cetak-all-kenari');
         Route::get('kenari/cetak-update/{awal}/{akhir}', 'KenariController@updateFaktur')->name('cetak-update-kenari');
+
+        // Transaksi Harian
+        Route::get('kenari/transaksi', 'KenariController@indexTrans')->name('trans-kenari');
+        Route::get('kenari/transaksi/show', 'KenariController@showTrans')->name('trans-show-kenari');
     });
 
     // Route::group(['roles'=>['AR', 'SUPER']], function() {

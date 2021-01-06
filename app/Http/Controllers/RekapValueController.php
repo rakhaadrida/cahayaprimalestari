@@ -26,7 +26,7 @@ class RekapValueController extends Controller
 
     public function cetak_pdf() {
         $jenis = JenisBarang::All();
-        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, H:mm:ss');
+        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
 
         foreach($jenis as $j) {
             $sub = Subjenis::where('id_kategori', $j->id)->count();

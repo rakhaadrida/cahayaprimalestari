@@ -71,7 +71,7 @@ class AccPayableController extends Controller
 
         if($isi == 1) {
             $ap = AccPayable::with(['bm'])->whereIn('keterangan', [$status[0], $status[1]])
-                ->get();
+                ->orderBy('created_at', 'desc')->get();
         } else {
             $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 
                 'ap.id_bm')->select('ap.*')
@@ -79,7 +79,7 @@ class AccPayableController extends Controller
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('barangmasuk.tanggal', $month)
                     ->orWhereBetween('barangmasuk.tanggal', [$awal, $akhir]);
-                })->groupBy('ap.id')->get();
+                })->groupBy('ap.id')->orderBy('barangmasuk.created_at', 'desc')->get();
         }
 
         // return response()->json($ap);

@@ -281,6 +281,15 @@ class ApprovalController extends Controller
                         $updateStok->save();
                     }
                 }
+            } else {
+                for($i = 0; $i < $detil->count(); $i++) {
+                    if($detil[$i]->id_barang != $items[0]->need_appdetil[$i]->id_barang) {
+                        $updateStok = StokBarang::where('id_barang', $detil[$i]->id_barang)
+                                    ->where('id_gudang', $detil[$i]->id_gudang)->first();
+                        $updateStok->{'stok'} -= $detil[$i]->qty;
+                        $updateStok->save();
+                    }
+                }
             }
 
             foreach($items[0]->need_appdetil as $item) {

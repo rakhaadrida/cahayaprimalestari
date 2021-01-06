@@ -65,7 +65,7 @@
                         <h4 class="text-bold text-dark">Rekap Stok {{ $item->nama }}</h4>
                       </div>
                       <div class="row justify-content-center" style="margin-top: -5px">
-                        <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, H:mm:ss') }}</h6>
+                        <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss') }}</h6>
                       </div>
                     </div>
 

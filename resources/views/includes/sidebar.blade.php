@@ -69,6 +69,7 @@
           <a class="collapse-item" href="{{ route('so-kenari', 'false') }}">Input Faktur</a>
           <a class="collapse-item" href="{{ route('cetak-faktur-kenari', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
           <a class="collapse-item" href="{{ route('so-change-kenari') }}">Ubah Faktur</a>
+          <a class="collapse-item" href="{{ route('trans-kenari') }}">Transaksi Harian</a>
         </div>
       </div>
     </li>

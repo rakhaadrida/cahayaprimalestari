@@ -91,8 +91,8 @@
                     <th style="width: 300px" class="align-middle">Supplier</th>
                     <th style="width: 50px" class="align-middle">No. Faktur</th>
                     <th style="width: 65px" class="align-middle">Tgl. BM</th>
+                    <th style="width: 55px" class="align-middle">Tempo</th>
                     <th style="width: 60px" class="align-middle">Discount</th>
-                    <th style="width: 70px" class="align-middle">HPP</th>
                     <th style="width: 75px" class="align-middle">Total</th>
                     <th style="width: 70px" class="align-middle">Transfer</th>
                     <th style="width: 70px" class="align-middle">Retur</th>
@@ -113,28 +113,31 @@
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="align-middle">{{ $a->bm->supplier->nama }}</td>
+                      <td class="align-middle">{{ $a->bm[0]->supplier->nama }}</td>
                       <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $a->id_bm) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $a->id_bm }}</button></td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($a->bm->tanggal)->format('d-M-y') }}
+                        {{ \Carbon\Carbon::parse($a->bm[0]->tanggal)->format('d-M-y') }}
                       </td>
-                      <td align="center" class="align-middle" @if($a->bm->detilbm[0]->diskon != '') style="background-color: lightgreen" @endif>
-                        @if($a->bm->detilbm[0]->diskon != '') INPUT @else KOSONG @endif
+                      <td align="center" class="align-middle">
+                        {{ \Carbon\Carbon::parse($a->bm[0]->tanggal)->add($a->bm[0]->tempo, 'days')
+                          ->format('d-M-y') }}
                       </td>
-                      <td align="center" class="align-middle" @if($a->bm->detilbm[0]->diskon != '') style="background-color: lightgreen" @endif>
-                        @if($a->bm->detilbm[0]->diskon != '') INPUT @else KOSONG @endif
+                      <td align="center" class="align-middle" @if($a->bm->last()->diskon != 'F') style="background-color: lightgreen" @endif>
+                        {{ $a->bm->last()->diskon == 'T' ? 'INPUT' : 'KOSONG' }}
                       </td>
                       <td align="right" class="align-middle">
-                        @if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM, 0, "", ",") }} @endif
+                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $totalBM[0]->potongan , 0, "", ",") : '' }}
                       </td>
                       <td class="align-middle">
                         <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
                       </td>
-                      <td>
+                      <td class="align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
                         <a href="#Retur{{ $a->id_bm }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
-                      <td align="right" class="align-middle">@if($a->bm->detilbm[0]->diskon != '') {{ number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total, 0, "", ",") }} @endif</td>
+                      <td align="right" class="align-middle">
+                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total, 0, "", ",") : '' }}
+                      </td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $a->id_bm }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>

@@ -94,7 +94,7 @@ class RekapStokController extends Controller
         $gudang = Gudang::All();
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->groupBy('id_barang')->get();
-        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, H:mm:ss');
+        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
 
         foreach($jenis as $j) {
             $sub = Subjenis::where('id_kategori', $j->id)->count();
