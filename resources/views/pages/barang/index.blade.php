@@ -63,7 +63,7 @@
                 @if(Auth::user()->roles != 'OFFICE02')
                   @foreach($gudang as $g)
                     @php
-                      if($g->retur == 'T') {
+                      if($g->tipe == 'RETUR') {
                         $stok = App\Models\StokBarang::selectRaw('sum(stok) as stok')
                                 ->where('id_barang', $item->id)
                                 ->where('id_gudang', $g->id)->get();   
@@ -79,7 +79,7 @@
                     $stok = App\Models\StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                             ->selectRaw('sum(stok) as stok')
                             ->where('id_barang', $item->id)
-                            ->where('retur', 'F')->get();
+                            ->where('tipe', '!=', 'RETUR')->get();
                   @endphp
                   <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
                 @endif

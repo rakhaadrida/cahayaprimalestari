@@ -307,8 +307,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
-        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
-            ->name('trans-detail');
+        // Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
+        //     ->name('trans-detail');
 
         Route::post('ar/cetak', 'AccReceivableController@cetak')->name('ar-cetak');
         Route::post('ar/cetakNow', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
@@ -332,6 +332,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('retur-jual-cetak');
         Route::get('/retur/penjualan/cetak-ttr/{id}', 'ReturController@ttrKirimJual')
             ->name('retur-jual-cetak');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02']], function() {
+        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
     });
 
     Route::group(['roles'=>['ADMIN', 'GUDANG', 'AR', 'SUPER']], function() {
@@ -366,6 +370,29 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::group(['roles'=>['OFFICE02', 'GUDANG']], function() {
         // Account Payable
         Route::get('stok/index', 'BarangController@index')->name('stok-office');
+    });
+
+    Route::group(['roles'=>'KENARI'], function() {
+        // Stok Kenari
+        Route::get('kenari/stok/index', 'KenariController@index')->name('stok-kenari');
+
+        // Faktur
+        Route::get('kenari/so/index/{status}', 'KenariController@so')->name('so-kenari');
+        Route::post('kenari/so/process/{id}/{status}', 'KenariController@process')->name('so-process-kenari');
+        Route::get('kenari/so/cetak/{id}', 'KenariController@cetak')->name('so-cetak-kenari');
+        Route::get('kenari/so/afterPrint/{id}', 'KenariController@afterPrint')->name('so-after-print-kenari');
+        Route::get('kenari/so/change', 'KenariController@change')->name('so-change-kenari');
+        Route::get('kenari/so/change/show', 'KenariController@show')->name('so-show-kenari');
+        Route::post('kenari/so/change/status/{id}', 'KenariController@status')->name('so-status-kenari');
+        Route::post('kenari/so/change/edit/{id}', 'KenariController@edit')->name('so-edit-kenari');
+        Route::post('kenari/so/change/update', 'KenariController@update')->name('so-update-kenari');
+
+        // Cetak Faktur
+        Route::get('kenari/cetak-faktur/{status}/{awal}/{akhir}', 'KenariController@indexCetak')
+            ->name('cetak-faktur-kenari');
+        Route::post('kenari/cetak-faktur/process', 'KenariController@processFaktur')->name('cetak-process-kenari');
+        Route::get('kenari/cetak/{awal}/{akhir}', 'KenariController@cetakFaktur')->name('cetak-all-kenari');
+        Route::get('kenari/cetak-update/{awal}/{akhir}', 'KenariController@updateFaktur')->name('cetak-update-kenari');
     });
 
     // Route::group(['roles'=>['AR', 'SUPER']], function() {

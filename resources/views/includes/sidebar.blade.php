@@ -53,6 +53,27 @@
     </li>
   @endif
 
+  @if(Auth::user()->roles == 'KENARI')
+    <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link" href="{{ route('stok-kenari') }}">
+        <i class="fas fa-fw fa-warehouse"></i>
+        <span>Stok</span></a>
+    </li>
+    <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseKenari" aria-expanded="true" aria-controls="collapseKenari">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Penjualan</span>
+      </a>
+      <div id="collapseKenari" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div class="py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('so-kenari', 'false') }}">Input Faktur</a>
+          <a class="collapse-item" href="{{ route('cetak-faktur-kenari', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
+          <a class="collapse-item" href="{{ route('so-change-kenari') }}">Ubah Faktur</a>
+        </div>
+      </div>
+    </li>
+  @endif
+
 
   <!-- Divider -->
   <hr class="sidebar-divider">

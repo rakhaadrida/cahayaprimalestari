@@ -65,8 +65,6 @@ class SalesOrderController extends Controller
                         ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))->where('keterangan', 'BELUM LUNAS')
                         ->groupBy('id_customer')->get();
 
-        // return response()->json($totalPerCust);
-
         foreach($totalPerCust as $q) {
             foreach($cicilPerCust as $h) {
                 if($q->id_customer == $h->id_customer) {
@@ -84,8 +82,6 @@ class SalesOrderController extends Controller
                 }
             }
         }
-
-        // return response()->json($totalPerCust);
 
         $data = [
             'customer' => $customer,
