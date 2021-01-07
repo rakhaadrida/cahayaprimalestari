@@ -18,7 +18,7 @@ use Carbon\Carbon;
 class LapKeuController extends Controller
 {
     public function index() {
-        $date = Carbon::now();
+        $date = Carbon::now('+07:00');
         $tahun = $date->year;
         $month = $date->month;
 

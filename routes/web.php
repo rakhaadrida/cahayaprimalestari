@@ -269,6 +269,9 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('user/hapus/{id}', 'UserController@hapus')->name('user-hapus');
         Route::get('user/hapus-all/all', 'UserController@hapusAll')
             ->name('user-hapusAll');
+
+        // Sales Prime
+        Route::get('sales-prime', 'RekapSalesPrimeController@index')->name('prime');
     });
 
     Route::group(['roles'=>['ADMIN', 'AR']], function() {
