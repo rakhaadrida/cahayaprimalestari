@@ -395,7 +395,7 @@ class SalesOrderController extends Controller
 
     public function edit(Request $request, $id) {
         $items = SalesOrder::with(['customer', 'need_approval'])->where('id', $id)->get();
-        $itemsRow = DetilSO::where('id_so', $id)->distinct('id_barang')->count();
+        $itemsRow = DetilSO::where('id_so', $id)->groupBy('id_barang')->get();
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         $barang = Barang::All();

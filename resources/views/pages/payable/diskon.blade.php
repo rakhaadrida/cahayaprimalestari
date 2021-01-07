@@ -57,7 +57,7 @@
               <hr> --}}
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
-              @php $total = 0 @endphp
+              @php $subtotal = 0; @endphp
               @foreach($items as $item)
                 @if($item->id == $items[0]->id)
                   <div class="container so-update-container text-dark" style="margin-top: -10px; margin-bottom: -15px">
@@ -116,7 +116,7 @@
                           <label for="tempo" class="col-4 form-control-sm text-bold mt-1 text-right">Tempo</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-2">
-                            <input type="text" tabindex="1" class="form-control form-control-sm text-bold text-dark mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ $item->tempo != null ? $item->tempo : '' }}" autofocus>
+                            <input type="text" tabindex="1" class="form-control form-control-sm text-bold text-dark mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'TEMPO')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ $item->tempo != null ? $item->tempo : '' }}" autofocus>
                           </div>
                           <span class="col-form-label text-bold"> Hari</span>
                         </div>
@@ -178,7 +178,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @php $i = 1; $subtotal = 0; $tab = 1; @endphp
+                    @php $i = 1; $tab = 1; @endphp
                     @foreach($item->detilbm as $detil)
                       <tr class="text-dark text-bold">
                         <td align="center" class="align-middle">{{ $i }}</td>
@@ -225,7 +225,6 @@
                       </tr>
                       @php $i++; @endphp
                     @endforeach
-                    @php $total += $item->total; @endphp
                   </tbody>
                 </table>
 
@@ -234,21 +233,21 @@
                     <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($total, 0, "", ".") }}" />
+                      <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" />
                     </div>
                   </div>
                   <div class="form-group row justify-content-end total-so">
                     <label for="ppn" class="col-2 col-form-label text-bold text-right text-dark">Potongan Lain-lain</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="potongan" id="potongan" class="form-control col-form-label-sm text-bold text-dark text-right mt-1 diskon-faktur" placeholder="Input Potongan" onkeypress="return angkaSaja(event, 'OKE')" autocomplete="off" />
+                      <input type="text" name="potongan" id="potongan" class="form-control col-form-label-sm text-bold text-dark text-right mt-1 potongan" placeholder="Input Potongan" onkeypress="return angkaSaja(event, 'OKE')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"  autocomplete="off" value="{{ number_format($items[0]->potongan, 0, "", ".") }}" />
                     </div>
                   </div>
                   <div class="form-group row justify-content-end total-so">
                     <label for="ppn" class="col-3 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
+                      <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $items[0]->potongan, 0, "", ".") }}" />
                     </div>
                   </div>
                   <div class="form-group row justify-content-end total-so">
@@ -262,7 +261,7 @@
                     <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{ number_format($total - $item->potongan, 0, "", ".") }}" />
+                      <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value="{{ number_format($subtotal - $items[0]->potongan, 0, "", ".") }}" />
                       {{-- value="{{number_format($subtotal + ($subtotal * 10 / 100),0,"",".")}}" --}}
                     </div>
                   </div>
@@ -333,7 +332,8 @@ for(let i = 0; i < diskon.length; i++) {
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
-    grandtotal.value = subtotal.value;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +potongan.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
   });
 }
 
@@ -345,7 +345,6 @@ function hitungDiskon(angka) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
   totDiskon = ((totDiskon - 100) * -1).toFixed(2);
-  console.log(totDiskon);
   return totDiskon;
 }
 
@@ -387,11 +386,15 @@ function addCommas(nStr) {
 }
 
 /** Inputan hanya bisa angka **/
-function angkaSaja(evt) {
+function angkaSaja(evt, teks) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-    $(tempo).tooltip('show');
+    if(teks == 'TEMPO')
+      $(tempo).tooltip('show');
+    else
+      $(potongan).tooltip('show');
+
     return false;
   }
   return true;

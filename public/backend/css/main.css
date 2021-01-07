@@ -97,6 +97,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 25px;
 }
 
+.potongan {
+    border: 0;
+    background: transparent;
+    padding: 0px 0px;
+    height: 25px;
+    font-size: 16px;
+}
+
 .so-update-container {
     margin-left: -20px;
     margin-bottom: -10px;

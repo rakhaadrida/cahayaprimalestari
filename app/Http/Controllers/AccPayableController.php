@@ -123,14 +123,19 @@ class AccPayableController extends Controller
                 $d->disPersen = (float) (str_replace(",", "", $request->{"diskon".$i->id.$d->id_barang}));
                 $d->save();
 
-                // $total += (int) (str_replace(".", "", $request->{"hpp".$i->id.$d->id_barang}));
+                $total += (int) (str_replace(".", "", $request->{"hpp".$i->id.$d->id_barang}));
             }
 
             $i->tempo = $request->tempo != '' ? $request->tempo : 0;
-            $i->total = str_replace(".", "", $request->grandtotal);
+            // $i->total = str_replace(".", "", $request->grandtotal);
+            $i->total = $total;
+            // $i->potongan = str_replace(".", "", $request->potongan);
             $i->diskon = 'T';
             $i->save();
         }
+
+        $items[0]->potongan = str_replace(".", "", $request->potongan);
+        $items[0]->save();
 
         return redirect()->route('ap');
     }
