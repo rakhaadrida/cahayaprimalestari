@@ -64,7 +64,8 @@
                   <th style="width: 80px" class="align-middle">Total</th>
                   <th style="width: 80px" class="align-middle">Kategori</th>
                   <th class="align-middle">Tempo</th>
-                  <th style="width: 120px" class="align-middle">Status</th>
+                  <th style="width: 100px" class="align-middle">Status</th>
+                  <th style="width: 60px" class="align-middle">User</th>
                 </thead>
                 <tbody>
                   @php $i=1; $tab = 3; @endphp
@@ -78,6 +79,7 @@
                       <td class="text-center align-middle">{{ $item->kategori }}</td>
                       <td class="text-center align-middle">{{ $item->tempo }} Hari</td>
                       <td class="text-center align-middle">{{ $item->status }}</td>
+                      <td class="text-center align-middle">{{ $item->user->name }}</td>
                     </tr>
                     @php $i++; @endphp
                   @empty

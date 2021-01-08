@@ -46,7 +46,7 @@ class CustomerController extends Controller
             'npwp' => $request->npwp,
             'limit' => (int) str_replace(".", "", $request->limit),
             'id_sales' => $request->id_sales,
-            'ktp' => $request->file('ktp')->store('assets/product', 'public')
+            // 'ktp' => $request->file('ktp')->store('assets/product', 'public')
         ]);
 
         return redirect()->route('customer.index');

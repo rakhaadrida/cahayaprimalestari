@@ -68,7 +68,7 @@
               @php $j++; @endphp
             @empty
               <tr>
-                <td colspan="9" class="text-center">Tidak Ada Data</td>
+                <td colspan="{{ $gudang->count() + 5 }}" class="text-center">Tidak Ada Data</td>
               </tr>
             @endforelse
           </tbody>

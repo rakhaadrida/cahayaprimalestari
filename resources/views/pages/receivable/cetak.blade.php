@@ -149,8 +149,8 @@
 
       .table-cetak {
         font-size: 11px;
-        border: 0.5px solid #292a2b !important;
-        border-width: thin !important;
+        /* border: 0.5px solid #292a2b !important;
+        border-width: thin !important; */
       }
 
       .table-cetak th,
@@ -184,7 +184,7 @@
             <th style="width: 50px" class="align-middle">Tgl. Faktur</th>
             <th style="width: 50px" class="align-middle">Tempo</th>
             <th style="width: 60px" class="align-middle">Total</th>
-            <th style="width: 150px" class="align-middle">Keterangan</th>
+            <th style="width: 130px" class="align-middle">Keterangan</th>
           </tr>
         </thead>
         <tbody>

@@ -53,7 +53,7 @@
                     name="stok[]" required @if($g->id == $gudang[0]->id) autofocus @endif
                       @foreach($items as $item)
                         @if($item->id_gudang == $g->id)
-                          value="{{ $item->stok }}" readonly
+                          value="{{ $item->stok }}" @if(Auth::user()->roles != 'SUPER') readonly @endif
                           @break
                         @endif
                       @endforeach
@@ -71,7 +71,10 @@
                   <button type="submit" class="btn btn-success btn-block text-bold">Update</button>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
+                </div>
+                <div class="col-2">
+                  <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
             </form>

@@ -194,6 +194,8 @@
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                         <input type="hidden" name="teksSat[]" class="teksSat">
+                        <input type="hidden" name="teksSatUk[]" class="teksSatUk">
+                        <input type="hidden" name="ukuran[]" class="ukuran">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang">
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
@@ -590,6 +592,8 @@ const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
 const teksSat = document.querySelectorAll(".teksSat");
+const teksSatUk = document.querySelectorAll(".teksSatUk");
+const ukuran = document.querySelectorAll(".ukuran");
 const satuan = document.querySelectorAll(".satuan");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
 const qtyGudang = document.querySelectorAll(".qtyGudang");
@@ -629,7 +633,7 @@ const totalTagihan = document.getElementById('totalTagihan');
 const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
-var netPast; var ukuran; var tab = '{{ $tab }}';
+var netPast; var tab = '{{ $tab }}';
 var kodeModal; var totPast;
 var sisa; var stokJohar; var stokLain; var totStok;
 
@@ -716,8 +720,11 @@ function displayRow(e) {
       <td>
         <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" value="{{ old('qty[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
         <input type="hidden" name="teksSat[]" class="teksSatRow" id="teksSatRow${newNum}">
+        <input type="hidden" name="teksSatUk[]" class="teksSatUkRow" id="teksSatUkRow${newNum}">
+        <input type="hidden" name="ukuran[]" class="ukuranRow" id="ukuranRow${newNum}">
         <input type="hidden" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
         <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
+      </td>
       <td>
         <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
         value="{{ old('satuan[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
@@ -833,6 +840,8 @@ function displayRow(e) {
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
   const qtyRow = document.getElementById("qtyRow"+newNum);
   const teksSatRow = document.getElementById("teksSatRow"+newNum);
+  const teksSatUkRow = document.getElementById("teksSatUkRow"+newNum);
+  const ukuranRow = document.getElementById("ukuranRow"+newNum);
   const satuanRow = document.getElementById("satuanRow"+newNum);
   const kodeGudangRow = document.getElementById("kodeGudangRow"+newNum);
   const qtyGudangRow = document.getElementById("qtyGudangRow"+newNum);
@@ -858,7 +867,6 @@ function displayRow(e) {
   const totalstokRow = document.getElementById("totalstokRow"+newNum);
   const totalsatuanRow = document.getElementById("totalsatuanRow"+newNum);
   const nmbrgRow = document.getElementById("nmbrgRow"+newNum);
-  var ukuranRow;
   kodeRow.focus();
   document.getElementById("submitSO").tabIndex = tab++;
   document.getElementById("resetSO").tabIndex = tab++;
@@ -868,6 +876,9 @@ function displayRow(e) {
   kodeRow.addEventListener("keyup", displayHargaRow);
   brgRow.addEventListener("blur", displayHargaRow); 
   kodeRow.addEventListener("blur", displayHargaRow);
+
+  brgRow.addEventListener("change", resetQtyRow); 
+  kodeRow.addEventListener("change", resetQtyRow);
   
   function displayHargaRow(e) {
     if(e.target.value == "") {
@@ -886,13 +897,14 @@ function displayRow(e) {
         if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
           teksSatRow.value = 'Pcs';
-          // ukuran = '{{ $br->ukuran }}';
+          teksSatUkRow.value = 'Dus';
           satuanRow.value = '';
           satuanRow.removeAttribute('readonly');
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
           teksSatRow.value = 'Rol';
+          teksSatUkRow.value = 'Meter';
           satuanUkuran.innerHTML = 'Meter';
           satuanRow.value = '{{ $br->ukuran }}';
           satuanRow.setAttribute('readonly', 'true');
@@ -900,11 +912,12 @@ function displayRow(e) {
         else {
           pcs.innerHTML = 'Meter';
           teksSatRow.value = 'Meter';
+          teksSatUkRow.value = '';
           satuanUkuran.innerHTML = '';
           satuanRow.value = '{{ $br->ukuran }}';
           satuanRow.setAttribute('readonly', 'true');
         }
-        ukuranRow = '{{ $br->ukuran }}';
+        ukuranRow.value = '{{ $br->ukuran }}';
       }
     @endforeach
 
@@ -918,9 +931,15 @@ function displayRow(e) {
 
     kodeGudangRow.value = 'GDG01';
     qtyGudangRow.value = '';
-    qtyRow.value = '';
+    // qtyRow.value = '';
     // satuanRow.value = '';
   } 
+
+  function resetQtyRow(e) {
+    kodeGudangRow.value = 'GDG01';
+    qtyGudangRow.value = '';
+    qtyRow.value = '';
+  }
 
   /** Inputan hanya bisa angka **/
   qtyRow.addEventListener("keypress", function (e, evt) {
@@ -967,7 +986,7 @@ function displayRow(e) {
       }
     @endforeach
 
-    hitungQtyRow(e.target.id, e.target.value, teksSatRow.value);
+    hitungQtyRow(e.target.id, e.target.value, teksSatRow.value, ukuranRow.value);
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
@@ -979,12 +998,12 @@ function displayRow(e) {
       qtyRow.value = "";
       satuanRow.value = "";
     }
-    else if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > totStok)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow) > totStok)) {
+    else if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > totStok)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow.value) > totStok)) {
       $('#notif'+newNum).modal("show");
       nmbrgRow.textContent = brgRow.value;
-      totalstokRow.textContent = `${totStok} ${pcs.innerHTML}`;
+      totalstokRow.textContent = `${totStok} ${teksSatRow.value}`;
       if(teksSatRow.value == 'Pcs')
-        totalsatuanRow.textContent = ` atau ${totStok / ukuranRow} ${satuanUkuran.innerHTML}`;
+        totalsatuanRow.textContent = ` atau ${totStok / ukuranRow.value} ${teksSatUkRow.value}`;
       else
         totalsatuanRow.textContent = ``;
 
@@ -996,34 +1015,34 @@ function displayRow(e) {
       return false;
     }
     else {
-      if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow) > stokJohar)) {
+      if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow.value) > stokJohar)) {
         $('#gud'+newNum).modal("show");
         kodeModal = newNum;
         teksJoharRow.textContent = `${stokJohar}`;
-        teksSatuanRow.textContent = `\u00A0${pcs.innerHTML} `;
+        teksSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
         if(teksSatRow.value == 'Pcs') {
-          teksJoharUkuranRow.textContent = `\u00A0/ ${stokJohar / ukuranRow}`;
-          teksUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          teksJoharUkuranRow.textContent = `\u00A0/ ${stokJohar / ukuranRow.value}`;
+          teksUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
         } else {
           teksJoharUkuranRow.textContent = ``;
           teksUkuranRow.textContent = ``;
         }
 
         qtyOrderRow.textContent = `${qtyRow.value}`;
-        qtySatuanRow.textContent = `\u00A0${pcs.innerHTML} `;
+        qtySatuanRow.textContent = `\u00A0${teksSatRow.value} `;
         if(teksSatRow.value == 'Pcs') {
-          qtyOrderUkuranRow.textContent = `\u00A0/ ${qtyRow.value / ukuranRow}`;
-          qtyUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          qtyOrderUkuranRow.textContent = `\u00A0/ ${qtyRow.value / ukuranRow.value}`;
+          qtyUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
         } else {
           qtyOrderUkuranRow.textContent = ``;
           qtyUkuranRow.textContent = ``;
         }
 
         sisaQtyRow.textContent = `${+qtyRow.value - +stokJohar}`;
-        sisaSatuanRow.textContent = `\u00A0${pcs.innerHTML} `;
+        sisaSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
         if(teksSatRow.value == 'Pcs') {
-          sisaQtyUkuranRow.textContent = `\u00A0/ ${(qtyRow.value - +stokJohar) / ukuranRow}`;
-          sisaUkuranRow.textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          sisaQtyUkuranRow.textContent = `\u00A0/ ${(qtyRow.value - +stokJohar) / ukuranRow.value}`;
+          sisaUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
         } else {
           sisaQtyUkuranRow.textContent = ``;
           sisaUkuranRow.textContent = ``;
@@ -1037,8 +1056,8 @@ function displayRow(e) {
           stokGudangRow[i].textContent = `${stokLain[i]}`;
           gudangSatuanRow[i].textContent = `\u00A0${teksSatRow.value}`;
           if(teksSatRow.value == 'Pcs') {
-            stokGudangUkuranRow[i].textContent = `\u00A0/ ${stokLain[i] / ukuranRow}`;
-            gudangUkuranRow[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+            stokGudangUkuranRow[i].textContent = `\u00A0/ ${stokLain[i] / ukuranRow.value}`;
+            gudangUkuranRow[i].textContent = `\u00A0${teksSatUkRow.value}`;
           } else {
             stokGudangUkuranRow[i].textContent = ``;
             gudangUkuranRow[i].textContent = ``;
@@ -1068,15 +1087,15 @@ function displayRow(e) {
     grandtotal.value = totalNotPPN.value;
   }
 
-  function hitungQtyRow(kode, angka, teks) {
+  function hitungQtyRow(kode, angka, teks, ukuran) {
     if(kode == `qtyRow${newNum}`) {
       if(teks == 'Pcs')
-        satuanRow.value = +angka / +ukuranRow;
+        satuanRow.value = +angka / +ukuran;
       else if(teks == 'Rol')
-        satuanRow.value = +angka * +ukuranRow;
+        satuanRow.value = +angka * +ukuran;
     }
     else if(kode == `satuanRow${newNum}`) 
-      qtyRow.value = +angka * +ukuranRow;
+      qtyRow.value = +angka * +ukuran;
   }
 
   $('#gud'+newNum).on('shown.bs.modal', function(e) {
@@ -1331,6 +1350,9 @@ for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("blur", displayHarga) ;
   kodeBarang[i].addEventListener("blur", displayHarga);
 
+  brgNama[i].addEventListener("change", resetQty) ;
+  kodeBarang[i].addEventListener("change", resetQty);
+
   function displayHarga(e) {
     satuan[i].removeAttribute('readonly');
 
@@ -1340,7 +1362,7 @@ for(let i = 0; i < brgNama.length; i++) {
       grandtotal.value = totalNotPPN.value;
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
-    }
+    } 
 
     @foreach($barang as $br)
       if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
@@ -1349,13 +1371,14 @@ for(let i = 0; i < brgNama.length; i++) {
         satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
         if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
+          teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Pcs';
-          // ukuran = '{{ $br->ukuran }}';
           satuan[i].value = '';
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
           teksSat[i].value = 'Rol';
+          teksSatUk[i].value = 'Meter';
           satuanUkuran.innerHTML = 'Meter';
           satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
@@ -1363,11 +1386,12 @@ for(let i = 0; i < brgNama.length; i++) {
         else {
           pcs.innerHTML = 'Meter';
           teksSat[i].value = 'Meter';
+          teksSatUk[i].value = '';
           satuanUkuran.innerHTML = '';
           satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
         }
-        ukuran = '{{ $br->ukuran }}';
+        ukuran[i].value = '{{ $br->ukuran }}';
       }
     @endforeach
 
@@ -1379,10 +1403,16 @@ for(let i = 0; i < brgNama.length; i++) {
       }
     @endforeach
 
+    // kodeGudang[i].value = 'GDG01';
+    // qtyGudang[i].value = '';
+    // qty[i].value = '';
+    // satuan[i].value = '';
+  }
+
+  function resetQty(e) {
     kodeGudang[i].value = 'GDG01';
     qtyGudang[i].value = '';
     qty[i].value = '';
-    // satuan[i].value = '';
   }
 }
 
@@ -1410,7 +1440,7 @@ for(let i = 0; i < qty.length; i++) {
       }
     @endforeach
 
-    hitungQty(i, e.target.id, e.target.value, teksSat[i].value);
+    hitungQty(i, e.target.id, e.target.value, teksSat[i].value, ukuran[i].value);
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
@@ -1423,13 +1453,13 @@ for(let i = 0; i < qty.length; i++) {
       qty[i].value = "";
       satuan[i].value = "";
     }
-    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > totStok))) {
+    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > totStok))) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
       totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
 
       if(teksSat[i].value == 'Pcs')
-        totalsatuan[i].textContent = ` atau ${totStok / ukuran} ${satuanUkuran.innerHTML}`;
+        totalsatuan[i].textContent = ` atau ${totStok / ukuran[i].value} ${teksSatUk[i].value}`;
       else
         totalsatuan[i].textContent = ``;
 
@@ -1441,14 +1471,14 @@ for(let i = 0; i < qty.length; i++) {
       return false;
     }
     else {
-      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > stokJohar))) {
+      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > stokJohar))) {
         $('#'+i).modal("show");
         kodeModal = i;
         teksJohar[i].textContent = `${stokJohar}`;
         teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
         if(teksSat[i].value == 'Pcs') {
-          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran}`; 
-          teksUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;         
+          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran[i].value}`; 
+          teksUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;         
         } else {
           teksJoharUkuran[i].textContent = ``;
           teksUkuran[i].textContent = ``;
@@ -1457,8 +1487,8 @@ for(let i = 0; i < qty.length; i++) {
         qtyOrder[i].textContent = `${qty[i].value}`;
         qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
         if(teksSat[i].value == 'Pcs') {
-          qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran}`;
-          qtyUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran[i].value}`;
+          qtyUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
         } else {
           qtyOrderUkuran[i].textContent = ``;
           qtyUkuran[i].textContent = ``;
@@ -1467,8 +1497,8 @@ for(let i = 0; i < qty.length; i++) {
         sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
         sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
         if(teksSat[i].value == 'Pcs') {
-          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran}`; 
-          sisaUkuran[i].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran[i].value}`; 
+          sisaUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
         } else {
           sisaQtyUkuran[i].textContent = ``;
           sisaUkuran[i].textContent = ``;
@@ -1482,8 +1512,8 @@ for(let i = 0; i < qty.length; i++) {
           stokGudang[j].textContent = `${stokLain[j]}`;
           gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
           if(teksSat[i].value == 'Pcs') {
-            stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] / ukuran}`;
-            gudangUkuran[j].textContent = `\u00A0${satuanUkuran.innerHTML}`;
+            stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] / ukuran[i].value}`;
+            gudangUkuran[j].textContent = `\u00A0${teksSatUk[i].value}`;
           } else {
             stokGudangUkuran[j].textContent = ``;
             gudangUkuran[j].textContent = ``;
@@ -1628,7 +1658,7 @@ for(let j = 0; j < modalGudang.length; j++) {
 }
 
 /** Hitung Qty **/
-function hitungQty(urutan, kode, angka, teks) {
+function hitungQty(urutan, kode, angka, teks, ukuran) {
   if(kode == 'qty') {
     if(teks == 'Pcs')
       satuan[urutan].value = +angka / +ukuran;

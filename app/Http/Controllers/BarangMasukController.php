@@ -25,7 +25,7 @@ class BarangMasukController extends Controller
         $supplier = Supplier::All();
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $gudang = Gudang::where('tipe', 'BIASA')->get();
+        $gudang = Gudang::where('tipe', '!=', 'RETUR')->get();
 
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');

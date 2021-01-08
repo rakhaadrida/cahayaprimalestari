@@ -121,32 +121,32 @@
                 <tbody id="tablePO">
                   @php $tab = 1 @endphp
                   @for($i=1; $i<=5; $i++)
-                    <tr class="text-dark" id="{{ $i }}">
+                    <tr class="text-dark text-bold" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
-                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-dark kodeBarang"
+                        <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" id="kodeBarang" class="form-control form-control-sm text-dark text-bold kodeBarang"
                         value="{{ old('kodeBarang[]') }}" @if($i == 1) required autofocus @endif >
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-dark namaBarang"
+                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-dark text-bold namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-dark gdgAsal" value="{{ old('gdgAsal[]') }}">
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-dark text-bold gdgAsal" value="{{ old('gdgAsal[]') }}">
                         <input type="hidden" name="kodeAsal[]" class="kodeAsal">
                       </td>
                       <td> 
-                        <input type="text" name="stokAsal[]" id="stokAsal" readonly class="form-control-plaintext form-control-sm text-dark text-center stokAsal" value="{{ old('stokAsal[]') }}">
+                        <input type="text" name="stokAsal[]" id="stokAsal" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokAsal" value="{{ old('stokAsal[]') }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 4 }}" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-dark gdgTujuan" value="{{ old('gdgTujuan[]') }}">
+                        <input type="text" tabindex="{{ $tab += 4 }}" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-dark text-bold gdgTujuan" value="{{ old('gdgTujuan[]') }}">
                         <input type="hidden" name="kodeTujuan[]" class="kodeTujuan">
                       </td>
                       <td> 
-                        <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuan" value="{{ old('stokTujuan[]') }}">
+                        <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokTujuan" value="{{ old('stokTujuan[]') }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 5 }}" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-bold text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -275,30 +275,30 @@ function displayRow(e) {
   var newNum = +lastRow + 1;
   var newNo = +lastNo + 1;
   const newTr = `
-    <tr class="text-dark" id="${newNum}">
+    <tr class="text-dark text-bold" id="${newNum}">
       <td align="center" class="align-middle">${newNo}</td>
       <td>
-        <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-dark kdBrgRow">
+        <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-dark text-bold kdBrgRow">
       </td>
       <td>
-        <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-dark nmBrgRow">
+        <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-dark text-bold nmBrgRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-dark gdgAsalRow" >
+        <input type="text" tabindex="${tab += 3}" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-dark text-bold gdgAsalRow" >
         <input type="hidden" name="kodeAsal[]" id="kodeAsal${newNum}" class="kodeAsalRow">
       </td>
       <td> 
-        <input type="text" name="stokAsal[]" id="stokAsal${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-center stokAsalRow">
+        <input type="text" name="stokAsal[]" id="stokAsal${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokAsalRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 4}" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-dark gdgTujuanRow" >
+        <input type="text" tabindex="${tab += 4}" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-dark text-bold gdgTujuanRow" >
         <input type="hidden" name="kodeTujuan[]" id="kodeTujuan${newNum}" class="kodeTujuanRow">
       </td>
       <td> 
-        <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-center stokTujuanRow">
+        <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokTujuanRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 5}" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+        <input type="text" tabindex="${tab += 5}" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-bold text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">

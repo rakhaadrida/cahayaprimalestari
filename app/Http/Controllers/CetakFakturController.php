@@ -11,7 +11,10 @@ use PDF;
 class CetakFakturController extends Controller
 {
     public function index($status, $awal, $akhir) {
-        $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])->get();
+        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+                ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])->get();
+
         $data = [
             'items' => $items,
             'status' => $status,
@@ -33,8 +36,10 @@ class CetakFakturController extends Controller
     }
 
     public function cetak($awal, $akhir) {
-        $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->whereBetween('id', [$awal, $akhir])->get();
+        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+                ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
+                ->whereBetween('so.id', [$awal, $akhir])->get();
         $today = Carbon::now()->isoFormat('dddd, D MMM Y');
         $waktu = Carbon::now();
         $waktu = Carbon::parse($waktu)->format('H:i:s');

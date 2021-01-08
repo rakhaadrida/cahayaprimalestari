@@ -148,11 +148,11 @@
                 <thead class="text-center text-bold text-dark">
                   <tr>
                     <td rowspan="2" style="width: 30px" class="align-middle">No</td>
-                    <td rowspan="2" style="width: 80px" class="align-middle">Kode Barang</td>
+                    <td rowspan="2" style="width: 70px" class="align-middle">Kode Barang</td>
                     <td rowspan="2" @if(Auth::user()->roles == 'ADMIN') style="width: 320px" @endif class="align-middle">Nama Barang</td>
                     <td colspan="2" class="align-middle">Qty</td>
-                    <td rowspan="2" style="width: 120px" class="align-middle">Harga</td>
-                    <td rowspan="2" style="width: 140px" class="align-middle">Jumlah</td>
+                    <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 100px" class="align-middle">Jumlah</td>
                     {{-- @if(Auth::user()->roles == 'SUPER')
                       <td colspan="2">Diskon</td>
                       <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
@@ -160,8 +160,8 @@
                     <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
                   </tr>
                   <tr>
-                    <td>Pcs / Rol</td>
-                    <td>Dus</td>
+                    <td style="width: 75px">Pcs / Rol / Mtr</td>
+                    <td style="width: 60px">Dus / Mtr</td>
                   </tr>
                   {{-- @if(Auth::user()->roles == 'SUPER')
                     <tr>
@@ -181,11 +181,12 @@
                       <td>
                         <input type="text" tabindex="{{$tab += 2}}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
-                      <td style="width: 75px" > 
+                      <td> 
                         <input type="text" tabindex="{{$tab += 3}}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                         <input type="hidden" name="teksSat[]" class="teksSat">
+                        <input type="hidden" name="ukuran[]" class="ukuran">
                       </td>
-                      <td style="width: 65px" > 
+                      <td> 
                         <input type="text" tabindex="{{$tab += 4}}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'sat')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" >
                       </td>
                       <td>
@@ -370,6 +371,7 @@ const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
 const teksSat = document.querySelectorAll(".teksSat");
+const ukuran = document.querySelectorAll(".ukuran");
 const satuan = document.querySelectorAll(".satuan");
 const harga = document.querySelectorAll(".harga");
 const jumlah = document.querySelectorAll(".jumlah");
@@ -382,7 +384,7 @@ const grandtotal = document.getElementById('grandtotal');
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
-var netPast; var tab = '{{ $tab }}'; var satuanUkuran; var ukuran;
+var netPast; var tab = '{{ $tab }}'; var satuanUkuran;
 // const keterangan = document.querySelectorAll(".keterangan");
 
 tanggal.addEventListener("keyup", formatTanggal);
@@ -410,6 +412,7 @@ function displayRow(e) {
       <td> 
         <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
         <input type="hidden" name="teksSat[]" id="teksSatRow${newNum}" class="teksSatRow">
+        <input type="hidden" name="ukuran[]" id="ukuranRow${newNum}" class="ukuranRow">
       </td>
       <td> 
         <input type="text" tabindex="${tab += 3}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
@@ -436,6 +439,7 @@ function displayRow(e) {
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
   const qtyRow = document.getElementById("qtyRow"+newNum);
   const teksSatRow = document.getElementById("teksSatRow"+newNum);
+  const ukuranRow = document.getElementById("ukuranRow"+newNum);
   const satuanRow = document.getElementById("satuanRow"+newNum);
   const hargaRow = document.getElementById("hargaRow"+newNum);
   const jumlahRow = document.getElementById("jumlahRow"+newNum);
@@ -451,6 +455,8 @@ function displayRow(e) {
   kodeRow.addEventListener("blur", displayHargaRow);
 
   function displayHargaRow(e) {
+    satuanRow.removeAttribute('readonly');
+
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
@@ -462,16 +468,21 @@ function displayRow(e) {
         kodeRow.value = '{{ $br->id }}';
         brgRow.value = '{{ $br->nama }}';
         satuanUkuran = '{{ substr($br->satuan, -3) }}';
-        if(satuanUkuran == 'Rol') {
+        if(satuanUkuran == 'Dus') {
+          teksSatRow.value = 'Pcs';
+          satuanRow.value = '';
+        }
+        else if(satuanUkuran == 'Rol') {
           teksSatRow.value = 'Rol';
           satuanRow.value = '{{ $br->ukuran }}';
           satuanRow.setAttribute('readonly', 'true');
-        } else {
-          teksSatRow.value = 'Pcs';
-          satuanRow.value = '';
-          satuanRow.removeAttribute('readonly');
         }
-        ukuran = '{{ $br->ukuran }}';
+        else {
+          teksSatRow.value = 'Meter';
+          satuanRow.value = '{{ $br->ukuran }}';
+          satuanRow.setAttribute('readonly', 'true');
+        }
+        ukuranRow.value = '{{ $br->ukuran }}';
       }
     @endforeach
 
@@ -482,7 +493,7 @@ function displayRow(e) {
       }
     @endforeach
 
-    qtyRow.value = '';
+    // qtyRow.value = '';
   }
 
   /** Inputan hanya bisa angka **/
@@ -510,10 +521,13 @@ function displayRow(e) {
 
   /** Tampil Jumlah **/
   qtyRow.addEventListener("blur", displayQtyRow);
-  satuanRow.addEventListener("blur", displayQtyRow);
+  if(teksSatRow.value == 'Pcs')
+    satuanRow.addEventListener("blur", displayQtyRow);
+  else 
+    satuanRow.addEventListener("change", displayQtyRow);
 
   function displayQtyRow(e) {
-    hitungQtyRow(e.target.id, e.target.value, teksSatRow.value);
+    hitungQtyRow(e.target.id, e.target.value, teksSatRow.value, ukuranRow.value);
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
@@ -527,7 +541,7 @@ function displayRow(e) {
     total_ppn(subtotal.value.replace(/\./g, ""));
   }
 
-  function hitungQtyRow(kode, angka, teks) {
+  function hitungQtyRow(kode, angka, teks, ukuran) {
     if(kode == 'qtyRow'+newNum) {
       if(teks == 'Pcs')
         satuanRow.value = +angka / +ukuran;
@@ -689,6 +703,8 @@ for(let i = 0; i < brgNama.length; i++) {
   kodeBarang[i].addEventListener("blur", displayHarga);
 
   function displayHarga(e) {
+    satuan[i].removeAttribute('readonly');
+
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
       $(this).parents('tr').find('input').val('');
@@ -700,17 +716,21 @@ for(let i = 0; i < brgNama.length; i++) {
         kodeBarang[i].value = '{{ $br->id }}';
         brgNama[i].value = '{{ $br->nama }}';
         satuanUkuran = '{{ substr($br->satuan, -3) }}';
-        if(satuanUkuran == 'Rol') {
+        if(satuanUkuran == 'Dus') {
+          teksSat[i].value = 'Pcs';
+          satuan[i].value = '';
+        }
+        else if(satuanUkuran == 'Rol') {
           teksSat[i].value = 'Rol';
           satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
-          // satuan[i].tabIndex = -1;
-        } else {
-          teksSat[i].value = 'Pcs';
-          satuan[i].value = '';
-          satuan[i].removeAttribute('readonly');
         }
-        ukuran = '{{ $br->ukuran }}';
+        else {
+          teksSat[i].value = 'Meter';
+          satuan[i].value = '{{ $br->ukuran }}';
+          satuan[i].setAttribute('readonly', 'true');
+        }
+        ukuran[i].value = '{{ $br->ukuran }}';
       }
     @endforeach
 
@@ -721,18 +741,21 @@ for(let i = 0; i < brgNama.length; i++) {
       }
     @endforeach
 
-    qty[i].value = '';
+    // qty[i].value = '';
   }
 }
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("blur", displayQty);
+  
   if(teksSat[i].value == 'Pcs')
     satuan[i].addEventListener("blur", displayQty);
+  else
+    satuan[i].addEventListener("change", displayQty); 
 
   function displayQty(e) {
-    hitungQty(i, e.target.id, e.target.value, teksSat[i].value);
+    hitungQty(i, e.target.id, e.target.value, teksSat[i].value, ukuran[i].value);
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
@@ -754,15 +777,16 @@ for(let i = 0; i < qty.length; i++) {
 } 
 
 /** Hitung Qty **/
-function hitungQty(urutan, kode, angka, teks) {
+function hitungQty(urutan, kode, angka, teks, ukuran) {
   if(kode == 'qty') {
     if(teks == 'Pcs')
       satuan[urutan].value = +angka / +ukuran;
     else
       satuan[urutan].value = +angka * +ukuran;
   }
-  else if(kode == 'satuan') 
+  else if(kode == 'satuan') {
     qty[urutan].value = +angka * +ukuran;
+  }
 }
 
 /** Tampil Diskon Rupiah Otomatis **/

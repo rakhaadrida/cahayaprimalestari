@@ -84,20 +84,24 @@
                   <input type="hidden" name="id_sales" id="kodeSales">
                 </div>
               </div>
-              <div class="form-group row" style="margin-top: -20px">
+              {{-- Scan KTP --}}
+              {{-- <div class="form-group row" style="margin-top: -20px">
                 <label for="ktp" class="col-1 col-form-label text-bold">Scan KTP</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-3">
                   <input type="file" name="ktp" value="{{ old('ktp') }}" accept="image/*" class="form-control col-form-label-sm @error('ktp') is-invalid @enderror">
                   @error('ktp') <div class="text-muted">{{ $message }}</div> @enderror
                 </div>
-              </div>
+              </div> --}}
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
                 </div>
                 <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
+                </div>
+                <div class="col-2">
+                  <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
             </form>

@@ -100,7 +100,7 @@ class TransferBarangController extends Controller
     }
 
     public function detail(Request $request, $id) {
-        $items = TransferBarang::orderBy('id', 'desc')->get();
+        $items = TransferBarang::All();
         $data = [
             'items' => $items,
             'kode' => $id

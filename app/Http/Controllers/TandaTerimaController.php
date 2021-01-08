@@ -46,7 +46,9 @@ class TandaTerimaController extends Controller
     public function indexCetak($status, $awal, $akhir) {
         $ttr = TandaTerima::select('id_so')->get()->pluck('id_so')->toArray();
         // var_dump($ttr);
-        $items = SalesOrder::whereNotIn('id', $ttr)->where('status', 'CETAK')->get();
+        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+                ->whereNotIn('so.id', $ttr)->where('status', 'CETAK')->get();
         // return response()->json($items);
 
         $data = [
@@ -70,8 +72,9 @@ class TandaTerimaController extends Controller
     }
 
     public function cetak($awal, $akhir) {
-        $items = SalesOrder::where('status', 'CETAK')->whereBetween('id', [$awal, $akhir])
-                ->get();
+        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+                ->where('status', 'CETAK')->whereBetween('so.id', [$awal, $akhir])->get();
 
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');

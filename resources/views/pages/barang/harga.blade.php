@@ -101,7 +101,10 @@
                   <button type="submit" tabindex="{{ $tab++ }}" class="btn btn-success btn-block text-bold">Update</button>
                 </div>
                 <div class="col-2">
-                  <button type="reset" tabindex="{{ $tab+= 2 }} " class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                  <button type="reset" tabindex="{{ $tab+= 2 }}" class="btn btn-outline-danger btn-block text-bold">Reset</button>
+                </div>
+                <div class="col-2">
+                  <a href="{{ url()->previous() }}" tabindex="{{ $tab+= 3 }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
             </form>

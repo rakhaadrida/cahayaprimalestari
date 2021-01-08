@@ -79,12 +79,12 @@
                 </tr>
                 @foreach($gudang as $g)
                   @php
-                    if($g->retur == 'T') {
-                      $stok = App\Models\StokBarang::selectRaw('sum(stok) as stok')
+                    if($g->tipe == 'RETUR') {
+                      $stok = App\Models\StokBarang::withTrashed()->selectRaw('sum(stok) as stok')
                               ->where('id_barang', $item->id)
                               ->where('id_gudang', $g->id)->get();   
                     } else {
-                      $stok = App\Models\StokBarang::where('id_barang', $item->id)
+                      $stok = App\Models\StokBarang::withTrashed()->where('id_barang', $item->id)
                               ->where('id_gudang', $g->id)->get();  
                     }
                   @endphp
