@@ -644,17 +644,6 @@
         <span class="cetak-ke">Cetak ke: {{ $cetak }}</span>
       </div>
     </div>
-
-    {{-- <script type="text/javascript">
-      // window.onafterprint = function(e) {
-      //   alert('ok');
-      // };
-
-      // window.print();
-      console.log('2');
-    </script> --}}
-
-    {{-- <script type="text/javascript"> try { this.print(); } catch (e) { window.onload = window.print; } </script> --}}
   </body>
   
 </html>

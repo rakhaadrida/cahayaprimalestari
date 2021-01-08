@@ -46,7 +46,7 @@
                 @php 
                   $i = 1; $totalQty = 0; $totalRet = 0;
                   $retur = App\Models\DetilRAP::join('ap_retur', 'ap_retur.id', 
-                          'detilrap.id_retur')->where('id_ap', $a->id)->get();
+                          'detilrap.id_retur')->where('id_ap', $a->id)->orderBy('tgl_retur', 'asc')->get();
                 @endphp
                 @foreach($retur as $d)
                   <tr class="table-modal-first-row text-dark" >

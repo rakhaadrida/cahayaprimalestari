@@ -258,7 +258,7 @@
                           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true" class="h2 text-bold">&times;</span>
                           </button>
-                          <h4 class="modal-title">Ubah Status Barang Masuk <b>{{$item->id}}</b></h4>
+                          <h5 class="modal-title">Ubah Status Barang Masuk <b>{{$item->id}}</b></h5>
                         </div>
                         <div class="modal-body">
                             <div class="form-group row">

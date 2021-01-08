@@ -153,7 +153,7 @@
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
-    alert('ok');
+    window.location = "{{ route('retur-jual', ['status' => 'false', 'id' => '0']) }}";
   }
   
   printFrame.window.print();

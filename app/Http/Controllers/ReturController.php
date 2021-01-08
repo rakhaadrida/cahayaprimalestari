@@ -180,13 +180,13 @@ class ReturController extends Controller
         }
 
         if($isi == 1) {
-            $retur = ReturJual::whereIn('status', [$status[0], $status[1]])->get();
+            $retur = ReturJual::whereIn('status', [$status[0], $status[1]])->orderBy('id', 'desc')->get();
         } else {
             $retur = ReturJual::whereIn('status', [$status[0], $status[1]])
                     ->where(function ($q) use ($awal, $akhir, $month) {
                         $q->whereMonth('tanggal', $month)
                         ->orWhereBetween('tanggal', [$awal, $akhir]);
-                    })->get();
+                    })->orderBy('id', 'desc')->get();
         }
 
         $gudang = Gudang::where('tipe', 'RETUR')->get();
@@ -454,13 +454,13 @@ class ReturController extends Controller
         }
 
         if($isi == 1) {
-            $retur = ReturBeli::whereIn('status', [$status[0], $status[1]])->get();
+            $retur = ReturBeli::whereIn('status', [$status[0], $status[1]])->orderBy('id', 'desc')->get();
         } else {
             $retur = ReturBeli::whereIn('status', [$status[0], $status[1]])
                     ->where(function ($q) use ($awal, $akhir, $month) {
                         $q->whereMonth('tanggal', $month)
                         ->orWhereBetween('tanggal', [$awal, $akhir]);
-                    })->get();
+                    })->orderBy('id', 'desc')->get();
         }
 
         $data = [
@@ -566,7 +566,11 @@ class ReturController extends Controller
         $lastnumber++;
         $newcode = 'TRM'.sprintf("%04s", $lastnumber);
         $items = DetilRB::where('id_retur', $id)->get();
+        $terima = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                ->selectRaw('sum(qty_terima) as qty_terima')->selectRaw('sum(qty_batal) as qty_batal')
+                ->where('id_retur', $id)->groupBy('id_barang')->get();
 
+        $t = 0; $qty = 0;
         foreach($items as $i) {
             $tglTerima = Carbon::now()->toDateString();
             // $tglTerima = $this->formatTanggal($tglTerima, 'Y-m-d');
@@ -592,12 +596,17 @@ class ReturController extends Controller
                 ]);
             }
 
-            DetilRT::create([
-                'id_terima' => $newcode,
-                'id_barang' => $i->id_barang,
-                'qty_terima' => NULL,
-                'qty_batal' => $i->qty_retur
-            ]);
+            $qty = $i->qty_retur - $terima[$t]->qty_terima - $terima[$t]->qty_batal;
+            if($qty != 0) {
+                DetilRT::create([
+                    'id_terima' => $newcode,
+                    'id_barang' => $i->id_barang,
+                    'qty_terima' => NULL,
+                    'qty_batal' => $qty
+                ]);
+            }
+
+            $t++;
         }
 
         $retur = ReturBeli::where('id', $id)->first();

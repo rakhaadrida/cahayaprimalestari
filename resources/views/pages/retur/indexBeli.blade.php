@@ -158,7 +158,7 @@
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
-    alert('ok');
+    window.location = "{{ route('retur-beli', ['status' => 'false', 'id' => '0']) }}";
   }
   
   printFrame.window.print();

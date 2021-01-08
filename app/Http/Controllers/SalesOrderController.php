@@ -127,10 +127,16 @@ class SalesOrderController extends Controller
         else
             $diskon = $request->diskonFaktur;
 
-        $lastcode = AccReceivable::max('id');
-        $lastnumber = (int) substr($lastcode, 2, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'AR'.sprintf('%04s', $lastnumber);
+        $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         
         SalesOrder::create([
             'id' => $id,
@@ -519,6 +525,15 @@ class SalesOrderController extends Controller
                     $updateStok = StokBarang::where('id_barang', $item->id_barang)
                         ->where('id_gudang', $item->id_gudang)->first();
                     $updateStok->{'stok'} += $item->qty;
+                    $updateStok->save();
+                }
+            }
+        } else {
+            for($i = 0; $i < $items->count(); $i++) {
+                if($items[$i]->id_barang != $detil[$i]->id_barang) {
+                    $updateStok = StokBarang::where('id_barang', $items[$i]->id_barang)
+                                ->where('id_gudang', $items[$i]->id_gudang)->first();
+                    $updateStok->{'stok'} += $items[$i]->qty;
                     $updateStok->save();
                 }
             }

@@ -233,7 +233,7 @@ function formatTanggal(e) {
 /** Sort Datatable **/
 $('#dataTable').dataTable( {
   "columnDefs": [
-    { "orderable": false, "targets": [0, 4, 5] }
+    { "orderable": false, "targets": [0, 5] }
   ],
   "aaSorting" : [],
   "footerCallback": function ( row, data, start, end, display ) {

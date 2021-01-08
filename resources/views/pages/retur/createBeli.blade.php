@@ -185,7 +185,7 @@ function displayRow(e) {
         <input type="text" name="stok[]" id="stokRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center stokRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -415,11 +415,13 @@ for(let i = 0; i < hapusBaris.length; i++) {
       }
     }
 
-    $(this).parents('tr').next().find('input').val('');
-    if(kodeBarang[i].value == '')
-      kodeBarang[i].focus();
-    else
-      kodeBarang[i+1].focus();
+    // $(this).parents('tr').next().find('input').val('');
+    for(let j = 0; j < kodeBarang.length; j++) {
+      if(kodeBarang[j].value == '') {
+        kodeBarang[j].focus();
+        break;
+      }
+    }
   });
 }
 

@@ -149,7 +149,7 @@
                   <tr>
                     <td rowspan="2" style="width: 30px" class="align-middle">No</td>
                     <td rowspan="2" style="width: 70px" class="align-middle">Kode Barang</td>
-                    <td rowspan="2" @if(Auth::user()->roles == 'ADMIN') style="width: 320px" @endif class="align-middle">Nama Barang</td>
+                    <td rowspan="2" style="width: 320px" class="align-middle">Nama Barang</td>
                     <td colspan="2" class="align-middle">Qty</td>
                     <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
                     <td rowspan="2" style="width: 100px" class="align-middle">Jumlah</td>

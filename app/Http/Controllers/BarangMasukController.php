@@ -97,10 +97,16 @@ class BarangMasukController extends Controller
             'id_user' => Auth::user()->id
         ]);
 
-        $lastcode = AccPayable::max('id');
-        $lastnumber = (int) substr($lastcode, 2, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = AccPayable::join('barangmasuk', 'barangmasuk.id', 'ap.id_bm')
+                    ->selectRaw('max(ap.id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'AP'.sprintf('%04s', $lastnumber);
+        $newcode = 'AP'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $items = AccPayable::where('id_bm', $request->kode)->count();
         if($items != 1) {
@@ -287,6 +293,9 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcode = 'APP'.sprintf('%04s', $lastnumber);
 
+        $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)
+                ->orderBy('created_at', 'desc')->get();
+
         NeedApproval::create([
             'id' => $newcode,
             'tanggal' => Carbon::now()->toDateString(),
@@ -297,10 +306,10 @@ class BarangMasukController extends Controller
             'id_user' => Auth::user()->id
         ]);
 
-        $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)->get();
+        // $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)->get();
         // return response()->json($items);
 
-        if($items[0]->need_appdetil->count() != 0) {
+        if($items->first()->need_appdetil->count() != 0) {
             $detil = NeedAppDetil::where('id_app', $items[0]->need_appdetil[0]->id_app)->get();
             $gudang = $detil[0]->id_gudang;
         } else {
@@ -439,6 +448,15 @@ class BarangMasukController extends Controller
                     $updateStok = StokBarang::where('id_barang', $item->id_barang)
                         ->where('id_gudang', $request->kodeGudang)->first();
                     $updateStok->{'stok'} -= $item->qty;
+                    $updateStok->save();
+                }
+            }
+        } else {
+            for($i = 0; $i < $items->count(); $i++) {
+                if($items[$i]->id_barang != $detil[$i]->id_barang) {
+                    $updateStok = StokBarang::where('id_barang', $items[$i]->id_barang)
+                                ->where('id_gudang', $request->kodeGudang)->first();
+                    $updateStok->{'stok'} -= $items[$i]->qty;
                     $updateStok->save();
                 }
             }
