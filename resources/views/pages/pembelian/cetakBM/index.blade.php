@@ -112,7 +112,6 @@ const btnCetak = document.getElementById('btnCetak');
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
-    // alert('ok');
     window.location = "{{ route('cetak-bm-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
   }
   

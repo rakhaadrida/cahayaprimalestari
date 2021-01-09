@@ -336,7 +336,6 @@
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
-    // alert('ok');
     window.location = "{{ route('bm-after-print', $lastcode[0]->id) }}";
   }
   
