@@ -25,11 +25,13 @@
                 @php 
                   $i = 1; $total = 0;
                   $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))
-                          ->where('id_faktur', $a->id_bm)->get();
+                          ->where('id_faktur', $a->id_bm)->where('status', '!=', 'BATAL')->get();
+                  $potBM = App\Models\BarangMasuk::select(DB::raw('sum(potongan) as potongan'))
+                            ->where('id_faktur', $a->id_bm)->get();
                   $detilap = App\Models\DetilAP::where('id_ap', $a->id)->get();
                   $retur = App\Models\AP_Retur::selectRaw('sum(total) as total')
                           ->where('id_ap', $a->id)->get();
-                  $kurang = $totalBM[0]->totBM - $retur[0]->total;
+                  $kurang = $totalBM[0]->totBM - $retur[0]->total - $potBM[0]->potongan;
                 @endphp
                 @foreach($detilap as $d)
                   @if($d->transfer != 0)

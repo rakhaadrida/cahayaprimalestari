@@ -31,32 +31,26 @@
             </tr>
           </thead>
           <tbody>
-            @php $i=1; @endphp
+            @php $i = 1; @endphp
             @forelse($items as $item)
-              @if((($item->so != NULL) && ($item->so->user->roles != 'KENARI')) || (($item->bm != NULL) && ($item->bm->user->roles != 'KENARI')))
+              @if((($item->so != NULL) && ($item->so->user->roles == 'KENARI')) && (($item->tipe != 'Dokumen')))
                 <tr class="text-dark">
                   <td class="align-middle" align="center">{{ $i }}</td>
                   <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
                   <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</td>
-                  <td class="align-middle">
-                    @if($item->tipe == 'Faktur')
-                      {{ $item->so->customer->nama }}
-                    @else
-                      {{ $item->bm->supplier->nama }}
-                    @endif
-                  </td>
+                  <td class="align-middle">{{ $item->so->customer->nama }}</td>
                   <td class="align-middle" align="center">{{ $item->status }}</td>
                   <td class="align-middle">{{ $item->keterangan }}</td>
                   <td class="align-middle" align="center">
-                    <a href="{{ route('notif-show', $item->id) }}" class="btn btn-success btn-sm">
+                    <a href="{{ route('notif-show-kenari', $item->id) }}" class="btn btn-success btn-sm">
                       <i class="fas fa-fw fa-eye"></i>
                     </a>
                   </td>
                   <td class="align-middle" align="center">
                     @if(($item->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
-                      <a href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}" class="btn btn-primary btn-sm" style="width: 150px">Cetak</a>
+                      <a href="{{ route('cetak-faktur-kenari', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}" class="btn btn-primary btn-sm" style="width: 150px">Cetak</a>
                     @else
-                      <a href="{{ route('notif-read', $item->id) }}" class="btn btn-info btn-sm">Tandai Sudah Dibaca</a>
+                      <a href="{{ route('notif-read-kenari', $item->id) }}" class="btn btn-info btn-sm">Tandai Sudah Dibaca</a>
                     @endif
                   </td>
                 </tr>
@@ -67,6 +61,11 @@
                 <td colspan="8" class="text-center text-bold h4 p-2">Tidak Ada Data Notifikasi</td>
               </tr>
             @endforelse
+            @if($i == 1)
+              <tr>
+                <td colspan="8" class="text-center text-bold h4 p-2">Tidak Ada Data Notifikasi</td>
+              </tr>
+            @endif
           </tbody>
         </table>
       </div>

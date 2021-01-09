@@ -101,8 +101,10 @@
                   @php $i = 1; $tab = 5 @endphp
                   @forelse($ap as $a)
                     @php 
-                      $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'), 
-                              DB::raw('sum(potongan) as potongan'))->where('id_faktur', $a->id_bm)->get();
+                      $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))
+                              ->where('id_faktur', $a->id_bm)->where('status', '!=', 'BATAL')->get();
+                      $potBM = App\Models\BarangMasuk::select(DB::raw('sum(potongan) as potongan'))
+                              ->where('id_faktur', $a->id_bm)->get();
                       $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as 
                               totTransfer'))->where('id_ap', $a->id)->get();
                       $retur = App\Models\AP_Retur::selectRaw('sum(total) as total')
@@ -123,7 +125,7 @@
                         {{ $a->bm->last()->diskon == 'T' ? 'INPUT' : 'KOSONG' }}
                       </td>
                       <td align="right" class="align-middle">
-                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $totalBM[0]->potongan , 0, "", ",") : '' }}
+                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $potBM[0]->potongan, 0, "", ",") : '' }}
                       </td>
                       <td class="align-middle">
                         <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
@@ -133,7 +135,7 @@
                         <a href="#Retur{{ $a->id_bm }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">
-                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total, 0, "", ",") : '' }}
+                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total - $potBM[0]->potongan, 0, "", ",") : '' }}
                       </td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $a->id_bm }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>

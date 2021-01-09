@@ -240,7 +240,7 @@
                     <label for="ppn" class="col-2 col-form-label text-bold text-right text-dark">Potongan Lain-lain</label>
                     <span class="col-form-label text-bold">:</span>
                     <div class="col-2 mr-1">
-                      <input type="text" name="potongan" id="potongan" class="form-control col-form-label-sm text-bold text-dark text-right mt-1 potongan" placeholder="Input Potongan" onkeypress="return angkaSaja(event, 'OKE')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"  autocomplete="off" value="{{ number_format($items[0]->potongan, 0, "", ".") }}" />
+                      <input type="text" name="potongan" id="potongan" class="form-control col-form-label-sm text-bold text-dark text-right mt-1 potongan" placeholder="Input Potongan" onkeypress="return angkaSaja(event, 'OKE')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"  autocomplete="off" value="{{ number_format($potongan[0]->potongan, 0, "", ".") }}" />
                     </div>
                   </div>
                   <div class="form-group row justify-content-end total-so">

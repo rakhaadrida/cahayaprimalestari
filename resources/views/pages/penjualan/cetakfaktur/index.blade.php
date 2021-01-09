@@ -117,8 +117,7 @@ const btnCetak = document.getElementById('btnCetak');
   // const printTTR = document.getElementById("frameTTR").contentWindow;
   
   printFrame.window.onafterprint = function(e) {
-    // alert('ok');
-    // window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+    window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
   }
 
   printFrame.window.print();

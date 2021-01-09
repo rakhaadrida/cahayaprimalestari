@@ -101,9 +101,12 @@ class AccPayableController extends Controller
     }
 
     public function detail(Request $request, $id) {
-        $items = BarangMasuk::with(['supplier'])->where('id_faktur', $id)->get();
+        $items = BarangMasuk::with(['supplier'])->where('id_faktur', $id)->where('status', '!=', 'BATAL')->get();
+        $potongan = BarangMasuk::select(DB::raw('sum(potongan) as potongan'))->where('id_faktur', $id)->get();
+
         $data = [
             'items' => $items,
+            'potongan' => $potongan,
             'id' => $id
         ];
 

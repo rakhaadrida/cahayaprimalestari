@@ -17,7 +17,8 @@ class NotifController extends Controller
     public function index() {
         $items = Approval::with(['so', 'bm'])
                 ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'baca')
-                ->where('baca', 'F')->get();
+                ->where('baca', 'F')->latest()->get();
+                
         $so = SalesOrder::with(['customer'])
                 ->select('id', 'status', 'id_customer')
                 ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT'])

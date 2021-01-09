@@ -62,11 +62,13 @@ class DashboardController extends Controller
         $salesPerMonth = SalesOrder::selectRaw('sum(total) as sales, MONTH(tgl_so) month')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
                         ->groupBy('month')->get();
+        $returPerMonth = AR_Retur::selectRaw('sum(total) as total, MONTH(tanggal) month')
+                        ->whereYear('tanggal', $tahun)->groupBy('month')->get();
 
         $arrTotal = []; $j = 0;               
         for($i = 1; $i <= 12; $i++) {
             if(($j < $salesPerMonth->count()) && ($salesPerMonth[$j]->month == $i)) {
-                $int = (int) $salesPerMonth[$j]->sales;
+                $int = (int) $salesPerMonth[$j]->sales - $returPerMonth[$j]->total;
                 array_push($arrTotal, $int);
                 $j++;
             } else {

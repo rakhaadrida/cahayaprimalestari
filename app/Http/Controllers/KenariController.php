@@ -16,6 +16,7 @@ use App\Models\DetilAR;
 use App\Models\AR_Retur;
 use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
+use App\Models\Approval;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -153,6 +154,11 @@ class KenariController extends Controller
         $lastnumber++;
         $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         $kode = $newcode;
+
+        $statusHal = $status;
+
+        if($status != 'LIMIT')
+            $status = 'INPUT';
         
         SalesOrder::create([
             'id' => $kode,
@@ -163,7 +169,7 @@ class KenariController extends Controller
             'kategori' => $request->kategori,
             'tempo' => $tempo,
             'pkp' => $pkp,
-            'status' => 'INPUT',
+            'status' => $status,
             'id_customer' => $request->kodeCustomer,
             'id_user' => Auth::user()->id
         ]);
@@ -181,10 +187,11 @@ class KenariController extends Controller
             ]);
         }
 
-        $lastcode = NeedApproval::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+        $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         if($status == 'LIMIT') {
             NeedApproval::create([
@@ -193,7 +200,8 @@ class KenariController extends Controller
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
                 'id_dokumen' => $id,
-                'tipe' => 'Faktur'
+                'tipe' => 'Faktur',
+                'id_user' => Auth::user()->id
             ]);
         }
 
@@ -216,7 +224,7 @@ class KenariController extends Controller
             }
         }
 
-        if($status != 'CETAK')
+        if($statusHal != 'CETAK')
             $cetak = 'false';
         else {
             $cetak = 'true';
@@ -408,7 +416,8 @@ class KenariController extends Controller
             'status' => 'PENDING_UPDATE',
             'keterangan' => $request->keterangan,
             'id_dokumen' => $request->kode,
-            'tipe' => 'Faktur'
+            'tipe' => 'Faktur',
+            'id_user' => Auth::user()->id
         ]);
 
         for($i = 0; $i < $jumlah; $i++) {
@@ -611,5 +620,83 @@ class KenariController extends Controller
         ];
 
         return view('pages.penjualan.transaksiharian.show', $data);
+    }
+
+    public function indexNotif() {
+        $items = Approval::with(['so', 'bm'])
+                ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'baca')
+                ->where('baca', 'F')->latest()->get();
+
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.kenari.notif.index', $data);
+    }
+
+    public function showNotif($id) {
+        $gudang = Gudang::where('tipe', 'KENARI')->get();
+        $items = Approval::with(['so', 'bm'])
+                ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'baca')
+                ->where('baca', 'F')->get();
+
+        $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(total) as totKredit'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+        
+        $returPerCust = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        foreach($totalPerCust as $q) {
+            $q['total'] = $q->totKredit;
+            foreach($cicilPerCust as $h) {
+                if($q->id_customer == $h->id_customer) {
+                    $q['total'] -= $h->totCicil;
+                }
+            }
+            foreach($returPerCust as $r) {
+                if($q->id_customer == $r->id_customer) {
+                    $q['total'] -= $h->totCicil;
+                }
+            }
+        }
+
+        foreach($totalPerCust as $q) {
+            foreach($cicilPerCust as $h) {
+                if($q->id_customer == $h->id_customer) {
+                    $q['total'] = $q->totKredit - $h->totCicil;
+                }
+            }
+        }
+
+        $data = [
+            'gudang' => $gudang,
+            'notif' => $items,
+            'kode' => $id,
+            'total' => $totalPerCust
+        ];
+
+        return view('pages.kenari.notif.show', $data);
+    }
+
+    public function markAsRead($id) {
+        $item = Approval::where('id', $id)->first();
+        $item->{'baca'} = 'T';
+        $item->save();
+
+        return redirect()->route('notif-kenari');
     }
 }

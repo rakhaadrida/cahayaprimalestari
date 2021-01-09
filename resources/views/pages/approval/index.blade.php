@@ -46,7 +46,7 @@
                   <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
                 @endif
                 <td class="align-middle" align="center">{{ $status->last()->status }}</td>
-                <td class="align-middle">{{ $item->keterangan }}</td>
+                <td class="align-middle" align="center">{{ $item->keterangan }}</td>
                 <td class="align-middle" align="center">
                   <a href="{{ route('app-show', $item->id_dokumen) }}" class="btn btn-success btn-sm"><i class="fas fa-fw fa-eye"></i></a>
                 </td>

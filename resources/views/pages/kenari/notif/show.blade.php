@@ -28,29 +28,17 @@
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($notif as $item)
-                    @if((($item->so != NULL) && ($item->so->user->roles != 'KENARI')) || (($item->bm != NULL) && ($item->bm->user->roles != 'KENARI')))
+                    @if((($item->so != NULL) && ($item->so->user->roles == 'KENARI')) && (($item->tipe != 'Dokumen')))
                       <div class="carousel-item @if($item->id == $kode) active @endif"/>
                         @php 
-                          if($item->tipe != 'Dokumen') {
-                            $items = \App\Models\DetilSO::with(['so', 'barang'])
-                                      ->select('id_barang', 'diskon')
-                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty')
-                                      ->where('id_so', $item->id_dokumen)
-                                      ->groupBy('id_barang', 'diskon')
-                                      ->get();
+                          $items = \App\Models\DetilSO::with(['so', 'barang'])
+                                    ->select('id_barang', 'diskon')
+                                    ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                                    ->where('id_so', $item->id_dokumen)
+                                    ->groupBy('id_barang', 'diskon')
+                                    ->get();
 
-                            $itemsUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])->where('id_app', $item->id)->get();
-                          } 
-                          else {
-                            $items = \App\Models\DetilBM::with(['bm', 'barang'])
-                                      ->select('id_barang', 'diskon')
-                                      ->selectRaw('avg(harga) as harga, sum(qty) as qty')
-                                      ->where('id_bm', $item->id_dokumen)
-                                      ->groupBy('id_barang', 'diskon')
-                                      ->get();
-
-                            $itemsUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])->where('id_app', $item->id)->get();
-                          }
+                          $itemsUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])->where('id_app', $item->id)->get();
                         @endphp
                         <div class="container so-update-container text-dark">
                           <div class="row">
@@ -68,13 +56,7 @@
                                 <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama @if($item->tipe != 'Dokumen') Customer @else Supplier @endif</label>
                                 <span class="col-form-label text-bold">:</span>
                                 <div class="col-7">
-                                  <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                                  @if($item->tipe != 'Dokumen')
-                                    value="{{ $item->so->customer->nama }} ({{ $item->so->id_customer }})"
-                                  @else
-                                    value="{{ $item->bm->supplier->nama }} ({{ $item->bm->id_supplier }})"
-                                  @endif
-                                  />
+                                  <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->so->customer->nama }} ({{ $item->so->id_customer }})" />
                                 </div>
                               </div>
                             </div>
@@ -85,13 +67,7 @@
                                 <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal @if($item->tipe != 'Dokumen') SO @else BM @endif</label>
                                 <span class="col-form-label text-bold">:</span>
                                 <div class="col-2">
-                                  <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                                  @if($item->tipe != 'Dokumen')
-                                    value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" 
-                                  @else
-                                    value="{{ \Carbon\Carbon::parse($item->bm->tanggal)->format('d-M-y') }}" 
-                                  @endif
-                                  />
+                                  <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" />
                                 </div>
                               </div>
                             </div>
@@ -344,14 +320,6 @@
                             </div>
                           </div>
 
-                          {{-- @php
-                            $items = \App\Models\DetilSO::with(['so', 'barang'])
-                                          ->select('id_barang', 'diskon')
-                                          ->selectRaw('avg(harga) as harga, sum(qty) as qty')
-                                          ->where('id_so', $item->id_dokumen)
-                                          ->groupBy('id_barang', 'diskon')
-                                          ->get();
-                          @endphp --}}
                           <!-- Tabel Data Update SO -->
                           <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                             <thead class="text-center text-bold text-dark">
@@ -487,13 +455,13 @@
                         <div class="form-row justify-content-center">
                           <div class="col-3">
                             @if(($item->tipe == 'Faktur') && (($item->status == 'UPDATE') || ($item->status == 'APPROVE_LIMIT')))
-                              <button type="submit" formaction="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}"  formmethod="GET" class="btn btn-primary btn-block text-bold">Cetak</button>
+                              <button type="submit" formaction="{{ route('cetak-faktur-kenari', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}"  formmethod="GET" class="btn btn-primary btn-block text-bold">Cetak</button>
                             @else
-                              <button type="submit" formaction="{{ route('notif-read', $item->id) }}" formmethod="GET" class="btn btn-success btn-block text-bold">Tandai Sudah Dibaca</button>
+                              <button type="submit" formaction="{{ route('notif-read-kenari', $item->id) }}" formmethod="GET" class="btn btn-success btn-block text-bold">Tandai Sudah Dibaca</button>
                             @endif
                           </div>
                           <div class="col-3">
-                            <button type="submit" formaction="{{ route('notif') }}" formmethod="GET" class="btn btn-outline-secondary btn-block text-bold">Kembali</button>
+                            <button type="submit" formaction="{{ route('notif-kenari') }}" formmethod="GET" class="btn btn-outline-secondary btn-block text-bold">Kembali</button>
                           </div>
                         </div>
                         <!-- End Button Submit dan Reset -->

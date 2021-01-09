@@ -41,11 +41,12 @@ class ApprovalController extends Controller
 
     public function show($id) {
         $approval = NeedApproval::with(['so', 'bm'])
-                ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
+                ->select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe', 'id_user')
                 ->orderBy('created_at', 'asc')->groupBy('id_dokumen')->get();
 
         // return response()->json($approval);
         $gudang = Gudang::where('tipe', 'BIASA')->get();
+        $kenari = Gudang::where('tipe', 'KENARI')->get();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
                         ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
@@ -83,6 +84,7 @@ class ApprovalController extends Controller
         $data = [
             'approval' => $approval,
             'gudang' => $gudang,
+            'kenari' => $kenari,
             'kode' => $id,
             'total' => $totalPerCust
         ];
@@ -103,40 +105,65 @@ class ApprovalController extends Controller
         if($statusApp == 'PENDING_UPDATE') {
             $item->{'status'} = "UPDATE";
             $item->{'total'} = str_replace(".", "", $request->input("grandtotal".$id));
+            $item->save(); 
         }
         elseif($status == 'PENDING_BATAL') {
             $item->{'status'} = "BATAL";
+            $item->save(); 
             if($tipe == 'Faktur') {
                 $ar = AccReceivable::where('id_so', $id)->get();
                 $detilar = DetilAR::where('id_ar', $ar[0]->id)->get();
                 if($detilar->count() != 0) {
-                    $arRetur = AR_Retur::where('id_ap', $ar[0]->id)->get();
-                    if($arRetur->count() != 0) {
-                        $detilARR = DetilRAR::where('id_retur', $arRetur[0]->id)->delete();
-                        AR_Retur::where('id_ar', $ar[0]->id)->delete();
-                    }
                     DetilAR::where('id_ar', $ar[0]->id)->delete();
+                }
+
+                $arRetur = AR_Retur::where('id_ar', $ar[0]->id)->get();
+                if($arRetur->count() != 0) {
+                    $detilARR = DetilRAR::where('id_retur', $arRetur[0]->id)->delete();
+                    AR_Retur::where('id_ar', $ar[0]->id)->delete();
                 }
                 AccReceivable::where('id_so', $id)->delete(); 
             } else {
-                $ap = AccPayable::where('id_bm', $item->{'id_faktur'})->get();
-                $detilap = DetilAP::where('id_ap', $ap[0]->id)->get();
-                if($detilap->count() != 0) {
+                $bm = BarangMasuk::where('id_faktur', $item->{'id_faktur'})
+                    ->where('status', '!=', 'BATAL')->count();
+
+                if($bm == 0) { 
+                    $ap = AccPayable::where('id_bm', $item->{'id_faktur'})->get();
+                    $detilap = DetilAP::where('id_ap', $ap[0]->id)->get();
+                    if($detilap->count() != 0) {
+                        DetilAP::where('id_ap', $ap[0]->id)->delete();
+                    }
+
                     $apRetur = AP_Retur::where('id_ap', $ap[0]->id)->get();
                     if($apRetur->count() != 0) {
                         $detilAPR = DetilRAP::where('id_retur', $apRetur[0]->id)->delete();
                         AP_Retur::where('id_ap', $ap[0]->id)->delete();
                     }
-                    DetilAP::where('id_ap', $ap[0]->id)->delete();
+                    AccPayable::where('id_bm', $item->{'id_faktur'})->delete(); 
                 }
-                AccPayable::where('id_bm', $item->{'id_faktur'})->delete(); 
             }
         }
         elseif($status == 'LIMIT') {
             $item->{'status'} = "APPROVE_LIMIT";
-        }
+            $item->save(); 
 
-        $item->save(); 
+            $waktu = Carbon::now('+07:00');
+            $bulan = $waktu->format('m');
+            $month = $waktu->month;
+            $tahun = substr($waktu->year, -2);
+
+            $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                        ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
+            $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
+            $lastnumber++;
+            $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+
+            AccReceivable::create([
+                'id' => $newcode,
+                'id_so' => $id,
+                'keterangan' => 'BELUM LUNAS'
+            ]);
+        }
 
         $lastcode = Approval::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
@@ -282,14 +309,40 @@ class ApprovalController extends Controller
                     }
                 }
             } else {
-                for($i = 0; $i < $detil->count(); $i++) {
+                foreach($detil as $d) {
+                    $cek = 0;
+                    foreach($items[0]->need_appdetil as $item) {
+                        if($item->id_barang == $d->id_barang) {
+                            $cek = 1; 
+                            break;
+                        }
+                    }
+
+                    if($tipe == 'Faktur')
+                        $gudang = $d->id_gudang;
+                    else
+                        $gudang = $request->$id;
+
+                    if($cek == 0) {
+                        $updateStok = StokBarang::where('id_barang', $d->id_barang)
+                                    ->where('id_gudang', $gudang)->first();
+                        if($tipe == 'Faktur')
+                            $updateStok->{'stok'} -= $d->qty;
+                        else
+                            $updateStok->{'stok'} += $d->qty;
+
+                        $updateStok->save();
+                    }
+                }
+
+                /* for($i = 0; $i < $detil->count(); $i++) {
                     if($detil[$i]->id_barang != $items[0]->need_appdetil[$i]->id_barang) {
                         $updateStok = StokBarang::where('id_barang', $detil[$i]->id_barang)
                                     ->where('id_gudang', $detil[$i]->id_gudang)->first();
                         $updateStok->{'stok'} -= $detil[$i]->qty;
                         $updateStok->save();
                     }
-                }
+                } */
             }
 
             foreach($items[0]->need_appdetil as $item) {
@@ -319,7 +372,10 @@ class ApprovalController extends Controller
                             $updateStok->{'stok'} -= ($item->qty - $stokAwal->{'qty'});
                     }
                 } else {
-                    $updateStok->{'stok'} += $item->qty;
+                    if($tipe == 'Faktur') 
+                        $updateStok->{'stok'} += $item->qty;
+                    else
+                        $updateStok->{'stok'} -= $item->qty;
                 } 
 
                 $updateStok->save(); 
@@ -346,7 +402,7 @@ class ApprovalController extends Controller
                 if($tipe == 'Faktur') 
                     $gudang = $item->id_gudang;
                 else
-                    $gudang = $item->bm->id_gudang;
+                    $gudang = $request->$id;
 
                 $updateStok = StokBarang::where('id_barang', $item->id_barang)
                         ->where('id_gudang', $gudang)->first();

@@ -41,7 +41,7 @@
       </div>
     </li>
 
-    @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN'))
+    @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN') | (Auth::user()->roles == 'KENARI'))
     <!-- Nav Item - Alerts -->
     <li class="nav-item dropdown no-arrow mx-1">
       <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -49,9 +49,8 @@
         <!-- Counter - Alerts -->
         @if(Auth::user()->roles == 'SUPER')
           @php 
-            $items = \App\Models\NeedApproval::All();
+            $items = \App\Models\NeedApproval::groupBy('id_dokumen')->get();
           @endphp
-          <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
         @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
           @php 
             $so = \App\Models\SalesOrder::with(['customer'])
@@ -72,8 +71,19 @@
               return $sort->approval[0]->created_at;
           });
           @endphp 
-          <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
+        @elseif(Auth::user()->roles == 'KENARI')
+          @php 
+            $items = \App\Models\SalesOrder::with(['customer'])
+                ->join('users', 'users.id', 'so.id_user')
+                ->select('so.id', 'status', 'id_customer')
+                ->where('roles', 'KENARI')
+                ->whereIn('status', ['UPDATE', 'BATAL', 'APPROVE_LIMIT'])
+                ->whereHas('approval', function($q) {
+                    $q->where('baca', 'F');
+                })->get();
+          @endphp
         @endif
+        <span class="badge badge-danger badge-counter">{{ $items->count() }}</span>
       </a>
       <!-- Dropdown - Alerts -->
       <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
@@ -87,7 +97,7 @@
               <a class="dropdown-item d-flex align-items-center" 
               @if(Auth::user()->roles == 'SUPER') 
                 href="{{ route('app-show', $item->id_dokumen) }}"
-              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR'))
+              @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'KENARI'))
                 href="{{ route('notif-show', $item->id) }}"
               @endif
               >
@@ -110,7 +120,7 @@
                         Customer {{ $item->so->customer->nama }} melebihi limit pada faktur {{ $item->id_dokumen }}
                       </span>
                     @endif
-                  @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR'))
+                  @elseif((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'KENARI'))
                     <div class="small text-dark-600">
                       {{ \Carbon\Carbon::parse($item->approval[0]->tanggal)->format('d-M-y') }}
                     </div>

@@ -67,6 +67,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\SalesOrder', 'id_user', 'id');
     }
 
+    public function need_approval() {
+        return $this->hasMany('App\Models\NeedApproval', 'id_user', 'id');
+    }
+
     public function tandaterima() {
         return $this->hasMany('App\Models\TandaTerima', 'id_user', 'id');
     }

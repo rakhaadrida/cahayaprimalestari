@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\TandaTerima;
+use App\Models\Approval;
 use Carbon\Carbon;
 use PDF;
 
@@ -104,6 +105,14 @@ class CetakFakturController extends Controller
         foreach($items as $item) {
             $item->status = 'CETAK';
             $item->save();
+
+            $app = Approval::where('id_dokumen', $item->id)->latest()->get();
+            if($app->count() != 0) {
+                foreach($app as $a) {
+                    $a->baca = 'T';
+                    $a->save();
+                }
+            }
         }
 
         $data = [

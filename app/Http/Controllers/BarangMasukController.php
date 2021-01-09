@@ -309,7 +309,7 @@ class BarangMasukController extends Controller
         // $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)->get();
         // return response()->json($items);
 
-        if($items->first()->need_appdetil->count() != 0) {
+        if(($items->count() != 0) && ($items->first()->need_appdetil->count() != 0)) {
             $detil = NeedAppDetil::where('id_app', $items[0]->need_appdetil[0]->id_app)->get();
             $gudang = $detil[0]->id_gudang;
         } else {

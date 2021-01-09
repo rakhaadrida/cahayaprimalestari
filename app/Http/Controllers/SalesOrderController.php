@@ -132,14 +132,19 @@ class SalesOrderController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
-                    ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
-        $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $kode = $newcode;
+
+        $statusHal = $status;
+
+        if($status != 'LIMIT')
+            $status = 'INPUT';
         
         SalesOrder::create([
-            'id' => $id,
+            'id' => $kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
             'total' => str_replace(".", "", $request->grandtotal),
@@ -147,10 +152,16 @@ class SalesOrderController extends Controller
             'kategori' => $request->kategori,
             'tempo' => $tempo,
             'pkp' => $pkp,
-            'status' => 'INPUT',
+            'status' => $status,
             'id_customer' => $request->kodeCustomer,
             'id_user' => Auth::user()->id
         ]);
+
+        $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
+        $lastnumber++;
+        $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         if($status != 'LIMIT') {
             AccReceivable::create([
@@ -184,7 +195,7 @@ class SalesOrderController extends Controller
                 $diskonRp = str_replace(".", "", $request->diskonRp[$i]) / sizeof($arrGudang);
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
-                        'id_so' => $id,
+                        'id_so' => $kode,
                         'id_barang' => $request->kodeBarang[$i],
                         'id_gudang' => $arrGudang[$j],
                         'harga' => str_replace(".", "", $request->harga[$i]),
@@ -223,7 +234,7 @@ class SalesOrderController extends Controller
             }
         }
 
-        if($status != 'CETAK')
+        if($statusHal != 'CETAK')
             $cetak = 'false';
         else {
             $cetak = 'true';

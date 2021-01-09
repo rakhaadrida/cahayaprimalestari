@@ -549,10 +549,9 @@
 @if($status == 'true')
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
-  // printFrame.window.onafterprint = function(e) {
-    // alert('ok');
-    // window.location = "{{ route('so-after-print', $lastcode[0]->id) }}";
-  // }
+  printFrame.window.onafterprint = function(e) {
+    window.location = "{{ route('so-after-print', $lastcode[0]->id) }}";
+  }
   
   printFrame.window.focus();
   printFrame.window.print();

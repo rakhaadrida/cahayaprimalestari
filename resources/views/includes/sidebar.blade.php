@@ -32,9 +32,9 @@
   </li>
   @endif
 
-  @if(Auth::user()->roles == 'ADMIN')
+  @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'KENARI'))
     <li class="nav-item sidebar-menu-icon" >
-      <a class="nav-link" href="{{ route('notif') }}">
+      <a class="nav-link" @if(Auth::user()->roles == 'ADMIN') href="{{ route('notif') }}" @else href="{{ route('notif-kenari') }}" @endif>
         <i class="fas fa-fw fa-bell"></i>
         <span>Notifikasi</span></a>
     </li>
@@ -54,6 +54,7 @@
   @endif
 
   @if(Auth::user()->roles == 'KENARI')
+    <hr class="sidebar-divider">
     <li class="nav-item sidebar-menu-icon" >
       <a class="nav-link" href="{{ route('stok-kenari') }}">
         <i class="fas fa-fw fa-warehouse"></i>

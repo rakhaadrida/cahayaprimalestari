@@ -279,8 +279,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
         Route::get('notif/read/{id}', 'NotifController@markAsRead')->name('notif-read');
-        Route::get('notif/afterPrint/{id}/{kode}', 'NotifController@afterPrint')
-            ->name('notif-after-print');
+        Route::get('notif/afterPrint/{id}/{kode}', 'NotifController@afterPrint')->name('notif-after-print');
     });
 
     Route::group(['roles'=>['AR', 'SUPER', 'OFFICE02']], function() {
@@ -376,6 +375,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     });
 
     Route::group(['roles'=>'KENARI'], function() {
+        // Notif
+        Route::get('kenari/notif', 'KenariController@indexNotif')->name('notif-kenari');
+        Route::get('kenari/notif/show/{id}', 'KenariController@showNotif')->name('notif-show-kenari');
+        Route::get('kenari/notif/read/{id}', 'KenariController@markAsRead')->name('notif-read-kenari');
+
         // Stok Kenari
         Route::get('kenari/stok/index', 'KenariController@index')->name('stok-kenari');
 

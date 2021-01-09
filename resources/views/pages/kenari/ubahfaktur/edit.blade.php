@@ -97,7 +97,7 @@
                 <thead class="text-center text-bold text-dark">
                   <tr>
                     <td class="align-middle" style="width: 30px">No</td>
-                    <td class="align-middle" style="width: 80px">Kode</td>
+                    <td class="align-middle" style="width: 90px">Kode</td>
                     <td class="align-middle">Nama Barang</td>
                     <td class="align-middle" style="width: 55px">Qty</td>
                     <td class="align-middle" style="width: 50px">Tipe Harga</td>
