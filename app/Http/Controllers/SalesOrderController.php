@@ -302,7 +302,8 @@ class SalesOrderController extends Controller
     }
 
     public function change() {
-        $so = SalesOrder::All();
+        $so = SalesOrder::join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')->get();
         $customer = Customer::All();
 
         $data = [
@@ -314,6 +315,8 @@ class SalesOrderController extends Controller
     }
 
     public function show(Request $request) {
+        $id = $request->id;
+        $kode = $request->kode;
         $tglAwal = $request->tglAwal;
         $tglAkhir = $request->tglAkhir;
         if(($tglAwal != NULL) && ($tglAkhir != NULL)) {
@@ -327,22 +330,29 @@ class SalesOrderController extends Controller
 
         if($isi == 1) {
             $items = SalesOrder::with(['customer', 'need_approval'])
-                    ->where('id', $request->id)
-                    ->orWhere('id_customer', $request->kode)
-                    ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir])
-                    ->orderBy('id', 'asc')->get();
+                    ->join('users', 'users.id', 'so.id_user')
+                    ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+                    ->where(function($q) use ($id, $kode, $tglAwal, $tglAkhir) {
+                        $q->where('so.id', $id)
+                        ->orWhere('id_customer', $kode)
+                        ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir]);
+                    })->orderBy('so.id', 'asc')->get();
         } else {
             $items = SalesOrder::with(['customer', 'need_approval'])
-                    ->where('id_customer', $request->kode)
-                    ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
-                    ->orWhere('id', $request->id)
-                    ->orderBy('id', 'asc')->get();
+                    ->join('users', 'users.id', 'so.id_user')
+                    ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+                    ->where(function($q) use ($id, $kode, $tglAwal, $tglAkhir) {
+                        $q->where('id_customer', $kode)
+                        ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
+                        ->orWhere('so.id', $id);
+                    })->orderBy('so.id', 'asc')->get();
         }
         
         $customer = Customer::All();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
         $stok = StokBarang::All();
-        $so = SalesOrder::All();
+        $so = SalesOrder::join('users', 'users.id', 'so.id_user')
+                    ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')->get();
         
         $data = [
             'items' => $items,
@@ -381,7 +391,7 @@ class SalesOrderController extends Controller
    
         // return response()->json($items);
 
-        if($items->first()->need_appdetil->count() != 0) {
+        if(($items->count() != 0) && ($items->first()->need_appdetil->count() != 0)) {
             $detil = NeedAppDetil::where('id_app', $items[0]->need_appdetil[0]->id_app)->get();
         } else {
             $detil = DetilSO::with(['so'])->where('id_so', $id)->get();
@@ -529,11 +539,19 @@ class SalesOrderController extends Controller
                 }
             }
         } else {
-            for($i = 0; $i < $items->count(); $i++) {
-                if($items[$i]->id_barang != $detil[$i]->id_barang) {
-                    $updateStok = StokBarang::where('id_barang', $items[$i]->id_barang)
-                                ->where('id_gudang', $items[$i]->id_gudang)->first();
-                    $updateStok->{'stok'} += $items[$i]->qty;
+            foreach($items as $item) {
+                $cek = 0;
+                foreach($detil as $d) {
+                    if($item->id_barang == $d->id_barang) {
+                        $cek = 1; 
+                        break;
+                    }
+                }
+
+                if($cek == 0) {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $item->id_gudang)->first();
+                    $updateStok->{'stok'} += $item->qty;
                     $updateStok->save();
                 }
             }

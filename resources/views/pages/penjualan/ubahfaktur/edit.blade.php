@@ -103,17 +103,17 @@
                 <thead class="text-center text-bold text-dark">
                   <tr>
                     <td class="align-middle" style="width: 30px">No</td>
-                    <td class="align-middle" style="width: 80px">Kode</td>
+                    <td class="align-middle" style="width: 90px">Kode</td>
                     <td class="align-middle">Nama Barang</td>
                     <td class="align-middle" style="width: 55px">Qty</td>
                     @foreach($gudang as $g)
-                      <td class="align-middle" style="width: 55px">{{ substr($g->nama, 0, 3) }}</td>
+                      <td class="align-middle" style="width: 45px">{{ substr($g->nama, 0, 3) }}</td>
                     @endforeach
                     <td class="align-middle" style="width: 50px">Tipe Harga</td>
                     <td class="align-middle" style="width: 80px">Harga</td>
                     <td class="align-middle" style="width: 100px">Jumlah</td>
                     <td class="align-middle" style="width: 100px">Diskon(%)</td>
-                    <td class="align-middle" style="width: 80px">Diskon(Rp)</td>
+                    <td class="align-middle" style="width: 70px">Diskon(Rp)</td>
                     <td class="align-middle" style="width: 100px">Netto (Rp)</td>
                     <td class="align-middle">Hapus</td>
                   </tr>
@@ -145,7 +145,7 @@
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
-                        <input type="text" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
+                        <input type="hidden" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
                       </td>
                       <td> 
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required>
@@ -178,9 +178,9 @@
                         <input type="hidden" name="teksSat[]" class="teksSat" value="{{ substr($item->barang->satuan, 0, 3) }}">
                         <input type="hidden" name="KodeGudangArr[]" class="text-bold text-dark kodeGudangArr" value="{{ $arrKode }}">
                         <input type="hidden" name="qtyAwalArr[]" class="text-bold text-dark qtyAwalArr" value="{{ $arrQty }}">
-                        <input type="hidden" name="kodeGudang[]" class="kodeGudang" 
+                        <input type="text" name="kodeGudang[]" class="kodeGudang" 
                         value="{{ $arrKode }}">
-                        <input type="hidden" name="qtyGudang[]" class="qtyGudang"
+                        <input type="text" name="qtyGudang[]" class="qtyGudang"
                         value="{{ $arrQty }}">
                       </td>
                       @foreach($gudang as $g)
@@ -238,7 +238,7 @@
                         } 
                         $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                       @endphp
-                      <td align="right" style="width: 120px" >
+                      <td align="right" >
                         <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
                         value="{{ number_format((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}" >
                       </td>
@@ -439,7 +439,7 @@ const modalGudang = document.querySelectorAll(".modalGudang");
 const totalstok = document.querySelectorAll(".totalstok");
 const totalsatuan = document.querySelectorAll(".totalsatuan");
 const nmbrg = document.querySelectorAll(".nmbrg");
-var ukuran; var satuanUkuran; var pcs;
+var ukuran; var satuanUkuran; var pcs; var qtyJoharAwal;
 var netPast; var cek; var stokTambah; var qtyAwalModal;
 var kodeModal; var arrKodeGud; var arrQtyAwal; var arrQtyGud;
 var totTemp; var qtyJohar; var qtyLebih; var stokAwal; var kodeAwal;
@@ -616,8 +616,14 @@ for(let i = 0; i < qty.length; i++) {
         }
         // qtyGudang[i].value = +stokJohar + +arrQtyAwal[0];
         qtyAwalModal = +arrQtyAwal[0] + (+e.target.value - +arrQtyAwal[0] - +stokAwal) - sisaQty[i].textContent;
-        kodeGudang[i].value = `${arrKodeGud[0]},${kodeAwal}`;
-        qtyGudang[i].value = `${qtyAwalModal},${stokAwal}`;
+        if(kodeAwal != arrKodeGud[0]) {
+          kodeGudang[i].value = `${arrKodeGud[0]},${kodeAwal}`;
+          qtyGudang[i].value = `${qtyAwalModal},${stokAwal}`;
+        } else {
+          qtyJoharAwal = +qtyAwalModal + +stokAwal;
+          kodeGudang[i].value = `${arrKodeGud[0]}`;
+          qtyGudang[i].value = `${qtyJoharAwal}`;
+        }
       }
       else {
         if(+e.target.value < +qtyAwal[i].value) {
@@ -921,7 +927,8 @@ for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
-      grandtotal.value = subtotal.value;
+      totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
     }
 
     for(let j = i; j < hapusBaris.length; j++) {

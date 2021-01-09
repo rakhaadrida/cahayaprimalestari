@@ -480,14 +480,31 @@ class KenariController extends Controller
                 }
             }
         } else {
-            for($i = 0; $i < $items->count(); $i++) {
+            foreach($items as $item) {
+                $cek = 0;
+                foreach($detil as $d) {
+                    if($item->id_barang == $d->id_barang) {
+                        $cek = 1; 
+                        break;
+                    }
+                }
+
+                if($cek == 0) {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                        ->where('id_gudang', $item->id_gudang)->first();
+                    $updateStok->{'stok'} += $item->qty;
+                    $updateStok->save();
+                }
+            }
+
+            /* for($i = 0; $i < $items->count(); $i++) {
                 if($items[$i]->id_barang != $detil[$i]->id_barang) {
                     $updateStok = StokBarang::where('id_barang', $items[$i]->id_barang)
                                 ->where('id_gudang', $items[$i]->id_gudang)->first();
                     $updateStok->{'stok'} += $items[$i]->qty;
                     $updateStok->save();
                 }
-            }
+            } */
         }
 
         $data = [
