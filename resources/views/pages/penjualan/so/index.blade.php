@@ -240,7 +240,7 @@
                             <h4 class="modal-title text-bold">Pilih Gudang</h4>
                           </div>
                           <div class="modal-body text-dark">
-                            <p>Qty order melebihi stok pada gudang <strong>{{ $stok[0]->gudang->nama }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
+                            <p>Qty order melebihi stok pada gudang <strong>{{ $stok->count() != 0 ? $stok[0]->gudang->nama : '' }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
                             <input type="hidden" id="kodeModal{{$i-1}}" value="{{$i-1}}">
                             <div class="form-group row" style="margin-top: -10px">
                               <label for="kode" class="col-4 col-form-label text-bold">Qty Order</label>
@@ -769,7 +769,7 @@ function displayRow(e) {
             <h4 class="modal-title text-bold">Pilih Gudang</h4>
           </div>
           <div class="modal-body text-dark">
-            <p>Qty order melebihi stok pada gudang <strong>{{ $stok[0]->gudang->nama }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
+            <p>Qty order melebihi stok pada gudang <strong>{{ $stok->count() != 0 ? $stok[0]->gudang->nama : '' }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
             <input type="hidden" id="kodeModal${newNum}" value="${newNum}">
             <div class="form-group row" style="margin-top: -10px">
               <label for="kode" class="col-4 col-form-label text-bold">Qty Order</label>

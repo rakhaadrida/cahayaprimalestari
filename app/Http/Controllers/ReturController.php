@@ -565,15 +565,20 @@ class ReturController extends Controller
         $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
         $newcode = 'TRM'.sprintf("%04s", $lastnumber);
+
         $items = DetilRB::where('id_retur', $id)->get();
-        $terima = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
-                ->selectRaw('sum(qty_terima) as qty_terima')->selectRaw('sum(qty_batal) as qty_batal')
-                ->where('id_retur', $id)->groupBy('id_barang')->get();
+        // $terima = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+        //         ->selectRaw('sum(qty_terima) as qty_terima')->selectRaw('sum(qty_batal) as qty_batal')
+        //         ->where('id_retur', $id)->groupBy('id_barang')->get();
 
         $t = 0; $qty = 0;
         foreach($items as $i) {
             $tglTerima = Carbon::now()->toDateString();
             // $tglTerima = $this->formatTanggal($tglTerima, 'Y-m-d');
+
+            $terima = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                ->selectRaw('sum(qty_terima) as qty_terima')->selectRaw('sum(qty_batal) as qty_batal')
+                ->where('id_retur', $id)->where('id_barang', $i->id_barang)->get();
 
             $rt = ReturTerima::where('id', $newcode)->get();
             if($rt->count() == 0) {
@@ -596,7 +601,9 @@ class ReturController extends Controller
                 ]);
             }
 
-            $qty = $i->qty_retur - $terima[$t]->qty_terima - $terima[$t]->qty_batal;
+            if($terima->count() != 0) 
+                $qty = $i->qty_retur - $terima[0]->qty_terima - $terima[0]->qty_batal;
+
             if($qty != 0) {
                 DetilRT::create([
                     'id_terima' => $newcode,

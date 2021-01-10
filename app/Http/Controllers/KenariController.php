@@ -174,10 +174,11 @@ class KenariController extends Controller
             'id_user' => Auth::user()->id
         ]);
 
-        $lastcode = AccReceivable::max('id');
-        $lastnumber = (int) substr($lastcode, 2, 4);
+        $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'AR'.sprintf('%04s', $lastnumber);
+        $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         if($status != 'LIMIT') {
             AccReceivable::create([
@@ -186,12 +187,6 @@ class KenariController extends Controller
                 'keterangan' => 'BELUM LUNAS'
             ]);
         }
-
-        $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
-                    ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
-        $lastnumber++;
-        $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         if($status == 'LIMIT') {
             NeedApproval::create([
