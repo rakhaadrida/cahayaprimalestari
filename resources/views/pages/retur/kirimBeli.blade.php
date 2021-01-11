@@ -35,12 +35,13 @@
                     <th class="align-middle" style="width: 100px">Tgl. Terima</th>
                     <th class="align-middle" style="width: 70px">Qty Terima</th>
                     <th class="align-middle" style="width: 70px">Qty Ditolak</th>
+                    <th class="align-middle" style="width: 70px">Potong Tagihan</th>
                     <th class="align-middle" style="width: 70px">Qty Kurang</th>
                   </tr>
                 </thead>
                 <tbody class="table-ar">
                   @php 
-                    $i = 1; $totalTerima = 0; $totalBatal = 0; $kode = $r->id;
+                    $i = 1; $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kode = $r->id;
                     $returTerima = App\Models\DetilRT::join('returterima', 'returterima.id',
                                   'detilrt.id_terima')->where('id_retur', $r->id)
                                   ->where('id_barang', $d->id_barang)->get();
@@ -56,13 +57,15 @@
                         <td class="text-center">{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-M-y') }}</td>
                         <td class="text-right">{{ number_format($dr->qty_terima, 0, "", ".") }}</td>
                         <td class="text-right">{{ number_format($dr->qty_batal, 0, "", ".") }}</td>
-                        @php $kurang -= ($dr->qty_terima + $dr->qty_batal); @endphp
+                        <td class="text-right">{{ number_format($dr->potong, 0, "", ".") }}</td>
+                        @php $kurang -= ($dr->qty_terima + $dr->qty_batal + $dr->potong); @endphp
                         <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
                       </tr>
-                      @php $i++; $totalTerima += $dr->qty_terima; $totalBatal += $dr->qty_batal; @endphp
+                      @php $i++; $totalTerima += $dr->qty_terima; $totalBatal += $dr->qty_batal; 
+                            $totalPotong += $dr->potong; @endphp
                     @endforeach
                   @endif
-                  @if($d->qty_retur != $totalTerima + $totalBatal)
+                  @if($d->qty_retur != $totalTerima + $totalBatal + $totalPotong)
                     <input type="hidden" name="kurangAwal" class="kurangAwal" value="{{ $kurang }}">
                     <tr class="text-dark text-bold">
                       <td class="text-center align-middle">{{ $i }}</td>
@@ -78,13 +81,14 @@
                       <td class="text-right align-middle">
                         <input type="text" name="batal{{$r->id}}{{$d->id_barang}}" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
+                      <td class="text-right align-middle"></td>
                       <td class="text-right align-middle">
                         <input type="text" name="kurang{{$d->id_barang}}" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
                       </td>
                     </tr>
                   @endif
                   <tr class="bg-gradient-danger text-white text-bold">
-                    <td colspan="5" class="text-center">Total</td>
+                    <td colspan="6" class="text-center">Total</td>
                     <td class="text-right">{{ number_format($totalTerima, 0, "", ".") }}</td>
                     <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>
                     <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>

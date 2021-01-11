@@ -519,7 +519,8 @@ class ReturController extends Controller
                     'id_terima' => $newcode,
                     'id_barang' => $i->id_barang,
                     'qty_terima' => $request->{"terima".$request->kode.$i->id_barang},
-                    'qty_batal' => $request->{"batal".$request->kode.$i->id_barang}
+                    'qty_batal' => $request->{"batal".$request->kode.$i->id_barang},
+                    'potong' => NULL
                 ]);
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
@@ -609,7 +610,8 @@ class ReturController extends Controller
                     'id_terima' => $newcode,
                     'id_barang' => $i->id_barang,
                     'qty_terima' => NULL,
-                    'qty_batal' => $qty
+                    'qty_batal' => NULL,
+                    'potong' => $qty
                 ]);
             }
 

@@ -12,7 +12,7 @@ class DetilRT extends Model
     protected $table = "detilrt";
     protected $primaryKey = ['id_terima', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_terima', 'id_barang', 'qty_terima', 'qty_batal'];
+    protected $fillable = ['id_terima', 'id_barang', 'qty_terima', 'qty_batal', 'potong'];
 
     public $incrementing = false;
 

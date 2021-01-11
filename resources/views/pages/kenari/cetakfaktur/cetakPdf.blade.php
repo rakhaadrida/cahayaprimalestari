@@ -560,7 +560,7 @@
                     <br>
                     <span>Rekening Bank BCA</span>
                     <br>
-                    <span>a/n Irianti Irawan 0911276444</span>
+                    <span>a/n Indah Ramadhon 5790416491</span>
                   </div>
                 </td>
                 <td style="width: 90px">
