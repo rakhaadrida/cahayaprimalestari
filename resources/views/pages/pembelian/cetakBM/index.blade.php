@@ -77,7 +77,7 @@
                     @php $i++; @endphp
                   @empty
                     <tr>
-                      <td colspan="7" class="text-center">Tidak Ada Data Barang Masuk pada Tanggal Ini</td>
+                      <td colspan="7" class="text-center text-bold text-dark h4 py-2">Tidak Ada Data Barang Masuk yang Belum Dicetak</td>
                     </tr>
                   @endforelse
                 </tbody>

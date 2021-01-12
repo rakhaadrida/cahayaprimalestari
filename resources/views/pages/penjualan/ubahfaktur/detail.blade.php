@@ -95,7 +95,7 @@
                             <div class="col-7">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                               @if($items->count() != 0)
-                                value="{{ $item->customer->nama }} ({{ $item->id_customer }})"
+                                value="{{ $item->customer->nama }}"
                               @endif
                               >
                             </div>

@@ -61,7 +61,7 @@
                     <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" autocomplete="off">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('ar-home') }}" formmethod="POST" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
@@ -128,7 +128,7 @@
                       <td class="align-middle">{{ $a->so->customer->nama }}</td>
                       <td class="align-middle">{{ $a->so->customer->sales->nama }}</td>
                       <td align="center" class="align-middle">{{ $a->so->kategori }}</td>
-                      <td align="center" class="align-middle">{{ $a->id_so }}</td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->so->tgl_so)->format('d-M-y') }}
                       </td>

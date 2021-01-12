@@ -352,6 +352,7 @@
                         ->groupBy('id_barang', 'diskon')
                         ->get();
       @endphp
+      
       <!-- Tabel Data Detil BM-->
       <span class="page-number text-right">Page  :   1</span>
       <table class="table table-sm table-responsive-sm table-cetak">

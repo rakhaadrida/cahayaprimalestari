@@ -49,7 +49,7 @@
                     @php $i++; @endphp
                   @empty
                     <tr>
-                      <td colspan="4" class="text-center">Tidak Ada Data Transfer Barang</td>
+                      <td colspan="4" class="text-center text-bold text-dark h4 py-2">Tidak Ada Data Transfer Barang</td>
                     </tr>
                   @endforelse
                 </tbody>

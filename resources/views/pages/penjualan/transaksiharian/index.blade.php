@@ -84,7 +84,7 @@
                     @php $i++; @endphp
                   @empty
                     <tr>
-                      <td colspan="8" class="text-center">Tidak Ada Data Transaksi pada Tanggal Ini</td>
+                      <td colspan="9" class="text-center text-bold text-dark h4 py-2">Tidak Ada Data Transaksi pada Tanggal Ini</td>
                     </tr>
                   @endforelse
                 </tbody>

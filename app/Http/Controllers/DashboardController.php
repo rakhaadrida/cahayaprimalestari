@@ -17,6 +17,7 @@ use App\Models\StokBarang;
 use App\Models\AP_Retur;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -25,16 +26,17 @@ class DashboardController extends Controller
         $tahun = $tanggal->year;
         $bulan = $tanggal->month;
         $tanggal = $tanggal->toDateString();
+
         $salesAnnual = SalesOrder::selectRaw('sum(total) as sales')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereYear('tgl_so', $tahun)->get();
         $salesMonthly = SalesOrder::selectRaw('sum(total) as sales')
-                        ->whereMonth('tgl_so', $bulan)
+                        ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $bulan)
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
         $transAnnual = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereYear('tgl_so', $tahun)->count();
         $transMonthly = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
-                        ->whereMonth('tgl_so', $bulan)->count();
+                        ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $bulan)->count();
         $transAnnualKen = SalesOrder::join('users', 'users.id', 'so.id_user')
                         ->where('roles', 'KENARI')->whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereYear('tgl_so', $tahun)->count();
@@ -50,7 +52,7 @@ class DashboardController extends Controller
         $returMon = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->selectRaw('sum(ar_retur.total) as total')
-                ->whereMonth('tgl_so', $bulan)->get();
+                ->whereYear('tanggal', $tahun)->whereMonth('tgl_so', $bulan)->get();
         $cicil = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->selectRaw('sum(cicil) as total')
@@ -68,7 +70,11 @@ class DashboardController extends Controller
         $arrTotal = []; $j = 0;               
         for($i = 1; $i <= 12; $i++) {
             if(($j < $salesPerMonth->count()) && ($salesPerMonth[$j]->month == $i)) {
-                $int = (int) $salesPerMonth[$j]->sales - $returPerMonth[$j]->total;
+                if(($returPerMonth->count() != 0) && ($returPerMonth[$j] != NULL))
+                    $int = (int) $salesPerMonth[$j]->sales - $returPerMonth[$j]->total;
+                else
+                    $int = $salesPerMonth[$j]->sales;    
+
                 array_push($arrTotal, $int);
                 $j++;
             } else {
@@ -84,6 +90,8 @@ class DashboardController extends Controller
                         ->whereYear('tgl_so', $tahun)->count();
             $tipeCount[$i] = $salesPerType;
         }
+
+        
 
         $needPrint = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
                     ->count();
@@ -180,6 +188,7 @@ class DashboardController extends Controller
         $bayar = DetilAP::selectRaw('sum(transfer) as total')->get();
         $retur = AP_Retur::selectRaw('sum(total) as total')->get();
         $payable = $tagihanAnnual[0]->sales - $bayar[0]->total - $retur[0]->total;
+        // $payable = $tagihanAnnual[0]->sales;
         $payableDiskon = BarangMasuk::where('diskon', 'F')->count();
 
         $q1 = 0; $q2 = 0; $q3 = 0; $q4 = 0;
@@ -198,7 +207,11 @@ class DashboardController extends Controller
                     ->where('id_ap', $t->ap->id)->get();
             $t->total -= $retur[0]->total;
             $t->{'transfer'} = $detil[0]->total;
-            $total = round(($detil[0]->total * 100) / $t->total, 2);
+            if($t->total != 0)
+                $total = round(($detil[0]->total * 100) / $t->total, 2);
+            else
+                $total = round($detil[0]->total * 100, 2);    
+
             $utang = $t->total - $detil[0]->total;
             $t->{'tagihan'} = $utang;
             if($total <= 25) {
@@ -254,6 +267,7 @@ class DashboardController extends Controller
                     ->selectRaw('sum(cicil) as total')
                     ->where('id_sales', 'SLS03')
                     ->whereYear('tgl_so', $tahun)->get();
+                    
         $receivableOff = $salesAnnOff[0]->sales - $returOff[0]->total - $cicilOff[0]->total;
         $salesAnnOff[0]->sales -= $returOff[0]->total;
         $salesMonOff[0]->sales -= $returMonOff[0]->total;
@@ -274,12 +288,6 @@ class DashboardController extends Controller
                 array_push($arrTotalOff, 0);
             }
         }
-
-        // $salesPerTypeOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-        //                 ->selectRaw('kategori, count(kategori) as total')
-        //                 ->where('customer.id_sales', 'SLS03')
-        //                 ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
-        //                 ->groupBy('kategori')->get();
         
         $tipeCountOff = [];
         for($i = 0; $i < sizeof($tipe); $i++) {

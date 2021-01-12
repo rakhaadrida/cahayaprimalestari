@@ -22,9 +22,9 @@ class SupplierController extends Controller
     public function create()
     {
         $lastcode = Supplier::withTrashed()->max('id');
-        $lastnumber = (int) substr($lastcode, 3, 3);
+        $lastnumber = (int) substr($lastcode, 3, 2);
         $lastnumber++;
-        $newcode = 'SUP'.sprintf("%03s", $lastnumber);
+        $newcode = 'SUP'.sprintf("%02s", $lastnumber);
 
         $data = [
             'newcode' => $newcode

@@ -40,7 +40,8 @@ class SalesOrderController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastcode = SalesOrder::selectRaw('max(id) as id')
+                    ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
         $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);

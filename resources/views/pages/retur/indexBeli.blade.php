@@ -119,7 +119,7 @@
                     @php $i++ @endphp
                   @empty
                     <tr>
-                      <td colspan="9" class="text-center text-bold h4 p-2"><i>Tidak ada daftar retur pembelian</i></td>
+                      <td colspan="10" class="text-center text-bold h4 p-2"><i>Tidak ada daftar retur pembelian</i></td>
                     </tr>
                   @endforelse
                 </tbody>
