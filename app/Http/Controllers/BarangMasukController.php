@@ -102,7 +102,7 @@ class BarangMasukController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = AccPayable::join('barangmasuk', 'barangmasuk.id', 'ap.id_bm')
+        $lastcode = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
                     ->selectRaw('max(ap.id) as id')->whereMonth('tanggal', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
