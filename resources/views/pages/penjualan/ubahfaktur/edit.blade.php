@@ -228,10 +228,11 @@
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($item->qty * $item->harga, 0, "", ".") }}" >
                       </td>
                       <td align="right" style="width: 60px">
-                        <input type="text" tabindex="{{ $tab += 5 }}" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off" required>
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off" required>
                       </td>
                       @php 
                         $diskon = 100;
+                        $item->diskon = str_replace(",", ".", $item->diskon);
                         $arrDiskon = explode("+", $item->diskon);
                         for($j = 0; $j < sizeof($arrDiskon); $j++) {
                           $diskon -= ($arrDiskon[$j] * $diskon) / 100;
@@ -866,11 +867,12 @@ function checkSubtotal(Past, Now) {
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
+  angka = angka.replace(/\,/g, ".")
   var arrDiskon = angka.split('+');
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
-  totDiskon =  Math.floor(((totDiskon - 100) * -1).toFixed(2));
+  totDiskon =  ((totDiskon - 100) * -1).toFixed(2);
   return totDiskon;
 }
 
@@ -899,7 +901,7 @@ function angkaSaja(evt, inputan) {
 function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
-  if (charCode > 31 && charCode != 43  && (charCode < 48 || charCode > 57)) {
+  if (charCode > 31 && charCode != 43 && charCode != 44  && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= diskon.length; i++) {
       if(inputan == i)
         $(diskon[inputan-1]).tooltip('show');

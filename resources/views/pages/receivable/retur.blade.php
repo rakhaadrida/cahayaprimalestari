@@ -356,48 +356,6 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
-/* @foreach($ar as $a)
-  $('#dataTabRetur'+'{{ $a->id }}').dataTable( {
-    "columnDefs": [
-      { "orderable": false }
-    ],
-    "aaSorting" : [],
-    "footerCallback": function ( row, data, start, end, display ) {
-      var api = this.api(), data;
-
-      // Remove the formatting to get integer data for summation
-      var intVal = function ( i ) {
-        return typeof i === 'string' ?
-          i.replace(/[\$.]/g, '')*1 :
-          typeof i === 'number' ?
-              i : 0;
-      };
-
-      $.each([4, 9], function(index, value) {
-
-        var column = api
-          .column(value, {
-              page: 'current'
-          })
-          .data()
-          .reduce( function (a, b) {
-            return intVal(a) + intVal($(b).val());
-          }, 0 );
-
-        var column_total = api
-          .column(value)
-          .data()
-          .reduce( function (a, b) {
-            return intVal(a) + intVal($(b).val());
-          }, 0 );
-
-        // Update footer
-        $(api.column(value).footer()).html(addCommas(column));
-      }); 
-    }
-  });
-@endforeach */
-
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const tglRetur = document.querySelectorAll('.tglRetur');

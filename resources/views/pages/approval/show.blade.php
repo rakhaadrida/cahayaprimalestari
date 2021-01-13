@@ -240,10 +240,11 @@
                               {{number_format(($i->qty * $i->harga), 0, "", ".")}}
                             </td>
                             {{-- @if($item->tipe != 'Dokumen')  --}}
-                              <td align="right">{{ $i->diskon }} %</td>
+                              <td align="right">{{ $i->diskon }}</td>
                               @php 
                                 $diskon = 100;
                                 if($i->diskon != NULL) {
+                                  $i->diskon = str_replace(",", ".", $i->diskon);
                                   $arrDiskon = explode("+", $i->diskon);
                                   for($j = 0; $j < sizeof($arrDiskon); $j++) {
                                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
@@ -488,11 +489,12 @@
                                 {{-- @if($item->tipe == 'Faktur')  --}}
                                   <td align="right"
                                   @if($detItem->diskon != $items[$i-1]->diskon) class="bg-warning text-danger" @endif>
-                                    {{ $detItem->diskon }} %
+                                    {{ $detItem->diskon }}
                                   </td>
                                   @php 
                                     $diskon = 100;
                                     if($detItem->diskon != NULL) {
+                                      $detItem->diskon = str_replace(",", ".", $detItem->diskon);
                                       $arrDiskon = explode("+", $detItem->diskon);
                                       for($j = 0; $j < sizeof($arrDiskon); $j++) {
                                         $diskon -= ($arrDiskon[$j] * $diskon) / 100;

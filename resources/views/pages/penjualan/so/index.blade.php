@@ -215,7 +215,7 @@
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
-                        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
+                        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off">
                       </td>
                       <td>
                         <input type="text" name="diskonRp[]" id="diskonRp" class="form-control form-control-sm text-bold text-right text-dark diskonRp" 
@@ -696,6 +696,7 @@ function displayTempo(e) {
   else if(radios[0].checked) {
     tempo.setAttribute('readonly', 'true');
     tempo.removeAttribute('required');
+    tempo.value = '';
     // tempo.tabIndex = '';
     // pkp.tabIndex = 4;
   }
@@ -741,7 +742,7 @@ function displayRow(e) {
       </td>
       <td style="width: 60px">
         <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
-        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
+        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off">
       </td>
       <td style="width: 120px">
         <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRpRow" 
@@ -1178,7 +1179,7 @@ function displayRow(e) {
   diskonRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
-    if (charCodeRow > 31 && charCodeRow != 43  && (charCodeRow < 48 || charCodeRow > 57)) {
+    if (charCodeRow > 31 && charCodeRow != 43 && charCodeRow != 44  && (charCodeRow < 48 || charCodeRow > 57)) {
       $(diskonRow).tooltip('show');
       
       e.preventDefault();
@@ -1672,6 +1673,7 @@ function hitungQty(urutan, kode, angka, teks, ukuran) {
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
+  angka = angka.replace(/\,/g, ".")
   var arrDiskon = angka.split('+');
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
@@ -1729,7 +1731,7 @@ function angkaSaja(evt, inputan, teks) {
 function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
-  if (charCode > 31 && charCode != 43  && (charCode < 48 || charCode > 57)) {
+  if (charCode > 31 && charCode != 43 && charCode != 44  && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= diskon.length; i++) {
       if(inputan == i)
         $(diskon[inputan-1]).tooltip('show');

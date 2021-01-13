@@ -177,6 +177,7 @@
                               <td align="right">{{ $itemDet->diskon }}</td>
                               @php 
                                 $diskon = 100;
+                                $itemDet->diskon = str_replace(",", ".", $itemDet->diskon);
                                 $arrDiskon = explode("+", $itemDet->diskon);
                                 for($j = 0; $j < sizeof($arrDiskon); $j++) {
                                   $diskon -= ($arrDiskon[$j] * $diskon) / 100;

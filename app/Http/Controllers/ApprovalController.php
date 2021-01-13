@@ -221,6 +221,7 @@ class ApprovalController extends Controller
         foreach($items as $item) {
             if($item->diskon != '') {
                 $diskon = 100;
+                $item->diskon = str_replace(",", ".", $item->diskon);
                 $arrDiskon = explode("+", $item->diskon);
                 for($j = 0; $j < sizeof($arrDiskon); $j++) {
                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;

@@ -264,9 +264,10 @@
                                   {{number_format(($i->qty * $i->harga), 0, "", ".")}}
                                 </td>
                                 @if($item->tipe != 'Dokumen') 
-                                  <td align="right">{{ $i->diskon }} %</td>
+                                  <td align="right">{{ $i->diskon }}</td>
                                   @php 
                                     $diskon = 100;
+                                    $i->diskon = str_replace(",", ".", $i->diskon);
                                     $arrDiskon = explode("+", $i->diskon);
                                     for($j = 0; $j < sizeof($arrDiskon); $j++) {
                                       $diskon -= ($arrDiskon[$j] * $diskon) / 100;
@@ -454,8 +455,9 @@
                                 {{number_format(($iu->qty * $iu->harga), 0, "", ".")}}
                               </td>
                               @php 
-                                if($item->diskon != '') {
+                                if($iu->diskon != '') {
                                   $diskon = 100;
+                                  $iu->diskon = str_replace(",", ".", $iu->diskon);
                                   $arrDiskon = explode("+", $iu->diskon);
                                   for($j = 0; $j < sizeof($arrDiskon); $j++) {
                                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
@@ -468,7 +470,7 @@
                               @if($item->tipe == 'Faktur') 
                                 <td align="right"
                                 @if((($i <= $items->count()) && ($iu->diskon != $items[$i-1]->diskon)) || ($i > $items->count())) class="bg-warning text-danger" @endif>
-                                  {{ $iu->diskon }} %
+                                  {{ str_replace(".", ",", $iu->diskon) }}
                                 </td>
                                 <td align="right"
                                 @if((($i <= $items->count()) && ($iu->qty != $items[$i-1]->qty)) || ($i > $items->count())) class="bg-warning text-danger" @endif>
