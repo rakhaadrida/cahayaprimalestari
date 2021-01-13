@@ -216,6 +216,23 @@ class AccReceivableController extends Controller
         return redirect()->route('ar');
     }
 
+    public function createRetur($id) {
+        $item = AccReceivable::where('id_so', $id)->get();
+        $retur = DetilRAR::join('ar_retur', 'ar_retur.id', 'detilrar.id_retur')
+                ->where('id_ar', $item->first()->id)->orderBy('tgl_retur', 'asc')->get();
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
+
+        $data = [
+            'item' => $item,
+            'retur' => $retur,
+            'barang' => $barang,
+            'harga' => $harga,
+        ];
+
+        return view('pages.receivable.returNew', $data);
+    }
+
     public function retur(Request $request) {
         $jumBaris = $request->jumBaris;
         $gudang = Gudang::where('tipe', 'RETUR')->get();

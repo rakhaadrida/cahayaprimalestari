@@ -293,6 +293,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
     Route::group(['roles'=>['AR', 'SUPER']], function() {
         // Account Receivable
+        Route::get('ar/retur/{id}', 'AccReceivableController@createRetur')->name('ar-retur-create');
         Route::post('ar/excel', 'AccReceivableController@excel')->name('ar-excel');
         Route::post('ar/excelNow', 'AccReceivableController@excelNow')->name('ar-excel-now');
     });
