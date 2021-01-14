@@ -132,11 +132,31 @@ class AccReceivableController extends Controller
         return view('pages.receivable.show', $data);
     }
 
+    public function createCicil($id) {
+        $item = AccReceivable::where('id_so', $id)->get();
+        $retur = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $item->first()->id)->get();
+        $detilar = DetilAR::where('id_ar', $item->first()->id)->get();
+
+        $data = [
+            'item' => $item,
+            'retur' => $retur,
+            'detilar' => $detilar,
+        ];
+
+        return view('pages.receivable.detailNew', $data);
+    }
+
     public function process(Request $request) {
-        $lastcode = DetilAR::max('id_cicil');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('tgl_bayar', $waktu->year)
+                    ->whereMonth('tgl_bayar', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
-        $newcode = 'CIC'.sprintf("%04s", $lastnumber);
+        $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
         $tglBayar = $request->{"tgl".$request->kode};
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
@@ -220,12 +240,14 @@ class AccReceivableController extends Controller
         $item = AccReceivable::where('id_so', $id)->get();
         $retur = DetilRAR::join('ar_retur', 'ar_retur.id', 'detilrar.id_retur')
                 ->where('id_ar', $item->first()->id)->orderBy('tgl_retur', 'asc')->get();
+        $total = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $item->first()->id)->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
         $data = [
             'item' => $item,
             'retur' => $retur,
+            'total' => $total,
             'barang' => $barang,
             'harga' => $harga,
         ];

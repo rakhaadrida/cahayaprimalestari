@@ -143,6 +143,25 @@ class AccPayableController extends Controller
         return redirect()->route('ap');
     }
 
+    public function createTransfer($id) {
+        $item = AccPayable::where('id_bm', $id)->get();
+        $retur = AP_Retur::selectRaw('sum(total) as total')->where('id_ap', $item->first()->id)->get();
+        $detilap = DetilAP::where('id_ap', $item->first()->id)->get();
+        $totalBM = BarangMasuk::select(DB::raw('sum(total) as totBM'))->where('id_faktur', $id)
+                    ->where('status', '!=', 'BATAL')->get();
+        $potBM = BarangMasuk::select(DB::raw('sum(potongan) as potongan'))->where('id_faktur', $id)->get();
+
+        $data = [
+            'item' => $item,
+            'retur' => $retur,
+            'detilap' => $detilap,
+            'totalBM' => $totalBM,
+            'potBM' => $potBM
+        ];
+
+        return view('pages.receivable.detailNew', $data);
+    }
+
     public function transfer(Request $request) {
         $lastcode = DetilAP::max('id_bayar');
         $lastnumber = (int) substr($lastcode, 3, 4);

@@ -1,5 +1,5 @@
-@extends('pages.receivable.detail')
-@extends('pages.receivable.retur')
+{{-- @extends('pages.receivable.detail')
+@extends('pages.receivable.retur') --}}
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -38,7 +38,7 @@
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autofocus>
+                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autocomplete="off" autofocus>
                   </div>
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
@@ -66,7 +66,7 @@
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('ar-home') }}" formmethod="POST" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
-                  <div class="col-1 mt-1" style="margin-left: 110px">
+                  <div class="col-1 mt-1" style="margin-left: 80px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-cetak') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print</button>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
@@ -144,11 +144,13 @@
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
-                        <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
+                        {{-- <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a> --}}
+                        <a href="{{ route('ar-retur-create', $a->id_so) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a>
+                        {{-- <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a> --}}
+                        <a href="{{ route('ar-cicil-create', $a->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
                     </tr>
                     @php $i++; @endphp

@@ -294,6 +294,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::group(['roles'=>['AR', 'SUPER']], function() {
         // Account Receivable
         Route::get('ar/retur/{id}', 'AccReceivableController@createRetur')->name('ar-retur-create');
+        Route::get('ar/cicil/{id}', 'AccReceivableController@createCicil')->name('ar-cicil-create');
         Route::post('ar/excel', 'AccReceivableController@excel')->name('ar-excel');
         Route::post('ar/excelNow', 'AccReceivableController@excelNow')->name('ar-excel-now');
     });
@@ -307,6 +308,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
         Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
         Route::post('ap/retur', 'AccPayableController@retur')->name('ap-retur');
+        Route::get('ap/retur/{id}', 'AccPayableController@createRetur')->name('ap-retur-create');
+        Route::get('ap/transfer/{id}', 'AccPayableController@createTransfer')->name('ap-transfer-create');
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
