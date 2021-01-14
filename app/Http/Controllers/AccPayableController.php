@@ -159,14 +159,20 @@ class AccPayableController extends Controller
             'potBM' => $potBM
         ];
 
-        return view('pages.receivable.detailNew', $data);
+        return view('pages.payable.detailNew', $data);
     }
 
     public function transfer(Request $request) {
-        $lastcode = DetilAP::max('id_bayar');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = DetilAP::selectRaw('max(id_bayar) as id')->whereYear('tgl_bayar', $waktu->year)
+                    ->whereMonth('tgl_bayar', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
-        $newcode = 'TRS'.sprintf("%04s", $lastnumber);
+        $newcode = 'TRS'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
         $tglBayar = $request->{"tgl".$request->kode};
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
@@ -235,6 +241,25 @@ class AccPayableController extends Controller
         } */
 
         return redirect()->route('ap');
+    }
+
+    public function createRetur($id) {
+        $item = AccPayable::where('id_bm', $id)->get();
+        $retur = DetilRAP::join('ap_retur', 'ap_retur.id', 'detilrap.id_retur')
+                ->where('id_ap', $item->first()->id)->orderBy('tgl_retur', 'asc')->get();
+        $total = AP_Retur::selectRaw('sum(total) as total')->where('id_ap', $item->first()->id)->get();
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
+
+        $data = [
+            'item' => $item,
+            'retur' => $retur,
+            'total' => $total,
+            'barang' => $barang,
+            'harga' => $harga,
+        ];
+
+        return view('pages.payable.returNew', $data);
     }
 
     public function retur(Request $request) {

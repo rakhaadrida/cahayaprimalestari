@@ -154,7 +154,7 @@ class AccReceivableController extends Controller
 
         $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('tgl_bayar', $waktu->year)
                     ->whereMonth('tgl_bayar', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
