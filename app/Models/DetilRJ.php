@@ -12,7 +12,7 @@ class DetilRJ extends Model
     protected $table = "detilrj";
     protected $primaryKey = ['id_retur', 'id_barang'];
     protected $keyType = "string";
-    protected $fillable = ['id_retur', 'id_barang', 'id_kirim', 'tgl_kirim', 'qty_retur', 'qty_kirim'];
+    protected $fillable = ['id_retur', 'id_barang', 'id_kirim', 'tgl_kirim', 'qty_retur', 'qty_kirim', 'potong'];
 
     public $incrementing = false;
 

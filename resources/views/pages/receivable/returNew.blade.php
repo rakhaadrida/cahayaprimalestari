@@ -64,6 +64,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
                     <input type="text" tabindex="5" name="namaCust" readonly class="form-control form-control-sm text-bold text-dark" value="{{ $item->first()->so->customer->nama }}" />
+                    <input type="hidden" name="kodeCustomer" value="{{ $item->first()->so->id_customer }}">
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="3">
                 </div>
@@ -100,7 +101,7 @@
                 <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $totalQty = 0; $totalRet = 0; @endphp
                   @foreach($retur as $d)
-                    <tr class="table-modal-first-row text-dark" >
+                    <tr class="table-modal-first-row text-dark" style="font-size: 16px">
                       <td class="text-center" >{{ $i }}</td>
                       <td class="text-center">{{ $d->id_barang }}</td>
                       <td>{{ $d->barang->nama }}</td>
@@ -120,16 +121,16 @@
                       <tr class="text-dark" id="{{ $j }}">
                         <td class="text-center align-middle">{{ $j }}</td>
                         <td class="align-middle">
-                          <input type="text" class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeBarang{{$item->first()->id}}[]" id="kodeBarang{{$item->first()->id}}">
+                          <input type="text" class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeBarang{{$item->first()->id}}[]" id="kodeBarang{{$item->first()->id}}" @if($j == $i) required @endif>
                         </td>
                         <td class="align-middle">
                           <input type="text" class="form-control form-control-sm text-bold text-dark namaBarang" name="namaBarang{{$item->first()->id}}[]" id="namaBarang{{$item->first()->id}}">
                         </td>
                         <td class="align-middle">
-                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglRetur" name="tglRetur{{$item->first()->id}}[]" id="tglRetur{{$item->first()->id}}" placeholder="DD-MM-YYYY" autocomplete="off">
+                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglRetur" name="tglRetur{{$item->first()->id}}[]" id="tglRetur{{$item->first()->id}}" placeholder="DD-MM-YYYY" autocomplete="off" @if($j == $i) required @endif>
                         </td>
                         <td class="align-middle">
-                          <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qty{{$item->first()->id}}[]" id="qty{{$item->first()->id}}" onkeypress="return angkaSaja(event, {{$j - $retur->count()}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                          <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qty{{$item->first()->id}}[]" id="qty{{$item->first()->id}}" onkeypress="return angkaSaja(event, {{$j - $retur->count()}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" @if($j == $i) required @endif>
                         </td>
                         <td class="align-middle">
                           <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" name="harga{{$item->first()->id}}[]" id="harga{{$item->first()->id}}">
@@ -151,7 +152,7 @@
                   @endif 
                 </tbody>
                 <tfoot>
-                  <tr class="text-right text-bold text-dark">
+                  <tr class="text-right text-bold text-dark" style="font-size: 16px">
                     <td colspan="4" class="align-middle text-center ">Total</td>
                     <td>{{ number_format($totalQty, 0, "", ".") }}</td>
                     <td colspan="4"></td>

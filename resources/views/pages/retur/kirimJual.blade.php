@@ -31,12 +31,12 @@
                   <th class="align-middle" style="width: 70px">Qty Bagus</th>
                   <th class="align-middle" style="width: 100px">Tgl. Kirim</th>
                   <th class="align-middle" style="width: 70px">Qty Kirim</th>
-                  {{-- <th class="align-middle" style="width: 70px">Qty Kurang</th> --}}
+                  <th class="align-middle" style="width: 70px">Potong Tagihan</th>
                 </tr>
               </thead>
               <tbody class="table-ar">
                 @php 
-                  $i = 1; $totalRetur = 0; $totalKirim = 0;
+                  $i = 1; $totalRetur = 0; $totalKirim = 0; $totalPotong = 0;
                   $detil = App\Models\DetilRJ::where('id_retur', $r->id)->get();
                 @endphp
                 @foreach($detil as $dr)
@@ -56,8 +56,9 @@
                       <input type="text" name="kirim{{$r->id}}{{$dr->id_barang}}" id="kirim{{$r->id}}{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" autocomplete="off"
                       @if($dr->qty_kirim != '') value ="{{ $dr->qty_kirim }}" readonly @endif>
                     </td>
+                    <td class="align-middle text-right">{{ $dr->potong }}</td>
                   </tr>
-                  @php $i++; $totalRetur += $dr->qty_retur; $totalKirim += $dr->qty_kirim @endphp
+                  @php $i++; $totalRetur += $dr->qty_retur; $totalKirim += $dr->qty_kirim; $totalPotong += $dr->potong; @endphp
                 @endforeach
                 <tr class="bg-gradient-danger text-bold text-white">
                   <td colspan="3" class="text-center">Total</td>
@@ -65,6 +66,7 @@
                   <td></td>
                   <td></td>
                   <td class="text-right">{{ number_format($totalKirim, 0, "", ".") }}</td>
+                  <td class="text-right">{{ number_format($totalPotong, 0, "", ".") }}</td>
                 </tr>
               </tbody>
             </table>

@@ -99,6 +99,7 @@ class ReturController extends Controller
                     'tgl_kirim' => NULL,
                     'qty_retur' => $request->qty[$i],
                     'qty_kirim' => NULL,
+                    'potong' => NULL
                 ]);
 
                 $stok = StokBarang::where('id_barang', $request->kodeBarang[$i])

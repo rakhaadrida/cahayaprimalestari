@@ -30,8 +30,9 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
         $waktu = $waktu->format('d F Y, H:i:s');
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
-        $items = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->where('tgl_so', $this->tanggal)->get();
+        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('tgl_so', $this->tanggal)->orderBy('id_sales')->orderBy('id')->get();
 
         $data = [
             'waktu' => $waktu,

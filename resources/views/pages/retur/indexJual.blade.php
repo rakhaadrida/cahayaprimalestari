@@ -82,6 +82,7 @@
                     <th class="align-middle">Customer</th>
                     <th style="width: 40px" class="align-middle">Qty Retur</th>
                     <th style="width: 50px" class="align-middle">Qty Kirim</th>
+                    <th style="width: 50px" class="align-middle">Potong Tagihan</th>
                     <th style="width: 50px" class="align-middle">Qty Kurang</th>
                     <th style="width: 70px" class="align-middle">Status</th>
                   </tr>
@@ -94,6 +95,8 @@
                                 ->where('id_retur', $r->id)->get();
                       $qtyProses = App\Models\DetilRJ::selectRaw('sum(qty_kirim) as totalKirim')
                                 ->where('id_retur', $r->id)->get();
+                      $qtyPotong = App\Models\DetilRJ::selectRaw('sum(potong) as totalPotong')
+                                ->where('id_retur', $r->id)->get();
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
@@ -104,7 +107,8 @@
                       <td class="align-middle">{{ $r->customer->nama }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalKirim }}</td>
-                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalKirim }}</td>
+                      <td class="align-middle text-right">{{ $qtyPotong[0]->totalPotong }}</td>
+                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalKirim - $qtyPotong[0]->totalPotong }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
                         </a>
@@ -120,6 +124,7 @@
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="background-color: lightgrey; font-size: 14px">
                     <td colspan="4" class="text-center">Total</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -218,7 +223,7 @@ $('#dataTable').dataTable( {
             i : 0;
     };
 
-    $.each([4, 5, 6], function(index, value) {
+    $.each([4, 5, 6, 7], function(index, value) {
 
       var column = api
         .column(value, {

@@ -68,8 +68,9 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
         $tglAwal = $this->formatTanggal($tglAwal, 'd-M-y');
         $tglAkhir = $this->formatTanggal($tglAkhir, 'd-M-y');
 
-        $items = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->whereBetween('tgl_so', [$this->awal, $this->akhir])->orderBy('id_sales')->orderBy('id')->get();
 
         $data = [
             'waktu' => $waktu,

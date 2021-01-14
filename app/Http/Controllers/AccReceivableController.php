@@ -12,6 +12,8 @@ use App\Models\Gudang;
 use App\Models\AR_Retur;
 use App\Models\DetilRAR;
 use App\Models\StokBarang;
+use App\Models\ReturJual;
+use App\Models\DetilRJ;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -259,10 +261,16 @@ class AccReceivableController extends Controller
         $jumBaris = $request->jumBaris;
         $gudang = Gudang::where('tipe', 'RETUR')->get();
 
-        $lastcode = AR_Retur::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = AR_Retur::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
+                    ->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
-        $newcode = 'RTT'.sprintf("%04s", $lastnumber);
+        $newcode = 'RTT'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         // $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
@@ -275,6 +283,25 @@ class AccReceivableController extends Controller
             'total' => 0,
             'id_user' => Auth::user()->id
         ]);
+
+        $lastcodeRJ = ReturJual::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
+                    ->whereMonth('tanggal', $month)->get();
+        $lastnumberRJ = (int) substr($lastcodeRJ->first()->id, 7, 4);
+        $lastnumberRJ++;
+        $newcodeRJ = 'RTJ'.$tahun.$bulan.sprintf('%04s', $lastnumberRJ);
+
+        ReturJual::create([
+            'id' => $newcodeRJ,
+            'tanggal' => Carbon::now('+07:00')->toDateString(),
+            'id_customer' => $request->kodeCustomer,
+            'status' => 'LENGKAP'
+        ]);
+
+        $lastcodeKRM = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('tgl_kirim', $waktu->year)
+                    ->whereMonth('tgl_kirim', $month)->get();;
+        $lastnumberKRM = (int) substr($lastcodeKRM->first()->id, 7, 4);
+        $lastnumberKRM++;
+        $newcodeKRM = 'KRM'.$tahun.$bulan.sprintf("%04s", $lastnumberKRM);
         
         $total = 0;
         for($i = 0; $i < $jumBaris; $i++) {
@@ -290,6 +317,16 @@ class AccReceivableController extends Controller
                     'harga' => str_replace(".", "", $request->{"harga".$request->kode}[$i]),
                     'diskon' => $request->{"diskon".$request->kode}[$i],
                     'diskonRp' => str_replace(".", "", $request->{"diskonRp".$request->kode}[$i]),
+                ]);
+
+                DetilRJ::create([
+                    'id_retur' => $newcodeRJ,
+                    'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
+                    'id_kirim' => $newcodeKRM,
+                    'tgl_kirim' => Carbon::now('+07:00')->toDateString(),
+                    'qty_retur' => $request->{"qty".$request->kode}[$i],
+                    'qty_kirim' => NULL,
+                    'potong' => $request->{"qty".$request->kode}[$i]
                 ]);
 
                 $stok = StokBarang::where('id_barang', $request->{"kodeBarang".$request->kode}[$i])
@@ -353,8 +390,9 @@ class AccReceivableController extends Controller
         $request->tglAwal = $this->formatTanggal($request->tglAwal, 'd-M-y');
         $request->tglAkhir = $this->formatTanggal($request->tglAkhir, 'd-M-y');
 
-        $items = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->whereBetween('tgl_so', [$awal, $akhir])->get();
+        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->whereBetween('tgl_so', [$awal, $akhir])->orderBy('id_sales')->orderBy('id')->get();
         
         $data = [
             'items' => $items,
@@ -374,8 +412,9 @@ class AccReceivableController extends Controller
         $waktu = $tahun->format('d F Y, H:i:s');
         $tanggal = Carbon::now()->toDateString();
 
-        $items = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->where('tgl_so', $tanggal)->get();
+        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('tgl_so', $tanggal)->orderBy('id_sales')->orderBy('id')->get();
 
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         
