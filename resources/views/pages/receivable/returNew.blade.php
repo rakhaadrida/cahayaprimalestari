@@ -39,12 +39,13 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" readonly class="form-control form-control-sm text-bold text-dark" name="kodeSO" value="{{ $item->first()->id_so }}" >
                         <input type="hidden" name="kode" value="{{ $item->first()->id }}">
+                        <input type="hidden" name="kodeRet" value="{{ $retur->count() != 0 ? $retur->first()->id : '' }}">
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ $item->first()->so->tgl_so }}">
+                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->so->tgl_so)->format('d-M-y') }}">
                       </div>
                     </div>   
                   </div>
@@ -67,6 +68,7 @@
                     <input type="hidden" name="kodeCustomer" value="{{ $item->first()->so->id_customer }}">
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="3">
+                  <input type="hidden" name="jumAwal" id="jumAwal" value="{{ $retur->count() }}">
                 </div>
               </div>
               <hr>
@@ -90,8 +92,7 @@
                     <th rowspan="2" class="align-middle"style="width: 100px">Jumlah</th>
                     <th colspan="2">Diskon</th>
                     <th rowspan="2" class="align-middle"style="width: 110px">Total</th>
-                    {{-- <th rowspan="2" class="align-middle"style="width: 50px">Ubah</th>
-                    <th rowspan="2" class="align-middle"style="width: 50px">Hapus</th> --}}
+                    <th rowspan="2" class="align-middle"style="width: 50px">Hapus</th>
                   </tr>
                   <tr class="text-center">
                     <th style="width: 90px">%</th>
@@ -101,18 +102,54 @@
                 <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $totalQty = 0; $totalRet = 0; @endphp
                   @foreach($retur as $d)
-                    <tr class="table-modal-first-row text-dark" style="font-size: 16px">
+                    {{-- <tr class="table-modal-first-row text-dark" style="font-size: 16px">
                       <td class="text-center" >{{ $i }}</td>
                       <td class="text-center">{{ $d->id_barang }}</td>
                       <td>{{ $d->barang->nama }}</td>
                       <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_retur)->format('d-M-y') }}</td>
                       <td class="text-right">{{ $d->qty }}</td>
-                      {{-- @php $kurang -= $d->cicil; @endphp --}}
+                      @php $kurang -= $d->cicil; @endphp 
                       <td class="text-right">{{ number_format($d->harga, 0, "", ".") }}</td>
                       <td class="text-right">{{ number_format($d->qty * $d->harga, 0, "", ".") }}</td>
                       <td class="text-right">{{ $d->diskon }}</td>
                       <td class="text-right">{{ number_format($d->diskonRp, 0, "", ".") }}</td>
                       <td class="text-right">{{ number_format(($d->qty * $d->harga) - $d->diskonRp, 0, "", ".") }}</td>
+                    </tr> --}}
+                    <tr class="table-modal-first-row text-dark retur-ar" id="{{ $i-1 }}">
+                      <td class="text-center align-middle">{{ $i }}</td>
+                      <td class="text-center">
+                        <input type="text" readonly class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeDetil[]" required value="{{ $d->id_barang }}">
+                      </td>
+                      <td>
+                         <input type="text" readonly class="form-control form-control-sm text-bold text-dark namaBarang" name="namaDetil[]" value="{{ $d->barang->nama }}">
+                        </td>
+                      <td class="text-center">
+                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglRetur" name="tglDetil[]" autocomplete="off" required value="{{ \Carbon\Carbon::parse($d->tgl_retur)->format('d-m-Y') }}">
+                      </td>
+                      <td class="text-right">
+                        <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qtyDetil[]" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required value="{{ $d->qty }}">
+                      </td>
+                      {{-- @php $kurang -= $d->cicil; @endphp --}}
+                      <td class="text-right">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" name="hargaDetil[]" value="{{ number_format($d->harga, 0, "", ".") }}">
+                      </td>
+                      <td class="text-right">
+                        <input type="text" name="jumlahDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($d->qty * $d->harga, 0, "", ".") }}">
+                      </td>
+                      <td class="text-right">
+                        <input type="text" name="diskonDetil[]" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off" value="{{ $d->diskon }}">
+                      </td>
+                      <td class="text-right">
+                        <input type="text" name="diskonRpDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" value="{{ number_format($d->diskonRp, 0, "", ".") }}">
+                      </td>
+                      <td class="text-right">
+                        <input type="text" name="nettoDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ number_format(($d->qty * $d->harga) - $d->diskonRp, 0, "", ".") }}">
+                      </td>
+                      <td align="center" class="align-middle">
+                        <a href="#" class="icRemoveDetil">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
+                      </td>
                     </tr>
                     @php $i++; $totalQty += $d->qty; $totalRet += (($d->qty * $d->harga) - $d->diskonRp) @endphp
                   @endforeach
@@ -121,16 +158,16 @@
                       <tr class="text-dark" id="{{ $j }}">
                         <td class="text-center align-middle">{{ $j }}</td>
                         <td class="align-middle">
-                          <input type="text" class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeBarang{{$item->first()->id}}[]" id="kodeBarang{{$item->first()->id}}" @if($j == $i) required @endif>
+                          <input type="text" class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeBarang{{$item->first()->id}}[]" id="kodeBarang{{$item->first()->id}}" >
                         </td>
                         <td class="align-middle">
                           <input type="text" class="form-control form-control-sm text-bold text-dark namaBarang" name="namaBarang{{$item->first()->id}}[]" id="namaBarang{{$item->first()->id}}">
                         </td>
                         <td class="align-middle">
-                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglRetur" name="tglRetur{{$item->first()->id}}[]" id="tglRetur{{$item->first()->id}}" placeholder="DD-MM-YYYY" autocomplete="off" @if($j == $i) required @endif>
+                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglRetur" name="tglRetur{{$item->first()->id}}[]" id="tglRetur{{$item->first()->id}}" placeholder="DD-MM-YYYY" autocomplete="off" >
                         </td>
                         <td class="align-middle">
-                          <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qty{{$item->first()->id}}[]" id="qty{{$item->first()->id}}" onkeypress="return angkaSaja(event, {{$j - $retur->count()}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" @if($j == $i) required @endif>
+                          <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qty{{$item->first()->id}}[]" id="qty{{$item->first()->id}}" onkeypress="return angkaSaja(event, {{$j - $retur->count()}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" >
                         </td>
                         <td class="align-middle">
                           <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" name="harga{{$item->first()->id}}[]" id="harga{{$item->first()->id}}">
@@ -147,6 +184,11 @@
                         <td class="text-right align-middle">
                           <input type="text" name="netto{{$item->first()->id}}[]" id="netto{{$item->first()->id}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto">
                         </td>
+                        <td align="center" class="align-middle">
+                          <a href="#" class="icRemove">
+                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                          </a>
+                        </td>
                       </tr>
                     @endfor
                   @endif 
@@ -157,6 +199,7 @@
                     <td>{{ number_format($totalQty, 0, "", ".") }}</td>
                     <td colspan="4"></td>
                     <td>{{ number_format($totalRet, 0, "", ".") }}</td>
+                    <td></td>
                   </tr>
                 </tfoot>
               </table>
@@ -220,6 +263,9 @@ const netto = document.querySelectorAll('.netto');
 const total = document.querySelectorAll('.total');
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
+const jumAwal = document.getElementById('jumAwal');
+const hapusBaris = document.querySelectorAll(".icRemoveDetil");
+const hapusBiasa = document.querySelectorAll(".icRemove");
 const retur = '{{ $retur->count() }}';
 
 newRow.addEventListener('click', displayRow);
@@ -228,7 +274,7 @@ function displayRow(e) {
   const lastRow = $(tablePO).find('tr:last').attr("id");
   const lastNo = $(tablePO).find('tr:last td:first-child').text();
   // var newNum = +lastRow + 1;
-  var newNum = +jumBaris.value + 1;
+  var newNum = +jumAwal.value + +jumBaris.value + 1;
   var newNo = +lastNo + 1;
   const newTr = `
     <tr class="text-dark" id="${newNum}">
@@ -260,11 +306,16 @@ function displayRow(e) {
       <td class="text-right align-middle">
         <input type="text" name="netto{{$item->first()->id}}[]" id="nettoRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right nettoRow">
       </td>
+      <td align="center" class="align-middle">
+        <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
+          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+        </a>
+      </td>
     </tr>
   `; 
 
   $(tablePO).append(newTr);
-  jumBaris.value = newNum;
+  jumBaris.value = +jumBaris.value + 1;
   const newRow = document.getElementById(newNum);
   const brgRow = document.getElementById("nmBrgRow"+newNum);
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
@@ -275,6 +326,7 @@ function displayRow(e) {
   const diskonRow = document.getElementById("diskonRow"+newNum);
   const diskonRpRow = document.getElementById("diskonRpRow"+newNum);
   const nettoRow = document.getElementById("nettoRow"+newNum);
+  const hapusRow = document.getElementById("icRemoveRow"+newNum);
   kodeRow.focus();
   // document.getElementById("submitRT"+'{{$item->first()->id}}').tabIndex = tab++;
 
@@ -362,6 +414,36 @@ function displayRow(e) {
     }
   });
 
+  /** Delete Table Row **/
+  hapusRow.addEventListener("click", function (e) {
+    if(qtyRow.value != "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
+    }
+    
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $(tablePO).find('tr:last').attr("id");
+    console.log(lastNum);
+    var numRow;
+    if(+curNum < +lastNum) {
+      $(newRow).remove();
+      var j = curNum;
+      var selisih = +lastNum - +curNum;
+      for(let i = +curNum; i < +lastNum; i++) {
+        $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+      }
+      numRow = lastNum;
+    }
+    else if(+curNum == +lastNum) {
+      $(newRow).remove();
+      numRow = +curNum - 1;
+    }
+    jumBaris.value -= 1;
+    if(jumBaris.value > 3)
+      document.getElementById("kodeRow"+numRow).focus();
+    else
+      kodeBarang[2 + +jumAwal.value].focus();
+  })
+
   /** Autocomplete Nama  Barang **/
   $(function() {
     var idBarang = [];
@@ -427,7 +509,7 @@ function displayRow(e) {
   }); 
 }
 
-for(let i = 0; i < kodeBarang.length; i++) {
+for(let i = retur; i < kodeBarang.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
   brgNama[i].addEventListener("blur", displayHarga) ;
@@ -475,8 +557,9 @@ for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("keyup", function(e) {
     if(e.target.value == "") {
       // total[i].value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
-      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
+      diskon[i].value = "";
       diskonRp[i].value = "";
       netto[i].value = "";
     }
@@ -513,6 +596,63 @@ for(let i = 0; i < diskon.length; i++) {
     // total_ppn(subtotal.value.replace(/\./g, ""));
     // totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     // grandtotal.value = totalNotPPN.value;
+  });
+}
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    const delRow = document.getElementById(i);
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $('tbody tr:last').prev().prev().prev().find('td:first-child').text();
+    
+    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+    $(delRow).remove();
+    for(let j = +curNum; j < (+lastNum + +jumBaris.value); j++) {
+      $(tablePO).find('tr:nth-child('+j+') td:first-child').html(j);
+    }
+
+    jumAwal.value -= 1;
+  });
+}
+
+for(let i = 0; i < hapusBiasa.length; i++) {
+  hapusBiasa[i].addEventListener("click", function (e) {
+    if(qty[+i + +jumAwal.value].value != "") {
+      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[+i + +jumAwal.value].value.replace(/\./g, ""));
+    }
+
+    for(let j = (+i + +jumAwal.value); j < (+hapusBiasa.length + +jumAwal.value); j++) {
+      if(j+1 != (+hapusBiasa.length + +jumAwal.value)) {
+        netto[j].value = netto[j+1].value;
+        diskonRp[j].value = diskonRp[j+1].value;
+        diskon[j].value = diskon[j+1].value;
+        jumlah[j].value = jumlah[j+1].value;
+        harga[j].value = harga[j+1].value;
+        qty[j].value = qty[j+1].value;
+        tglRetur[j].value = tglRetur[j+1].value;
+        brgNama[j].value = brgNama[j+1].value;
+        kodeBarang[j].value = kodeBarang[j+1].value;
+      } else {
+        netto[j].value = '';
+        diskonRp[j].value = '';
+        diskon[j].value = '';
+        jumlah[j].value = '';
+        harga[j].value = '';
+        qty[j].value = '';
+        tglRetur[j].value = '';
+        brgNama[j].value = '';
+        kodeBarang[j].value = '';
+      }
+    }
+
+    // $(this).parents('tr').next().find('input').val('');
+    for(let j = 0; j < kodeBarang.length; j++) {
+      if(kodeBarang[j].value == '') {
+        kodeBarang[j].focus();
+        break;
+      }
+    }
   });
 }
 

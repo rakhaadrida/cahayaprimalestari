@@ -44,7 +44,7 @@
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ $item->first()->bm->first()->tanggal }}">
+                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->bm->first()->tanggal)->format('d-M-y') }}">
                       </div>
                     </div>   
                   </div>

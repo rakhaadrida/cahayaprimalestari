@@ -39,12 +39,13 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" readonly class="form-control form-control-sm text-bold text-dark" name="kodeSO" value="{{ $item->first()->id_so }}" >
                         <input type="hidden" name="kode" value="{{ $item->first()->id_so }}">
+                        <input type="hidden" name="kodeAR" value="{{ $item->first()->id }}">
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ $item->first()->so->tgl_so }}">
+                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->so->tgl_so)->format('d-M-y') }}">
                       </div>
                     </div>   
                   </div>
@@ -65,7 +66,7 @@
                   <div class="col-4 mt-1">
                     <input type="text" tabindex="5" name="namaCust" readonly class="form-control form-control-sm text-bold text-dark" value="{{ $item->first()->so->customer->nama }}" />
                   </div>
-                  <input type="hidden" name="jumBaris" id="jumBaris" value="3">
+                  <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $detilar->count() }}">
                 </div>
               </div>
               <hr>
@@ -84,18 +85,37 @@
                     <th style="width: 160px">Tgl. Bayar</th>
                     <th style="width: 160px">Jumlah Cicil</th>
                     <th style="width: 160px">Kurang Bayar</th>
+                    <th style="width: 60px">Hapus</th>
                   </tr>
                 </thead>
-                <tbody class="table-ar">
+                <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $total = 0; $kurang = $item->first()->so->total - $retur->first()->total; @endphp
                   @foreach($detilar as $d)
                     @if($d->cicil != 0)
-                      <tr class="table-modal-first-row text-dark" style="font-size: 16px !important">
+                      {{-- <tr class="table-modal-first-row text-dark" style="font-size: 16px !important">
                         <td class="text-center">{{ $i }}</td>
                         <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-M-y') }}</td>
                         <td class="text-right">{{ number_format($d->cicil, 0, "", ".") }}</td>
                         @php $kurang -= $d->cicil; @endphp
                         <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
+                      </tr> --}}
+                      <tr class="table-modal-first-row text-dark" id="{{$i-1}}" style="font-size: 16px !important">
+                        <td class="text-center align-middle">{{ $i }}</td>
+                        <td class="text-center">
+                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tgldetil[]" autocomplete="off" value="{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-m-Y') }}" style="font-size: 16px">
+                        </td>
+                        <td class="text-right">
+                          <input type="text" name="cicildetil[]" class="form-control form-control-sm text-bold text-dark text-right cicilDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->cicil, 0, "", ",") }}" style="font-size: 16px">
+                        </td>
+                        @php $kurang -= $d->cicil; @endphp
+                        <td class="text-right align-middle text-bold">
+                          <input type="text" name="kurangdetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurangDetil" style="font-size: 16px" value="{{ number_format($kurang, 0, "", ".") }}" style="font-size: 16px">
+                        </td>
+                        <td align="center" class="align-middle">
+                          <a href="#" class="icRemoveDetil">
+                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                          </a>
+                        </td>
                       </tr>
                     @endif
                     @php $i++; $total += $d->cicil; @endphp
@@ -105,13 +125,18 @@
                     <tr class="text-dark">
                       <td class="text-center align-middle">{{ $i }}</td>
                       <td class="text-center align-middle">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$item->first()->id_so}}" id="tglBayar{{$item->first()->id_so}}" placeholder="DD-MM-YYYY" autocomplete="off">
+                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$item->first()->id_so}}" id="tglBayar{{$item->first()->id_so}}" placeholder="DD-MM-YYYY" autocomplete="off" style="font-size: 16px">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="cicil{{$item->first()->id_so}}" id="cicil{{$item->first()->id_so}}" class="form-control form-control-sm text-bold text-dark text-right cicilModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                        <input type="text" name="cicil{{$item->first()->id_so}}" id="cicil{{$item->first()->id_so}}" class="form-control form-control-sm text-bold text-dark text-right cicilModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 16px">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="kurang{{$item->first()->id_so}}" id="kurang{{$item->first()->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
+                        <input type="text" name="kurang{{$item->first()->id_so}}" id="kurang{{$item->first()->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang" style="font-size: 16px">
+                      </td>
+                      <td align="center" class="align-middle">
+                        <a href="#" class="icRemove">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
                       </td>
                     </tr>
                   @endif 
@@ -119,6 +144,7 @@
                     <td colspan="2" class="text-center text-bold text-dark" >Total</td>
                     <td class="text-right text-bold text-dark">{{ number_format($total, 0, "", ".") }}</td>
                     <td class="text-right text-bold text-dark">{{ number_format($kurang, 0, "", ".") }}</td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>
@@ -173,6 +199,8 @@ const tglBayar = document.querySelectorAll('.tglBayar');
 const cicilModal = document.querySelectorAll('.cicilModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
+const hapusBaris = document.querySelectorAll(".icRemoveDetil");
+const hapusBiasa = document.querySelectorAll(".icRemove");
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {
@@ -198,6 +226,31 @@ for(let i = 0; i < cicilModal.length; i++) {
 
   cicilModal[i].addEventListener("blur", function(e) {
     kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
+  });
+}
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    const delRow = document.getElementById(i);
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $('table tr:last').prev().prev().prev().find('td:first-child').text();
+
+    $(delRow).remove();
+    for(let j = +curNum; j < +lastNum; j++) {
+      $(tablePO).find('tr:nth-child('+j+') td:first-child').html(j);
+    }
+
+    const no = $('table tr:last').prev().find('td:first-child').text();
+    $('table tr:last').prev().find('td:first-child').html(no-1);
+
+    jumBaris.value -= 1;
+  });
+}
+
+for(let i = 0; i < hapusBiasa.length; i++) {
+  hapusBiasa[i].addEventListener("click", function (e) {
+    $(this).parents('tr').find('input').val('');
   });
 }
 

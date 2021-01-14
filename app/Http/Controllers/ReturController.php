@@ -48,7 +48,8 @@ class ReturController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = ReturJual::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastcode = ReturJual::selectRaw('max(id) as id')->whereMonth('tanggal', $month)
+                    ->where('id', 'LIKE', 'RTJ%')->get();
         $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
         $newcode = 'RTJ'.$tahun.$bulan.sprintf('%04s', $lastnumber);
@@ -205,10 +206,16 @@ class ReturController extends Controller
     }
 
     public function storeKirimJual(Request $request) {
-        $lastcode = DetilRJ::max('id_kirim');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('tgl_kirim', $waktu->year)
+                    ->whereMonth('tgl_kirim', $month)->get();;
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
-        $newcode = 'KRM'.sprintf("%04s", $lastnumber);
+        $newcode = 'KRM'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $retur = ReturJual::where('id', $request->kode)->first();

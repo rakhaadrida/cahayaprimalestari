@@ -137,7 +137,7 @@ class AccReceivableController extends Controller
     public function createCicil($id) {
         $item = AccReceivable::where('id_so', $id)->get();
         $retur = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $item->first()->id)->get();
-        $detilar = DetilAR::where('id_ar', $item->first()->id)->get();
+        $detilar = DetilAR::where('id_ar', $item->first()->id)->orderBy('tgl_bayar')->get();
 
         $data = [
             'item' => $item,
@@ -182,22 +182,48 @@ class AccReceivableController extends Controller
             $totRetur = 0;
         else 
             $totRetur = $retur[0]->totRetur;
+        
+        if($request->{"cicil".$request->kode} == '') 
+            $cicil = 0;
+        else 
+            $cicil = $request->{"cicil".$request->kode};
 
-        if($so[0]->total == str_replace(",", "", $request->{"cicil".$request->kode}) + $totCicil + $totRetur)
-                $status = 'LUNAS';
-            else 
-                $status = 'BELUM LUNAS';
+        if($so[0]->total == str_replace(",", "", $cicil) + $totCicil + $totRetur)
+            $status = 'LUNAS';
+        else 
+            $status = 'BELUM LUNAS';
 
         // $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
         $ar->{'keterangan'} = $status;
         $ar->save();
 
-        DetilAR::create([
-            'id_ar' => $ar->{'id'},
-            'id_cicil' => $newcode,
-            'tgl_bayar' => $tglBayar,
-            'cicil' => (int) str_replace(",", "", $request->{"cicil".$request->kode})
-        ]);
+        $items = DetilAR::where('id_ar', $request->kodeAR)->get();
+        $j = 0;
+        foreach($items as $i) {
+            if($j < $request->jumBaris) {
+                $tglDetil = $request->tgldetil[$j];
+                $tglDetil = $this->formatTanggal($tglDetil, 'Y-m-d');
+
+                if(($tglDetil != $i->tgl_bayar) || ($request->cicildetil[$j] != $i->cicil)) {
+                    $i->tgl_bayar = $tglDetil;
+                    $i->cicil = str_replace(",", "", $request->cicildetil[$j]);
+                    $i->save();
+                }
+            } else {
+                $i->delete();
+            }
+
+            $j++;
+        }
+
+        if(($request->{"cicil".$request->kode} != '') && ($request->{"tgl".$request->kode} != '')) {
+            DetilAR::create([
+                'id_ar' => $ar->{'id'},
+                'id_cicil' => $newcode,
+                'tgl_bayar' => $tglBayar,
+                'cicil' => (int) str_replace(",", "", $request->{"cicil".$request->kode})
+            ]);
+        }
 
         /*
         if($request->kodeSO != "") {
@@ -241,7 +267,7 @@ class AccReceivableController extends Controller
     public function createRetur($id) {
         $item = AccReceivable::where('id_so', $id)->get();
         $retur = DetilRAR::join('ar_retur', 'ar_retur.id', 'detilrar.id_retur')
-                ->where('id_ar', $item->first()->id)->orderBy('tgl_retur', 'asc')->get();
+                ->where('id_ar', $item->first()->id)->orderBy('tgl_retur')->get();
         $total = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $item->first()->id)->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -266,25 +292,40 @@ class AccReceivableController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = AR_Retur::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
-                    ->whereMonth('tanggal', $month)->get();
-        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
-        $lastnumber++;
-        $newcode = 'RTT'.$tahun.$bulan.sprintf("%04s", $lastnumber);
-
         $tanggal = Carbon::now()->toDateString();
         // $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
         //         $request->{"qty".$request->kode}) - str_replace(".", "", $request->{"diskonRp".$request->kode});
 
-        AR_Retur::create([
-            'id' => $newcode,
-            'id_ar' => $request->kode,
-            'tanggal' => $tanggal,
-            'total' => 0,
-            'id_user' => Auth::user()->id
-        ]);
+        $item = AR_Retur::where('id_ar', $request->kode)->get();
 
-        $lastcodeRJ = ReturJual::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
+        if($item->count() == 0) {
+            $lastcode = AR_Retur::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
+                        ->whereMonth('tanggal', $month)->get();
+            $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
+            $lastnumber++;
+            $newcode = 'RTT'.$tahun.$bulan.sprintf("%04s", $lastnumber);
+
+            AR_Retur::create([
+                'id' => $newcode,
+                'id_ar' => $request->kode,
+                'tanggal' => $tanggal,
+                'total' => 0,
+                'id_user' => Auth::user()->id
+            ]);
+
+            ReturJual::create([
+                'id' => $newcode,
+                'tanggal' => Carbon::now('+07:00')->toDateString(),
+                'id_customer' => $request->kodeCustomer,
+                'status' => 'LENGKAP'
+            ]);
+
+            $kodeAR = $newcode;
+        } else {
+            $kodeAR = $item->first()->id;
+        }
+
+        /* $lastcodeRJ = ReturJual::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
                     ->whereMonth('tanggal', $month)->get();
         $lastnumberRJ = (int) substr($lastcodeRJ->first()->id, 7, 4);
         $lastnumberRJ++;
@@ -295,13 +336,77 @@ class AccReceivableController extends Controller
             'tanggal' => Carbon::now('+07:00')->toDateString(),
             'id_customer' => $request->kodeCustomer,
             'status' => 'LENGKAP'
-        ]);
+        ]); */
 
         $lastcodeKRM = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('tgl_kirim', $waktu->year)
                     ->whereMonth('tgl_kirim', $month)->get();;
         $lastnumberKRM = (int) substr($lastcodeKRM->first()->id, 7, 4);
         $lastnumberKRM++;
         $newcodeKRM = 'KRM'.$tahun.$bulan.sprintf("%04s", $lastnumberKRM);
+
+        $items = DetilRAR::where('id_retur', $request->kodeRet)->orderBy('tgl_retur')->get();
+        $returJual = DetilRJ::where('id_retur', $request->kodeRet)->orderBy('tgl_kirim')->get();
+        $j = 0; $totalAwal = 0; $kodeBarang = []; 
+        if($items->count() != $request->jumAwal) {
+            for($i = 0; $i < $request->jumAwal; $i++) {
+                array_push($kodeBarang, $request->kodeDetil[$i]);
+            }
+
+            $hapus = DetilRAR::where('id_retur', $request->kodeRet)
+                    ->whereNotIn('id_barang', $kodeBarang)->get();
+            foreach($hapus as $i) {
+                $stok = StokBarang::where('id_barang', $i->id_barang)
+                        ->where('id_gudang', $gudang[0]->id)
+                        ->where('status', 'F')->first();
+                $stok->{'stok'} -= $request->qtyDetil[$j];
+                $stok->save();
+            }
+
+            DetilRAR::where('id_retur', $request->kodeRet)->whereNotIn('id_barang', $kodeBarang)->delete();
+            DetilRJ::where('id_retur', $request->kodeRet)->whereNotIn('id_barang', $kodeBarang)->delete();
+        }
+
+        $items = DetilRAR::where('id_retur', $request->kodeRet)->orderBy('tgl_retur')->get();
+        $returJual = DetilRJ::where('id_retur', $request->kodeRet)->orderBy('tgl_kirim')->get();
+
+        foreach($items as $i) {
+            // if($j < $request->jumAwal) {
+            
+            $tglDetil = $request->tglDetil[$j];
+            $tglDetil = $this->formatTanggal($tglDetil, 'Y-m-d');
+
+            // if($items->where('id_barang', $request->kodeDetil[$j])->count() == 0) {
+            if(($tglDetil != $i->tgl_retur) || ($request->qtyDetil[$j] != $i->qty) || ($request->diskonDetil[$j] != $i->diskon)) { 
+                // $i->id_barang = $request->kodeDetil[$j];
+                $i->tgl_retur = $tglDetil;
+                $i->qty = $request->qtyDetil[$j];
+                $i->harga = str_replace(".", "", $request->hargaDetil[$j]);
+                $i->diskon = $request->diskonDetil[$j];
+                $i->diskonRp = str_replace(".", "", $request->diskonRpDetil[$j]);
+                $i->save();
+
+                $stok = StokBarang::where('id_barang', $returJual[$j]->id_barang)
+                                ->where('id_gudang', $gudang[0]->id)
+                                ->where('status', 'F')->first();
+                $stok->{'stok'} -= $returJual[$j]->qty_retur;
+                $stok->save();
+
+                // $returJual[$j]->id_barang = $request->kodeDetil[$j];
+                $returJual[$j]->tgl_kirim = $tglDetil;
+                $returJual[$j]->qty_retur = $request->qtyDetil[$j];
+                $returJual[$j]->potong = $request->qtyDetil[$j];
+                $returJual[$j]->save();
+
+                $stok = StokBarang::where('id_barang', $request->kodeDetil[$j])
+                                ->where('id_gudang', $gudang[0]->id)
+                                ->where('status', 'F')->first();
+                $stok->{'stok'} += $request->qtyDetil[$j];
+                $stok->save();
+            }
+
+            $totalAwal += str_replace(".", "", $request->nettoDetil[$j]);
+            $j++;
+        } 
         
         $total = 0;
         for($i = 0; $i < $jumBaris; $i++) {
@@ -310,7 +415,7 @@ class AccReceivableController extends Controller
                 $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
 
                 DetilRAR::create([
-                    'id_retur' => $newcode,
+                    'id_retur' => $kodeAR,
                     'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
                     'tgl_retur' => $tglRetur,
                     'qty' => $request->{"qty".$request->kode}[$i],
@@ -320,10 +425,10 @@ class AccReceivableController extends Controller
                 ]);
 
                 DetilRJ::create([
-                    'id_retur' => $newcodeRJ,
+                    'id_retur' => $kodeAR,
                     'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
                     'id_kirim' => $newcodeKRM,
-                    'tgl_kirim' => Carbon::now('+07:00')->toDateString(),
+                    'tgl_kirim' => $tglRetur,
                     'qty_retur' => $request->{"qty".$request->kode}[$i],
                     'qty_kirim' => NULL,
                     'potong' => $request->{"qty".$request->kode}[$i]
@@ -349,7 +454,14 @@ class AccReceivableController extends Controller
             }
         }
 
-        $ret = AR_Retur::where('id', $newcode)->first();
+        if($item->count() == 0) {
+            $ret = AR_Retur::where('id', $kodeAR)->first();
+            $total = $total;
+        } else {
+            $ret = AR_Retur::where('id', $item->first()->id)->first(); 
+            $total += $totalAwal;
+        }
+
         $ret->{'total'} = $total;
         $ret->save();
 

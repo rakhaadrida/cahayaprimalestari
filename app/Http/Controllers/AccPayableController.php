@@ -199,12 +199,40 @@ class AccPayableController extends Controller
         $ap->{'keterangan'} = $status;
         $ap->save();
 
-        DetilAP::create([
+        $items = DetilAP::where('id_ap', $request->kodeAR)->get();
+        $j = 0;
+        foreach($items as $i) {
+            if($j < $request->jumBaris) {
+                $tglDetil = $request->tgldetil[$j];
+                $tglDetil = $this->formatTanggal($tglDetil, 'Y-m-d');
+
+                if(($tglDetil != $i->tgl_bayar) || ($request->bayardetil[$j] != $i->transfer)) {
+                    $i->tgl_bayar = $tglDetil;
+                    $i->cicil = str_replace(",", "", $request->bayardetil[$j]);
+                    $i->save();
+                }
+            } else {
+                $i->delete();
+            }
+
+            $j++;
+        }
+
+        if(($request->{"bayar".$request->kode} != '') && ($request->{"tgl".$request->kode} != '')) {
+            DetilAP::create([
+                'id_ap' => $ap->{'id'},
+                'id_bayar' => $newcode,
+                'tgl_bayar' => $tglBayar,
+                'transfer' => (int) str_replace(",", "", $request->{"bayar".$request->kode})
+            ]);
+        }
+
+        /* DetilAP::create([
             'id_ap' => $ap->{'id'},
             'id_bayar' => $newcode,
             'tgl_bayar' => $tglBayar,
             'transfer' => (int) str_replace(",", "", $request->{"bayar".$request->kode})
-        ]);
+        ]); */
 
         /* if($request->kodeBM != "") {
             $arrKode = explode(",", $request->kodeBM);

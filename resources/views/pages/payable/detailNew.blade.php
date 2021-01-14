@@ -44,7 +44,7 @@
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
-                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ $item->first()->bm->first()->tanggal }}">
+                        <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->bm->first()->tanggal)->format('d-M-y') }}">
                       </div>
                     </div>   
                   </div>
@@ -84,18 +84,37 @@
                     <th style="width: 160px">Tgl. Bayar</th>
                     <th style="width: 160px">Jumlah Cicil</th>
                     <th style="width: 160px">Kurang Bayar</th>
+                    <th style="width: 60px">Hapus</th>
                   </tr>
                 </thead>
                 <tbody class="table-ar">
                   @php $i = 1; $total = 0; $kurang = $totalBM->first()->totBM - $retur->first()->total - $potBM->first()->potongan; @endphp
                   @foreach($detilap as $d)
                     @if($d->transfer != 0)
-                      <tr class="table-modal-first-row text-dark">
+                      {{-- <tr class="table-modal-first-row text-dark">
                         <td class="text-center">{{ $i }}</td>
                         <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-M-y') }}</td>
                         <td class="text-right">{{ number_format($d->transfer, 0, "", ".") }}</td>
                         @php $kurang -= $d->transfer; @endphp
                         <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
+                      </tr> --}}
+                      <tr class="table-modal-first-row text-dark" id="{{$i-1}}" style="font-size: 16px !important">
+                        <td class="text-center align-middle">{{ $i }}</td>
+                        <td class="text-center">
+                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tgldetil[]" autocomplete="off" value="{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-m-Y') }}" style="font-size: 16px">
+                        </td>
+                        <td class="text-right">
+                          <input type="text" name="bayardetil[]" class="form-control form-control-sm text-bold text-dark text-right bayarDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->transfer, 0, "", ",") }}" style="font-size: 16px">
+                        </td>
+                        @php $kurang -= $d->cicil; @endphp
+                        <td class="text-right align-middle text-bold">
+                          <input type="text" name="kurangdetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurangDetil" style="font-size: 16px" value="{{ number_format($kurang, 0, "", ".") }}" style="font-size: 16px">
+                        </td>
+                        <td align="center" class="align-middle">
+                          <a href="#" class="icRemoveDetil">
+                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                          </a>
+                        </td>
                       </tr>
                       @php $i++; $total += $d->transfer; @endphp
                     @endif
@@ -113,12 +132,18 @@
                       <td class="text-right align-middle">
                         <input type="text" name="kurang{{$item->first()->id_bm}}" id="kurang{{$item->first()->id_bm}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
                       </td>
+                      <td align="center" class="align-middle">
+                        <a href="#" class="icRemove">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
+                      </td>
                     </tr>
                   @endif
                   <tr style="font-size: 16px !important">
                     <td colspan="2" class="text-center text-bold text-dark" >Total</td>
                     <td class="text-right text-bold text-dark">{{ number_format($total, 0, "", ".") }}</td>
                     <td class="text-right text-bold text-dark">{{ number_format($kurang, 0, "", ".") }}</td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>
@@ -173,6 +198,8 @@ const tglBayar = document.querySelectorAll('.tglBayar');
 const bayarModal = document.querySelectorAll('.bayarModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
+const hapusBaris = document.querySelectorAll(".icRemoveDetil");
+const hapusBiasa = document.querySelectorAll(".icRemove");
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {
@@ -199,6 +226,45 @@ for(let i = 0; i < bayarModal.length; i++) {
   bayarModal[i].addEventListener("blur", function(e) {
     kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
   });
+}
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    const delRow = document.getElementById(i);
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $('table tr:last').prev().prev().prev().find('td:first-child').text();
+
+    $(delRow).remove();
+    for(let j = +curNum; j < +lastNum; j++) {
+      $(tablePO).find('tr:nth-child('+j+') td:first-child').html(j);
+    }
+
+    const no = $('table tr:last').prev().find('td:first-child').text();
+    $('table tr:last').prev().find('td:first-child').html(no-1);
+
+    jumBaris.value -= 1;
+  });
+}
+
+for(let i = 0; i < hapusBiasa.length; i++) {
+  hapusBiasa[i].addEventListener("click", function (e) {
+    $(this).parents('tr').find('input').val('');
+  });
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= qty.length; i++) {
+      if(inputan == i)
+        $(qty[inputan-1]).tooltip('show');
+    }
+    return false;
+  }
+  return true;
 }
 
 /** Add Thousand Separators **/
