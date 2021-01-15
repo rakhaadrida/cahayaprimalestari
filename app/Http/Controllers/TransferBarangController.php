@@ -74,15 +74,27 @@ class TransferBarangController extends Controller
                 ]);
 
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                                ->where('id_gudang', $request->kodeAsal[$i])->first();
+                                ->where('id_gudang', $request->kodeAsal[$i])
+                                ->where('status', $request->statusAsal[$i])->first();
                 $updateStok->{'stok'} -= $request->qtyTransfer[$i];
                 $updateStok->save();
 
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                                ->where('id_gudang', $request->kodeTujuan[$i])->first();
-                $updateStok->{'stok'} += $request->qtyTransfer[$i];
-                $updateStok->save();
-
+                                ->where('id_gudang', $request->kodeTujuan[$i])
+                                ->where('status', $request->statusTujuan[$i])->first();
+                
+                if($updateStok == NULL) {
+                    StokBarang::create([
+                        'id_barang' => $request->kodeBarang[$i],
+                        'id_gudang' => $request->kodeTujuan[$i],
+                        'status' => $request->statusTujuan[$i],
+                        'stok' => $request->qtyTransfer[$i]
+                    ]);
+                } else {
+                    $updateStok->{'stok'} += $request->qtyTransfer[$i];
+                    $updateStok->save();
+                }
+                
                 // $deleteTemp = TempDetilTB::where('id_tb', $id)->where('id_barang', $request->kodeBarang[$i])->where('id_asal', $request->kodeAsal[$i])->where('id_tujuan', $request->kodeTujuan[$i])->delete();
             }
         }

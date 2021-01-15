@@ -88,8 +88,8 @@
     </li>
   @endif
 
-  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'GUDANG') || (Auth::user()->roles == 'AR'))
-    @if((Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR'))
+  @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'GUDANG') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))
+    @if((Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR') && (Auth::user()->roles != 'AP'))
       <!-- Heading Sales and Purchases -->
       <div class="sidebar-heading sidebar-heading-title text-white">
         Sales and Purchases
@@ -173,15 +173,17 @@
         <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="py-2 collapse-inner rounded">
             <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
-            @if(Auth::user()->roles != 'GUDANG')
+            @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
               <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Customer</a>
             @endif
-            <a class="collapse-item" href="{{ route('retur-beli', ['status' => 'false', 'id'=> '0']) }}">Retur Supplier</a>
+            @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AP') || (Auth::user()->roles == 'GUDANG'))
+              <a class="collapse-item" href="{{ route('retur-beli', ['status' => 'false', 'id'=> '0']) }}">Retur Supplier</a>
+            @endif
           </div>
         </div>
       </li>
 
-    @if((Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR'))
+    @if((Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR') && (Auth::user()->roles != 'AP'))
       <!-- Nav Item - Laporan Menu -->
       <li class="nav-item sidebar-menu-icon">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseLaporan">

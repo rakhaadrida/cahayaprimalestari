@@ -134,6 +134,7 @@
                       <td> 
                         <input type="text" tabindex="{{ $tab += 3 }}" name="gdgAsal[]" id="gdgAsal" class="form-control form-control-sm text-dark text-bold gdgAsal" value="{{ old('gdgAsal[]') }}">
                         <input type="hidden" name="kodeAsal[]" class="kodeAsal">
+                        <input type="hidden" name="statusAsal[]" class="statusAsal">
                       </td>
                       <td> 
                         <input type="text" name="stokAsal[]" id="stokAsal" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokAsal" value="{{ old('stokAsal[]') }}">
@@ -141,6 +142,7 @@
                       <td> 
                         <input type="text" tabindex="{{ $tab += 4 }}" name="gdgTujuan[]" id="gdgTujuan" class="form-control form-control-sm text-dark text-bold gdgTujuan" value="{{ old('gdgTujuan[]') }}">
                         <input type="hidden" name="kodeTujuan[]" class="kodeTujuan">
+                        <input type="hidden" name="statusTujuan[]" class="statusTujuan">
                       </td>
                       <td> 
                         <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokTujuan" value="{{ old('stokTujuan[]') }}">
@@ -242,9 +244,11 @@ const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const gdgAsal = document.querySelectorAll(".gdgAsal");
 const kodeAsal = document.querySelectorAll(".kodeAsal");
+const statusAsal = document.querySelectorAll(".statusAsal");
 const stokAsal = document.querySelectorAll(".stokAsal");
 const gdgTujuan = document.querySelectorAll(".gdgTujuan");
 const kodeTujuan = document.querySelectorAll(".kodeTujuan");
+const statusTujuan = document.querySelectorAll(".statusTujuan");
 const stokTujuan = document.querySelectorAll(".stokTujuan");
 const qtyTransfer = document.querySelectorAll(".qtyTransfer");
 const hapusBaris = document.querySelectorAll(".icRemove");
@@ -577,6 +581,15 @@ for(let i = 0; i < brgNama.length; i++) {
         qtyTransfer[i].setAttribute('required', true);
       }
     @endforeach
+
+    gdgAsal[i].value = '';
+    kodeAsal[i].value = '';
+    statusAsal[i].value = '';
+    stokAsal[i].value = '';
+    gdgTujuan[i].value = '';
+    kodeTujuan[i].value = '';
+    statusTujuan[i].value = '';
+    stokTujuan[i].value = '';
   }
 }
 
@@ -588,15 +601,24 @@ for(let i = 0; i < gdgAsal.length; i++) {
   function displayAsal(e) {
     if(e.target.value == "") {
       kodeAsal[i].value = "";
+      statusAsal[i].value = "";
       stokAsal[i].value = "";
     }
 
     @foreach($gudang as $g)
       if('{{ $g->nama }}' == e.target.value) {
         kodeAsal[i].value = '{{ $g->id }}';
+        statusAsal[i].value = 'T';
+      } 
+      if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Bagus')) {
+        kodeAsal[i].value = '{{ $g->id }}';
+        statusAsal[i].value = 'T';
+      } else if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Jelek')) {
+        kodeAsal[i].value = '{{ $g->id }}';
+        statusAsal[i].value = 'F';
       }
     @endforeach
-    displayStok(kodeAsal[i].value, stokAsal[i]);
+    displayStok(kodeAsal[i].value, statusAsal[i].value, stokAsal[i]);
   }
 
   gdgTujuan[i].addEventListener("keyup", displayTujuan);
@@ -605,20 +627,29 @@ for(let i = 0; i < gdgAsal.length; i++) {
   function displayTujuan(e) {
     if(e.target.value == "") {
       kodeTujuan[i].value = "";
+      statusTujuan[i].value = "";
       stokTujuan[i].value = "";
     }
 
     @foreach($gudang as $g)
       if('{{ $g->nama }}' == e.target.value) {
         kodeTujuan[i].value = '{{ $g->id }}';
+        statusTujuan[i].value = 'T';
+      }
+      if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Bagus')) {
+        kodeTujuan[i].value = '{{ $g->id }}';
+        statusTujuan[i].value = 'T';
+      } else if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Jelek')) {
+        kodeTujuan[i].value = '{{ $g->id }}';
+        statusTujuan[i].value = 'F';
       }
     @endforeach
-    displayStok(kodeTujuan[i].value, stokTujuan[i]);
+    displayStok(kodeTujuan[i].value, statusTujuan[i].value, stokTujuan[i]);
   }
 
-  function displayStok(kode, stok) {
+  function displayStok(kode, status, stok) {
     @foreach($stok as $s)
-      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == kode) && ('{{ $s->status }}' == 'T')) {
+      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == kode) && ('{{ $s->status }}' == status)) {
         stok.value = '{{ $s->stok }}';
       }
     @endforeach
@@ -676,7 +707,12 @@ $(function() {
     barangNama.push('{{ $b->nama }}');
   @endforeach
   @foreach($gudang as $g)
-    gudang.push('{{ $g->nama }}');
+    if('{{ $g->tipe }}' == 'RETUR') {
+      gudang.push('Retur Bagus');
+      gudang.push('Retur Jelek');
+    } else {
+      gudang.push('{{ $g->nama }}');
+    }
   @endforeach
     
   function split(val) {

@@ -41,11 +41,13 @@ class BarangController extends Controller
         $newcode = 'BRG'.sprintf("%04s", $lastnumber);
         $jenis = JenisBarang::All();
         $subjenis = Subjenis::All();
+        $harga = Harga::All();
 
         $data = [
             'newcode' => $newcode,
             'jenis' => $jenis,
-            'subjenis' => $subjenis
+            'subjenis' => $subjenis,
+            'harga' => $harga
         ];
         
         return view('pages.barang.create', $data);
@@ -60,6 +62,17 @@ class BarangController extends Controller
             'satuan' => $request->satuan,
             'ukuran' => $request->ukuran
         ]);
+
+        $harga = Harga::All();
+        for($i = 0; $i < $harga->count(); $i++) {
+            HargaBarang::create([
+                'id_barang' => $request->kode,
+                'id_harga' => $request->kodeHarga,
+                'harga' => str_replace(".", "", $request->harga[$i]),
+                'ppn' => str_replace(".", "", $request->ppn[$i]),
+                'harga_ppn' => str_replace(".", "", $request->hargaPPN[$i])
+            ]);
+            }
 
         return redirect()->route('barang.index');
     }

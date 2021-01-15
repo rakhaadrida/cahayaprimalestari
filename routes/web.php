@@ -319,6 +319,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
         //     ->name('trans-detail');
 
+        // Ubah dan Cek Faktur
+        Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
+        Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
+
         Route::post('ar/cetak', 'AccReceivableController@cetak')->name('ar-cetak');
         Route::post('ar/cetakNow', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
 
@@ -347,9 +351,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
     });
 
-    Route::group(['roles'=>['ADMIN', 'GUDANG', 'AR', 'SUPER']], function() {
-        // Retur Pembelian
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'GUDANG', 'AP']], function() {
         Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'GUDANG', 'SUPER', 'AP']], function() {
+        // Retur Pembelian
         Route::get('/retur/index-beli', 'ReturController@createPembelian')
             ->name('ret-index-beli');
         Route::post('/retur/index-beli/detail', 'ReturController@showCreateBeli')
@@ -368,12 +375,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('retur-potong-beli');
         Route::get('/retur/pembelian/cetak/{id}', 'ReturController@cetakTerimaBeli')
             ->name('retur-beli-cetak');
-    });
-
-    Route::group(['roles'=>['ADMIN', 'AR', 'SUPER']], function() {
-        // Ubah dan Cek Faktur
-        Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
-        Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
     });
 
     Route::group(['roles'=>['OFFICE02', 'GUDANG']], function() {

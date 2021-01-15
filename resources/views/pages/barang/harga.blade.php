@@ -77,22 +77,6 @@
                     />
                   </div>
                 </div>
-                {{-- <div class="form-group row">
-                  <label for="harga" class="col-2 col-form-label text-bold">
-                    {{ $h->nama }}</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" class="form-control col-form-label-sm" 
-                    name="harga[]"
-                      @foreach($items as $item)
-                        @if($item->id_harga == $h->id)
-                          value="{{ $item->harga }}" 
-                          @break
-                        @endif
-                      @endforeach
-                    />
-                  </div>
-                </div> --}}
                 @php $i++; @endphp
               @endforeach
               <hr>

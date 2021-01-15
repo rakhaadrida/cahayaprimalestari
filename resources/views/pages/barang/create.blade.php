@@ -83,6 +83,26 @@
                 <span class="col-form-label text-bold" id="labelUkuran"></span>
               </div>
               <hr>
+              @php $i = 0; @endphp
+              @foreach($harga as $h)
+                <div class="form-row">
+                  <div class="form-group col-2">
+                    <label for="harga" class="col-form-label text-bold">Price List</label>
+                    <input type="text" tabindex="-1" class="form-control col-form-label-sm harga" id="harga" name="harga[]" readonly/>
+                  </div>
+                  <div class="form-group col-2 ml-2">
+                    <label for="ppn" class="col-form-label text-bold">PPN</label>
+                    <input type="text" tabindex="-1" class="form-control col-form-label-sm ppn" id="ppn" name="ppn[]" readonly/>
+                  </div>
+                  <div class="form-group col-2 ml-2">
+                    <label for="hargaPPN" class="col-form-label text-bold">{{ $h->nama }}</label>
+                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSajaHarga(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required @if($i == 0) autofocus @endif/>
+                    <input type="hidden" name="kodeHarga" value="{{ $h->id }}">
+                  </div>
+                </div>
+                @php $i++; @endphp
+              @endforeach
+              <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
@@ -115,6 +135,9 @@ const kodeSub = document.getElementById('kodeSub');
 const ukuran = document.getElementById('ukuran');
 const labelUkuran = document.getElementById('labelUkuran');
 const radios = document.querySelectorAll('input[type=radio][name="satuan"]');
+const harga = document.querySelectorAll(".harga");
+const ppn = document.querySelectorAll(".ppn");
+const hargaPPN = document.querySelectorAll(".hargaPPN");
 
 ukuran.addEventListener("keyup", formatNominal);
 
@@ -212,6 +235,49 @@ function displayUkuran(e) {
     ukuran.value = '';
     labelUkuran.textContent = '';
   }
+}
+
+/** Tampil Pricelist dan PPN **/
+for(let i = 0; i < harga.length; i++) {
+  hargaPPN[i].addEventListener('keyup', function(e) {
+    console.log(e.target.value.replace(/\./g, ""));
+    harga[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") / 1.1));
+    ppn[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") - harga[i].value.replace(/\./g, "")));
+  });
+
+  hargaPPN[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value
+      .replace(/\D/g, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+      ;
+    });
+  });
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSajaHarga(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    $(hargaPPN).tooltip('show');
+
+    return false;
+  }
+  return true;
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split(',');
+	x1 = x[0];
+	x2 = x.length > 1 ? ',' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	}
+	return x1 + x2;
 }
 
 /** Inputan hanya bisa angka **/
