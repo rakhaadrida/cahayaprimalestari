@@ -39,6 +39,7 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" readonly class="form-control form-control-sm text-bold text-dark" name="kodeSO" value="{{ $item->first()->id_bm }}" >
                         <input type="hidden" name="kode" value="{{ $item->first()->id_bm }}">
+                        <input type="hidden" name="kodeAP" value="{{ $item->first()->id }}">
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Faktur</label>
@@ -65,7 +66,7 @@
                   <div class="col-4 mt-1">
                     <input type="text" tabindex="5" name="namaCust" readonly class="form-control form-control-sm text-bold text-dark" value="{{ $item->first()->bm->first()->supplier->nama }}" />
                   </div>
-                  <input type="hidden" name="jumBaris" id="jumBaris" value="3">
+                  <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $detilap->count() }}">
                 </div>
               </div>
               <hr>
@@ -87,7 +88,7 @@
                     <th style="width: 60px">Hapus</th>
                   </tr>
                 </thead>
-                <tbody class="table-ar">
+                <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $total = 0; $kurang = $totalBM->first()->totBM - $retur->first()->total - $potBM->first()->potongan; @endphp
                   @foreach($detilap as $d)
                     @if($d->transfer != 0)
@@ -106,7 +107,7 @@
                         <td class="text-right">
                           <input type="text" name="bayardetil[]" class="form-control form-control-sm text-bold text-dark text-right bayarDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->transfer, 0, "", ",") }}" style="font-size: 16px">
                         </td>
-                        @php $kurang -= $d->cicil; @endphp
+                        @php $kurang -= $d->transfer; @endphp
                         <td class="text-right align-middle text-bold">
                           <input type="text" name="kurangdetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurangDetil" style="font-size: 16px" value="{{ number_format($kurang, 0, "", ".") }}" style="font-size: 16px">
                         </td>
@@ -124,13 +125,13 @@
                     <tr class="text-dark">
                       <td class="text-center align-middle">{{ $i }}</td>
                       <td class="text-center align-middle">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$item->first()->id_bm}}" id="tglBayar{{$item->first()->id_bm}}" placeholder="DD-MM-YYYY" autocomplete="off">
+                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$item->first()->id_bm}}" id="tglBayar{{$item->first()->id_bm}}" placeholder="DD-MM-YYYY" autocomplete="off" style="font-size: 16px">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="bayar{{$item->first()->id_bm}}" id="bayar{{$item->first()->id_bm}}" class="form-control form-control-sm text-bold text-dark text-right bayarModal" autocomplete="off">
+                        <input type="text" name="bayar{{$item->first()->id_bm}}" id="bayar{{$item->first()->id_bm}}" class="form-control form-control-sm text-bold text-dark text-right bayarModal" autocomplete="off" style="font-size: 16px">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="kurang{{$item->first()->id_bm}}" id="kurang{{$item->first()->id_bm}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
+                        <input type="text" name="kurang{{$item->first()->id_bm}}" id="kurang{{$item->first()->id_bm}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang" style="font-size: 16px">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -196,7 +197,9 @@ $('.datepicker').datepicker({
 
 const tglBayar = document.querySelectorAll('.tglBayar');
 const bayarModal = document.querySelectorAll('.bayarModal');
+const bayarDetil = document.querySelectorAll('.bayarDetil');
 const kurang = document.querySelectorAll('.kurang');
+const kurangDetil = document.querySelectorAll('.kurangDetil');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const hapusBaris = document.querySelectorAll(".icRemoveDetil");
 const hapusBiasa = document.querySelectorAll(".icRemove");
@@ -226,6 +229,18 @@ for(let i = 0; i < bayarModal.length; i++) {
   bayarModal[i].addEventListener("blur", function(e) {
     kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
   });
+}
+
+for(let i = 0; i < bayarDetil.length; i++) {
+  bayarDetil[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    });
+  });
+
+  // bayarDetil[i].addEventListener("blur", function(e) {
+  //   kurangDetil[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
+  // });
 }
 
 /** Delete Baris Pada Tabel **/

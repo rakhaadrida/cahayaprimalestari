@@ -39,7 +39,6 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" readonly class="form-control form-control-sm text-bold text-dark" name="kodeBM" value="{{ $item->first()->id_bm }}" >
                         <input type="hidden" name="kode" value="{{ $item->first()->id }}">
-                        <input type="hidden" name="kodeRet" value="{{ $rt->count() != 0 ? $rt->first()->id : '' }}">
                       </div>
                       {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Faktur</label>
@@ -66,20 +65,17 @@
                   <div class="col-4 mt-1">
                     <input type="text" tabindex="3" name="namaCust" readonly class="form-control form-control-sm text-bold text-dark" value="{{ $item->first()->bm->first()->supplier->nama }}" />
                   </div>
-                  <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $retur->count() }}">
+                  <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $detilRB->count() }}">
                 </div>
                 <div class="form-group row subtotal-so">
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nomor Retur</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
-                    <input type="text" tabindex="4" name="nomorRetur" id="nomorRetur" class="form-control form-control-sm text-bold text-dark" value="{{ $rt->count() != 0 ? $rt->first()->id_retur : '' }}"
-                    @if($rt->count() != 0) readonly @endif/>
+                    <input type="text" tabindex="4" name="nomorRetur" id="nomorRetur" class="form-control form-control-sm text-bold text-dark" value="{{ $kode }}"/>
                   </div>
-                  @if($rt->count() == 0)
-                    <div class="col-1 mt-1" style="margin-left: -10px">
-                      <button type="submit" tabindex="5" formaction="{{ route('ap-retur-show', $item->first()->id_bm) }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
-                    </div>
-                  @endif
+                  <div class="col-1 mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ap-retur-show', $item->first()->id_bm) }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                  </div>
                 </div>
               </div>
               <hr>
@@ -113,19 +109,7 @@
                 </thead>
                 <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $totalQty = 0; $totalRet = 0; @endphp
-                  @foreach($retur as $d)
-                    {{-- <tr class="table-modal-first-row text-dark" style="font-size: 16px">
-                      <td class="text-center" >{{ $i }}</td>
-                      <td class="text-center">{{ $d->id_barang }}</td>
-                      <td>{{ $d->barang->nama }}</td>
-                      <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_retur)->format('d-M-y') }}</td>
-                      <td class="text-right">{{ $d->qty }}</td>
-                      <td class="text-right">{{ number_format($d->harga, 0, "", ".") }}</td>
-                      <td class="text-right">{{ number_format($d->qty * $d->harga, 0, "", ".") }}</td>
-                      <td class="text-right">{{ $d->diskon }}</td>
-                      <td class="text-right">{{ number_format($d->diskonRp, 0, "", ".") }}</td>
-                      <td class="text-right">{{ number_format(($d->qty * $d->harga) - $d->diskonRp, 0, "", ".") }}</td>
-                    </tr> --}}
+                  @foreach($detilRB as $d)
                     <tr class="table-modal-first-row text-dark retur-ar" id="{{ $i-1 }}">
                       <td class="text-center align-middle">{{ $i }}</td>
                       <td class="text-center">
@@ -135,26 +119,27 @@
                          <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark namaBarang" name="namaDetil[]" value="{{ $d->barang->nama }}">
                         </td>
                       <td class="text-center">
-                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-center tglRetur" name="tglDetil[]" autocomplete="off" required value="{{ \Carbon\Carbon::parse($d->tgl_retur)->format('d-M-y') }}">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-center tglRetur" name="tglDetil[]" autocomplete="off" required value="{{ \Carbon\Carbon::parse($d->returbeli->tanggal)->format('d-M-y') }}">
                       </td>
                       <td class="text-right">
-                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right qty" name="qtyDetil[]" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required value="{{ $d->qty }}">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right qty" name="qtyDetil[]" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required value="{{ $d->qty_retur }}">
                       </td>
                       {{-- @php $kurang -= $d->cicil; @endphp --}}
                       <td class="text-right">
-                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" name="hargaDetil[]" value="{{ number_format($d->harga, 0, "", ".") }}">
+                        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" name="hargaDetil[]" value="{{ number_format($d->barang->hargaBarang->first()->harga_ppn, 0, "", ".") }}">
                       </td>
                       <td class="text-right">
-                        <input type="text" name="jumlahDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($d->qty * $d->harga, 0, "", ".") }}">
+                        <input type="text" name="jumlahDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($d->qty_retur * $d->barang->hargaBarang->first()->harga_ppn, 0, "", ".") }}">
                       </td>
                       <td class="text-right">
-                        <input type="text" name="diskonDetil[]" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off" value="{{ $d->diskon }}">
+                        <input type="text" name="diskonDetil[]" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off" value="">
                       </td>
                       <td class="text-right">
-                        <input type="text" name="diskonRpDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" value="{{ number_format($d->diskonRp, 0, "", ".") }}">
+                        <input type="text" name="diskonRpDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" value="">
                       </td>
                       <td class="text-right">
-                        <input type="text" name="nettoDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ number_format(($d->qty * $d->harga) - $d->diskonRp, 0, "", ".") }}">
+                        <input type="text" name="nettoDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto">
+                        {{-- value="{{ number_format(($d->qty * $d->harga) - $d->diskonRp, 0, "", ".") }}" --}}
                       </td>
                     </tr>
                     @php $i++; $totalQty += $d->qty; $totalRet += (($d->qty * $d->harga) - $d->diskonRp) @endphp
@@ -207,23 +192,16 @@
               <!-- End Tabel Data Detil PO -->
 
               <!-- Button Submit dan Reset -->
-              @if(($item->first()->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02') 
-              && ($rt->count() != 0))
+              @if(($item->first()->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
                 <div class="form-row justify-content-center">
                   <div class="col-2">
-                    <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ap-retur-update', $rt->first()->id) }}" formmethod="POST">Update</button>
+                    <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ap-retur') }}" formmethod="POST">Submit</button>
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-outline-danger btn-block text-bold" formaction="{{ route('ap-retur-batal', $rt->first()->id) }}" formmethod="POST">Batal Retur</button>
+                    <button type="reset" data-dismiss="modal" class="btn btn-outline-danger btn-block text-bold">Reset</button>
                   </div>
                   <div class="col-2">
-                    <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
-                  </div>
-                </div>
-              @else
-                <div class="form-row justify-content-center">
-                  <div class="col-2">
-                    <a href="{{ route('ap') }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
+                    <a href="{{ route('ap-retur-create', $item->first()->id_bm) }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                   </div>
                 </div>
               @endif
@@ -275,239 +253,7 @@ const retur = '{{ $retur->count() }}';
 
 // newRow.addEventListener('click', displayRow);
 
-function displayRow(e) {
-  const lastRow = $(tablePO).find('tr:last').attr("id");
-  const lastNo = $(tablePO).find('tr:last td:first-child').text();
-  // var newNum = +lastRow + 1;
-  var newNum = +jumBaris.value + 1;
-  var newNo = +lastNo + 1;
-  const newTr = `
-    <tr class="text-dark" id="${newNum}">
-      <td align="center" class="align-middle">${newNo}</td>
-      <td class="align-middle">
-        <input type="text" name="kodeBarang{{$item->first()->id}}[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
-      </td>
-      <td class="align-middle">
-        <input type="text" name="namaBarang{{$item->first()->id}}[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
-      </td>
-      <td class="align-middle"> 
-        <input type="text" class="form-control datepickerRow form-control-sm text-bold text-dark text-center tglReturRow" name="tglRetur{{$item->first()->id}}[]" id="tglReturRow${newNum}" placeholder="DD-MM-YYYY" autocomplete="off">
-      </td>
-      <td class="align-middle"> 
-        <input type="text" class="form-control form-control-sm text-bold text-dark text-right qtyRow" name="qty{{$item->first()->id}}[]" id="qtyRow${newNum}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
-      </td>
-      <td class="align-middle"> 
-        <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow" name="harga{{$item->first()->id}}[]" id="hargaRow${newNum}">
-      </td>
-      <td class="text-right align-middle">
-        <input type="text" name="jumlah{{$item->first()->id}}[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
-      </td>
-      <td class="align-middle" style="width: 90px">
-        <input type="text" name="diskon{{$item->first()->id}}[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right diskonRow" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off">
-      </td>
-      <td class="text-right align-middle" style="width: 110px">
-        <input type="text" name="diskonRp{{$item->first()->id}}[]" id="diskonRpRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRpRow">
-      </td>
-      <td class="text-right align-middle">
-        <input type="text" name="netto{{$item->first()->id}}[]" id="nettoRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right nettoRow">
-      </td>
-    </tr>
-  `; 
-
-  $(tablePO).append(newTr);
-  jumBaris.value = newNum;
-  const newRow = document.getElementById(newNum);
-  const brgRow = document.getElementById("nmBrgRow"+newNum);
-  const kodeRow = document.getElementById("kdBrgRow"+newNum);
-  const tglReturRow = document.getElementById("tglReturRow"+newNum);
-  const qtyRow = document.getElementById("qtyRow"+newNum);
-  const hargaRow = document.getElementById("hargaRow"+newNum);
-  const jumlahRow = document.getElementById("jumlahRow"+newNum);
-  const diskonRow = document.getElementById("diskonRow"+newNum);
-  const diskonRpRow = document.getElementById("diskonRpRow"+newNum);
-  const nettoRow = document.getElementById("nettoRow"+newNum);
-  kodeRow.focus();
-  // document.getElementById("submitRT"+'{{$item->first()->id}}').tabIndex = tab++;
-
-  /** Tampil Harga **/
-  kodeRow.addEventListener("keyup", displayHargaRow);
-  brgRow.addEventListener("keyup", displayHargaRow);
-  kodeRow.addEventListener("blur", displayHargaRow);
-  brgRow.addEventListener("blur", displayHargaRow);
-
-  $('.datepickerRow').datepicker({
-    format: 'dd-mm-yyyy',
-    autoclose: true,
-    todayHighlight: true,
-    language: 'id',
-  });
-
-  function displayHargaRow(e) {
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      qtyRow.removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-        kodeRow.value = '{{ $br->id }}';
-        brgRow.value = '{{ $br->nama }}';
-      }
-    @endforeach
-
-    @foreach($harga as $hb)
-      if(('{{ $hb->id_barang }}' == kodeRow.value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-        hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
-      }
-    @endforeach
-
-    qtyRow.value = '';
-  }
-
-  tglReturRow.addEventListener("keyup", function(e) {
-    var value = e.target.value.replaceAll("-","");
-    var arrValue = value.split("", 3);
-    var kode = arrValue.join("");
-
-    if(value.length > 2 && value.length <= 4) 
-      value = value.slice(0,2) + "-" + value.slice(2);
-    else if(value.length > 4 && value.length <= 8)
-      value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
-    tglReturRow.value = value;
-  });
-
-  qtyRow.addEventListener("keyup", function(e) {
-    if(e.target.value == "") {
-      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
-      jumlahRow.value = "";
-      diskonRpRow.value = "";
-      nettoRow.value = "";
-    }
-    else {  
-      netPast = +nettoRow.value.replace(/\./g, "");
-      jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
-      if(diskonRow.value != "") {
-        var angkaDiskon = hitungDiskon(diskonRow.value)
-        diskonRpRow.value = addCommas(angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100);
-      }
-
-      nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
-      checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
-    }
-  });
-
-  diskonRow.addEventListener("keyup", function (e) {
-    if(e.target.value == "") {
-      netPast = nettoRow.value.replace(/\./g, "");
-      nettoRow.value = addCommas(+nettoRow.value.replace(/\./g, "") + +diskonRpRow.value.replace(/\./g, ""));
-      checkSubtotal(netPast, nettoRow.value.replace(/\./g, ""));
-      diskonRpRow.value = "";
-    }
-    else {
-      var angkaDiskon = hitungDiskon(e.target.value);
-      netPast = +nettoRow.value.replace(/\./g, "");
-      diskonRpRow.value = addCommas((angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100).toFixed(0));
-      nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
-      checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
-    }
-  });
-
-  /** Autocomplete Nama  Barang **/
-  $(function() {
-    var idBarang = [];
-    var nmBarang = [];
-    @foreach($barang as $b)
-      idBarang.push('{{ $b->id }}');
-      nmBarang.push('{{ $b->nama }}');
-    @endforeach
-      
-    function split(val) {
-      return val.split(/,\s/);
-    }
-
-    function extractLast(term) {
-      return split(term).pop();
-    }
-
-    $(kodeRow).on("keydown", function(event) {
-      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-        event.preventDefault();
-      }
-    })
-    .autocomplete({
-      minLength: 0,
-      source: function(request, response) {
-        response($.ui.autocomplete.filter(idBarang, extractLast(request.term)));
-      },
-      focus: function() {
-        return false;
-      },
-      select: function(event, ui) {
-        var terms = split(this.value);
-        terms.pop();
-        terms.push(ui.item.value);
-        terms.push("");
-        this.value = terms.join("");
-        return false;
-      }
-    });
-    
-    $(brgRow).on("keydown", function(event) {
-      if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-        event.preventDefault();
-      }
-    })
-    .autocomplete({
-      minLength: 0,
-      source: function(request, response) {
-        response($.ui.autocomplete.filter(nmBarang, extractLast(request.term)));
-      },
-      focus: function() {
-        return false;
-      },
-      select: function(event, ui) {
-        var terms = split(this.value);
-        terms.pop();
-        terms.push(ui.item.value);
-        terms.push("");
-        this.value = terms.join("");
-        return false;
-      }
-    });
-  }); 
-}
-
-/* for(let i = 0; i < kodeBarang.length; i++) {
-  brgNama[i].addEventListener("keyup", displayHarga) ;
-  kodeBarang[i].addEventListener("keyup", displayHarga);
-  brgNama[i].addEventListener("blur", displayHarga) ;
-  kodeBarang[i].addEventListener("blur", displayHarga);
-
-  function displayHarga(e) {
-    if(e.target.value == "") {
-      $(this).parents('tr').find('input').val('');
-      qty[i].removeAttribute('required');
-    }
-
-    @foreach($barang as $br)
-      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-        kodeBarang[i].value = '{{ $br->id }}';
-        brgNama[i].value = '{{ $br->nama }}';
-      }
-    @endforeach
-
-    @foreach($harga as $hb)
-      if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-        harga[i].value = addCommas('{{ $hb->harga_ppn }}');
-      }
-    @endforeach
-
-    qty[i].value = '';
-  }
-} */
-
-/* for(let i = 0; i < tglRetur.length; i++) {
+for(let i = 0; i < tglRetur.length; i++) {
   tglRetur[i].addEventListener("keyup", function(e) {
     var value = e.target.value.replaceAll("-","");
     var arrValue = value.split("", 3);
@@ -520,9 +266,9 @@ function displayRow(e) {
     
     tglRetur[i].value = value;
   });
-} */
+}
 
-/* for(let i = 0; i < qty.length; i++) {
+for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("keyup", function(e) {
     if(e.target.value == "") {
       // total[i].value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
@@ -544,7 +290,7 @@ function displayRow(e) {
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
   });
-} */
+}
 
 for(let i = 0; i < diskon.length; i++) {
   diskon[i].addEventListener("keyup", function (e) {
@@ -632,13 +378,6 @@ function addCommas(nStr) {
 
 /** Autocomplete Input Kode PO **/
 $(function() {
-  var kode = [];
-  var nama = [];
-  @foreach($barang as $b)
-    kode.push('{{ $b->id }}');
-    nama.push('{{ $b->nama }}');
-  @endforeach
-
   var returBeli = [];
   @foreach($returBeli as $rb)
     returBeli.push('{{ $rb->id }}');
@@ -663,64 +402,6 @@ $(function() {
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
       response($.ui.autocomplete.filter(returBeli, extractLast(request.term)));
-    },
-    focus: function() {
-      // prevent value inserted on focus
-      return false;
-    },
-    select: function(event, ui) {
-      var terms = split(this.value);
-      // remove the current input
-      terms.pop();
-      // add the selected item
-      terms.push(ui.item.value);
-      // add placeholder to get the comma-and-space at the end
-      terms.push("");
-      this.value = terms.join("");
-      return false;
-    }
-  });
-
-  /*-- Autocomplete Input Nama Barang --*/
-  $(brgNama).on("keydown", function(event) {
-    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-      event.preventDefault();
-    }
-  })
-  .autocomplete({
-    minLength: 0,
-    source: function(request, response) {
-      // delegate back to autocomplete, but extract the last term
-      response($.ui.autocomplete.filter(nama, extractLast(request.term)));
-    },
-    focus: function() {
-      // prevent value inserted on focus
-      return false;
-    },
-    select: function(event, ui) {
-      var terms = split(this.value);
-      // remove the current input
-      terms.pop();
-      // add the selected item
-      terms.push(ui.item.value);
-      // add placeholder to get the comma-and-space at the end
-      terms.push("");
-      this.value = terms.join("");
-      return false;
-    }
-  });
-
-  /*-- Autocomplete Input Kode Barang --*/
-  $(kodeBarang).on("keydown", function(event) {
-    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-      event.preventDefault();
-    }
-  })
-  .autocomplete({
-    minLength: 0,
-    source: function(request, response) {
-      // delegate back to autocomplete, but extract the last term
-      response($.ui.autocomplete.filter(kode, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus

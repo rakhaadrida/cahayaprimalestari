@@ -213,7 +213,7 @@
                     <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-retur') }}" formmethod="POST">Submit</button>
                   </div>
                   <div class="col-2">
-                    <button type="reset" data-dismiss="modal" class="btn btn-outline-danger btn-block text-bold">Reset</button>
+                    <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
                   </div>
                   <div class="col-2">
                     <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>

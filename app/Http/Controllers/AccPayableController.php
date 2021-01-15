@@ -13,6 +13,10 @@ use App\Models\Gudang;
 use App\Models\AP_Retur;
 use App\Models\DetilRAP;
 use App\Models\StokBarang;
+use App\Models\ReturBeli;
+use App\Models\DetilRB;
+use App\Models\ReturTerima;
+use App\Models\DetilRT;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -146,7 +150,7 @@ class AccPayableController extends Controller
     public function createTransfer($id) {
         $item = AccPayable::where('id_bm', $id)->get();
         $retur = AP_Retur::selectRaw('sum(total) as total')->where('id_ap', $item->first()->id)->get();
-        $detilap = DetilAP::where('id_ap', $item->first()->id)->get();
+        $detilap = DetilAP::where('id_ap', $item->first()->id)->orderBy('tgl_bayar')->get();
         $totalBM = BarangMasuk::select(DB::raw('sum(total) as totBM'))->where('id_faktur', $id)
                     ->where('status', '!=', 'BATAL')->get();
         $potBM = BarangMasuk::select(DB::raw('sum(potongan) as potongan'))->where('id_faktur', $id)->get();
@@ -191,7 +195,12 @@ class AccPayableController extends Controller
         else 
             $totTransfer = $total[0]->totTransfer;
 
-        if($bm[0]->totBM == str_replace(",", "", $request->{"bayar".$request->kode}) + $totTransfer) 
+        if($request->{"bayar".$request->kode} == '') 
+            $bayar = 0;
+        else 
+            $bayar = $request->{"bayar".$request->kode};
+
+        if($bm[0]->totBM == str_replace(",", "", $bayar) + $totTransfer) 
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
@@ -199,7 +208,7 @@ class AccPayableController extends Controller
         $ap->{'keterangan'} = $status;
         $ap->save();
 
-        $items = DetilAP::where('id_ap', $request->kodeAR)->get();
+        $items = DetilAP::where('id_ap', $request->kodeAP)->get();
         $j = 0;
         foreach($items as $i) {
             if($j < $request->jumBaris) {
@@ -208,7 +217,7 @@ class AccPayableController extends Controller
 
                 if(($tglDetil != $i->tgl_bayar) || ($request->bayardetil[$j] != $i->transfer)) {
                     $i->tgl_bayar = $tglDetil;
-                    $i->cicil = str_replace(",", "", $request->bayardetil[$j]);
+                    $i->transfer = str_replace(",", "", $request->bayardetil[$j]);
                     $i->save();
                 }
             } else {
@@ -275,9 +284,13 @@ class AccPayableController extends Controller
         $item = AccPayable::where('id_bm', $id)->get();
         $retur = DetilRAP::join('ap_retur', 'ap_retur.id', 'detilrap.id_retur')
                 ->where('id_ap', $item->first()->id)->orderBy('tgl_retur', 'asc')->get();
-        $total = AP_Retur::selectRaw('sum(total) as total')->where('id_ap', $item->first()->id)->get();
+        $total = AP_Retur::select('id')->selectRaw('sum(total) as total')
+                ->where('id_ap', $item->first()->id)->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
+
+        $returBeli = ReturBeli::where('id_supplier', $item->first()->bm->first()->id_supplier)->get();
+        $rt = ReturTerima::where('id', $total->first()->id)->get();
 
         $data = [
             'item' => $item,
@@ -285,19 +298,53 @@ class AccPayableController extends Controller
             'total' => $total,
             'barang' => $barang,
             'harga' => $harga,
+            'returBeli' => $returBeli,
+            'rt' => $rt
         ];
 
         return view('pages.payable.returNew', $data);
+    }
+
+    public function showRetur(Request $request, $id) {
+        $item = AccPayable::where('id_bm', $id)->get();
+        $retur = DetilRAP::join('ap_retur', 'ap_retur.id', 'detilrap.id_retur')
+                ->where('id_ap', $item->first()->id)->orderBy('tgl_retur', 'asc')->get();
+        $total = AP_Retur::selectRaw('sum(total) as total')->where('id_ap', $item->first()->id)->get();
+        // $barang = Barang::All();
+        // $harga = HargaBarang::All();
+
+        $returBeli = ReturBeli::where('id_supplier', $item->first()->bm->first()->id_supplier)->get();
+        $detilRB = DetilRB::where('id_retur', $request->nomorRetur)->get();
+        $kode = $request->nomorRetur;
+
+        $data = [
+            'item' => $item,
+            'retur' => $retur,
+            'total' => $total,
+            // 'barang' => $barang,
+            // 'harga' => $harga,
+            'returBeli' => $returBeli,
+            'detilRB' => $detilRB,
+            'kode' => $kode
+        ];
+
+        return view('pages.payable.returNewShow', $data);
     }
 
     public function retur(Request $request) {
         $jumBaris = $request->jumBaris;
         $gudang = Gudang::where('tipe', 'RETUR')->get();
 
-        $lastcode = AP_Retur::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = AP_Retur::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
+                    ->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
-        $newcode = 'RTP'.sprintf("%04s", $lastnumber);
+        $newcode = 'RTP'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         // $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
@@ -311,46 +358,84 @@ class AccPayableController extends Controller
             'id_user' => Auth::user()->id
         ]);
 
+        ReturTerima::create([
+            'id' => $newcode,
+            'id_retur' => $request->nomorRetur,
+            'tanggal' => Carbon::now('+07:00')->toDateString(),
+        ]);
+
         $total = 0;
         for($i = 0; $i < $jumBaris; $i++) {
-            if(($request->{"kodeBarang".$request->kode}[$i] != '') && ($request->{"qty".$request->kode}[$i] != '')) {
-                $tglRetur = $request->{"tglRetur".$request->kode}[$i];
-                $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
+            $tglRetur = $request->tglDetil[$i];
+            $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
 
-                DetilRAP::create([
-                    'id_retur' => $newcode,
-                    'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
-                    'tgl_retur' => $tglRetur,
-                    'qty' => $request->{"qty".$request->kode}[$i],
-                    'harga' => str_replace(".", "", $request->{"harga".$request->kode}[$i]),
-                    'diskon' => $request->{"diskon".$request->kode}[$i],
-                    'diskonRp' => str_replace(".", "", $request->{"diskonRp".$request->kode}[$i]),
-                ]);
+            DetilRAP::create([
+                'id_retur' => $newcode,
+                'id_barang' => $request->kodeDetil[$i],
+                'tgl_retur' => $tglRetur,
+                'qty' => $request->qtyDetil[$i],
+                'harga' => str_replace(".", "", $request->hargaDetil[$i]),
+                'diskon' => $request->diskonDetil[$i],
+                'diskonRp' => str_replace(".", "", $request->diskonRpDetil[$i]),
+            ]);
 
-                $stok = StokBarang::where('id_barang', $request->{"kodeBarang".$request->kode}[$i])
-                                ->where('id_gudang', $gudang[0]->id)
-                                ->where('status', 'F')->first();
-                    
-                if($stok == NULL) {
-                    StokBarang::create([
-                        'id_barang' => $request->{"kodeBarang".$request->kode}[$i],
-                        'id_gudang' => $gudang[0]->id,
-                        'status' => 'F',
-                        'stok' => $request->{"qty".$request->kode}[$i]
-                    ]);
-                } else {
-                    $stok->{'stok'} -= $request->{"qty".$request->kode}[$i];
-                    $stok->save();
-                }
+            DetilRT::create([
+                'id_terima' => $newcode,
+                'id_barang' => $request->kodeDetil[$i],
+                'qty_terima' => NULL,
+                'qty_batal' => NULL,
+                'potong' => $request->qtyDetil[$i]
+            ]);
 
-                $total += str_replace(".", "", $request->{"netto".$request->kode}[$i]);
-            }
+            $total += str_replace(".", "", $request->nettoDetil[$i]);
         }
 
         $ret = AP_Retur::where('id', $newcode)->first();
         $ret->{'total'} = $total;
         $ret->save();
 
+        $rb = ReturBeli::where('id', $request->nomorRetur)->first();
+        $rb->{'status'} = 'LENGKAP';
+        $rb->save();
+
+        return redirect()->route('ap');
+    }
+
+    public function updateRetur(Request $request, $id) {
+        $jumBaris = $request->jumBaris;
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
+
+        $detilRAP = DetilRAP::where('id_retur', $id)->get();
+
+        $total = 0; $i = 0;
+        foreach($detilRAP as $d) {
+            $tglRetur = $request->tglDetil[$i];
+            $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
+
+            $d->diskon = $request->diskonDetil[$i];
+            $d->diskonRp = str_replace(".", "", $request->diskonRpDetil[$i]);
+            $d->save();
+
+            $total += str_replace(".", "", $request->nettoDetil[$i]);
+            $i++;
+        }
+
+        $ret = AP_Retur::where('id', $id)->first();
+        $ret->{'total'} = $total;
+        $ret->save();
+
+        return redirect()->route('ap');
+    }
+
+    public function batalRetur(Request $request, $id) {
+        $apRetur = AP_Retur::where('id', $id)->delete();
+        $detilap = DetilRAP::where('id_retur', $id)->delete();
+        $rt = ReturTerima::where('id', $id)->delete();
+        $detilrt = DetilRT::where('id_terima', $id)->delete();
+
+        $rb = ReturBeli::where('id', $request->nomorRetur)->first();
+        $rb->{'status'} = 'INPUT';
+        $rb->save();
 
         return redirect()->route('ap');
     }

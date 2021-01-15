@@ -201,6 +201,8 @@ const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const hapusBaris = document.querySelectorAll(".icRemoveDetil");
 const hapusBiasa = document.querySelectorAll(".icRemove");
+const jumBaris = document.getElementById('jumBaris');
+console.log(jumBaris.value);
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {

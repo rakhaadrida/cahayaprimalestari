@@ -10,9 +10,11 @@
           margin: 0;
           width: 914.7px;
           height: 520px;
+          /* width: 8.54in;
+          height: 5.43in; */
           font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
           font-size: 1rem;
-          font-weight: 400;
+          font-weight: 900;
           line-height: 1.5;
           color: #252525;
           text-align: left;
@@ -160,7 +162,7 @@
 
       .header-cetak-so {
           display: inline-block;
-          border: 2px dotted;
+          border: 1.9px dotted;
           border-bottom: none;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
@@ -173,22 +175,25 @@
 
       .title-header {
         font-family: Arial, Helvetica, sans-serif;
+        /* font-family: "Fake Receipt", Times, serif; */
         margin-left: 10px !important;
       }
 
       .subtitle-cetak-so-one {
         margin-top: -5px;
+        margin-left: 15px;
         font-size: 12px;
       }
 
       .subtitle-cetak-so-second {
-          margin-left: -2.5px;
+          margin-left: -18px;
           margin-top: -2px;
           font-size: 12px;
       }
 
       .sub-title {
-        font-family: 'Courier New', Courier, monospace;
+        /* font-family: 'Courier New', Courier, monospace; */
+        font-family: 'Consolas', Helvetica, sans-serif;
       }
 
       .logo-cetak-so img {
@@ -199,10 +204,10 @@
       }
 
       .customer-cetak-so {
-        font-family: 'Courier New', Courier, monospace;
+        font-family: 'Consolas', Helvetica, sans-serif;
         font-size: 12px;
         width: 205px;
-        margin-top: -100px;
+        margin-top: -95px;
         margin-right: 125px;
       }
 
@@ -235,11 +240,11 @@
       }
 
       .table-info-cetak-so td {
-        border: 2px dotted;
+        border: 1.9px dotted;
       }
 
       .table-info-cetak-so thead td {
-        padding-bottom: 0.2rem !important;
+        padding-bottom: 0.25rem !important;
       }
 
       .th-info-cetak-so {
@@ -248,6 +253,8 @@
       }
 
       .tr-info-cetak-so td{
+        font-family: 'Consolas', sans-serif;
+        /* font-family: 'Consolas', Helvetica, sans-serif; */
         line-height: 8px;
       }
 
@@ -261,17 +268,20 @@
       }
 
       .table-cetak thead td {
-        padding-top: 0.2rem !important;
-        padding-bottom: 0.4rem !important;
+        padding-top: 0.3rem !important;
+        padding-bottom: 0.3rem !important;
       }
 
       .th-detail-cetak-so {
         line-height: 6px;
-        border: 2px dotted;
+        border: 1.9px dotted;
+        font-family: monospace, sans-serif;
       }
 
       .tr-detail-cetak-so {
           line-height: 7px;
+          /* font-family: 'saxMono', sans-serif; */
+          /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
       tr.baris-so {
@@ -281,11 +291,12 @@
       .table-cetak td:empty {
         border-left: 0;
         border-right: 0;
+        border-top: 0;
       }
 
       .footer-cetak-so {
           display: inline-block;
-          border: 2px dotted;
+          border: 1.9px dotted;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
           border-bottom-left-radius: 10px;
@@ -392,12 +403,15 @@
       }
 
       @media print {
-        /* @page {
-          size: 24.2cm 13.8cm;
-        } */
+        @page {
+          /* size: 24.2cm 13.8cm; */
+          width: 21.8cm;
+          height: 13.8cm;
+        }
 
         body {
           margin: 0;
+          zoom: 1.37;
         }
       }
     </style>
@@ -485,7 +499,7 @@
               <td style="width: 60px">Harga</td>
               <td style="width: 70px">Total</td>
               <td colspan="2">Diskon</td>
-              <td style="width: 75px; border-right: 2px dotted">Netto Rp</td>
+              <td style="width: 75px; border-right: 1.9px dotted">Netto Rp</td>
             </tr>
           </thead>
           <tbody class="tr-detail-cetak-so">
@@ -513,7 +527,7 @@
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
                 <td style="width: 130px" align="right">
-                  {{ $itemDet->diskon }} ({{ $diskon }}%)
+                  {{ str_replace(".", ",", $itemDet->diskon) }} ({{ $diskon }}%)
                 </td>
                 <td style="width: 65px" align="right">
                   {{ number_format($itemDet->diskonRp, 0, "", ".") }}
@@ -545,7 +559,7 @@
           <table class="table-footer">
             <thead>
               <tr>
-                <td style="border-right: 2px dotted; width: 87px"> 
+                <td style="border-right: 1.9px dotted; width: 87px"> 
                   <div class="ttd-penerima">
                     <table style="font-size: 12px !important">
                       <tr>
@@ -565,7 +579,7 @@
                     <span class="form-ttd">(___________)</span>
                   </div> --}}
                 </td>
-                <td style="border-right: 2px dotted; width: 253px">
+                <td style="border-right: 1.9px dotted; width: 253px">
                   <div class="info_bayar">
                     <span>Pembayaran Giro / Transfer</span>
                     <br>
@@ -597,7 +611,7 @@
                     <span class="form-ttd">(___________)</span> --}}
                   </div>
                 </td>
-                <td style="border-right: 2px dotted; width: 85px">
+                <td style="border-right: 1.9px dotted; width: 85px">
                   <div class="ttd-mengetahui">
                     {{-- <span class="tgl-ttd">
                       {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
