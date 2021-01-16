@@ -207,11 +207,15 @@ class BarangController extends Controller
         $item = Barang::with(['jenis'])->findOrFail($id);
         $jenis = JenisBarang::All();
         $subjenis = Subjenis::All();
+        $harga = Harga::All();
+        $items = HargaBarang::with(['hargaBarang', 'barang'])->where('id_barang', $id)->get();
 
         $data = [
             'item' => $item,
             'jenis' => $jenis,
-            'subjenis' => $subjenis
+            'subjenis' => $subjenis,
+            'harga' => $harga,
+            'items' => $items
         ];
         
         return view('pages.barang.edit', $data);
@@ -225,6 +229,31 @@ class BarangController extends Controller
         $item->{'satuan'} = $request->satuan;
         $item->{'ukuran'} = $request->ukuran;
         $item->save();
+
+        $kode = $id;
+        $items = HargaBarang::where('id_barang', $kode)->get();
+        $itemsRow = HargaBarang::where('id_barang', $kode)->count();
+        $harga = Harga::All();
+
+        $j = 0;
+        for($i = 0; $i < $harga->count(); $i++) {
+            if($items->count() == $harga->count()) {
+                $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+            }
+            else if(($items->count() > 0) && ($j < $items->count())) {
+                if($items[$j]->id_harga == $harga[$i]->id) {
+                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], 
+                    $request->ppn[$i], $request->hargaPPN[$i]);
+                    $j++;
+                }
+                else {
+                    $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+                }
+            }
+            else {
+                $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+            }
+        }
 
         return redirect()->route('barang.index');
     }
