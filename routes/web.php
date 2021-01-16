@@ -351,7 +351,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
     });
 
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'GUDANG', 'AP']], function() {
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'GUDANG']], function() {
         Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
     });
 

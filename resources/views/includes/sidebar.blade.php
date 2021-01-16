@@ -172,8 +172,10 @@
         </a>
         <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="py-2 collapse-inner rounded">
-            <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
-            @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
+            @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'GUDANG'))
+              <a class="collapse-item" href="{{ route('retur-stok') }}">Stok Retur</a>
+            @endif
+            @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'GUDANG'))
               <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Customer</a>
             @endif
             @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AP') || (Auth::user()->roles == 'GUDANG'))
