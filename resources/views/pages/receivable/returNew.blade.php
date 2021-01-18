@@ -27,7 +27,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="returAR">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier BM -->
                <div class="container">
@@ -250,6 +250,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const returAR = document.getElementById("returAR");
 const subtotal = document.getElementById('subtotal');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
@@ -269,6 +270,15 @@ const hapusBiasa = document.querySelectorAll(".icRemove");
 const retur = '{{ $retur->count() }}';
 
 newRow.addEventListener('click', displayRow);
+returAR.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 function displayRow(e) {
   const lastRow = $(tablePO).find('tr:last').attr("id");

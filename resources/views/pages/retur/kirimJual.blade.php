@@ -10,7 +10,7 @@
           <h5 class="modal-title text-bold"><i class="fa fa-money-bill-alt fa-fw"></i> Detail Kirim Retur <strong>{{ $r->id }}</strong></h5>
         </div>
         <div class="modal-body text-dark">
-          <form action="" method="POST">
+          <form action="" method="POST" id="kirimRJ">
             @csrf
             {{-- <div class="form-group row justify-content-center">
               <label for="nama" class="col-2 col-form-label text-bold ">Tanggal Kirim</label>
@@ -27,10 +27,10 @@
                   <th class="align-middle" style="width: 40px">No</th>
                   <th class="align-middle" style="width: 90px">Kode Barang</th>
                   <th class="align-middle" style="width: 325px">Nama Barang</th>
-                  <th class="align-middle" style="width: 70px">Qty Retur</th>
-                  <th class="align-middle" style="width: 70px">Qty Bagus</th>
+                  <th class="align-middle" style="width: 65px">Qty Retur</th>
+                  <th class="align-middle" style="width: 65px">Qty Bagus</th>
                   <th class="align-middle" style="width: 100px">Tgl. Kirim</th>
-                  <th class="align-middle" style="width: 70px">Qty Kirim</th>
+                  <th class="align-middle" style="width: 65px">Qty Kirim</th>
                   <th class="align-middle" style="width: 70px">Potong Tagihan</th>
                 </tr>
               </thead>
@@ -78,7 +78,10 @@
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('retur-jual-process') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-2">
-                  <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
+                  <button type="submit" class="btn btn-outline-danger btn-block text-bold" formaction="{{ route('retur-jual-batal', $r->id) }}" formmethod="POST">Batal Retur</button>
+                </div>
+                <div class="col-2">
+                  <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Kembali</button>
                 </div>
               </div>
             {{-- @elseif($r->status == 'LENGKAP')
@@ -118,6 +121,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const kirimRJ = document.getElementById("kirimRJ");
 const tglKirim = document.querySelectorAll(".tglKirim");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const kirimModal = document.querySelectorAll('.kirimModal');
@@ -126,6 +130,16 @@ const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const btnCetak = document.querySelectorAll('.btnCetak');
 // const frameCetak = document.querySelectorAll('.frameCetak');
+
+kirimRJ.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 for(let i = 0; i < tglKirim.length; i++) {
   tglKirim[i].addEventListener("keyup", function(e) {

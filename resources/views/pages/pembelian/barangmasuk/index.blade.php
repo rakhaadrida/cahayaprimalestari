@@ -27,7 +27,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="formBM">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier BM -->
                <div class="container">
@@ -182,7 +182,7 @@
                         <input type="text" tabindex="{{$tab += 2}}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{$tab += 3}}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                        <input type="text" tabindex="{{$tab += 3}}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" @if($i == 1) required @endif>
                         <input type="hidden" name="teksSat[]" class="teksSat">
                         <input type="hidden" name="ukuran[]" class="ukuran">
                       </td>
@@ -268,7 +268,7 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" tabindex="{{ $tab++ }}" onclick="return checkRequired(event)" id="submitBM"  class="btn btn-success btn-block text-bold">Submit</button>
+                  <button type="submit" tabindex="{{ $tab++ }}" onclick="return checkRequired(event)" id="submitBM"  class="btn btn-success btn-block text-bold" >Submit</button>
                   {{-- id="submitBM" onclick="return checkEditable()" 
                   formaction="{{ route('bm-process', $newcode) }}" formmethod="POST"--}}
                 </div>
@@ -392,6 +392,14 @@ gudang.addEventListener("blur", displayGud);
 namaSup.addEventListener("keyup", displaySupp);
 namaSup.addEventListener("blur", displaySupp);
 newRow.addEventListener('click', displayRow);
+
+/* document.getElementById("formBM").onkeypress = function(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    // alert("I told you not to, why did you do it?");
+    e.preventDefault();
+  }
+} */
 
 /** Add New Table Line **/
 function displayRow(e) {
@@ -736,7 +744,7 @@ for(let i = 0; i < brgNama.length; i++) {
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
         harga[i].value = addCommas('{{ $hb->harga_ppn }}');
-        qty[i].setAttribute('required', true);
+        qty[i].setAttribute('required', 'true');
       }
     @endforeach
 

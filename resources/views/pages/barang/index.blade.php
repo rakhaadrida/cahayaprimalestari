@@ -1,4 +1,4 @@
-@extends('pages.barang.show')
+{{-- @extends('pages.barang.show') --}}
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -84,7 +84,10 @@
                   <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
                 @endif
                 <td align="center" style="width: 15px">
-                  <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
+                  {{-- <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
+                    <i class="fas fa-fw fa-eye"></i>
+                  </a> --}}
+                  <a href="{{ route('detailBarang', $item->id) }}" class="btn btn-sm btn-success">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>

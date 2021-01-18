@@ -289,7 +289,8 @@ class AccPayableController extends Controller
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
-        $returBeli = ReturBeli::where('id_supplier', $item->first()->bm->first()->id_supplier)->get();
+        $returBeli = ReturBeli::where('id_supplier', $item->first()->bm->first()->id_supplier)
+                    ->where('status', 'INPUT')->get();
         $rt = ReturTerima::where('id', $total->first()->id)->get();
 
         $data = [

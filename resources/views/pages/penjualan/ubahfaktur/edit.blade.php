@@ -23,7 +23,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="editSO">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container">
@@ -402,6 +402,7 @@
 
 @push('addon-script')
 <script type="text/javascript">
+const editSO = document.getElementById("editSO");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qtyAwal = document.querySelectorAll(".qtyAwal");
@@ -445,6 +446,16 @@ var netPast; var cek; var stokTambah; var qtyAwalModal;
 var kodeModal; var arrKodeGud; var arrQtyAwal; var arrQtyGud;
 var totTemp; var qtyJohar; var qtyLebih; var stokAwal; var kodeAwal;
 var sisa; var stokJohar; var stokLain; var kodeLain; var totStok;
+
+editSO.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 /** Tampil Nama dan Kode Barang Otomatis **/
 for(let i = 0; i < brgNama.length; i++) {

@@ -27,7 +27,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="formTB">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier BM -->
                <div class="container">
@@ -239,6 +239,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const formTB = document.getElementById("formTB");
 const tanggal = document.getElementById('tanggal');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
@@ -258,6 +259,15 @@ var tab = '{{ $tab }}';
 
 newRow.addEventListener('click', displayRow);
 tanggal.addEventListener("keyup", formatTanggal);
+formTB.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 function formatTanggal(e) {
   var value = e.target.value.replaceAll("-","");

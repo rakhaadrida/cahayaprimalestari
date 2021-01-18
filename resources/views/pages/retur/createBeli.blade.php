@@ -27,7 +27,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="formRB">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container">
@@ -92,7 +92,7 @@
                         <input type="text" name="stok[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-center stok" value="{{ old('stok[]') }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-center text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-center text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" @if($i == 1) required @endif>
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -149,6 +149,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const formRB = document.getElementById("formRB");
 const tglRetur = document.getElementById("tglRetur");
 const namaSupplier = document.getElementById("namaSupplier");
 const kodeSupplier = document.getElementById("kodeSupplier");
@@ -165,6 +166,15 @@ tglRetur.addEventListener("keyup", formatTanggal);
 namaSupplier.addEventListener("keyup", displaySupp);
 namaSupplier.addEventListener("blur", displaySupp);
 newRow.addEventListener('click', displayRow);
+formRB.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 /** Add New Table Line **/
 function displayRow(e) {
@@ -374,6 +384,7 @@ for(let i = 0; i < brgNama.length; i++) {
         kodeBarang[i].value = '{{ $br->id_barang }}';
         brgNama[i].value = '{{ $br->barang->nama }}';
         stok[i].value = '{{ $br->stok }}';
+        qty[i].setAttribute('required', 'true');
       }
     @endforeach
   }

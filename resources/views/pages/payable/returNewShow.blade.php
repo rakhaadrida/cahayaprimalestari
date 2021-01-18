@@ -27,7 +27,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="returShowAP">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier BM -->
                <div class="container">
@@ -235,6 +235,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const returShowAP = document.getElementById("returShowAP");
 const subtotal = document.getElementById('subtotal');
 const nomorRetur = document.getElementById('nomorRetur');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
@@ -251,7 +252,16 @@ const total = document.querySelectorAll('.total');
 const jumBaris = document.getElementById('jumBaris');
 const retur = '{{ $retur->count() }}';
 
+returShowAP.addEventListener("keypress", checkEnter);
 // newRow.addEventListener('click', displayRow);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 for(let i = 0; i < tglRetur.length; i++) {
   tglRetur[i].addEventListener("keyup", function(e) {

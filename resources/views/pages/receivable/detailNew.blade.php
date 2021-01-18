@@ -27,7 +27,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="cicilAR">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier BM -->
                <div class="container">
@@ -195,6 +195,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const cicilAR = document.getElementById("cicilAR");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const cicilModal = document.querySelectorAll('.cicilModal');
 const kurang = document.querySelectorAll('.kurang');
@@ -202,7 +203,16 @@ const kurangAwal = document.querySelectorAll('.kurangAwal');
 const hapusBaris = document.querySelectorAll(".icRemoveDetil");
 const hapusBiasa = document.querySelectorAll(".icRemove");
 const jumBaris = document.getElementById('jumBaris');
-console.log(jumBaris.value);
+
+cicilAR.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {

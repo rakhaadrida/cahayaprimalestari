@@ -23,7 +23,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="">
+            <form action="" method="" id="editBM">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container">
@@ -109,8 +109,8 @@
                   <td style="width: 100px">Kode</td>
                   <td>Nama Barang</td>
                   <td style="width: 80px">Qty</td>
-                  <td>Harga</td>
-                  <td>Jumlah</td>
+                  <td style="width: 140px">Harga</td>
+                  <td style="width: 140px">Jumlah</td>
                   <td>Hapus</td>
                 </thead>
                 <tbody id="tablePO">
@@ -208,6 +208,7 @@
 
 @push('addon-script')
 <script type="text/javascript">
+const editBM = document.getElementById("editBM");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
@@ -218,6 +219,16 @@ const subtotal = document.getElementById('subtotal');
 const ppn = document.getElementById('ppn');
 const grandtotal = document.getElementById('grandtotal');
 const jumBaris = document.getElementById('jumBaris');
+
+editBM.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 /** Tampil Nama dan Kode Barang Otomatis **/
 for(let i = 0; i < brgNama.length; i++) {

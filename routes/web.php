@@ -325,7 +325,17 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
         Route::post('ar/cetak', 'AccReceivableController@cetak')->name('ar-cetak');
         Route::post('ar/cetakNow', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
+    });
 
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02']], function() {
+        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'GUDANG']], function() {
+        Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'GUDANG', 'SUPER', 'AR']], function() {
         // Retur
         Route::get('/retur/index-jual', 'ReturController@createPenjualan')
             ->name('ret-index-jual');
@@ -339,20 +349,14 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('home-jual');
         Route::post('retur/penjualan/show', 'ReturController@showReturJual')
             ->name('retur-jual-show');
+        Route::get('retur/penjualan/create/{id}', 'ReturController@createReturJual')->name('retur-jual-create');
         Route::post('retur/penjualan/kirim', 'ReturController@storeKirimJual')
             ->name('retur-jual-process');
         Route::get('/retur/penjualan/cetak/{id}', 'ReturController@cetakKirimJual')
             ->name('retur-jual-cetak');
         Route::get('/retur/penjualan/cetak-ttr/{id}', 'ReturController@ttrKirimJual')
             ->name('retur-jual-cetak');
-    });
-
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02']], function() {
-        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
-    });
-
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'GUDANG']], function() {
-        Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
+        Route::post('retur/penjualan/batal/{id}', 'ReturController@batalReturJual')->name('retur-jual-batal');
     });
 
     Route::group(['roles'=>['ADMIN', 'GUDANG', 'SUPER', 'AP']], function() {
@@ -369,12 +373,14 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('home-beli');
         Route::post('retur/pembelian/show', 'ReturController@showReturBeli')
             ->name('retur-beli-show');
+        Route::get('retur/pembelian/create/{id}', 'ReturController@createReturBeli')->name('retur-beli-create');
         Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')
             ->name('retur-beli-process');
         Route::get('/retur/pembelian/tagihan/{id}', 'ReturController@potongTagihanBeli')
             ->name('retur-potong-beli');
         Route::get('/retur/pembelian/cetak/{id}', 'ReturController@cetakTerimaBeli')
             ->name('retur-beli-cetak');
+        Route::post('retur/pembelian/batal/{id}', 'ReturController@batalReturBeli')->name('retur-beli-batal');
     });
 
     Route::group(['roles'=>['OFFICE02', 'GUDANG']], function() {

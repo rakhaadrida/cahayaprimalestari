@@ -81,6 +81,24 @@ class BarangController extends Controller
         
     }
 
+    public function detail($id) {
+        $item = Barang::where('id', $id)->get();
+        $hargaBarang = HargaBarang::where('id_barang', $id)->get();
+        $stok = StokBarang::where('id_barang', $id)->get();
+        $harga = Harga::All();
+        $gudang = Gudang::All();
+
+        $data = [
+            'item' => $item,
+            'hargaBarang' => $hargaBarang,
+            'stok' => $stok,
+            'harga' => $harga,
+            'gudang' => $gudang
+        ];
+
+        return view('pages.barang.detail', $data);
+    }
+
     public function harga($id) {
         $items = HargaBarang::with(['hargaBarang', 'barang'])->where('id_barang', $id)->get();
         $itemsRow = HargaBarang::where('id_barang', $id)->count();

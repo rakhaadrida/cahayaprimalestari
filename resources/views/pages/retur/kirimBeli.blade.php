@@ -10,7 +10,7 @@
           <h5 class="modal-title text-bold"><i class="fa fa-money-bill-alt fa-fw"></i> Detail Terima Retur <strong>{{ $r->id }}</strong></h5>
         </div>
         <div class="modal-body text-dark">
-          <form action="" method="POST">
+          <form action="" method="POST" id="kirimRB">
             @csrf
             <input type="hidden" name="kode" id="kode" value="{{ $r->id }}">
             <input type="hidden" name="angka" id="angka" value="{{ $j }}">
@@ -107,7 +107,10 @@
                   <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('retur-beli-process') }}" formmethod="POST">Submit</button>
                 </div>
                 <div class="col-2">
-                  <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
+                  <button type="submit" class="btn btn-outline-danger btn-block text-bold" formaction="{{ route('retur-beli-batal', $r->id) }}" formmethod="POST">Batal Retur</button>
+                </div>
+                <div class="col-2">
+                  <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Kembali</button>
                 </div>
               </div>
             {{-- @elseif($r->status == 'LENGKAP')
@@ -147,6 +150,7 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const kirimRB = document.getElementById("kirimRB");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
@@ -154,6 +158,16 @@ const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const btnCetak = document.querySelectorAll('.btnCetak');
 const kodeRB = document.getElementById('angka');
+
+kirimRB.addEventListener("keypress", checkEnter);
+
+function checkEnter(e) {
+  var key = e.charCode || e.keyCode || 0;     
+  if (key == 13) {
+    alert("Silahkan Klik Tombol Submit");
+    e.preventDefault();
+  }
+}
 
 for(let i = 0; i < tglBayar.length; i++) {
   tglBayar[i].addEventListener("keyup", function(e) {

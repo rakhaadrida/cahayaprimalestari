@@ -1,4 +1,4 @@
-@extends('pages.retur.kirimJual')
+{{-- @extends('pages.retur.kirimJual') --}}
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -110,7 +110,9 @@
                       <td class="align-middle text-right">{{ $qtyPotong[0]->totalPotong }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalKirim - $qtyPotong[0]->totalPotong }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
+                        {{-- <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
+                        </a> --}}
+                        <a href="{{ route('retur-jual-create', $r->id) }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$r->status}}
                         </a>
                       </td>
                     </tr>
