@@ -78,6 +78,7 @@
                     <th class="align-middle" style="width: 100px">Tgl. Kirim</th>
                     <th class="align-middle" style="width: 65px">Qty Kirim</th>
                     <th class="align-middle" style="width: 70px">Potong Tagihan</th>
+                    <th class="align-middle"style="width: 50px">Hapus</th>
                   </tr>
                 </thead>
                 <tbody id="tablePO" class="table-ar">
@@ -86,22 +87,35 @@
                   @endphp
                   @foreach($retur as $dr)
                     @php $stok = App\Models\StokBarang::where('id_barang', $dr->id_barang)
-                                ->where('id_gudang', $gudang[0]->id)->where('status', 'T')->get();
+                                ->where('id_gudang', $gudang->first()->id)->where('status', 'T')->get();
                     @endphp
-                    <tr class="text-dark text-bold">
+                    <tr class="text-dark text-bold" id="{{$i-1}}">
                       <td class="text-center align-middle">{{ $i }}</td>
-                      <td class="text-center align-middle">{{ $dr->id_barang }}</td>
-                      <td class="align-middle">{{ $dr->barang->nama }}</td>
-                      <td class="align-middle text-right">{{ $dr->qty_retur }}</td>
-                      <td class="align-middle text-right">{{ $stok->count() != 0 ? $stok[0]->stok : '0' }}</td>
                       <td class="text-center align-middle">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl[]" id="tglBayar{{$dr->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off" @if($dr->tgl_kirim != '') value ="{{ \Carbon\Carbon::parse($dr->tgl_kirim)->format('d-M-y') }}" readonly @endif>
+                        <input type="text" class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeBarang[]" required value="{{ $dr->id_barang }}">
+                      </td>
+                      <td class="align-middle">
+                        <input type="text" class="form-control form-control-sm text-bold text-dark namaBarang" name="namaBarang[]" required value="{{ $dr->barang->nama }}">
+                      </td>
+                      <td class="align-middle text-right">
+                        <input type="text" class="form-control form-control-sm text-bold text-right text-dark qtyRetur" name="qtyRetur[]" required value="{{ $dr->qty_retur }}">
+                      </td>
+                      <td class="align-middle text-right">
+                        <input type="text" class="form-control form-control-sm text-bold text-right text-dark qtyBagus" name="qtyBagus[]" required value="{{ $stok->count() != 0 ? $stok[0]->stok : '0' }}">
+                      </td>
+                      <td class="text-center align-middle">
+                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl[]" id="tglBayar{{$dr->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off" @if($dr->tgl_kirim != '') value ="{{ \Carbon\Carbon::parse($dr->tgl_kirim)->format('d-m-Y') }}" @endif>
                       </td>
                       <td class="text-right align-middle">
                         <input type="text" name="kirim[]" id="kirim{{$item->first()->id}}{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" autocomplete="off"
-                        @if($dr->qty_kirim != '') value ="{{ $dr->qty_kirim }}" readonly @endif>
+                        @if($dr->qty_kirim != '') value ="{{ $dr->qty_kirim }}" @endif>
                       </td>
                       <td class="align-middle text-right">{{ $dr->potong }}</td>
+                      <td align="center" class="align-middle">
+                        <a href="#" class="icRemove">
+                          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                        </a>
+                      </td>
                     </tr>
                     @php $i++; $totalRetur += $dr->qty_retur; $totalKirim += $dr->qty_kirim; $totalPotong += $dr->potong; @endphp
                   @endforeach
@@ -114,6 +128,7 @@
                     <td></td>
                     <td class="text-right">{{ number_format($totalKirim, 0, "", ".") }}</td>
                     <td class="text-right">{{ number_format($totalPotong, 0, "", ".") }}</td>
+                    <td></td>
                   </tr>
                 </tfoot>
               </table>
@@ -170,6 +185,10 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const jumBaris = document.getElementById('jumBaris');
+const kodeBarang = document.querySelectorAll('.kodeBarang');
+const brgNama = document.querySelectorAll(".namaBarang");
+const qtyBagus = document.querySelectorAll(".qtyBagus");
 const kirimRJ = document.getElementById("kirimRJ");
 const tglKirim = document.querySelectorAll(".tglKirim");
 const tglBayar = document.querySelectorAll('.tglBayar');
@@ -177,6 +196,7 @@ const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
+const hapusBaris = document.querySelectorAll(".icRemove");
 const btnCetak = document.querySelectorAll('.btnCetak');
 // const frameCetak = document.querySelectorAll('.frameCetak');
 
@@ -187,6 +207,28 @@ function checkEnter(e) {
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
+  }
+}
+
+for(let i = 0; i < kodeBarang.length; i++) {
+  brgNama[i].addEventListener("keyup", displayNama) ;
+  kodeBarang[i].addEventListener("keyup", displayNama);
+  brgNama[i].addEventListener("blur", displayNama) ;
+  kodeBarang[i].addEventListener("blur", displayNama);
+
+  function displayNama(e) {
+    @foreach($barang as $br)
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+        kodeBarang[i].value = '{{ $br->id }}';
+        brgNama[i].value = '{{ $br->nama }}';
+      }
+    @endforeach
+
+    @foreach($stokBagus as $sb)
+      if('{{ $sb->id_barang }}' == kodeBarang[i].value) {
+        qtyBagus[i].value = '{{ $sb->stok }}';
+      }
+    @endforeach
   }
 }
 
@@ -238,6 +280,22 @@ for(let i = 0; i < batalModal.length; i++) {
   });
 }
 
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    const delRow = document.getElementById(i);
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $('tbody tr:last').prev().prev().prev().find('td:first-child').text();
+    
+    $(delRow).remove();
+    for(let j = +curNum; j < (+lastNum + +jumBaris.value); j++) {
+      $(tablePO).find('tr:nth-child('+j+') td:first-child').html(j);
+    }
+
+    jumBaris.value -= 1;
+  });
+}
+
 for(let i = 0; i < btnCetak.length; i++) {
   btnCetak[i].addEventListener("click", function(e) {
     const printFrame = document.getElementById("frameCetak"+i).contentWindow;
@@ -263,6 +321,82 @@ function angkaSaja(evt) {
   }
   return true;
 }
+
+/** Autocomplete Input Kode PO **/
+$(function() {
+  var kode = [];
+  var nama = [];
+  @foreach($barang as $b)
+    kode.push('{{ $b->id }}');
+    nama.push('{{ $b->nama }}');
+  @endforeach
+    
+  function split(val) {
+    return val.split(/,\s*/);
+  }
+
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
+  /*-- Autocomplete Input Nama Barang --*/
+  $(brgNama).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(nama, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  /*-- Autocomplete Input Kode Barang --*/
+  $(kodeBarang).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(kode, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+});
 
 </script>
 @endpush

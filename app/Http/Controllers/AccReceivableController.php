@@ -346,7 +346,7 @@ class AccReceivableController extends Controller
 
         $items = DetilRAR::where('id_retur', $request->kodeRet)->orderBy('tgl_retur')->get();
         $returJual = DetilRJ::where('id_retur', $request->kodeRet)->orderBy('tgl_kirim')->get();
-        $j = 0; $totalAwal = 0; $kodeBarang = []; 
+        $totalAwal = 0; $kodeBarang = []; 
         if($items->count() != $request->jumAwal) {
             for($i = 0; $i < $request->jumAwal; $i++) {
                 array_push($kodeBarang, $request->kodeDetil[$i]);
@@ -356,9 +356,9 @@ class AccReceivableController extends Controller
                     ->whereNotIn('id_barang', $kodeBarang)->get();
             foreach($hapus as $i) {
                 $stok = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang[0]->id)
+                        ->where('id_gudang', $gudang->first()->id)
                         ->where('status', 'F')->first();
-                $stok->{'stok'} -= $request->qtyDetil[$j];
+                $stok->{'stok'} -= $i->qty;
                 $stok->save();
             }
 
@@ -369,6 +369,7 @@ class AccReceivableController extends Controller
         $items = DetilRAR::where('id_retur', $request->kodeRet)->orderBy('tgl_retur')->get();
         $returJual = DetilRJ::where('id_retur', $request->kodeRet)->orderBy('tgl_kirim')->get();
 
+        $j = 0;
         foreach($items as $i) {
             // if($j < $request->jumAwal) {
             

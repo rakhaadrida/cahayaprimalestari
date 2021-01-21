@@ -82,7 +82,7 @@
                   </tr>
                 </thead>
                 <tbody id="tablePO" class="table-ar">
-                  @php $i = 1;  @endphp
+                  @php $i = 1; $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kurang = 0; @endphp
                   @foreach($retur as $d)
                     @php 
                       $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kode = $item->first()->id;
