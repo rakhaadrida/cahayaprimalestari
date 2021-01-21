@@ -67,7 +67,7 @@ class BarangController extends Controller
         for($i = 0; $i < $harga->count(); $i++) {
             HargaBarang::create([
                 'id_barang' => $request->kode,
-                'id_harga' => $request->kodeHarga,
+                'id_harga' => $request->kodeHarga[$i],
                 'harga' => str_replace(".", "", $request->harga[$i]),
                 'ppn' => str_replace(".", "", $request->ppn[$i]),
                 'harga_ppn' => str_replace(".", "", $request->hargaPPN[$i])

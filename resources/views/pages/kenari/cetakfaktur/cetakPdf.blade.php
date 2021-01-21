@@ -490,6 +490,8 @@
                 <td>{{ $itemDet->barang->nama }}</td>
                 @if($itemDet->barang->satuan == "Pcs / Dus")
                   <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} PCS</span></td>
+                @if($itemDet->barang->satuan == "Set")
+                  <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} SET</span></td>
                 @elseif($itemDet->barang->satuan == "Meter / Rol")
                   <td align="center">{{ $itemDet->qty }} ROL</td>
                   <td >{{ number_format($itemDet->qty * $itemDet->barang->ukuran, 0, "", ".") }} MTR</td>

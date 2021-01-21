@@ -62,6 +62,11 @@
                     value="Pcs / Dus" required>
                     <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Dus</label>
                   </div>
+                  <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Set" required>
+                    <label class="form-check-label font-weight-normal" for="satuan4">Set</label>
+                  </div>
                   <div class="form-check form-check-inline ml-4">
                     <input class="form-check-input" type="radio" name="satuan" 
                     value="Meter / Rol">
@@ -97,7 +102,7 @@
                   <div class="form-group col-2 ml-2">
                     <label for="hargaPPN" class="col-form-label text-bold">{{ $h->nama }}</label>
                     <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSajaHarga(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required @if($i == 0) autofocus @endif/>
-                    <input type="hidden" name="kodeHarga" value="{{ $h->id }}">
+                    <input type="hidden" name="kodeHarga[]" value="{{ $h->id }}">
                   </div>
                 </div>
                 @php $i++; @endphp

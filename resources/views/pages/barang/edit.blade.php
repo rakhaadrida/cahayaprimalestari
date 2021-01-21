@@ -66,6 +66,11 @@
                     value="Pcs / Dus" @if($item->satuan == "Pcs / Dus") checked @endif required >
                     <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Dus</label>
                   </div>
+                  <div class="form-check form-check-inline mt-2">
+                    <input class="form-check-input" type="radio" name="satuan" 
+                    value="Set" @if($item->satuan == "Set") checked @endif required >
+                    <label class="form-check-label font-weight-normal" for="satuan4">Set</label>
+                  </div>
                   <div class="form-check form-check-inline ml-4">
                     <input class="form-check-input" type="radio" name="satuan" 
                     value="Meter / Rol" @if($item->satuan == "Meter / Rol") checked @endif>
@@ -93,9 +98,9 @@
                   <div class="form-group col-2">
                     <label for="harga" class="col-form-label text-bold">Price List</label>
                     <input type="text" tabindex="-1" class="form-control col-form-label-sm harga" id="harga" name="harga[]" readonly
-                      @foreach($items as $item)
-                        @if($item->id_harga == $h->id)
-                          value="{{ number_format($item->harga, 0, "", ".") }}" 
+                      @foreach($items as $it)
+                        @if($it->id_harga == $h->id)
+                          value="{{ number_format($it->harga, 0, "", ".") }}" 
                           @break
                         @endif
                       @endforeach
@@ -104,9 +109,9 @@
                   <div class="form-group col-2 ml-2">
                     <label for="ppn" class="col-form-label text-bold">PPN</label>
                     <input type="text" tabindex="-1" class="form-control col-form-label-sm ppn" id="ppn" name="ppn[]" readonly
-                      @foreach($items as $item)
-                        @if($item->id_harga == $h->id)
-                          value="{{ number_format($item->ppn, 0, "", ".") }}" 
+                      @foreach($items as $it)
+                        @if($it->id_harga == $h->id)
+                          value="{{ number_format($it->ppn, 0, "", ".") }}" 
                           @break
                         @endif
                       @endforeach
@@ -115,9 +120,9 @@
                   <div class="form-group col-2 ml-2">
                     <label for="hargaPPN" class="col-form-label text-bold">{{ $h->nama }}</label>
                     <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSajaHarga(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required @if($i == 0) autofocus @endif
-                      @foreach($items as $item)
-                        @if($item->id_harga == $h->id)
-                          value="{{ number_format($item->harga_ppn, 0, "", ".") }}" 
+                      @foreach($items as $it)
+                        @if($it->id_harga == $h->id)
+                          value="{{ number_format($it->harga_ppn, 0, "", ".") }}" 
                           @break
                         @endif
                       @endforeach

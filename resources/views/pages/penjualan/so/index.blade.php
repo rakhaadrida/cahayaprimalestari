@@ -1383,6 +1383,13 @@ for(let i = 0; i < brgNama.length; i++) {
           satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
         }
+        else if(satuanUkuran.innerHTML == 'Set') {
+          pcs.innerHTML = 'Set';
+          satuanUkuran.innerHTML = 'Dus';
+          teksSatUk[i].value = 'Dus';
+          teksSat[i].value = 'Set';
+          satuan[i].value = '';
+        }
         else {
           pcs.innerHTML = 'Meter';
           teksSat[i].value = 'Meter';
@@ -1660,7 +1667,7 @@ for(let j = 0; j < modalGudang.length; j++) {
 /** Hitung Qty **/
 function hitungQty(urutan, kode, angka, teks, ukuran) {
   if(kode == 'qty') {
-    if(teks == 'Pcs')
+    if((teks == 'Pcs') || (teks == 'Set'))
       satuan[urutan].value = +angka / +ukuran;
     else if(teks == 'Rol')
       satuan[urutan].value = +angka * +ukuran;

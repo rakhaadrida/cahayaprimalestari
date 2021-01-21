@@ -93,7 +93,7 @@
                   <label for="ukuran" class="col-2 col-form-label text-bold">{{ $g->nama }}</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" readonly class="form-control-plaintext col-form-label-sm text-dark text-bold" value="{{ $stok->count() != 0 ? $stok[0]->stok : '' }} @if($stok->count() != 0) @if($item->first()->satuan == "Pcs / Dus") Pcs @elseif($item->first()->satuan == "Meter / Rol") Rol @else Meter @endif @endif" >
+                    <input type="text" readonly class="form-control-plaintext col-form-label-sm text-dark text-bold" value="{{ $stok->count() != 0 ? $stok[0]->stok : '' }} @if($stok->count() != 0) @if($item->first()->satuan == "Pcs / Dus") Pcs @elseif($item->first()->satuan == "Set") Set @elseif($item->first()->satuan == "Meter / Rol") Rol @else Meter @endif @endif" >
                   </div>
                 </div>
               @endforeach

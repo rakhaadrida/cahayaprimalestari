@@ -148,11 +148,11 @@
                 <thead class="text-center text-bold text-dark">
                   <tr>
                     <td rowspan="2" style="width: 30px" class="align-middle">No</td>
-                    <td rowspan="2" style="width: 70px" class="align-middle">Kode Barang</td>
+                    <td rowspan="2" style="width: 45px" class="align-middle">Kode Barang</td>
                     <td rowspan="2" style="width: 320px" class="align-middle">Nama Barang</td>
                     <td colspan="2" class="align-middle">Qty</td>
-                    <td rowspan="2" style="width: 100px" class="align-middle">Harga</td>
-                    <td rowspan="2" style="width: 100px" class="align-middle">Jumlah</td>
+                    <td rowspan="2" style="width: 80px" class="align-middle">Harga</td>
+                    <td rowspan="2" style="width: 80px" class="align-middle">Jumlah</td>
                     {{-- @if(Auth::user()->roles == 'SUPER')
                       <td colspan="2">Diskon</td>
                       <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
@@ -160,7 +160,7 @@
                     <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
                   </tr>
                   <tr>
-                    <td style="width: 75px">Pcs / Rol / Mtr</td>
+                    <td style="width: 105px">Pcs / Set / Rol / Mtr</td>
                     <td style="width: 60px">Dus / Mtr</td>
                   </tr>
                   {{-- @if(Auth::user()->roles == 'SUPER')
