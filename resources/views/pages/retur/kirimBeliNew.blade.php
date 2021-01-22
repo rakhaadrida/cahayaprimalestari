@@ -55,7 +55,7 @@
                     <input type="text" tabindex="5" name="namaCust" readonly class="form-control form-control-sm text-bold text-dark" value="{{ $item->first()->supplier->nama }}" />
                     <input type="hidden" name="kodeCustomer" value="{{ $item->first()->id_supplier }}">
                   </div>
-                  <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $retur->count() }}">
+                  <input type="hidden" name="jumRB" id="jumRB" value="{{ $retur->count() }}">
                 </div>
               </div>
               <hr>
@@ -72,17 +72,18 @@
                   <tr class="text-center">
                     <th class="align-middle" style="width: 40px">No</th>
                     <th class="align-middle" style="width: 90px">Kode Barang</th>
-                    <th class="align-middle" style="width: 325px">Nama Barang</th>
+                    <th class="align-middle" style="width: 335px">Nama Barang</th>
                     <th class="align-middle" style="width: 60px">Qty Retur</th>
                     <th class="align-middle" style="width: 100px">Tgl. Terima</th>
                     <th class="align-middle" style="width: 70px">Qty Terima</th>
                     <th class="align-middle" style="width: 70px">Qty Ditolak</th>
                     <th class="align-middle" style="width: 70px">Potong Tagihan</th>
-                    <th class="align-middle" style="width: 70px">Qty Kurang</th>
+                    <th class="align-middle" style="width: 50px">Qty Kurang</th>
+                    <th class="align-middle"style="width: 50px">Hapus</th>
                   </tr>
                 </thead>
                 <tbody id="tablePO" class="table-ar">
-                  @php $i = 1; $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kurang = 0; @endphp
+                  @php $i = 1; $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kurang = 0; $totalDRT = 0; @endphp
                   @foreach($retur as $d)
                     @php 
                       $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kode = $item->first()->id;
@@ -93,29 +94,52 @@
                     @endphp
                     @if($returTerima->count() != 0)
                       @foreach($returTerima as $dr)
-                        <tr class="table-modal-first-row text-dark text-bold">
+                        <tr class="table-modal-first-row text-dark text-bold" id="{{ $i-1 }}">
                           <td class="text-center align-middle">{{ $i }}</td>
-                          <td class="text-center align-middle">{{ $dr->id_barang }}</td>
+                          <td class="text-center align-middle">
+                            <input type="hidden" name="kodeTerima" value="{{ $dr->id_terima }}">
+                            <input type="text" class="form-control-plaintext form-control-sm text-bold text-dark text-center kodeDetil" name="kodeDetil[]" readonly value="{{ $dr->id_barang }}">
+                          </td>
                           <td class="align-middle">{{ $dr->barang->nama }}</td>
-                          <td class="text-center">{{ number_format($d->qty_retur, 0, "", ".") }}</td>
-                          <td class="text-center">{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-M-y') }}</td>
-                          <td class="text-right">{{ number_format($dr->qty_terima, 0, "", ".") }}</td>
-                          <td class="text-right">{{ number_format($dr->qty_batal, 0, "", ".") }}</td>
-                          <td class="text-right">{{ number_format($dr->potong, 0, "", ".") }}</td>
+                          <td class="text-center align-middle">
+                            <input type="text" name="qtyDetil[]" id="qtyDetil{{$dr->id_barang}}" class="form-control-plaintext form-control-sm text-bold text-dark text-center qtyDetil" onkeypress="return angkaSaja(event)" autocomplete="off" value ="{{ $d->qty_retur }}" readonly>
+                          </td>
+                          <td class="text-center">
+                            <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tglDetil[]" id="tglDetil{{$dr->id_barang}}" autocomplete="off" @if($dr->tanggal != '') value ="{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-m-Y') }}" @endif>
+                          </td>
+                          <td class="text-right">
+                            <input type="text" name="terimaDetil[]" id="terimaDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right terimaDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_terima != '') value ="{{ $dr->qty_terima }}" @endif>
+                          </td>
+                          <td class="text-right">
+                            <input type="text" name="batalDetil[]" id="batalDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_batal != '') value ="{{ $dr->qty_batal }}" @endif>
+                          </td>
+                          <td class="text-right align-middle">{{ number_format($dr->potong, 0, "", ".") }}</td>
                           @php $kurang -= ($dr->qty_terima + $dr->qty_batal + $dr->potong); @endphp
-                          <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
+                          <td class="text-right align-middle">{{ number_format($kurang, 0, "", ".") }}</td>
+                          <td align="center" class="align-middle">
+                            <a href="#" class="icRemove">
+                              <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                            </a>
+                          </td>
                         </tr>
                         @php $i++; $totalTerima += $dr->qty_terima; $totalBatal += $dr->qty_batal; 
                               $totalPotong += $dr->potong; @endphp
                       @endforeach
+                      @php $totalDRT += $returTerima->count(); @endphp
                     @endif
                     @if($d->qty_retur != $totalTerima + $totalBatal + $totalPotong)
-                      <input type="hidden" name="kurangAwal" class="kurangAwal" value="{{ $kurang }}">
-                      <tr class="text-dark text-bold">
+                      <tr class="text-dark text-bold" id="{{ $i-1 }}">
                         <td class="text-center align-middle">{{ $i }}</td>
-                        <td class="text-center align-middle">{{ $d->id_barang }}</td>
-                        <td class="align-middle">{{ $d->barang->nama }}</td>
-                        <td class="align-middle text-center">{{ $d->qty_retur }}</td>
+                        <td class="text-center align-middle">
+                          <input type="hidden" name="kurangAwal" class="kurangAwal" value="{{ $kurang }}">
+                          <input type="text" class="form-control form-control-sm text-bold text-dark text-center kodeBarang" name="kodeBarang[]" required value="{{ $d->id_barang }}">
+                        </td>
+                        <td class="align-middle">
+                          <input type="text" class="form-control form-control-sm text-bold text-dark namaBarang" name="namaBarang[]" required value="{{ $d->barang->nama }}">
+                        </td>
+                        <td class="align-middle text-center">
+                          <input type="text" name="qty[]" id="qty{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-center qty" onkeypress="return angkaSaja(event)" autocomplete="off" value ="{{ $d->qty_retur }}" >
+                        </td>
                         <td class="text-center align-middle">
                           <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl[]" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off">
                         </td>
@@ -129,6 +153,11 @@
                         <td class="text-right align-middle">
                           <input type="text" name="kurang[]" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
                         </td>
+                        <td align="center" class="align-middle">
+                          <a href="#" class="icRemove" >
+                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1" @if($returTerima->count() != 0) hidden @endif></i>
+                          </a>
+                        </td>
                       </tr>
                     @endif
                     @php $i++; @endphp
@@ -136,13 +165,16 @@
                 </tbody>
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="font-size: 16px">
-                    <td colspan="6" class="text-center">Total</td>
+                    <td colspan="5" class="text-center">Total</td>
                     <td class="text-right">{{ number_format($totalTerima, 0, "", ".") }}</td>
                     <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>
+                    <td class="text-right">{{ number_format($totalPotong, 0, "", ".") }}</td>
                     <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
+                    <td></td>
                   </tr>
                 </tfoot>
               </table>
+              <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $totalDRT + $retur->count() }}">
               <hr>
               <!-- End Tabel Data Detil PO -->
 
@@ -199,12 +231,16 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const kodeBarang = document.querySelectorAll('.kodeBarang');
+const brgNama = document.querySelectorAll(".namaBarang");
 const kirimRB = document.getElementById("kirimRB");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
+// const hapusBaris = document.querySelectorAll(".icRemoveDetil");
+const hapusBaris = document.querySelectorAll(".icRemove");
 const btnCetak = document.querySelectorAll('.btnCetak');
 const kodeRB = document.getElementById('angka');
 
@@ -215,6 +251,22 @@ function checkEnter(e) {
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
+  }
+}
+
+for(let i = 0; i < kodeBarang.length; i++) {
+  brgNama[i].addEventListener("keyup", displayNama) ;
+  kodeBarang[i].addEventListener("keyup", displayNama);
+  brgNama[i].addEventListener("blur", displayNama) ;
+  kodeBarang[i].addEventListener("blur", displayNama);
+
+  function displayNama(e) {
+    @foreach($barang as $br)
+      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+        kodeBarang[i].value = '{{ $br->id }}';
+        brgNama[i].value = '{{ $br->nama }}';
+      }
+    @endforeach
   }
 }
 
@@ -248,6 +300,22 @@ for(let i = 0; i < batalModal.length; i++) {
       kurang[i].value = kurangAwal[i].value - e.target.value;
     else
       kurang[i].value -= e.target.value;
+  });
+}
+
+/** Delete Baris Pada Tabel **/
+for(let i = 0; i < hapusBaris.length; i++) {
+  hapusBaris[i].addEventListener("click", function (e) {
+    const delRow = document.getElementById(i);
+    const curNum = $(this).closest('tr').find('td:first-child').text();
+    const lastNum = $('tbody tr:last').find('td:first-child').text();
+    
+    $(delRow).remove();
+    for(let j = +curNum; j < +lastNum; j++) {
+      $(tablePO).find('tr:nth-child('+j+') td:first-child').html(j);
+    }
+
+    jumBaris.value -= 1;
   });
 }
 
@@ -286,6 +354,82 @@ function addCommas(nStr) {
 	}
 	return x1 + x2;
 }
+
+/** Autocomplete Input Kode PO **/
+$(function() {
+  var kode = [];
+  var nama = [];
+  @foreach($barang as $b)
+    kode.push('{{ $b->id }}');
+    nama.push('{{ $b->nama }}');
+  @endforeach
+    
+  function split(val) {
+    return val.split(/,\s*/);
+  }
+
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
+  /*-- Autocomplete Input Nama Barang --*/
+  $(brgNama).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(nama, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  /*-- Autocomplete Input Kode Barang --*/
+  $(kodeBarang).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(kode, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+});
 
 </script>
 @endpush

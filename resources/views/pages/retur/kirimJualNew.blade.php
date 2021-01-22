@@ -107,7 +107,7 @@
                         <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl[]" id="tglBayar{{$dr->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off" @if($dr->tgl_kirim != '') value ="{{ \Carbon\Carbon::parse($dr->tgl_kirim)->format('d-m-Y') }}" @endif>
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="kirim[]" id="kirim{{$item->first()->id}}{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" autocomplete="off"
+                        <input type="text" name="kirim[]" id="kirim{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" autocomplete="off"
                         @if($dr->qty_kirim != '') value ="{{ $dr->qty_kirim }}" @endif>
                       </td>
                       <td class="align-middle text-right">{{ $dr->potong }}</td>
