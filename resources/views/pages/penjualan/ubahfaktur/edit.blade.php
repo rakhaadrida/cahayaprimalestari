@@ -121,18 +121,17 @@
                 <tbody id="tablePO">
                   @php 
                     $i = 1; $subtotal = 0; $tab = 1;
-                    if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
+                    if(($items->first()->need_approval->count() != 0) && ($items->first()->need_approval->last()->status == 'PENDING_UPDATE')) {
                       $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
                                   ->select('id_barang', 'diskon')
                                   ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                                  ->where('id_app', $items[0]->need_approval->last()->id)
+                                  ->where('id_app', $items->first()->need_approval->last()->id)
                                   ->groupBy('id_barang', 'diskon')
                                   ->get();
                     } else {
-                      $itemsDetail = \App\Models\DetilSO::with(['barang'])
-                                  ->select('id_barang', 'diskon')
+                      $itemsDetail = \App\Models\DetilSO::select('id_barang', 'diskon')
                                   ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                                  ->where('id_so', $items[0]->id)
+                                  ->where('id_so', $items->first()->id)
                                   ->groupBy('id_barang', 'diskon')
                                   ->get();
                     }
@@ -158,7 +157,7 @@
                                       ->where('id_barang', $item->id_barang)
                                       ->where('id_gudang', $g->id)->get();
                             } else {
-                              $itemGud = \App\Models\DetilSO::where('id_so', $items[0]->id)
+                              $itemGud = \App\Models\DetilSO::where('id_so', $items->first()->id)
                                       ->where('id_barang', $item->id_barang)
                                       ->where('id_gudang', $g->id)->get();
                             }
@@ -178,10 +177,8 @@
                         <input type="hidden" name="teksSat[]" class="teksSat" value="{{ substr($item->barang->satuan, 0, 3) }}">
                         <input type="hidden" name="KodeGudangArr[]" class="text-bold text-dark kodeGudangArr" value="{{ $arrKode }}">
                         <input type="hidden" name="qtyAwalArr[]" class="text-bold text-dark qtyAwalArr" value="{{ $arrQty }}">
-                        <input type="hidden" name="kodeGudang[]" class="kodeGudang" 
-                        value="{{ $arrKode }}">
-                        <input type="hidden" name="qtyGudang[]" class="qtyGudang"
-                        value="{{ $arrQty }}">
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang" value="{{ $arrKode }}">
+                        <input type="hidden" name="qtyGudang[]" class="qtyGudang" value="{{ $arrQty }}">
                       </td>
                       @foreach($gudang as $g)
                         @php

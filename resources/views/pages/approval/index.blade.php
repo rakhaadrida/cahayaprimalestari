@@ -40,10 +40,14 @@
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
                 <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</td>
-                @if($item->tipe != 'Dokumen') 
+                @if($item->tipe == 'Faktur') 
                   <td class="align-middle" align="center">{{ $item->so->customer->nama }}</td>
-                @else
+                @elseif($item->tipe == 'Dokumen') 
                   <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
+                @elseif($item->tipe == 'RJ') 
+                  <td class="align-middle" align="center">{{ $item->rj->customer->nama }}</td>
+                @elseif($item->tipe == 'RB') 
+                  <td class="align-middle" align="center">{{ $item->rb->supplier->nama }}</td>
                 @endif
                 <td class="align-middle" align="center">{{ $status->last()->status }}</td>
                 <td class="align-middle" align="center">{{ $item->keterangan }}</td>

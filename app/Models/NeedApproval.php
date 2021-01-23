@@ -20,6 +20,14 @@ class NeedApproval extends Model
         return $this->belongsTo('App\Models\BarangMasuk', 'id_dokumen', 'id');
     }
 
+    public function rj() {
+        return $this->belongsTo('App\Models\ReturJual', 'id_dokumen', 'id');
+    }
+
+    public function rb() {
+        return $this->belongsTo('App\Models\ReturBeli', 'id_dokumen', 'id');
+    }
+
     public function user() {
         return $this->belongsTo('App\User', 'id_user', 'id');
     }

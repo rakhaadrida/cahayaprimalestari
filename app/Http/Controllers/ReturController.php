@@ -14,6 +14,7 @@ use App\Models\ReturBeli;
 use App\Models\DetilRB;
 use App\Models\ReturTerima;
 use App\Models\DetilRT;
+use App\Models\NeedApproval;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -142,8 +143,23 @@ class ReturController extends Controller
             $stok->save();
         }
 
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        NeedApproval::create([
+            'id' => $newcode,
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => 'PENDING_BATAL',
+            'keterangan' => $request->keterangan,
+            'id_dokumen' => $id,
+            'tipe' => 'RJ',
+            'id_user' => Auth::user()->id
+        ]);
+
         $rj = ReturJual::where('id', $id)->first();
-        $rj->{'status'} = 'BATAL';
+        $rj->{'status'} = 'PENDING_BATAL';
         $rj->save();
 
         $data = [
@@ -155,7 +171,7 @@ class ReturController extends Controller
     }
 
     public function dataReturJual($status, $id) {
-        $retur = ReturJual::orderBy('id', 'desc')->get();
+        $retur = ReturJual::orderBy('tanggal', 'desc')->get();
         $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [
