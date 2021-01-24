@@ -188,7 +188,8 @@
                     <a href="{{ route('retur-potong-beli', $item->first()->id) }}" id="backRJ" class="btn btn-outline-primary btn-block text-bold">Potong Tagihan</a>
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-outline-danger btn-block text-bold" formaction="{{ route('retur-beli-batal', $item->first()->id) }}" formmethod="POST">Batal Retur</button>
+                    {{-- <button type="submit" class="btn btn-outline-danger btn-block text-bold" formaction="{{ route('retur-beli-batal', $item->first()->id) }}" formmethod="POST">Batal Retur</button> --}}
+                    <a href="" data-toggle="modal" data-target="#batalRetur" class="btn btn-outline-danger btn-block text-bold">Batal Retur</a>
                   </div>
                   <div class="col-2">
                     <a href="{{ url()->previous() }}" class="btn btn-outline-secondary btn-block text-bold">Kembali</a>
@@ -202,6 +203,43 @@
                 </div>
               @endif
               <!-- End Button Submit dan Reset -->
+
+              <div class="modal" id="batalRetur" tabindex="-1" role="dialog" aria-labelledby="batalRetur" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title">Batal Retur Supplier <b>{{$item->first()->id}}</b></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                          <label for="kode" class="col-2 col-form-label text-bold">Status</label>
+                          <span class="col-form-label text-bold">:</span>
+                          <div class="col-2">
+                            <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="statusUbah" value="BATAL">
+                          </div>
+                        </div>
+                        <div class="form-group subtotal-so">
+                          <label for="keterangan" class="col-form-label">Keterangan</label>
+                          <input type="text" class="form-control" name="keterangan" 
+                          id="keterangan" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
+                        </div>
+                        <hr>
+                        <div class="form-row justify-content-center">
+                          <div class="col-3">
+                            <button type="submit" class="btn btn-success btn-block text-bold" id="btn" onclick="return checkEditable()">Simpan</button>
+                            {{-- formaction="{{ route('so-status', $item->id) }}" formmethod="POST" --}}
+                          </div>
+                          <div class="col-3">
+                            <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -330,6 +368,18 @@ for(let i = 0; i < btnCetak.length; i++) {
     printFrame.window.print();
     // window.print();
   });
+}
+
+function checkEditable() {
+  const ket = document.getElementById("keterangan");
+  if(ket.value == "") {
+    $(ket).tooltip('show');
+    return false;
+  }
+  else {
+    document.getElementById("btn").formMethod = "POST";
+    document.getElementById("btn").formAction = '{{ route('retur-beli-batal', $item->first()->id) }}';
+  }
 }
 
 /** Inputan hanya bisa angka **/

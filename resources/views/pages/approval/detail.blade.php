@@ -50,6 +50,10 @@
                         $items = \App\Models\DetilRJ::where('id_retur', $item->id_dokumen)->get();
                         $itemsUpdate = \App\Models\Approval::where('id_dokumen', $item->id_dokumen)->get();
                       }
+                      elseif($item->tipe == 'RB') {
+                        $items = \App\Models\DetilRB::where('id_retur', $item->id_dokumen)->get();
+                        $itemsUpdate = \App\Models\Approval::where('id_dokumen', $item->id_dokumen)->get();
+                      }
 
                     @endphp
                     <div class="container so-update-container text-dark">
@@ -75,6 +79,8 @@
                                 value="{{ $item->bm->supplier->nama }}" 
                               @elseif($item->tipe == 'RJ')
                                 value="{{ $item->rj->customer->nama }}" 
+                              @elseif($item->tipe == 'RB')
+                                value="{{ $item->rb->supplier->nama }}" 
                               @endif
                               >
                             </div>
@@ -94,6 +100,8 @@
                                 value="{{ \Carbon\Carbon::parse($item->bm->tanggal)->format('d-M-y') }}" 
                               @elseif($item->tipe == 'RJ')
                                 value="{{ \Carbon\Carbon::parse($item->rj->tanggal)->format('d-M-y') }}" 
+                              @elseif($item->tipe == 'RB')
+                                value="{{ \Carbon\Carbon::parse($item->rb->tanggal)->format('d-M-y') }}"
                               @endif
                               />
                             </div>
@@ -219,7 +227,7 @@
                         @endif
 
                         @php
-                          if($item->tipe != 'RJ') {
+                          if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen')) {
                             $detilUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])
                                         ->select('id_barang', 'diskon')
                                         ->selectRaw('avg(harga) as harga, sum(qty) as qty')
@@ -253,8 +261,11 @@
                               {{-- @endif --}}
                             @else
                               <td style="width: 110px">Tgl Kirim</td>
-                              <td style="width: 110px">Qty Kirim</td>
-                              <td style="width: 110px">Potong Tagihan</td>
+                              <td style="width: 80px">Qty @if($item->tipe == 'RJ') Kirim @else Terima @endif</td>
+                              @if($item->tipe == 'RB')
+                                <td style="width: 80px">Qty Ditolak</td>
+                              @endif
+                              <td style="width: 80px">Potong Tagihan</td>
                               <td style="width: 130px">Keterangan</td>
                             @endif
                           </thead>
@@ -269,7 +280,7 @@
                                 <td>{{ $i->barang->nama }}</td>
                                 @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
                                   <td align="right">{{ $i->qty }}</td>
-                                @elseif($item->tipe == 'RJ')
+                                @else
                                   <td align="right">{{ $i->qty_retur }}</td>
                                 @endif
                                 @if($item->tipe == 'Faktur')
@@ -326,10 +337,24 @@
                                       $subtotal += $i->qty * $i->harga;
                                   @endphp
                                 @else
-                                  <td align="center">{{ $i->tgl_kirim != NULL ? \Carbon\Carbon::parse($i->tgl_kirim)->format('d-M-y') : '' }}</td>
-                                  <td align="right">{{ $i->qty_kirim }}</td>
-                                  <td align="right">{{ $i->potong }}</td>
-                                  <td align="center">Retur Customer</td>
+                                  @if($item->tipe == 'RJ')
+                                    <td align="center">{{ $i->tgl_kirim != NULL ? \Carbon\Carbon::parse($i->tgl_kirim)->format('d-M-y') : '' }}</td>
+                                    <td align="right">{{ $i->qty_kirim }}</td>
+                                    <td align="right">{{ $i->potong }}</td>
+                                  @else
+                                    @php
+                                      $rt = App\Models\DetilRT::join('returterima', 'returterima.id', 
+                                          'detilrt.id_terima')->select('id', 'id_terima', 'id_retur', 'tanggal')
+                                          ->selectRaw('sum(qty_terima) as qt, sum(qty_batal) as qb, sum(potong) as qp')
+                                          ->where('id_retur', $item->id_dokumen)->where('id_barang', $i->id_barang)
+                                          ->groupBy('id_barang')->get();
+                                    @endphp
+                                    <td align="center">{{ $rt->count() != 0 ? \Carbon\Carbon::parse($rt->first()->tanggal)->format('d-M-y') : '' }}</td>
+                                    <td align="right">{{ $rt->count() != 0 ? $rt->first()->qt : '' }}</td>
+                                    <td align="right">{{ $rt->count() != 0 ? $rt->first()->qb : '' }}</td>
+                                    <td align="right">{{ $rt->count() != 0 ? $rt->first()->qp : '' }}</td>
+                                  @endif                      
+                                  <td align="center">Retur @if($item->tipe == 'RJ')Customer @else Supplier @endif</td>
                                 @endif
                               </tr>
                               @php $j++; @endphp

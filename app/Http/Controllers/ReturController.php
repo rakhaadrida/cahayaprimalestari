@@ -585,15 +585,46 @@ class ReturController extends Controller
 
         foreach($detilRB as $d) {
             $stok = StokBarang::where('id_barang', $d->id_barang)
-                    ->where('id_gudang', $gudang[0]->id)
+                    ->where('id_gudang', $gudang->first()->id)
                     ->where('status', 'F')->first();
 
             $stok->{'stok'} += $d->qty_retur;
+
+            $rt = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                    ->selectRaw('sum(qty_terima) as qt, sum(qty_batal) as qb, sum(potong) as qp')
+                    ->where('id_retur', $id)->where('id_barang', $d->id_barang)
+                    ->groupBy('id_barang')->get();
+
+            $stokBagus = StokBarang::where('id_barang', $d->id_barang)
+                    ->where('id_gudang', $gudang->first()->id)
+                    ->where('status', 'T')->first();
+            if($rt->count() != 0) {
+                $stokBagus->{'stok'} -= $rt->first()->qt;
+                $stokBagus->save();
+
+                $stok->{'stok'} -= ($rt->first()->qb + $rt->first()->qp);
+            }
+
             $stok->save();
         }
 
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        NeedApproval::create([
+            'id' => $newcode,
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => 'PENDING_BATAL',
+            'keterangan' => $request->keterangan,
+            'id_dokumen' => $id,
+            'tipe' => 'RB',
+            'id_user' => Auth::user()->id
+        ]);
+
         $rb = ReturBeli::where('id', $id)->first();
-        $rb->{'status'} = 'BATAL';
+        $rb->{'status'} = 'PENDING_BATAL';
         $rb->save();
 
         $data = [
@@ -605,7 +636,7 @@ class ReturController extends Controller
     }
 
     public function dataReturBeli($status, $id) {
-        $retur = ReturBeli::orderBy('id', 'desc')->get();
+        $retur = ReturBeli::where('status', '!=', 'BATAL')->orderBy('id', 'desc')->get();
         $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [

@@ -22,7 +22,11 @@ use App\Models\AR_Retur;
 use App\Models\DetilRAP;
 use App\Models\DetilRAR;
 use App\Models\DetilRJ;
+use App\Models\DetilRB;
+use App\Models\DetilRT;
 use App\Models\ReturJual;
+use App\Models\ReturBeli;
+use App\Models\ReturTerima;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -105,6 +109,8 @@ class ApprovalController extends Controller
             $item = BarangMasuk::where('id', $id)->first();
         elseif($tipe == 'RJ')
             $item = ReturJual::where('id', $id)->first();
+        elseif($tipe == 'RB')
+            $item = ReturBeli::where('id', $id)->first();
 
         if($statusApp == 'PENDING_UPDATE') {
             $item->{'status'} = "UPDATE";
@@ -180,7 +186,7 @@ class ApprovalController extends Controller
         $lastnumber++;
         $newcode = 'APR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
-        if($tipe != 'RJ')
+        if(($tipe == 'Faktur') || ($tipe == 'Dokumen'))
             $baca = 'F';
         else
             $baca = 'T';
@@ -202,6 +208,8 @@ class ApprovalController extends Controller
             $detil = DetilBM::with(['bm'])->where('id_bm', $id)->get();
         elseif($tipe == 'RJ')
             $detil = DetilRJ::where('id_retur', $id)->get();
+        elseif($tipe == 'RB')
+            $detil = DetilRB::where('id_retur', $id)->get();
 
         $disPersen = []; $hpp = [];
         foreach($detil as $d) {
@@ -209,12 +217,12 @@ class ApprovalController extends Controller
                 $gudang = $d->id_gudang;
             elseif($tipe == 'Dokumen')
                 $gudang = $d->bm->id_gudang;
-            elseif($tipe == 'RJ') {
+            else {
                 $retur = Gudang::where('tipe', 'RETUR')->get();
                 $gudang = $retur->first()->id;
             }
 
-            if($tipe != 'RJ') {
+            if(($tipe == 'Faktur') || ($tipe == 'Dokumen')) {
                 $harga = $d->harga;
                 $qty = $d->qty;
                 $disk = $d->diskon;
@@ -431,18 +439,20 @@ class ApprovalController extends Controller
                 $items = DetilBM::with(['bm'])->where('id_bm', $kode)->get();
             elseif($tipe == 'RJ')
                 $items = DetilRJ::where('id_retur', $kode)->get();
+            elseif($tipe == 'RB') 
+                $items = DetilRB::where('id_retur', $kode)->get();
 
             foreach($items as $item) {
                 if($tipe == 'Faktur') 
                     $gudang = $item->id_gudang;
                 elseif($tipe == 'Dokumen')
                     $gudang = $request->$id;
-                elseif($tipe == 'RJ') {
+                else {
                     $retur = Gudang::where('tipe', 'RETUR')->get();
                     $gudang = $retur->first()->id;
                 }
 
-                if($tipe != 'RJ') {
+                if(($tipe == 'Faktur') || ($tipe == 'Dokumen')) {
                     $updateStok = StokBarang::where('id_barang', $item->id_barang)
                                 ->where('id_gudang', $gudang)->first();
                 } else {
@@ -461,12 +471,31 @@ class ApprovalController extends Controller
                     $updateStokBagus->{'stok'} -= $item->qty_kirim;
                     $updateStokBagus->save();
                 }
+                elseif($tipe == 'RB') {
+                    $updateStok->{'stok'} -= $item->qty_retur;
+                    $rt = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                            ->selectRaw('sum(qty_terima) as qt, sum(qty_batal) as qb, sum(potong) as qp')
+                            ->where('id_retur', $kode)->where('id_barang', $item->id_barang)
+                            ->groupBy('id_barang')->get();
+
+                    if($rt->count() != 0) {
+                        $updateStokBagus->{'stok'} += $rt->first()->qt;
+                        $updateStokBagus->save();
+
+                        $updateStok->{'stok'} += ($rt->first()->qb + $rt->first()->qp);
+                    }
+                }
                     
                 $updateStok->save();
             }
 
             if($tipe == 'RJ') {
                 $item = ReturJual::where('id', $kode)->first();
+                $item->{'status'} = 'INPUT';
+                $item->save();
+            }
+            elseif($tipe == 'RB') {
+                $item = ReturBeli::where('id', $kode)->first();
                 $item->{'status'} = 'INPUT';
                 $item->save();
             }
