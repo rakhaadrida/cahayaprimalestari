@@ -55,7 +55,7 @@
                       <div class="row">
                         <div class="col-12 col-lg-6">
                           <div class="form-group row kode-dokumen">
-                            <label for="kode" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nomor @if($item->tipe == 'Faktur') SO @else BM @endif</label>
+                            <label for="kode" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nomor @if($item->tipe == 'Faktur') SO @elseif($item->tipe == 'Dokumen') BM @else Retur @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4 col-md-3">
                               <input type="text" name="kode" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id_dokumen }}" >
@@ -83,7 +83,7 @@
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12 col-lg-6">
                           <div class="form-group row tanggal-dokumen customer-detail">
-                            <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Tanggal @if($item->tipe != 'Dokumen') SO @else BM @endif</label>
+                            <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Tanggal @if($item->tipe == 'Faktur') SO @elseif($item->tipe == 'Dokumen') BM @else Retur @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
@@ -346,7 +346,7 @@
                         <label for="grandtotal" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">@if($itemsUpdate->last()->status == 'LIMIT') Total Tagihan @else Grand Total @endif</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-4 col-sm-4 col-md-2 mr-1">
-                          <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($itemsUpdate->last()->status == 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{ $item->tipe != 'Dokumen' ? number_format($subtotal - $item->so->diskon, 0, "", ".") : number_format($subtotal, 0, "", ".") }}" />
+                          <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($itemsUpdate->last()->status == 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{ $item->tipe == 'Faktur' ? number_format($subtotal - $item->so->diskon, 0, "", ".") : number_format($subtotal, 0, "", ".") }}" />
                         </div>
                       </div>
                     @endif

@@ -136,11 +136,18 @@ class ReturController extends Controller
 
         foreach($detilRJ as $d) {
             $stok = StokBarang::where('id_barang', $d->id_barang)
-                    ->where('id_gudang', $gudang[0]->id)
+                    ->where('id_gudang', $gudang->first()->id)
                     ->where('status', 'F')->first();
 
             $stok->{'stok'} -= $d->qty_retur;
             $stok->save();
+
+            $stokBagus = StokBarang::where('id_barang', $d->id_barang)
+                    ->where('id_gudang', $gudang->first()->id)
+                    ->where('status', 'T')->first();
+
+            $stokBagus->{'stok'} += $d->qty_kirim;
+            $stokBagus->save();
         }
 
         $lastcode = NeedApproval::max('id');
@@ -171,7 +178,7 @@ class ReturController extends Controller
     }
 
     public function dataReturJual($status, $id) {
-        $retur = ReturJual::orderBy('tanggal', 'desc')->get();
+        $retur = ReturJual::where('status', '!=', 'BATAL')->orderBy('tanggal', 'desc')->get();
         $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [
@@ -271,7 +278,7 @@ class ReturController extends Controller
         $tahun = substr($waktu->year, -2);
 
         $lastcode = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('tgl_kirim', $waktu->year)
-                    ->whereMonth('tgl_kirim', $month)->get();;
+                    ->whereMonth('tgl_kirim', $month)->get();
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'KRM'.$tahun.$bulan.sprintf("%04s", $lastnumber);

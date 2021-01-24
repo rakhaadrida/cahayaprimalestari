@@ -32,4 +32,12 @@ class Approval extends Model
     public function bm() {
         return $this->belongsTo('App\Models\BarangMasuk', 'id_dokumen', 'id');
     }
+
+    public function rj() {
+        return $this->belongsTo('App\Models\ReturJual', 'id_dokumen', 'id');
+    }
+
+    public function rb() {
+        return $this->belongsTo('App\Models\ReturBeli', 'id_dokumen', 'id');
+    }
 }

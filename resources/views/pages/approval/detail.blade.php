@@ -28,11 +28,9 @@
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($approval as $item)
-                  <div class="carousel-item @if($item->id_dokumen == $kode) active
-                    @endif "
-                  />
+                  <div class="carousel-item @if($item->id_dokumen == $kode) active @endif"/>
                     @php 
-                      if($item->tipe != 'Dokumen') {
+                      if($item->tipe == 'Faktur') {
                         // $items = \App\Models\DetilSO::with(['so', 'barang'])->where('id_so', $item->id_dokumen)->get();
                         $items = \App\Models\DetilSO::with(['so', 'barang'])
                                   ->select('id_barang', 'diskon')
@@ -43,10 +41,14 @@
 
                         $itemsUpdate = \App\Models\Approval::with(['so'])->where('id_dokumen', $item->id_dokumen)->get();
                       } 
-                      else {
+                      elseif($item->tipe == 'Dokumen') {
                         $items = \App\Models\DetilBM::with(['bm', 'barang'])->where('id_bm', $item->id_dokumen)->get();
 
                         $itemsUpdate = \App\Models\Approval::with(['bm'])->where('id_dokumen', $item->id_dokumen)->get();
+                      }
+                      elseif($item->tipe == 'RJ') {
+                        $items = \App\Models\DetilRJ::where('id_retur', $item->id_dokumen)->get();
+                        $itemsUpdate = \App\Models\Approval::where('id_dokumen', $item->id_dokumen)->get();
                       }
 
                     @endphp
@@ -54,7 +56,7 @@
                       <div class="row">
                         <div class="col-12 col-lg-6">
                           <div class="form-group row kode-dokumen">
-                            <label for="kode" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nomor @if($item->tipe == 'Faktur') SO @else BM @endif</label>
+                            <label for="kode" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nomor @if($item->tipe == 'Faktur') SO @elseif($item->tipe == 'Dokumen') BM @else Retur @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4 col-md-3">
                               <input type="text" name="kode" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->id_dokumen }}" >
@@ -67,10 +69,12 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-6 col-sm-5 col-md-7">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($item->tipe != 'Dokumen')
+                              @if($item->tipe == 'Faktur')
                                 value="{{ $item->so->customer->nama }}" 
-                              @else
+                              @elseif($item->tipe == 'Dokumen')
                                 value="{{ $item->bm->supplier->nama }}" 
+                              @elseif($item->tipe == 'RJ')
+                                value="{{ $item->rj->customer->nama }}" 
                               @endif
                               >
                             </div>
@@ -80,19 +84,22 @@
                       <div class="row" style="margin-top: -5px">
                         <div class="col-12 col-lg-6">
                           <div class="form-group row tanggal-dokumen customer-detail">
-                            <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Tanggal @if($item->tipe != 'Dokumen') SO @else BM @endif</label>
+                            <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Tanggal @if($item->tipe == 'Faktur') SO @elseif($item->tipe == 'Dokumen') BM @else Retur @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                              @if($item->tipe != 'Dokumen')
-                                value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" >
-                              @else
-                                value="{{ \Carbon\Carbon::parse($item->bm->tanggal)->format('d-M-y') }}" >
+                               @if($item->tipe == 'Faktur')
+                                value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" 
+                              @elseif($item->tipe == 'Dokumen')
+                                value="{{ \Carbon\Carbon::parse($item->bm->tanggal)->format('d-M-y') }}" 
+                              @elseif($item->tipe == 'RJ')
+                                value="{{ \Carbon\Carbon::parse($item->rj->tanggal)->format('d-M-y') }}" 
                               @endif
+                              />
                             </div>
                           </div>
                         </div>
-                        @if($item->tipe != 'Dokumen')   
+                        @if($item->tipe == 'Faktur')   
                           <div class="col-12 col-lg-6">
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nama Sales</label>
@@ -110,8 +117,15 @@
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-6 col-sm-5 col-md-7">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaGudang"
-                                value="{{ $item->bm->gudang->nama }}" >
-                                <input type="hidden" name="{{$item->id}}" value="{{ $item->bm->id_gudang }}">
+                                @if($item->tipe == 'Dokumen')
+                                  value="{{ $item->bm->gudang->nama }}" 
+                                @else
+                                  value="Retur" 
+                                @endif
+                                />
+                                @if($item->tipe == 'Dokumen')
+                                  <input type="hidden" name="{{$item->id}}" value="{{ $item->bm->id_gudang }}">
+                                @endif
                               </div>
                             </div>
                           </div>
@@ -128,7 +142,7 @@
                             </div>
                           </div>
                         </div>
-                        @if($item->tipe != 'Dokumen') 
+                        @if($item->tipe == 'Faktur')
                           <div class="col-12 col-lg-6" >
                             <div class="form-group row  customer-detail">
                               <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Jatuh Tempo</label>
@@ -165,6 +179,7 @@
                         @endif
                       </div>
                     </div>
+                    
                     @if(($itemsUpdate->last()->status != 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL'))
                       @foreach($itemsUpdate as $iu)
                         @if($itemsUpdate[0]->id != $iu->id)
@@ -204,12 +219,16 @@
                         @endif
 
                         @php
-                          $detilUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])
+                          if($item->tipe != 'RJ') {
+                            $detilUpdate = \App\Models\DetilApproval::with(['approval', 'barang'])
                                         ->select('id_barang', 'diskon')
                                         ->selectRaw('avg(harga) as harga, sum(qty) as qty')
                                         ->where('id_app', $iu->id)
                                         ->groupBy('id_barang', 'diskon')
                                         ->get();
+                          } else {
+                            $detilUpdate = $items;
+                          }
                         @endphp
 
                         <!-- Tabel Data Awal SO -->
@@ -224,12 +243,19 @@
                                 <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
                               @endforeach
                             @endif
-                            <td>Harga</td>
-                            <td>Jumlah</td>
-                            @if($item->tipe != 'Dokumen') 
-                              <td style="width: 80px">Diskon(%)</td>
-                              <td style="width: 110px">Diskon(Rp)</td>
-                              <td style="width: 120px">Netto (Rp)</td>
+                            @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                              <td>Harga</td>
+                              <td>Jumlah</td>
+                              {{-- @if($item->tipe != 'Dokumen')  --}}
+                                <td style="width: 80px">Diskon(%)</td>
+                                <td style="width: 110px">Diskon(Rp)</td>
+                                <td style="width: 120px">Netto (Rp)</td>
+                              {{-- @endif --}}
+                            @else
+                              <td style="width: 110px">Tgl Kirim</td>
+                              <td style="width: 110px">Qty Kirim</td>
+                              <td style="width: 110px">Potong Tagihan</td>
+                              <td style="width: 130px">Keterangan</td>
                             @endif
                           </thead>
                           <tbody>
@@ -241,7 +267,11 @@
                                 <td align="center">{{ $j }}</td>
                                 <td align="center">{{ $i->id_barang }} </td>
                                 <td>{{ $i->barang->nama }}</td>
-                                <td align="right">{{ $i->qty }}</td>
+                                @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                                  <td align="right">{{ $i->qty }}</td>
+                                @elseif($item->tipe == 'RJ')
+                                  <td align="right">{{ $i->qty_retur }}</td>
+                                @endif
                                 @if($item->tipe == 'Faktur')
                                   @foreach($gudang as $g)
                                     @php
@@ -257,66 +287,97 @@
                                     @endif
                                   @endforeach
                                 @endif
-                                <td align="right">
-                                  {{ number_format($i->harga, 0, "", ".") }}
-                                </td>
-                                <td align="right">
-                                  {{number_format(($i->qty * $i->harga), 0, "", ".")}}
-                                </td>
-                                @if($item->tipe != 'Dokumen') 
-                                  <td align="right">{{ $i->diskon }}</td>
+                                @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                                  <td align="right">
+                                    {{ number_format($i->harga, 0, "", ".") }}
+                                  </td>
+                                  <td align="right">
+                                    {{number_format(($i->qty * $i->harga), 0, "", ".")}}
+                                  </td>
+                                  {{-- @if($item->tipe != 'Dokumen')  --}}
+                                    <td align="right">{{ $i->diskon }}</td>
+                                    @php 
+                                      $diskon = 100;
+                                      if($i->diskon != NULL) {
+                                        $i->diskon = str_replace(",", ".", $i->diskon);
+                                        $arrDiskon = explode("+", $i->diskon);
+                                        for($k = 0; $k < sizeof($arrDiskon); $k++) {
+                                          $diskon -= ($arrDiskon[$k] * $diskon) / 100;
+                                        } 
+                                        $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
+                                      } else {
+                                        $diskon = 0;
+                                      }
+                                    @endphp
+                                    <td align="right">
+                                      {{ number_format((($i->qty * $i->harga) * $diskon) / 100, 0, "", ".") }}
+                                    </td>
+                                    <td align="right">
+                                      {{ number_format(($i->qty * $i->harga) - 
+                                      ((($i->qty * $i->harga) * $diskon) / 100), 0, "", ".") }}
+                                    </td>
+                                  {{-- @endif --}}
                                   @php 
-                                    $diskon = 100;
-                                    $i->diskon = str_replace(",", ".", $i->diskon);
-                                    $arrDiskon = explode("+", $i->diskon);
-                                    for($j = 0; $j < sizeof($arrDiskon); $j++) {
-                                      $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                                    } 
-                                    $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
+                                    if($item->tipe == 'Faktur') {
+                                      $subtotal += ($i->qty * $i->harga) - 
+                                      ((($i->qty * $i->harga) * $diskon) / 100); 
+                                    }
+                                    else
+                                      $subtotal += $i->qty * $i->harga;
                                   @endphp
-                                  <td align="right">
-                                    {{ number_format((($i->qty * $i->harga) * $diskon) / 100, 0, "", ".") }}
-                                  </td>
-                                  <td align="right">
-                                    {{ number_format(($i->qty * $i->harga) - 
-                                    ((($i->qty * $i->harga) * $diskon) / 100), 0, "", ".") }}
-                                  </td>
+                                @else
+                                  <td align="center">{{ $i->tgl_kirim != NULL ? \Carbon\Carbon::parse($i->tgl_kirim)->format('d-M-y') : '' }}</td>
+                                  <td align="right">{{ $i->qty_kirim }}</td>
+                                  <td align="right">{{ $i->potong }}</td>
+                                  <td align="center">Retur Customer</td>
                                 @endif
-                                @php 
-                                  if($item->tipe != 'Dokumen') {
-                                    $subtotal += ($i->qty * $i->harga) - 
-                                    ((($i->qty * $i->harga) * $diskon) / 100); 
-                                  }
-                                  else
-                                    $subtotal += $i->qty * $i->harga;
-                                @endphp
                               </tr>
                               @php $j++; @endphp
                             @endforeach
                           </tbody>
                         </table>
 
-                        <div class="form-group row justify-content-end subtotal-so">
-                          <label for="totalNotPPN" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Sub Total</label>
-                          <span class="col-form-label text-bold">:</span>
-                          <div class="col-4 col-sm-4 col-md-2 mr-1">
-                            <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" />
+                        @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                          <div class="form-group row justify-content-end subtotal-so">
+                            <label for="totalNotPPN" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Sub Total</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-4 col-sm-4 col-md-2 mr-1">
+                              <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" />
+                            </div>
                           </div>
-                        </div>
-                        <div class="form-group row justify-content-end total-so">
-                          <label for="ppn" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">PPN</label>
-                          <span class="col-form-label text-bold">:</span>
-                          <div class="col-4 col-sm-4 col-md-2 mr-1">
-                            <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
+                        @endif
+                        @if($item->tipe == 'Faktur')
+                          <div class="form-group row justify-content-end total-so">
+                            <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-4 col-sm-4 col-md-2 mr-1">
+                              <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->so->diskon, 0, "", ".") }}" />
+                            </div>
                           </div>
-                        </div>
-                        <div class="form-group row justify-content-end grandtotal-so">
-                          <label for="grandtotal" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">@if($item->status != 'APPROVE_LIMIT') Total Tagihan @else Total SO @endif</label>
-                          <span class="col-form-label text-bold">:</span>
-                          <div class="col-4 col-sm-4 col-md-2 mr-1">
-                            <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold @if($item->status != 'APPROVE_LIMIT') bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{number_format($subtotal, 0, "", ".")}}" />
+                          <div class="form-group row justify-content-end total-so">
+                            <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-4 col-sm-4 col-md-2 mr-1">
+                              <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->so->diskon, 0, "", ".") }}" />
+                            </div>
                           </div>
-                        </div>
+                        @endif
+                        @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                          <div class="form-group row justify-content-end total-so">
+                            <label for="ppn" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">PPN</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-4 col-sm-4 col-md-2 mr-1">
+                              <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
+                            </div>
+                          </div>
+                          <div class="form-group row justify-content-end grandtotal-so">
+                            <label for="grandtotal" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">@if($item->status != 'APPROVE_LIMIT') Total Tagihan @else Total SO @endif</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-4 col-sm-4 col-md-2 mr-1">
+                              <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold @if($item->status != 'APPROVE_LIMIT') bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{ $item->tipe == 'Faktur' ? number_format($subtotal - $item->so->diskon, 0, "", ".") : number_format($subtotal, 0, "", ".")}}" />
+                            </div>
+                          </div>
+                        @endif
                         @if($item->status == 'APPROVE_LIMIT')
                           <div class="form-group row justify-content-end" style="margin-top: 5px">
                             <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Kredit</label>
@@ -350,8 +411,8 @@
                       @endforeach
                     @endif
 
-                    @if(($item->status != 'APPROVE_LIMIT') && ($item->status != 'BATAL'))
                     <!-- Tabel Data Update SO -->
+                    @if(($item->status != 'APPROVE_LIMIT') && ($item->status != 'BATAL'))
                       <div class="container so-update-container text-dark" style="margin-top: 40px">
                         <div class="row" >
                           <div class="col-12 col-lg-6">
@@ -498,6 +559,22 @@
                           <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotalUpdate, 0, "", ".") }}" />
                         </div>
                       </div>
+                      @if($item->tipe == 'Faktur')
+                        <div class="form-group row justify-content-end total-so">
+                          <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                          <span class="col-form-label text-bold">:</span>
+                          <div class="col-4 col-sm-4 col-md-2 mr-1">
+                            <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->so->diskon, 0, "", ".") }}" />
+                          </div>
+                        </div>
+                        <div class="form-group row justify-content-end total-so">
+                          <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                          <span class="col-form-label text-bold">:</span>
+                          <div class="col-4 col-sm-4 col-md-2 mr-1">
+                            <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotalUpdate - $item->so->diskon, 0, "", ".") }}" />
+                          </div>
+                        </div>
+                      @endif
                       <div class="form-group row justify-content-end total-so">
                         <label for="ppn" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">PPN</label>
                         <span class="col-form-label text-bold">:</span>
@@ -510,7 +587,7 @@
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-4 col-sm-4 col-md-2 mr-1">
                           <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right
-                          @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{number_format($subtotalUpdate, 0, "", ".")}}" />
+                          @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif" value="{{ $item->tipe == 'Faktur' ? number_format($subtotalUpdate - $item->so->diskon, 0, "", ".") : number_format($subtotalUpdate, 0, "", ".")}}" />
                         </div>
                       </div>
                       <br>

@@ -31,7 +31,7 @@
           </thead>
           <tbody>
             @php $i=1; @endphp
-            @forelse ($items as $item)
+            @forelse($items as $item)
               @php 
                 $status = \App\Models\NeedApproval::where('id_dokumen', $item->id_dokumen)
                 ->get();

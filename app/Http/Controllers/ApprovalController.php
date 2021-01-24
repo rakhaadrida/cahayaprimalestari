@@ -21,6 +21,8 @@ use App\Models\AP_Retur;
 use App\Models\AR_Retur;
 use App\Models\DetilRAP;
 use App\Models\DetilRAR;
+use App\Models\DetilRJ;
+use App\Models\ReturJual;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -99,8 +101,10 @@ class ApprovalController extends Controller
 
         if($tipe == 'Faktur')
             $item = SalesOrder::where('id', $id)->first();
-        else
+        elseif($tipe == 'Dokumen')
             $item = BarangMasuk::where('id', $id)->first();
+        elseif($tipe == 'RJ')
+            $item = ReturJual::where('id', $id)->first();
 
         if($statusApp == 'PENDING_UPDATE') {
             $item->{'status'} = "UPDATE";
@@ -123,7 +127,7 @@ class ApprovalController extends Controller
                     AR_Retur::where('id_ar', $ar[0]->id)->delete();
                 }
                 AccReceivable::where('id_so', $id)->delete(); 
-            } else {
+            } elseif($tipe == 'Dokumen') {
                 $bm = BarangMasuk::where('id_faktur', $item->{'id_faktur'})
                     ->where('status', '!=', 'BATAL')->count();
 
@@ -165,10 +169,21 @@ class ApprovalController extends Controller
             ]);
         }
 
-        $lastcode = Approval::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = Approval::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
+                    ->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
-        $newcode = 'APR'.sprintf('%04s', $lastnumber);
+        $newcode = 'APR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+
+        if($tipe != 'RJ')
+            $baca = 'F';
+        else
+            $baca = 'T';
 
         $needApp = NeedApproval::where('id_dokumen', $id)->orderBy('id', 'desc')->get();
         Approval::create([
@@ -176,30 +191,46 @@ class ApprovalController extends Controller
             'id_dokumen' => $id,
             'tanggal' => Carbon::now()->toDateString(),
             'status' => $item->{'status'},
-            'keterangan' => $needApp[0]->keterangan,
+            'keterangan' => $needApp->first()->keterangan,
             'tipe' => $tipe,
-            'baca' => 'F'
+            'baca' => $baca
         ]);
 
         if($tipe == 'Faktur')
             $detil = DetilSO::where('id_so', $id)->get();
-        else
+        elseif($tipe == 'Dokumen')
             $detil = DetilBM::with(['bm'])->where('id_bm', $id)->get();
+        elseif($tipe == 'RJ')
+            $detil = DetilRJ::where('id_retur', $id)->get();
 
         $disPersen = []; $hpp = [];
         foreach($detil as $d) {
             if($tipe == 'Faktur')
                 $gudang = $d->id_gudang;
-            else
+            elseif($tipe == 'Dokumen')
                 $gudang = $d->bm->id_gudang;
+            elseif($tipe == 'RJ') {
+                $retur = Gudang::where('tipe', 'RETUR')->get();
+                $gudang = $retur->first()->id;
+            }
+
+            if($tipe != 'RJ') {
+                $harga = $d->harga;
+                $qty = $d->qty;
+                $disk = $d->diskon;
+            } else {
+                $harga = NULL;
+                $qty = $d->qty_retur;
+                $disk = NULL;
+            }
 
             DetilApproval::create([
                 'id_app' => $newcode,
                 'id_barang' => $d->id_barang,
                 'id_gudang' => $gudang,
-                'harga' => $d->harga,
-                'qty' => $d->qty,
-                'diskon' => $d->diskon
+                'harga' => $harga,
+                'qty' => $qty,
+                'diskon' => $disk
             ]);
 
             if($tipe == 'Dokumen') {
@@ -396,24 +427,48 @@ class ApprovalController extends Controller
         elseif($status == 'PENDING_BATAL') {
             if($tipe == 'Faktur') 
                 $items = DetilSO::where('id_so', $kode)->get();
-            else
+            elseif($tipe == 'Dokumen')
                 $items = DetilBM::with(['bm'])->where('id_bm', $kode)->get();
+            elseif($tipe == 'RJ')
+                $items = DetilRJ::where('id_retur', $kode)->get();
 
             foreach($items as $item) {
                 if($tipe == 'Faktur') 
                     $gudang = $item->id_gudang;
-                else
+                elseif($tipe == 'Dokumen')
                     $gudang = $request->$id;
+                elseif($tipe == 'RJ') {
+                    $retur = Gudang::where('tipe', 'RETUR')->get();
+                    $gudang = $retur->first()->id;
+                }
 
-                $updateStok = StokBarang::where('id_barang', $item->id_barang)
-                        ->where('id_gudang', $gudang)->first();
+                if($tipe != 'RJ') {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                                ->where('id_gudang', $gudang)->first();
+                } else {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                                ->where('id_gudang', $gudang)->where('status', 'F')->first();
+                    $updateStokBagus = StokBarang::where('id_barang', $item->id_barang)
+                                ->where('id_gudang', $gudang)->where('status', 'T')->first();
+                }
 
                 if($tipe == 'Faktur') 
                     $updateStok->{'stok'} -= $item->qty;
-                else
+                elseif($tipe == 'Dokumen')
                     $updateStok->{'stok'} += $item->qty;
+                elseif($tipe == 'RJ') {
+                    $updateStok->{'stok'} += $item->qty_retur;
+                    $updateStokBagus->{'stok'} -= $item->qty_kirim;
+                    $updateStokBagus->save();
+                }
                     
                 $updateStok->save();
+            }
+
+            if($tipe == 'RJ') {
+                $item = ReturJual::where('id', $kode)->first();
+                $item->{'status'} = 'INPUT';
+                $item->save();
             }
 
             $items = NeedApproval::with(['need_appdetil'])
