@@ -348,7 +348,7 @@ class SalesOrderController extends Controller
                         $q->where('so.id', $id)
                         ->orWhere('id_customer', $kode)
                         ->orWhereBetween('tgl_so', [$tglAwal, $tglAkhir]);
-                    })->orderBy('so.id', 'asc')->get();
+                    })->orderBy('tgl_so', 'asc')->orderBy('so.id', 'asc')->get();
         } else {
             $items = SalesOrder::with(['customer', 'need_approval'])
                     ->join('users', 'users.id', 'so.id_user')
@@ -357,14 +357,14 @@ class SalesOrderController extends Controller
                         $q->where('id_customer', $kode)
                         ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
                         ->orWhere('so.id', $id);
-                    })->orderBy('so.id', 'asc')->get();
+                    })->orderBy('tgl_so', 'asc')->orderBy('so.id', 'asc')->get();
         }
         
         $customer = Customer::All();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
         $stok = StokBarang::All();
         $so = SalesOrder::join('users', 'users.id', 'so.id_user')
-                    ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')->get();
+                        ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')->get();
         
         $data = [
             'items' => $items,
@@ -432,6 +432,7 @@ class SalesOrderController extends Controller
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'BIASA')->get();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
+        // return response()->json($id);
 
         $data = [
             'items' => $items,
