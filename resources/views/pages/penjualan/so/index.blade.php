@@ -633,7 +633,7 @@ const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
 var netPast; var tab = '{{ $tab }}';
-var kodeModal; var totPast;
+var kodeModal; var totPast; var g; var gdg;
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
@@ -1438,12 +1438,15 @@ for(let i = 0; i < qty.length; i++) {
     stokJohar = 0;
     stokLain = [];
     totStok = 0;
+    gdg = [];
+    g = 0;
+
     @foreach($stok as $s)
       if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
         stokJohar = '{{ $s->stok }}';
         totStok = +totStok + +stokJohar;
       }
-      else if('{{ $s->id_barang }}' == kodeBarang[i].value){
+      else if('{{ $s->id_barang }}' == kodeBarang[i].value) {
         stokLain.push('{{ $s->stok }}');
         totStok = +totStok + +'{{ $s->stok }}';
       }
@@ -1518,10 +1521,10 @@ for(let i = 0; i < qty.length; i++) {
         const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
         const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
         for(let j = 0; j < stokGudang.length; j++) {
-          stokGudang[j].textContent = `${stokLain[j]}`;
+          stokGudang[j].textContent = `${stokLain[j] != null ? stokLain[j] : 0}`;
           gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
           if(teksSat[i].value == 'Pcs') {
-            stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] / ukuran[i].value}`;
+            stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] != null ? stokLain[j] : 0 / ukuran[i].value}`;
             gudangUkuran[j].textContent = `\u00A0${teksSatUk[i].value}`;
           } else {
             stokGudangUkuran[j].textContent = ``;

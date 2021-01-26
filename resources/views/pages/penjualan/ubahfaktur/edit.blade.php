@@ -611,10 +611,10 @@ for(let i = 0; i < qty.length; i++) {
             stokTambah = stokLain[j];
           }
 
-          stokGudang[j].textContent = `${stokTambah}`;
+          stokGudang[j].textContent = `${stokTambah != null ? stokTambah : 0}`;
           gudangSatuan[j].textContent = `\u00A0${pcs} `;
           if(teksSat[i].value == 'Pcs') {
-            stokGudangUkuran[j].textContent = `\u00A0/ ${stokTambah / ukuran}`;
+            stokGudangUkuran[j].textContent = `\u00A0/ ${stokTambah != null ? stokTambah : 0 / ukuran}`;
             gudangUkuran[j].textContent = `\u00A0${satuanUkuran}`;
           } else {
             stokGudangUkuran[j].textContent = ``;
