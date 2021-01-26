@@ -143,7 +143,7 @@
                         <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ $item->id_barang }}" required>
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
+                        <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark text-wrap namaBarang" value="{{ $item->barang->nama }}" required>
                         <input type="hidden" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
                       </td>
                       <td> 
@@ -786,7 +786,8 @@ for(let j = 0; j < modalGudang.length; j++) {
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
     for(let i = 0; i < btnPilih.length; i++) {
       btnPilih[i].disabled = false;
-      btnPilih[i].addEventListener("click", function (e) {
+      // btnPilih[i].addEventListener("click", function (e) {
+      $(btnPilih[i]).off('click').on('click', function(e) {
         totPast = +stokGudang[i].textContent;
         if(+totPast < +sisaQty[j].textContent) {
           btnPilih[i].disabled = true;
@@ -837,6 +838,8 @@ for(let j = 0; j < modalGudang.length; j++) {
 
         if(cek == 1)
           $('#'+j).modal("hide");
+        
+        // btnPilih[i].removeEventListener('click', handler);
       });
     }
   });

@@ -169,6 +169,8 @@
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                         <input type="hidden" name="teksSat[]" class="teksSat">
+                        <input type="hidden" name="teksSatUk[]" class="teksSatUk">
+                        <input type="hidden" name="ukuran[]" class="ukuran">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang">
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
@@ -417,6 +419,8 @@ const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const qty = document.querySelectorAll(".qty");
 const teksSat = document.querySelectorAll(".teksSat");
+const teksSatUk = document.querySelectorAll(".teksSatUk");
+const ukuran = document.querySelectorAll(".ukuran");
 const satuan = document.querySelectorAll(".satuan");
 const kodeGudang = document.querySelectorAll(".kodeGudang");
 const qtyGudang = document.querySelectorAll(".qtyGudang");
@@ -994,24 +998,34 @@ for(let i = 0; i < brgNama.length; i++) {
         satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
         if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
+          teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Pcs';
           satuan[i].value = '';
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
           teksSat[i].value = 'Rol';
+          teksSatUk[i].value = 'Meter';
           satuanUkuran.innerHTML = 'Meter';
           satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
         }
+        else if(satuanUkuran.innerHTML == 'Set') {
+          pcs.innerHTML = 'Set';
+          satuanUkuran.innerHTML = 'Dus';
+          teksSatUk[i].value = 'Dus';
+          teksSat[i].value = 'Set';
+          satuan[i].value = '';
+        }
         else {
           pcs.innerHTML = 'Meter';
           teksSat[i].value = 'Meter';
+          teksSatUk[i].value = '';
           satuanUkuran.innerHTML = '';
           satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
         }
-        ukuran = '{{ $br->ukuran }}';
+        ukuran[i].value = '{{ $br->ukuran }}';
       }
     @endforeach
 
@@ -1047,7 +1061,7 @@ for(let i = 0; i < qty.length; i++) {
         totStok = '{{ $s->stok }}';
     @endforeach
 
-    hitungQty(i, e.target.id, e.target.value, teksSat[i].value);
+    hitungQty(i, e.target.id, e.target.value, teksSat[i].value, ukuran[i].value);
 
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
@@ -1060,13 +1074,13 @@ for(let i = 0; i < qty.length; i++) {
       qty[i].value = "";
       satuan[i].value = "";
     }
-    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran) > totStok))) {
+    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > totStok))) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
       totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
 
       if(teksSat[i].value == 'Pcs')
-        totalsatuan[i].textContent = ` atau ${totStok / ukuran} ${satuanUkuran.innerHTML}`;
+        totalsatuan[i].textContent = ` atau ${totStok / ukuran[i].value} ${satuanUkuran.innerHTML}`;
       else
         totalsatuan[i].textContent = ``;
 
@@ -1157,9 +1171,9 @@ for(let i = 0; i < diskon.length; i++) {
 }
 
 /** Hitung Qty **/
-function hitungQty(urutan, kode, angka, teks) {
+function hitungQty(urutan, kode, angka, teks, ukuran) {
   if(kode == 'qty') {
-    if(teks == 'Pcs')
+    if((teks == 'Pcs') || (teks == 'Set'))
       satuan[urutan].value = +angka / +ukuran;
     else if(teks == 'Rol')
       satuan[urutan].value = +angka * +ukuran;

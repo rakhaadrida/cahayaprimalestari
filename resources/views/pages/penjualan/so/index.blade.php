@@ -1107,7 +1107,8 @@ function displayRow(e) {
     const btnPilihRow = document.querySelectorAll(".btnPilihRow"+newNum);
     for(let i = 0; i < btnPilihRow.length; i++) {
       btnPilihRow[i].disabled = false;
-      btnPilihRow[i].addEventListener("click", function (e) {
+      // btnPilihRow[i].addEventListener("click", function (e) {
+      $(btnPilihRow[i]).off('click').on('click', function(e) {
         totPast = +stokGudangRow[i].textContent;
         if(+totPast < +sisaQtyRow.textContent) {
           btnPilihRow[i].disabled = true;
@@ -1121,6 +1122,7 @@ function displayRow(e) {
           $('#gud'+newNum).modal("hide");
           tipeRow.focus();
         }
+        // btnPilih[i].removeEventListener('click', handler);
 
         /* totPast = +qtyGudangRow.value + +stokGudangRow[i].textContent;
         if(totPast < qtyOrderRow.textContent) {
@@ -1610,22 +1612,18 @@ for(let i = 0; i < diskon.length; i++) {
 
 /** Tampil Kode Gudang Tambahan **/
 for(let j = 0; j < modalGudang.length; j++) {
-  $('#'+j).on('shown.bs.modal', function(e) {
+  $('#'+j).on('show.bs.modal', function(e) {
     const kodeGud = document.querySelectorAll(".kodeGud"+j);
     const stokGudang = document.querySelectorAll('.stokGudang'+j);
     kodeGudang[j].value = 'GDG01';
     qtyGudang[j].value = stokJohar;
-    // function unClick(e) {
-    //   e.preventDefault();
-    // };
-    
+
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
-    // $(btnPilih).prop('disabled', false);
+    
     for(let i = 0; i < btnPilih.length; i++) {
       btnPilih[i].disabled = false;
-      btnPilih[i].addEventListener("click", function (e) {
-        console.log(btnPilih[i]);
-        
+      // btnPilih[i].addEventListener("click", function handler(e) {
+      $(btnPilih[i]).off('click').on('click', function(e) {
         // kodeGudang[j].value = 'GDG01';
         // qtyGudang[j].value = stokJohar;
         // totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
@@ -1654,13 +1652,10 @@ for(let j = 0; j < modalGudang.length; j++) {
           $('#'+j).modal("hide");
           tipe[j].focus();
         }
-      });
-    }
-  });
 
-  $('#'+j).on('hidden.bs.modal', function(e) {
-    // $('#'+j).find("button").prop('disabled', false).end();
-    // $(e.currentTarget).unbind();
+        // btnPilih[i].removeEventListener('click', handler);
+      });
+    } 
   });
 }
 
