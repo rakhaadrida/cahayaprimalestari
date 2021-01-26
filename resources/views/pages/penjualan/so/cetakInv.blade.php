@@ -171,8 +171,11 @@
           /* margin-top: 0px; */
           /* margin-left: 35px;
           margin-right: 30px; */
-          margin-top: 0;
+          /* margin-top: 0;     // margin minimum
           margin-left: 0;
+          margin-right: 0; */
+          margin-top: 0;
+          margin-left: 20px;
           margin-right: 0;
       }
 
@@ -203,7 +206,8 @@
         width: 135px;
         height: 50px;
         margin-top: -95px;
-        margin-left: 5px;
+        /* margin-left: 5px; // Margin Minimum */
+        margin-left: 20px;
       }
 
       .customer-cetak-so {
@@ -238,8 +242,9 @@
         margin-top: -24px;
         font-size: 12px;
         border-spacing: 0px;
-        margin-left: 0;
+        /* margin-left: 0; // margin Minimum */
         margin-right: 30px;
+        margin-left: 20px;
       }
 
       .table-info-cetak-so td {
@@ -264,10 +269,13 @@
       .table-cetak {
         font-size: 13px;
         width: 90.7% !important;
-        height: 225px;
-        margin-left: 0;
+        /* height: 225px; */
+        height: 52% !important;
+        /* margin-left: 0; // Margin minimum */
+        margin-left: 20px;
         margin-right: 34.5px;
         margin-top: -14px;
+        /* margin-bottom: 40px !important; */
       }
 
       .table-cetak thead td {
@@ -295,24 +303,24 @@
         border-left: 0;
         border-right: 0;
         border-top: 0;
-        border-bottom: 1px solid black;
+        /* border-bottom: 1px solid black; */
       }
 
       .footer-cetak-so {
-          display: inline-block;
+          /* display: inline-block; */
           border: 1.9px dotted;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
           border-bottom-left-radius: 10px;
           border-bottom-right-radius: 10px;
           margin-bottom: -40px;
-          margin-left: 0;
+          /* margin-left: 0;  // Margin minimum */
+          margin-left: 20px;
           margin-right: 30px;
       }
 
       .table-footer {
           margin-left: -15px;
-          /* border: solid black; */
           width: 920px;
           margin-right: -50px;
       }
@@ -393,8 +401,10 @@
       .waktu-cetak-so {
         font-weight: 700;
         margin-left: 30px;
-        margin-right: 100px;
-        margin-top: 62px;
+        /* margin-right: 100px; // Margin minimum */
+        margin-right: 80px; /* Margin custom */ 
+        margin-top: 33px;
+        /* border: solid black; */
       }
 
       .waktu-cetak {
@@ -423,7 +433,7 @@
   </head>
   <body>
     @foreach($items as $item)
-      <div class="cetak-all-container" style="margin-bottom: -55px">
+      <div class="cetak-all-container" style="margin-bottom: -55px;">
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
@@ -447,7 +457,7 @@
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
-          <span>{{ $item->id_customer }}</span>
+          {{-- <span>{{ $item->id_customer }}</span> --}}
           <br>
           <span class="nama-cetak-so">{{ $item->customer->nama }}</span>
           <br>
@@ -682,10 +692,10 @@
             </thead>
           </table>
         </div>
-        {{-- <div class="float-right waktu-cetak-so">
+        <div class="float-right waktu-cetak-so">
           <span class="waktu-cetak">Waktu Cetak : {{ $today }} {{ $waktu }}</span>
           <span class="cetak-ke">Cetak ke: {{ $cetak }}</span>
-        </div> --}}
+        </div>
       </div>
     @endforeach
   </body>
