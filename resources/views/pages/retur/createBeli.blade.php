@@ -92,7 +92,7 @@
                         <input type="text" name="stok[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-center stok" value="{{ old('stok[]') }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-center text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" @if($i == 1) required @endif>
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-center text-dark qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Qty Retur tidak bisa melebihi Stok" autocomplete="off" @if($i == 1) required @endif>
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -195,7 +195,7 @@ function displayRow(e) {
         <input type="text" name="stok[]" id="stokRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center stokRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center qtyRow" data-toogle="tooltip" data-placement="bottom" title="Qty Retur tidak bisa melebihi Stok" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -240,7 +240,7 @@ function displayRow(e) {
   }
 
   /** Inputan hanya bisa angka **/
-  qtyRow.addEventListener("keypress", function (e, evt) {
+  /* qtyRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
@@ -250,6 +250,13 @@ function displayRow(e) {
     }
     
     return true;
+  }); */
+
+  qtyRow.addEventListener("blur", function (e) {
+    if(+e.target.value > +stokRow.value) {
+      e.target.value = '';
+      $(e.target).tooltip('show');
+    }
   });
   
   /** Delete Table Row **/
@@ -390,8 +397,19 @@ for(let i = 0; i < brgNama.length; i++) {
   }
 }
 
+for(let i = 0; i < qty.length; i++) {
+  qty[i].addEventListener("blur", displayTooltip);
+
+  function displayTooltip(e) {
+    if(+e.target.value > +stok[i].value) {
+      e.target.value = '';
+      $(e.target).tooltip('show');
+    }
+  }
+}
+
 /** Inputan hanya bisa angka **/
-function angkaSaja(evt, inputan) {
+/* function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -403,7 +421,7 @@ function angkaSaja(evt, inputan) {
     return false;
   }
   return true;
-}
+} */
 
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {

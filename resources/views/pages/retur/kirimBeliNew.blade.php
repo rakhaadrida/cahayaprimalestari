@@ -113,7 +113,7 @@
                           <td class="text-right">
                             <input type="text" name="batalDetil[]" id="batalDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_batal != '') value ="{{ $dr->qty_batal }}" @endif>
                           </td>
-                          <td class="text-right align-middle">{{ number_format($dr->potong, 0, "", ".") }}</td>
+                          <td class="text-right align-middle">{{ $dr->potong }}</td>
                           @php $kurang -= ($dr->qty_terima + $dr->qty_batal + $dr->potong); @endphp
                           <td class="text-right align-middle">{{ number_format($kurang, 0, "", ".") }}</td>
                           <td align="center" class="align-middle">
@@ -182,7 +182,8 @@
               @if($item->first()->status == 'INPUT')
                 <div class="form-row justify-content-center">
                   <div class="col-2">
-                    <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('retur-beli-process') }}" formmethod="POST">Submit</button>
+                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitRB" onclick="return checkLimit(event)">Submit</button>
+                    {{-- formaction="{{ route('retur-beli-process') }}" formmethod="POST" --}}
                   </div>
                   <div class="col-2">
                     <a href="{{ route('retur-potong-beli', $item->first()->id) }}" id="backRJ" class="btn btn-outline-primary btn-block text-bold">Potong Tagihan</a>
@@ -240,6 +241,22 @@
                   </div>
                 </div>
               </div>
+
+              <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title text-bold">Notifikasi Qty Terima dan Ditolak</h4>
+                    </div>
+                    <div class="modal-body text-dark">
+                      <h5><b>Jumlah Qty Terima + Ditolak</b> tidak bisa melebihi <b>Jumlah Qty Retur</b>. Silahkan ubah jumlah Qty Terima atau Ditolak yang berwarna <b>Merah</b></h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -269,9 +286,13 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const qtyDetil = document.querySelectorAll('.qtyDetil');
+const terimaDetil = document.querySelectorAll('.terimaDetil');
+const batalDetil = document.querySelectorAll('.batalDetil');
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const kirimRB = document.getElementById("kirimRB");
+const qty = document.querySelectorAll('.qty');
 const tglBayar = document.querySelectorAll('.tglBayar');
 const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
@@ -369,6 +390,49 @@ for(let i = 0; i < btnCetak.length; i++) {
     // window.print();
   });
 }
+
+function checkLimit(e) {
+  var cek = 0; var urut = []; var urutDetil = [];
+  for(let i = 0; i < kirimModal.length; i++) {
+    if((+kirimModal[i].value + +batalModal[i].value) > +qty[i].value) {
+      cek = 1;
+      urut.push(i);
+      // kirimModal[i].style.borderColor = "red";
+      // kirimModal[i].style.borderWidth = "2px";
+    }
+  }
+
+  for(let i = 0; i < terimaDetil.length; i++) {
+    if((+terimaDetil[i].value + +batalDetil[i].value) > +qtyDetil[i].value) {
+      cek = 1;
+      urutDetil.push(i);
+      // kirimModal[i].style.borderColor = "red";
+      // kirimModal[i].style.borderWidth = "2px";
+    }
+  }
+
+  if(cek == 1) {
+    document.getElementById("submitRB").dataset.toggle = "modal";
+    document.getElementById("submitRB").dataset.target = "#modalNotif";
+    for(let i = 0; i < urut.length; i++) { 
+      $(kirimModal[urut[i]]).closest('td').css("border-color", "red");
+      $(kirimModal[urut[i]]).closest('td').css("border-width", "3px");
+      $(batalModal[urut[i]]).closest('td').css("border-color", "red");
+      $(batalModal[urut[i]]).closest('td').css("border-width", "3px");
+    }
+    for(let i = 0; i < urutDetil.length; i++) { 
+      $(terimaDetil[urutDetil[i]]).closest('td').css("border-color", "red");
+      $(terimaDetil[urutDetil[i]]).closest('td').css("border-width", "3px");
+      $(batalDetil[urutDetil[i]]).closest('td').css("border-color", "red");
+      $(batalDetil[urutDetil[i]]).closest('td').css("border-width", "3px");
+    }
+    return false;
+  } 
+  else {
+    document.getElementById("submitRB").formMethod = "POST";
+    document.getElementById("submitRB").formAction = "{{ route('retur-beli-process') }}";
+  }
+} 
 
 function checkEditable() {
   const ket = document.getElementById("keterangan");

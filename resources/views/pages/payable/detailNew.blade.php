@@ -155,7 +155,8 @@
               @if(($item->first()->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
                 <div class="form-row justify-content-center">
                   <div class="col-2">
-                    <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ap-transfer') }}" formmethod="POST">Submit</button>
+                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitAP" onclick="return checkLimit(event)">Submit</button>
+                    {{-- formaction="{{ route('ap-transfer') }}" formmethod="POST" --}}
                   </div>
                   <div class="col-2">
                     <button type="reset" data-dismiss="modal" class="btn btn-outline-danger btn-block text-bold">Reset</button>
@@ -166,6 +167,22 @@
                 </div>
               @endif
               <!-- End Button Submit dan Reset -->
+
+              <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title text-bold">Notifikasi Jumlah Cicil</h4>
+                    </div>
+                    <div class="modal-body text-dark">
+                      <h5><b>Jumlah Cicil</b> tidak bisa melebihi <b>Jumlah Kurang Bayar</b>. Total Kurang Bayar untuk faktur <b>{{ $item->first()->id_bm }}</b> adalah <b>{{ number_format($kurang, 0, "", ".") }}</b></h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -304,6 +321,18 @@ function addCommas(nStr) {
 		x1 = x1.replace(rgx, '$1' + '.' + '$2');
 	}
 	return x1 + x2;
+}
+
+function checkLimit(e) {
+  if(+bayarModal[0].value.replace(/\,/g, "") > '{{ $kurang }}') {
+    // alert('Jumlah Cicil Melebihi Jumlah Kurang Bayar');
+    document.getElementById("submitAP").dataset.toggle = "modal";
+    document.getElementById("submitAP").dataset.target = "#modalNotif";
+    return false;
+  } else {
+    document.getElementById("submitAP").formMethod = "POST";
+    document.getElementById("submitAP").formAction = "{{ route('ap-transfer') }}";
+  }
 }
 
 </script>

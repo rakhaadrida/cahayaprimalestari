@@ -31,8 +31,8 @@ class DashboardController extends Controller
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereYear('tgl_so', $tahun)->get();
         $salesMonthly = SalesOrder::selectRaw('sum(total) as sales')
-                        ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $bulan)
-                        ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
+                        ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                        ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $bulan)->get();
         $transAnnual = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->whereYear('tgl_so', $tahun)->count();
         $transMonthly = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
@@ -49,10 +49,12 @@ class DashboardController extends Controller
                     ->whereMonth('tanggal', $bulan)->count();
         $retur = AR_Retur::selectRaw('sum(total) as total')
                 ->whereYear('tanggal', $tahun)->get();
-        $returMon = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
-                ->join('so', 'so.id', 'ar.id_so')
-                ->selectRaw('sum(ar_retur.total) as total')
-                ->whereYear('tanggal', $tahun)->whereMonth('tgl_so', $bulan)->get();
+        // $returMon = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+        //         ->join('so', 'so.id', 'ar.id_so')
+        //         ->selectRaw('sum(ar_retur.total) as total')
+        //         ->whereYear('tanggal', $tahun)->whereMonth('tgl_so', $bulan)->get();
+        $returMon = AR_Retur::selectRaw('sum(total) as total')
+                ->whereYear('tanggal', $tahun)->whereMonth('tanggal', $bulan)->get();
         $cicil = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->selectRaw('sum(cicil) as total')

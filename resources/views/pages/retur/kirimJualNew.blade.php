@@ -139,7 +139,8 @@
               @if($item->first()->status == 'INPUT')
                 <div class="form-row justify-content-center">
                   <div class="col-2">
-                    <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('retur-jual-process') }}" formmethod="POST">Submit</button>
+                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitRJ" onclick="return checkLimit(event)">Submit</button>
+                    {{-- formaction="{{ route('retur-jual-process') }}" formmethod="POST" --}}
                   </div>
                   <div class="col-2">
                     {{-- <button type="submit" class="btn btn-outline-danger btn-block text-bold" formaction="{{ route('retur-jual-batal', $item->first()->id) }}" formmethod="POST">Batal Retur</button> --}}
@@ -190,6 +191,22 @@
                             <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
                           </div>
                         </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title text-bold">Notifikasi Qty Kirim</h4>
+                    </div>
+                    <div class="modal-body text-dark">
+                      <h5><b>Jumlah Qty Kirim</b> tidak bisa melebihi <b>Jumlah Qty Bagus</b>. Silahkan ubah jumlah Qty Kirim yang berwarna <b>Merah</b></h5>
                     </div>
                   </div>
                 </div>
@@ -300,14 +317,14 @@ for(let i = 0; i < tglBayar.length; i++) {
   });
 }
 
-for(let i = 0; i < kirimModal.length; i++) {
+/* for(let i = 0; i < kirimModal.length; i++) {
   kirimModal[i].addEventListener("change", function(e) {
     if(kurang[i].value == '')
       kurang[i].value = kurangAwal[i].value - e.target.value;
     else
       kurang[i].value -= e.target.value;
   });
-}
+} */
 
 for(let i = 0; i < batalModal.length; i++) {
   batalModal[i].addEventListener("change", function(e) {
@@ -349,6 +366,32 @@ for(let i = 0; i < btnCetak.length; i++) {
     // window.print();
   });
 }
+
+function checkLimit(e) {
+  var cek = 0; var urut = [];
+  for(let i = 0; i < kirimModal.length; i++) {
+    if(+kirimModal[i].value > qtyBagus[i].value) {
+      cek = 1;
+      urut.push(i);
+      // kirimModal[i].style.borderColor = "red";
+      // kirimModal[i].style.borderWidth = "2px";
+    }
+  }
+
+  if(cek == 1) {
+    document.getElementById("submitRJ").dataset.toggle = "modal";
+    document.getElementById("submitRJ").dataset.target = "#modalNotif";
+    for(let i = 0; i < urut.length; i++) { 
+      $(kirimModal[urut[i]]).closest('td').css("border-color", "red");
+      $(kirimModal[urut[i]]).closest('td').css("border-width", "3px");
+    }
+    return false;
+  } 
+  else {
+    document.getElementById("submitRJ").formMethod = "POST";
+    document.getElementById("submitRJ").formAction = "{{ route('retur-jual-process') }}";
+  }
+} 
 
 function checkEditable() {
   const ket = document.getElementById("keterangan");
