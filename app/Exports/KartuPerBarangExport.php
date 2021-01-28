@@ -109,7 +109,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         
         $alpha = range('A', 'Z');
         $gudang = Gudang::All();
-        $angkaHuruf = $gudang->count() + 10;
+        $angkaHuruf = $gudang->count() + 11;
         $huruf = $alpha[$angkaHuruf];
 
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);

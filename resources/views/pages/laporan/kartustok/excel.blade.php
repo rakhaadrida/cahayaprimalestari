@@ -21,13 +21,16 @@
           <td rowspan="3">Tipe Transaksi</td>
           <td rowspan="3">Nomor Transaksi</td>
           <td rowspan="3">Keterangan</td>
-          <td colspan="3">Pemasukan</td>
+          <td colspan="4">Pemasukan</td>
           <td colspan="{{ $gudang->count() + 2 }}">Pengeluaran</td>
           <td rowspan="3">Pemakai</td>
         </tr>
         <tr>
           <td rowspan="2">
             @if($rowBM[0]->barang->satuan == "Pcs / Dus") Pcs @else Meter @endif
+          </td>
+          <td rowspan="2">
+            @if($rowBM[0]->barang->satuan == "Pcs / Dus") Pcs @else Meter @endif TB
           </td>
           <td rowspan="2">Gudang</td>
           <td rowspan="2">Rupiah</td>
@@ -48,7 +51,7 @@
           <tr>
             <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
             <td class="text-bold text-dark text-right">{{ $stokAwal }}</td>
-            <td colspan="{{ $gudang->count() + 5 }}"></td>
+            <td colspan="{{ $gudang->count() + 6 }}"></td>
           </tr>
           @php 
             $i = 1; $totalBM = 0; $totalSO = 0;
@@ -63,6 +66,7 @@
               <td>{{ $ib->bm->id }}</td>
               <td>{{ $ib->bm->supplier->nama }}</td>
               <td align="right">{{ $ib->qty }}</td>
+              <td></td>
               <td>{{ $ib->bm->gudang->nama }}</td>
               <td align="right">
                 {{ number_format($ib->bm->total, 0, "", ",") }}
@@ -85,6 +89,7 @@
               <td>{{ $is->so->id }}</td>
               <td>{{ $is->so->customer->nama }}</td>
               <td align="right"></td>
+              <td></td>
               <td align="right"></td>
               <td align="right"></td>
               <td align="right">{{ $is->qty }}</td>
@@ -118,6 +123,7 @@
               <td>Transfer Barang</td>
               <td>{{ $it->tb->id }}</td>
               <td>{{ $it->gudangAsal->nama }}</td>
+              <td></td>
               <td align="right">{{ $it->qty }}</td>
               <td>{{ $it->gudangTuju->nama }}</td>
               <td align="right"></td>
@@ -127,7 +133,7 @@
               @endforeach
               <td align="right"></td>
               <td align="left">{{ $it->tb->user->name }} - {{ \Carbon\Carbon::parse($it->tb->updated_at)->format('H:i:s') }}</td>
-              @php $totalBM += $it->qty @endphp
+              {{-- @php $totalBM += $it->qty @endphp --}}
             </tr>
             @php $i++; @endphp
           @endforeach
@@ -136,18 +142,18 @@
             <td class="text-bold text-dark text-right">
               {{ $stokAwal + $totalBM }}
             </td>
-            <td colspan="2"></td>
+            <td colspan="3"></td>
             <td class="text-bold text-dark text-right">{{ $totalSO }}</td>
             <td colspan="{{ $gudang->count() + 2 }}"></td>
           </tr>
           <tr style="background-color: yellow">
             <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
             <td class="text-bold text-dark text-right">{{ $stok[0]->total }}</td>
-            <td colspan="{{ $gudang->count() + 5 }}"></td>
+            <td colspan="{{ $gudang->count() + 6 }}"></td>
           </tr>
         @else 
           <tr>
-            <td colspan="15" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
+            <td colspan="{{ $gudang->count() + 12 }}" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
           </tr>
         @endif
       </tbody>
