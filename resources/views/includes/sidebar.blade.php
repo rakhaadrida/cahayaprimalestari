@@ -199,7 +199,7 @@
             <a class="collapse-item" href="{{ route('value') }}">Rekap Value</a>
             <a class="collapse-item" href="{{ route('lap-keu') }}">Rekap Penjualan</a>
             @if(Auth::user()->roles == 'SUPER')
-              <a class="collapse-item" href="{{ route('prime') }}">Rekap Sales Prime</a>
+              <a class="collapse-item" href="{{ route('qty-sales') }}">Rekap Qty Sales</a>
             @endif
           </div>
         </div>

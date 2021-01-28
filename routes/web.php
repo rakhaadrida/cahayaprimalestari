@@ -247,6 +247,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Laporan Keuangan
         Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
         Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
+
+        // Rekap Qty Penjualan
+        Route::get('qty-sales', 'RekapSalesPrimeController@index')->name('qty-sales');
+        Route::post('qty-sales/show', 'RekapSalesPrimeController@show')->name('qs-show');
     });
 
     Route::group(['roles'=>'SUPER'], function() {
