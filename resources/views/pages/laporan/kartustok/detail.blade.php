@@ -142,33 +142,35 @@
                       </tr>
                     </thead>
                     <tbody>
-                      @if(($rowBM != 0) || ($rowSO != 0))
+                      @php 
+                        $itemsBM = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                    ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'qty')
+                                    ->where('id_barang', $item->id)
+                                    ->whereHas('bm', function($q) use($awal, $akhir) {
+                                        $q->whereBetween('tanggal', [$awal, $akhir])
+                                        ->where('status', '!=', 'BATAL');
+                                    });
+                        $itemsSO = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan',)->selectRaw('sum(qty) as qty')->where('id_barang', $item->id)
+                                    ->whereHas('so', function($q) use($awal, $akhir) {
+                                        $q->whereBetween('tgl_so', [$awal, $akhir])
+                                        ->where('status', '!=', 'BATAL');
+                                    })->groupBy('id_so', 'id_barang');
+                        $items = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 'detiltb.id_tb')
+                                    ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', $item->id)
+                                    ->whereHas('tb', function($q) use($awal, $akhir) {
+                                        $q->whereBetween('tgl_tb', [$awal, $akhir]);
+                                    })->union($itemsBM)->union($itemsSO)->orderBy('created_at')->get();
+                      
+                      @endphp
+                      @if($items->count() != 0)
                         <tr>
                           <td colspan="5" class="text-bold text-dark text-center">Stok Awal</td>
                           <td class="text-bold text-dark text-right">{{ $stokAwal[$j] }}</td>
                           <td colspan="{{ $gudang->count() + 6 }}"></td>
                         </tr>
                         @php 
-                          $i = 1; $totalBM = 0; $totalSO = 0;
-                          $itemsBM = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                                      ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'qty')
-                                      ->where('id_barang', $item->id)
-                                      ->whereHas('bm', function($q) use($awal, $akhir) {
-                                          $q->whereBetween('tanggal', [$awal, $akhir])
-                                          ->where('status', '!=', 'BATAL');
-                                      });
-                          $itemsSO = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                                      ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan',)->selectRaw('sum(qty) as qty')->where('id_barang', $item->id)
-                                      ->whereHas('so', function($q) use($awal, $akhir) {
-                                          $q->whereBetween('tgl_so', [$awal, $akhir])
-                                          ->where('status', '!=', 'BATAL');
-                                      })->groupBy('id_so', 'id_barang');
-                          $items = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 'detiltb.id_tb')
-                                      ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', $item->id)
-                                      ->whereHas('tb', function($q) use($awal, $akhir) {
-                                          $q->whereBetween('tgl_tb', [$awal, $akhir]);
-                                      })->union($itemsBM)->union($itemsSO)->orderBy('created_at')->get();
-                        
+                          $i = 1; $totalBM = 0; $totalSO = 0;        
                         @endphp
                         @foreach($items as $it)
                           <tr class="text-dark">

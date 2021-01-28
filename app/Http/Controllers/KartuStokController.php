@@ -21,27 +21,6 @@ class KartuStokController extends Controller
 {
     public function index() {
         $barang = Barang::All();
-
-        /* $itemsBM = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                    ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'barangmasuk.updated_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'id_user', 'qty')
-                    ->where('id_barang', 'BRG0012')
-                    ->whereHas('bm', function($q) {
-                        $q->whereBetween('tanggal', ['2021-01-11', '2021-01-28'])
-                        ->where('status', '!=', 'BATAL');
-                    });
-        $itemsSO = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'so.updated_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan', 'id_user')->selectRaw('sum(qty) as qty')->where('id_barang', 'BRG0012')
-                    ->whereHas('so', function($q) {
-                        $q->whereBetween('tgl_so', ['2021-01-11', '2021-01-28'])
-                        ->where('status', '!=', 'BATAL');
-                    })->groupBy('id_so', 'id_barang');
-        $items = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 'detiltb.id_tb')
-                    ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'transferbarang.updated_at', 'id_asal', 'id_tujuan', 'id_user', 'qty')->where('id_barang', 'BRG0012')
-                    ->whereHas('tb', function($q) {
-                        $q->whereBetween('tgl_tb', ['2021-01-11', '2021-01-28']);
-                    })->union($itemsBM)->union($itemsSO)->orderBy('created_at')->get();
-        
-        return response()->json($items); */
         
         $data = [
             'barang' => $barang
@@ -66,7 +45,8 @@ class KartuStokController extends Controller
         $rowBM = DetilBM::with(['bm', 'barang'])
                     ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
                     ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tanggal', [$tglAwal, $tglAkhir]);
+                        $q->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                        ->where('status', '!=', 'BATAL');
                     })->count();
         $rowSO = DetilSO::with(['so', 'barang'])
                     ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])

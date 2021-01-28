@@ -26,15 +26,13 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    public function __construct(String $kode, String $awal, String $akhir)
-    {
+    public function __construct(String $kode, String $awal, String $akhir) {
         $this->kode = $kode;
         $this->awal = $awal;
         $this->akhir = $akhir;
     }
     
-    public function view(): View
-    {
+    public function view(): View {
         $barang = Barang::All();
         $gudang = Gudang::All();
         $tglAwal = $this->awal;
@@ -42,23 +40,27 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
 
-        $rowBM = DetilBM::with(['bm', 'barang'])
+        $itemsBRG = Barang::where('id', $this->kode)->get();
+        $itemsBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'qty')
                     ->where('id_barang', $this->kode)
                     ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
-                    })->get();
-        $rowSO = DetilSO::with(['so', 'barang'])
-                    ->select('id_so', 'id_barang')
-                    ->selectRaw('avg(harga) as harga, sum(qty) as qty')
-                    ->where('id_barang', $this->kode)
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $itemsSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
+                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan',)->selectRaw('sum(qty) as qty')->where('id_barang', $this->kode)
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
-                    })->groupBy('id_so', 'id_barang')
-                    ->get();
-        $rowTB = DetilTB::where('id_barang', $this->kode)
+                        $q->whereBetween('tgl_so', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    })->groupBy('id_so', 'id_barang');
+        $items = DetilTB::join('transferbarang', 'transferbarang.id', 'detiltb.id_tb')
+                    ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', $this->kode)
                     ->whereHas('tb', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_tb', [$this->awal, $this->akhir]);
-                    })->get();
+                    })->union($itemsBM)->union($itemsSO)->orderBy('created_at')->get();
+
+         
 
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->where('id_barang', $this->kode)
@@ -68,11 +70,11 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $stokAwal = 0;
         foreach($stok as $s) {
             $stokAwal = $s->total;
-            foreach($rowBM as $bm) {
+            foreach($itemsBM->get() as $bm) {
                 $stokAwal -= $bm->qty;
             }
 
-            foreach($rowSO as $so) {
+            foreach($itemsSO->get() as $so) {
                 $stokAwal += $so->qty;
             }
 
@@ -82,9 +84,8 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $data = [
             'barang' => $barang,
             'gudang' => $gudang,
-            'rowBM' => $rowBM,
-            'rowSO' => $rowSO,
-            'rowTB' => $rowTB,
+            'itemsBRG' => $itemsBRG,
+            'items' => $items,
             'awal' => $tglAwal,
             'akhir' => $tglAkhir,
             'stok' => $stok,
@@ -96,8 +97,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         return view('pages.laporan.kartustok.excel', $data);
     }
 
-    public function styles(Worksheet $sheet)
-    {
+    public function styles(Worksheet $sheet) {
         $sheet->setTitle('KS-'.$this->kode);
 
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -139,14 +139,16 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $rowBM = DetilBM::with(['bm', 'barang'])
                     ->where('id_barang', $this->kode)
                     ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
                     })->count();
         $rowSO = DetilSO::with(['so', 'barang'])
                     ->select('id_so', 'id_barang')
                     ->selectRaw('avg(harga) as harga, sum(qty) as qty')
                     ->where('id_barang', $this->kode)
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tgl_so', [$this->awal, $this->akhir]);
+                        $q->whereBetween('tgl_so', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
                     })->groupBy('id_so', 'id_barang')
                     ->get();
         $rowTB = DetilTB::where('id_barang', $this->kode)
