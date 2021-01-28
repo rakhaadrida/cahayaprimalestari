@@ -130,6 +130,7 @@
                       </td>
                       <td class="text-right align-middle">
                         <input type="text" name="bayar{{$item->first()->id_bm}}" id="bayar{{$item->first()->id_bm}}" class="form-control form-control-sm text-bold text-dark text-right bayarModal" autocomplete="off" style="font-size: 16px">
+                        <input type="hidden" name="modalAwal" class="modalAwal" value="0">
                       </td>
                       <td class="text-right align-middle">
                         <input type="text" name="kurang{{$item->first()->id_bm}}" id="kurang{{$item->first()->id_bm}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang" style="font-size: 16px">
@@ -142,9 +143,13 @@
                     </tr>
                   @endif
                   <tr style="font-size: 16px !important">
-                    <td colspan="2" class="text-center text-bold text-dark" >Total</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($total, 0, "", ".") }}</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($kurang, 0, "", ".") }}</td>
+                    <td colspan="2" class="align-middle text-center text-bold text-dark" >Total</td>
+                    <td class="text-right text-bold text-dark">
+                      <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right totalAkhir" id="totalAkhir" style="font-size: 16px" value="{{ number_format($total, 0, "", ".") }}">
+                    </td>
+                    <td class="text-right text-bold text-dark">
+                      <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurangAkhir" id="kurangAkhir" style="font-size: 16px" value="{{ number_format($kurang, 0, "", ".") }}">
+                    </td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -216,6 +221,7 @@ $('.datepicker').datepicker({
 const cicilAP = document.getElementById("cicilAP");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const bayarModal = document.querySelectorAll('.bayarModal');
+const modalAwal = document.querySelectorAll('.modalAwal');
 const bayarDetil = document.querySelectorAll('.bayarDetil');
 const bayarAwal = document.querySelectorAll('.bayarAwal');
 const kurang = document.querySelectorAll('.kurang');
@@ -223,6 +229,8 @@ const kurangDetil = document.querySelectorAll('.kurangDetil');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const hapusBaris = document.querySelectorAll(".icRemoveDetil");
 const hapusBiasa = document.querySelectorAll(".icRemove");
+const totalAkhir = document.getElementById('totalAkhir');
+const kurangAkhir = document.getElementById('kurangAkhir');
 
 cicilAP.addEventListener("keypress", checkEnter);
 
@@ -257,7 +265,16 @@ for(let i = 0; i < bayarModal.length; i++) {
   });
 
   bayarModal[i].addEventListener("blur", function(e) {
-    kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\./g, ""));
+    if(+e.target.value.replace(/\./g, "") > +modalAwal[i].value) {
+      kurang[i].value = addCommas(kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") + (+e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      kurangAkhir.value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+    } else {
+      kurang[i].value = addCommas(+kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+    }
+    modalAwal[i].value = e.target.value.replace(/\./g, "");
   });
 }
 
@@ -269,10 +286,15 @@ for(let i = 0; i < bayarDetil.length; i++) {
   });
 
   bayarDetil[i].addEventListener("blur", function(e) {
-    if(+e.target.value.replace(/\./g, "") > +bayarAwal[i].value)
+    if(+e.target.value.replace(/\./g, "") > +bayarAwal[i].value) {
       kurangDetil[i].value = addCommas(kurangDetil[i].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +bayarAwal[i].value));
-    else
+      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") + (+e.target.value.replace(/\./g, "") - +bayarAwal[i].value));
+      kurangAkhir.value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +bayarAwal[i].value));
+    } else {
       kurangDetil[i].value = addCommas(+kurangDetil[i].value.replace(/\./g, "") + (+bayarAwal[i].value - +e.target.value.replace(/\./g, "")));
+      totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+bayarAwal[i].value - +e.target.value.replace(/\./g, "")));
+      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+bayarAwal[i].value - +e.target.value.replace(/\./g, "")));
+    }
 
     bayarAwal[i].value = e.target.value.replace(/\./g, "");
     for(let j = i+1; j < bayarDetil.length; j++) {

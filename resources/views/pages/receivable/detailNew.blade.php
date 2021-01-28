@@ -130,6 +130,7 @@
                       </td>
                       <td class="text-right align-middle">
                         <input type="text" name="cicil{{$item->first()->id_so}}" id="cicil{{$item->first()->id_so}}" class="form-control form-control-sm text-bold text-dark text-right cicilModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 16px">
+                        <input type="hidden" name="modalAwal" class="modalAwal" value="0">
                       </td>
                       <td class="text-right align-middle">
                         <input type="text" name="kurang{{$item->first()->id_so}}" id="kurang{{$item->first()->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang" style="font-size: 16px">
@@ -143,8 +144,12 @@
                   @endif 
                   <tr style="font-size: 16px !important">
                     <td colspan="2" class="text-center text-bold text-dark" >Total</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($total, 0, "", ".") }}</td>
-                    <td class="text-right text-bold text-dark">{{ number_format($kurang, 0, "", ".") }}</td>
+                    <td class="text-right text-bold text-dark">
+                      <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right totalAkhir" id="totalAkhir" style="font-size: 16px" value="{{ number_format($total, 0, "", ".") }}">
+                    </td>
+                    <td class="text-right text-bold text-dark">
+                      <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurangAkhir" id="kurangAkhir" style="font-size: 16px" value="{{ number_format($kurang, 0, "", ".") }}">
+                    </td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -219,10 +224,13 @@ const kurangDetil = document.querySelectorAll('.kurangDetil');
 const cicilAR = document.getElementById("cicilAR");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const cicilModal = document.querySelectorAll('.cicilModal');
+const modalAwal = document.querySelectorAll(".modalAwal");
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
 const hapusBaris = document.querySelectorAll(".icRemoveDetil");
 const hapusBiasa = document.querySelectorAll(".icRemove");
+const totalAkhir = document.getElementById('totalAkhir');
+const kurangAkhir = document.getElementById('kurangAkhir');
 const jumBaris = document.getElementById('jumBaris');
 
 cicilAR.addEventListener("keypress", checkEnter);
@@ -243,10 +251,15 @@ for(let i = 0; i < cicilDetil.length; i++) {
   });
 
   cicilDetil[i].addEventListener("blur", function(e) {
-    if(+e.target.value.replace(/\./g, "") > +cicilAwal[i].value)
+    if(+e.target.value.replace(/\./g, "") > +cicilAwal[i].value) {
       kurangDetil[i].value = addCommas(kurangDetil[i].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +cicilAwal[i].value));
-    else
+      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") + (+e.target.value.replace(/\./g, "") - +cicilAwal[i].value));
+      kurangAkhir.value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +cicilAwal[i].value));
+    } else {
       kurangDetil[i].value = addCommas(+kurangDetil[i].value.replace(/\./g, "") + (+cicilAwal[i].value - +e.target.value.replace(/\./g, "")));
+      totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+cicilAwal[i].value - +e.target.value.replace(/\./g, "")));
+      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+cicilAwal[i].value - +e.target.value.replace(/\./g, "")));
+    }
 
     cicilAwal[i].value = e.target.value.replace(/\./g, "");
     for(let j = i+1; j < cicilDetil.length; j++) {
@@ -278,7 +291,16 @@ for(let i = 0; i < cicilModal.length; i++) {
   });
 
   cicilModal[i].addEventListener("blur", function(e) {
-    kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\./g, ""));
+    if(+e.target.value.replace(/\./g, "") > +modalAwal[i].value) {
+      kurang[i].value = addCommas(kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") + (+e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      kurangAkhir.value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+    } else {
+      kurang[i].value = addCommas(+kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+    }
+    modalAwal[i].value = e.target.value.replace(/\./g, "");
   });
 }
 
