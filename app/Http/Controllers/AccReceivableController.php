@@ -25,12 +25,18 @@ use PDF;
 class AccReceivableController extends Controller
 {
     public function index() {
-        $ar = AccReceivable::with(['so'])->orderBy('created_at', 'desc')->get();
+        $arLast = AccReceivable::join('detilar', 'detilar.id_ar', 'ar.id')
+                    ->orderBy('detilar.updated_at', 'desc')->take(1)->get();
+                    
+        $ar = AccReceivable::with(['so'])->where('id', '!=', $arLast->first()->id)
+                ->orderBy('created_at', 'desc')->get();
         $arOffice = AccReceivable::with(['so'])
                 ->select('ar.id', 'ar.id_so', 'ar.keterangan')
                 ->join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->where('id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
+
+        // return response()->json($arLast);
         
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -38,6 +44,7 @@ class AccReceivableController extends Controller
         $data = [
             'ar' => $ar,
             'arOffice' => $arOffice,
+            'arLast' => $arLast,
             'barang' => $barang,
             'harga' => $harga,
         ];
@@ -206,7 +213,7 @@ class AccReceivableController extends Controller
 
                 if(($tglDetil != $i->tgl_bayar) || ($request->cicildetil[$j] != $i->cicil)) {
                     $i->tgl_bayar = $tglDetil;
-                    $i->cicil = str_replace(",", "", $request->cicildetil[$j]);
+                    $i->cicil = str_replace(".", "", $request->cicildetil[$j]);
                     $i->save();
                 }
             } else {
@@ -221,7 +228,7 @@ class AccReceivableController extends Controller
                 'id_ar' => $ar->{'id'},
                 'id_cicil' => $newcode,
                 'tgl_bayar' => $tglBayar,
-                'cicil' => (int) str_replace(",", "", $request->{"cicil".$request->kode})
+                'cicil' => (int) str_replace(".", "", $request->{"cicil".$request->kode})
             ]);
         }
 

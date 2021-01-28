@@ -105,7 +105,7 @@
                           <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tgldetil[]" autocomplete="off" value="{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-m-Y') }}" style="font-size: 16px">
                         </td>
                         <td class="text-right">
-                          <input type="text" name="bayardetil[]" class="form-control form-control-sm text-bold text-dark text-right bayarDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->transfer, 0, "", ",") }}" style="font-size: 16px">
+                          <input type="text" name="bayardetil[]" class="form-control form-control-sm text-bold text-dark text-right bayarDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->transfer, 0, "", ".") }}" style="font-size: 16px">
                         </td>
                         @php $kurang -= $d->transfer; @endphp
                         <td class="text-right align-middle text-bold">
@@ -250,19 +250,19 @@ for(let i = 0; i < tglBayar.length; i++) {
 for(let i = 0; i < bayarModal.length; i++) {
   bayarModal[i].addEventListener("keyup", function(e) {
     $(this).val(function(index, value) {
-      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
   });
 
   bayarModal[i].addEventListener("blur", function(e) {
-    kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
+    kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\./g, ""));
   });
 }
 
 for(let i = 0; i < bayarDetil.length; i++) {
   bayarDetil[i].addEventListener("keyup", function(e) {
     $(this).val(function(index, value) {
-      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
   });
 

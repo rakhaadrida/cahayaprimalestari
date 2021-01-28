@@ -24,13 +24,17 @@ use Illuminate\Support\Facades\Auth;
 class AccPayableController extends Controller
 {
     public function index() {
-        $ap = AccPayable::with(['bm'])->orderBy('created_at', 'desc')->get();
+        $apLast = AccPayable::join('detilap', 'detilap.id_ap', 'ap.id')
+                    ->orderBy('detilap.updated_at', 'desc')->take(1)->get();
+
+        $ap = AccPayable::with(['bm'])->where('id', '!=', $apLast->first()->id)->orderBy('created_at', 'desc')->get();
         // return response()->json($ap);
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
         $data = [
             'ap' => $ap,
+            'apLast' => $apLast,
             'barang' => $barang,
             'harga' => $harga
         ];
@@ -200,7 +204,7 @@ class AccPayableController extends Controller
         else 
             $bayar = $request->{"bayar".$request->kode};
 
-        if($bm[0]->totBM == str_replace(",", "", $bayar) + $totTransfer) 
+        if($bm[0]->totBM == str_replace(".", "", $bayar) + $totTransfer) 
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
@@ -217,7 +221,7 @@ class AccPayableController extends Controller
 
                 if(($tglDetil != $i->tgl_bayar) || ($request->bayardetil[$j] != $i->transfer)) {
                     $i->tgl_bayar = $tglDetil;
-                    $i->transfer = str_replace(",", "", $request->bayardetil[$j]);
+                    $i->transfer = str_replace(".", "", $request->bayardetil[$j]);
                     $i->save();
                 }
             } else {
@@ -232,7 +236,7 @@ class AccPayableController extends Controller
                 'id_ap' => $ap->{'id'},
                 'id_bayar' => $newcode,
                 'tgl_bayar' => $tglBayar,
-                'transfer' => (int) str_replace(",", "", $request->{"bayar".$request->kode})
+                'transfer' => (int) str_replace(".", "", $request->{"bayar".$request->kode})
             ]);
         }
 

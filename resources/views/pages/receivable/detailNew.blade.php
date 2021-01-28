@@ -105,7 +105,7 @@
                           <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tgldetil[]" autocomplete="off" value="{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-m-Y') }}" style="font-size: 16px">
                         </td>
                         <td class="text-right">
-                          <input type="text" name="cicildetil[]" class="form-control form-control-sm text-bold text-dark text-right cicilDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->cicil, 0, "", ",") }}" style="font-size: 16px">
+                          <input type="text" name="cicildetil[]" class="form-control form-control-sm text-bold text-dark text-right cicilDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->cicil, 0, "", ".") }}" style="font-size: 16px">
                         </td>
                         @php $kurang -= $d->cicil; @endphp
                         <td class="text-right align-middle text-bold">
@@ -212,6 +212,8 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+const cicilDetil = document.querySelectorAll(".cicilDetil");
+const kurangDetil = document.querySelectorAll('.kurangDetil');
 const cicilAR = document.getElementById("cicilAR");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const cicilModal = document.querySelectorAll('.cicilModal');
@@ -229,6 +231,18 @@ function checkEnter(e) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
   }
+}
+
+for(let i = 0; i < cicilDetil.length; i++) {
+  cicilDetil[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });
+  });
+
+  // cicilDetil[i].addEventListener("blur", function(e) {
+  //   kurangDetil[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\./g, ""));
+  // });
 }
 
 for(let i = 0; i < tglBayar.length; i++) {
@@ -249,12 +263,12 @@ for(let i = 0; i < tglBayar.length; i++) {
 for(let i = 0; i < cicilModal.length; i++) {
   cicilModal[i].addEventListener("keyup", function(e) {
     $(this).val(function(index, value) {
-      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
   });
 
   cicilModal[i].addEventListener("blur", function(e) {
-    kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
+    kurang[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\./g, ""));
   });
 }
 
@@ -300,9 +314,9 @@ function angkaSaja(evt, inputan) {
 /** Add Thousand Separators **/
 function addCommas(nStr) {
 	nStr += '';
-	x = nStr.split(',');
+	x = nStr.split('.');
 	x1 = x[0];
-	x2 = x.length > 1 ? ',' + x[1] : '';
+	x2 = x.length > 1 ? '.' + x[1] : '';
 	var rgx = /(\d+)(\d{3})/;
 	while (rgx.test(x1)) {
 		x1 = x1.replace(rgx, '$1' + '.' + '$2');
@@ -311,7 +325,7 @@ function addCommas(nStr) {
 }
 
 function checkLimit(e) {
-  if(+cicilModal[0].value.replace(/\,/g, "") > '{{ $kurang }}') {
+  if(+cicilModal[0].value.replace(/\./g, "") > '{{ $kurang }}') {
     // alert('Jumlah Cicil Melebihi Jumlah Kurang Bayar');
     document.getElementById("submitAR").dataset.toggle = "modal";
     document.getElementById("submitAR").dataset.target = "#modalNotif";
