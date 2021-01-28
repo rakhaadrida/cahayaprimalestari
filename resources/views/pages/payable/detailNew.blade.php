@@ -106,6 +106,7 @@
                         </td>
                         <td class="text-right">
                           <input type="text" name="bayardetil[]" class="form-control form-control-sm text-bold text-dark text-right bayarDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->transfer, 0, "", ".") }}" style="font-size: 16px">
+                          <input type="hidden" name="bayarAwal" class="bayarAwal" value="{{ $d->transfer }}">
                         </td>
                         @php $kurang -= $d->transfer; @endphp
                         <td class="text-right align-middle text-bold">
@@ -216,6 +217,7 @@ const cicilAP = document.getElementById("cicilAP");
 const tglBayar = document.querySelectorAll('.tglBayar');
 const bayarModal = document.querySelectorAll('.bayarModal');
 const bayarDetil = document.querySelectorAll('.bayarDetil');
+const bayarAwal = document.querySelectorAll('.bayarAwal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangDetil = document.querySelectorAll('.kurangDetil');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
@@ -266,9 +268,17 @@ for(let i = 0; i < bayarDetil.length; i++) {
     });
   });
 
-  // bayarDetil[i].addEventListener("blur", function(e) {
-  //   kurangDetil[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\,/g, ""));
-  // });
+  bayarDetil[i].addEventListener("blur", function(e) {
+    if(+e.target.value.replace(/\./g, "") > +bayarAwal[i].value)
+      kurangDetil[i].value = addCommas(kurangDetil[i].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +bayarAwal[i].value));
+    else
+      kurangDetil[i].value = addCommas(+kurangDetil[i].value.replace(/\./g, "") + (+bayarAwal[i].value - +e.target.value.replace(/\./g, "")));
+
+    bayarAwal[i].value = e.target.value.replace(/\./g, "");
+    for(let j = i+1; j < bayarDetil.length; j++) {
+      kurangDetil[j].value = addCommas(+kurangDetil[j-1].value.replace(/\./g, "") - +bayarAwal[j].value);
+    }
+  });
 }
 
 /** Delete Baris Pada Tabel **/

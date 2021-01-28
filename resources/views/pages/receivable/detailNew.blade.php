@@ -106,6 +106,7 @@
                         </td>
                         <td class="text-right">
                           <input type="text" name="cicildetil[]" class="form-control form-control-sm text-bold text-dark text-right cicilDetil" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" value="{{ number_format($d->cicil, 0, "", ".") }}" style="font-size: 16px">
+                          <input type="hidden" name="cicilAwal" class="cicilAwal" value="{{ $d->cicil }}">
                         </td>
                         @php $kurang -= $d->cicil; @endphp
                         <td class="text-right align-middle text-bold">
@@ -213,6 +214,7 @@ $('.datepicker').datepicker({
 });
 
 const cicilDetil = document.querySelectorAll(".cicilDetil");
+const cicilAwal = document.querySelectorAll(".cicilAwal");
 const kurangDetil = document.querySelectorAll('.kurangDetil');
 const cicilAR = document.getElementById("cicilAR");
 const tglBayar = document.querySelectorAll('.tglBayar');
@@ -240,9 +242,17 @@ for(let i = 0; i < cicilDetil.length; i++) {
     });
   });
 
-  // cicilDetil[i].addEventListener("blur", function(e) {
-  //   kurangDetil[i].value = addCommas(kurangAwal[i].value.replace(/\./g, "") - e.target.value.replace(/\./g, ""));
-  // });
+  cicilDetil[i].addEventListener("blur", function(e) {
+    if(+e.target.value.replace(/\./g, "") > +cicilAwal[i].value)
+      kurangDetil[i].value = addCommas(kurangDetil[i].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +cicilAwal[i].value));
+    else
+      kurangDetil[i].value = addCommas(+kurangDetil[i].value.replace(/\./g, "") + (+cicilAwal[i].value - +e.target.value.replace(/\./g, "")));
+
+    cicilAwal[i].value = e.target.value.replace(/\./g, "");
+    for(let j = i+1; j < cicilDetil.length; j++) {
+      kurangDetil[j].value = addCommas(+kurangDetil[j-1].value.replace(/\./g, "") - +cicilAwal[j].value);
+    }
+  });
 }
 
 for(let i = 0; i < tglBayar.length; i++) {
