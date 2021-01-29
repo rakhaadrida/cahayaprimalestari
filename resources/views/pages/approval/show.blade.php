@@ -319,12 +319,12 @@
                               <td align="center">Retur @if($item->tipe == 'RJ')Customer @else Supplier @endif</td>
                             @endif
                             @php 
-                              // if($item->tipe != 'Dokumen') {
+                              if($item->tipe == 'Faktur') {
                                 $subtotal += ($i->qty * $i->harga) - 
                                 ((($i->qty * $i->harga) * $diskon) / 100); 
-                              // }
-                              // else
-                              //   $subtotal += $i->qty * $i->harga;
+                              }
+                              elseif($item->tipe = 'Dokumen')
+                                $subtotal += $i->qty * $i->harga;
                             @endphp
                           </tr>
                           @php $no++; @endphp
