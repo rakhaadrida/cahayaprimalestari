@@ -107,7 +107,7 @@ class ReturController extends Controller
         for($i = 0; $i < $request->jumBaris; $i++) {
             if($request->kodeBarang[$i] != '') {
                 DetilRJ::create([
-                    'id_retur' => $id,
+                    'id_retur' => $newcode,
                     'id_barang' => $request->kodeBarang[$i],
                     'tgl_kirim' => NULL,
                     'qty_retur' => $request->qty[$i],
@@ -569,7 +569,7 @@ class ReturController extends Controller
         for($i = 0; $i < $request->jumBaris; $i++) {
             if($request->kodeBarang[$i] != '') {
                 DetilRB::create([
-                    'id_retur' => $id,
+                    'id_retur' => $newcode,
                     'id_barang' => $request->kodeBarang[$i],
                     'qty_retur' => $request->qty[$i]
                 ]);
