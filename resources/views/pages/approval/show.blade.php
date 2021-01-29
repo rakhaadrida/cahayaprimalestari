@@ -323,7 +323,7 @@
                                 $subtotal += ($i->qty * $i->harga) - 
                                 ((($i->qty * $i->harga) * $diskon) / 100); 
                               }
-                              elseif($item->tipe = 'Dokumen')
+                              elseif($item->tipe == 'Dokumen')
                                 $subtotal += $i->qty * $i->harga;
                             @endphp
                           </tr>
@@ -590,44 +590,49 @@
                           </tbody>
                         </table>
 
+                      @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
                         <div class="form-group row justify-content-end subtotal-so">
                           <label for="totalNotPPN" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-4 col-sm-4 col-md-2 mr-1">
-                            <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotalUpdate, 0, "", ".") }}" />
+                            <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}" />
                           </div>
                         </div>
-                        @if($item->tipe != 'Dokumen')
-                          <div class="form-group row justify-content-end total-so">
-                            <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-4 col-sm-4 col-md-2 mr-1">
-                              <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->so->diskon, 0, "", ".") }}" />
-                            </div>
-                          </div>
-                          <div class="form-group row justify-content-end total-so">
-                            <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-4 col-sm-4 col-md-2 mr-1">
-                              <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotalUpdate - $item->so->diskon, 0, "", ".") }}" />
-                            </div>
-                          </div>
-                        @endif
+                      @endif
+                      @if($item->tipe == 'Faktur')
                         <div class="form-group row justify-content-end total-so">
-                          <label for="ppn" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">PPN</label>
+                          <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                          <span class="col-form-label text-bold">:</span>
+                          <div class="col-4 col-sm-4 col-md-2 mr-1">
+                            <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->so->diskon, 0, "", ".") }}" />
+                          </div>
+                        </div>
+                        <div class="form-group row justify-content-end total-so">
+                          <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                          <span class="col-form-label text-bold">:</span>
+                          <div class="col-4 col-sm-4 col-md-2 mr-1">
+                            <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->so->diskon, 0, "", ".") }}" />
+                          </div>
+                        </div>
+                      @endif
+                      @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                        <div class="form-group row justify-content-end total-so">
+                          <label for="ppn" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">PPN</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-4 col-sm-4 col-md-2 mr-1">
                             <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0" />
                           </div>
                         </div>
+                      @endif
+                      @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
                         <div class="form-group row justify-content-end grandtotal-so">
-                          <label for="grandtotal" class="col-4 col-md-2 col-form-label text-bold text-right text-dark">Grand Total</label>
+                          <label for="grandtotal" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">@if($itemsUpdate->last()->status == 'LIMIT') Total Tagihan @else Grand Total @endif</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-4 col-sm-4 col-md-2 mr-1">
-                            <input type="text" name="grandtotal{{$item->id_dokumen}}" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right
-                            @if($subtotalUpdate != $subtotal) bg-warning text-danger @endif " value="{{ $item->tipe != 'Dokumen' ? number_format($subtotalUpdate - $item->so->diskon, 0, "", ".") : number_format($subtotalUpdate, 0, "", ".") }}" />
+                            <input type="text" name="grandtotalAwal" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($itemsUpdate->last()->status == 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{ $item->tipe == 'Faktur' ? number_format($subtotal - $item->so->diskon, 0, "", ".") : number_format($subtotal, 0, "", ".") }}" />
                           </div>
                         </div>
+                      @endif
                         @if($iu->id != $itemsUpdate[$itemsUpdate->count() - 1]->id)
                           <div class="row justify-content-center" style="margin-top: -80px">
                             <i class="fas fa-arrow-down fa-4x text-primary"></i>
