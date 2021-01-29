@@ -86,8 +86,19 @@ class ReturController extends Controller
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = ReturJual::selectRaw('max(id) as id')->whereMonth('tanggal', $month)
+                    ->where('id', 'LIKE', 'RTJ%')->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
+        $lastnumber++;
+        $newcode = 'RTJ'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+
         ReturJual::create([
-            'id' => $id,
+            'id' => $newcode,
             'tanggal' => $tanggal,
             'id_customer' => $request->kodeCustomer,
             'status' => 'INPUT'
@@ -538,8 +549,18 @@ class ReturController extends Controller
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = ReturBeli::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
+        $lastnumber++;
+        $newcode = 'RTB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+
         ReturBeli::create([
-            'id' => $id,
+            'id' => $newcode,
             'tanggal' => $tanggal,
             'id_supplier' => $request->kodeSupplier,
             'status' => 'INPUT'
