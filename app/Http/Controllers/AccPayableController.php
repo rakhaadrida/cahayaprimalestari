@@ -26,8 +26,12 @@ class AccPayableController extends Controller
     public function index() {
         $apLast = AccPayable::join('detilap', 'detilap.id_ap', 'ap.id')
                     ->orderBy('detilap.updated_at', 'desc')->take(1)->get();
+        if($apLast->count() != 0)
+            $idLast = $apLast->first()->id;
+        else
+            $idLast = 0;
 
-        $ap = AccPayable::with(['bm'])->where('id', '!=', $apLast->first()->id)->orderBy('created_at', 'desc')->get();
+        $ap = AccPayable::with(['bm'])->where('id', '!=', $idLast)->orderBy('created_at', 'desc')->get();
         // return response()->json($ap);
         $barang = Barang::All();
         $harga = HargaBarang::All();
