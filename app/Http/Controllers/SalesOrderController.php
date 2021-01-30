@@ -145,7 +145,8 @@ class SalesOrderController extends Controller
             $status = 'INPUT';
         
         SalesOrder::create([
-            'id' => $kode,
+            // 'id' => $kode,
+            'id' => $request->kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
             'total' => str_replace(".", "", $request->grandtotal),
@@ -167,7 +168,8 @@ class SalesOrderController extends Controller
         if($status != 'LIMIT') {
             AccReceivable::create([
                 'id' => $newcode,
-                'id_so' => $id,
+                // 'id_so' => $id,
+                'id_so' => $request->kode,
                 'keterangan' => 'BELUM LUNAS'
             ]);
         }
@@ -183,7 +185,8 @@ class SalesOrderController extends Controller
                 'tanggal' => Carbon::now()->toDateString(),
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
-                'id_dokumen' => $id,
+                // 'id_dokumen' => $id,
+                'id_dokumen' => $request->kode,
                 'tipe' => 'Faktur',
                 'id_user' => Auth::user()->id
             ]);
@@ -196,7 +199,8 @@ class SalesOrderController extends Controller
                 $diskonRp = str_replace(".", "", $request->diskonRp[$i]) / sizeof($arrGudang);
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
-                        'id_so' => $kode,
+                        // 'id_so' => $kode,
+                        'id_so' => $request->kode,
                         'id_barang' => $request->kodeBarang[$i],
                         'id_gudang' => $arrGudang[$j],
                         'harga' => str_replace(".", "", $request->harga[$i]),

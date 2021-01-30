@@ -30,9 +30,11 @@ class AccPayableController extends Controller
             $idLast = $apLast->first()->id;
         else
             $idLast = 0;
+        
+        // var_dump($idLast);
 
         $ap = AccPayable::with(['bm'])->where('id', '!=', $idLast)->orderBy('created_at', 'desc')->get();
-        // return response()->json($ap);
+        return response()->json($ap);
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
@@ -43,7 +45,7 @@ class AccPayableController extends Controller
             'harga' => $harga
         ];
 
-        return view('pages.payable.index', $data);
+        // return view('pages.payable.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
