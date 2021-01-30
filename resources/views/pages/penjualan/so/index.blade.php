@@ -99,6 +99,10 @@
                           <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Extrana">
                           <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
                         </div>
+                        <div class="form-check">
+                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Nitto">
+                          <label class="form-check-label text-bold text-dark" for="kat3">Nitto</label>
+                        </div>
                       </div>
                     </div>
                   </div>
