@@ -196,7 +196,7 @@ class SalesOrderController extends Controller
             if($request->kodeBarang[$i] != "") {
                 $arrGudang = explode(",", $request->kodeGudang[$i]);
                 $arrStok = explode(",", $request->qtyGudang[$i]);
-                $diskonRp = str_replace(".", "", $request->diskonRp[$i]) / sizeof($arrGudang);
+                $diskonRp = ($request->diskonRp[$i] != '' ? str_replace(".", "", $request->diskonRp[$i]) : 0) / sizeof($arrGudang);
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
                         // 'id_so' => $kode,
