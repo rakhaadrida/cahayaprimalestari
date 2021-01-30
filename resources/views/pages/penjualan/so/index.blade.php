@@ -37,8 +37,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" >
-                        {{-- value="{{ $newcode }}" readonly --}}
+                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly>
                       </div>
                       <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
