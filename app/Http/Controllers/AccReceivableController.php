@@ -28,7 +28,7 @@ class AccReceivableController extends Controller
         $arLast = AccReceivable::join('detilar', 'detilar.id_ar', 'ar.id')
                     ->orderBy('detilar.updated_at', 'desc')->take(1)->get();
                     
-        $ar = AccReceivable::with(['so'])->where('id', '!=', $arLast->first()->id)
+        $ar = AccReceivable::where('id', '!=', $arLast->first()->id)
                 ->orderBy('created_at', 'desc')->get();
         $arOffice = AccReceivable::with(['so'])
                 ->select('ar.id', 'ar.id_so', 'ar.keterangan')
