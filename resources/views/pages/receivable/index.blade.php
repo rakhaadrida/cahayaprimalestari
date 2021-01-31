@@ -127,7 +127,7 @@
                     <td class="align-middle">{{ $arLast->first()->so->customer->nama }}</td>
                     <td class="align-middle">{{ $arLast->first()->so->customer->sales->nama }}</td>
                     <td align="center" class="align-middle">{{ $arLast->first()->so->kategori }}</td>
-                    <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $arLast->first()->id_so) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $arLast->first()->id_so }}</button></td>
+                    <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $arLast->first()->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $arLast->first()->id_so }}</button></td>
                     <td align="center" class="align-middle">
                       {{ \Carbon\Carbon::parse($arLast->first()->so->tgl_so)->format('d-M-y') }}
                     </td>
@@ -163,7 +163,7 @@
                       <td class="align-middle">{{ $a->so->customer != NULL ? $a->so->customer->nama : $a->so->id_customer }}</td>
                       <td class="align-middle">{{ $a->so->customer != NULL ? $a->so->customer->sales->nama : $a->so->id_customer }}</td>
                       <td align="center" class="align-middle">{{ $a->so->kategori }}</td>
-                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->so->tgl_so)->format('d-M-y') }}
                       </td>

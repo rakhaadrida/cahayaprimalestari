@@ -694,7 +694,7 @@ function formatTanggal(e) {
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
-  if((radios[1].checked) || (radios[2].checked)) {
+  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked)) {
     tempo.removeAttribute('readonly');
     tempo.setAttribute('required', 'true');
   }

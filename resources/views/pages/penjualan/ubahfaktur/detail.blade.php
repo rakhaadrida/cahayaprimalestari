@@ -246,10 +246,10 @@
                               <td align="right">
                                 {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
                               </td>
-                              <td align="right">{{ $itemDet->diskon }}</td>
+                              <td align="right">{{ $itemDet->diskon != NULL ? $itemDet->diskon : 0 }}</td>
                               @php 
                                 $diskon = 100;
-                                $itemDet->diskon = str_replace(",", ".", $itemDet->diskon);
+                                $itemDet->diskon = ($itemDet->diskon != NULL ? str_replace(",", ".", $itemDet->diskon) : 0);
                                 $arrDiskon = explode("+", $itemDet->diskon);
                                 for($j = 0; $j < sizeof($arrDiskon); $j++) {
                                   $diskon -= ($arrDiskon[$j] * $diskon) / 100;

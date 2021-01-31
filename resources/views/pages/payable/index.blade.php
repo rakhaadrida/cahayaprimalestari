@@ -104,7 +104,7 @@
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $apLast->first()->bm[0]->supplier->nama }}</td>
-                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $apLast->first()->id_bm) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $apLast->first()->id_bm }}</button></td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $apLast->first()->id_bm) }}" formmethod="POST" formtarget="_blank" class="btn btn-link btn-sm text-bold">{{ $apLast->first()->id_bm }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($apLast->first()->bm[0]->tanggal)->format('d-M-y') }}
                       </td>
@@ -147,7 +147,7 @@
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->bm[0]->supplier->nama }}</td>
-                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $a->id_bm) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $a->id_bm }}</button></td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $a->id_bm) }}" formmethod="POST" formtarget="_blank" class="btn btn-link btn-sm text-bold">{{ $a->id_bm }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->bm[0]->tanggal)->format('d-M-y') }}
                       </td>
