@@ -56,7 +56,7 @@
                 </div>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="contact_person" placeholder="Contact Person" 
-                  value="{{ old('contact_person') }}" autocomplete="off" required>
+                  value="{{ old('contact_person') }}" autocomplete="off">
                 </div>
               </div>
               <div class="form-group row">
@@ -72,7 +72,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
                   <input type="text" class="form-control col-form-label-sm" name="limit" 
-                  value="{{ old('limit') }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required
+                  value="{{ old('limit') }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off"
                   @if(Auth::user()->roles == 'ADMIN') readonly @endif>
                 </div>
               </div>
