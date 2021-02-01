@@ -27,9 +27,7 @@ class CustomerRequest extends FormRequest
             'nama' => 'required|max:255',
             'alamat' => 'required|max:255',
             'telepon' => 'required|max:15',
-            'contact_person' => 'required|max:30',
             'id_sales' => 'required|exists:sales,id',
-            'ktp' => 'image|max:1024'
         ];
     }
 }
