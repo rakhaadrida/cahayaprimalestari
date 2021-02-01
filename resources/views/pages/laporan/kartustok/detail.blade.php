@@ -116,10 +116,10 @@
                       </tr>
                       <tr>
                         <td rowspan="2" style="width: 40px" class="align-middle">
-                          @if($item->satuan == "Pcs / Dus") Pcs @else Meter @endif
+                          @if($item->satuan == "Pcs / Dus") Pcs @elseif($item->satuan == "Meter / Rol") Rol @else Meter @endif
                         </td>
                         <td rowspan="2" style="width: 40px" class="align-middle">
-                          @if($item->satuan == "Pcs / Dus") Pcs @else Meter @endif TB
+                          @if($item->satuan == "Pcs / Dus") Pcs @elseif($item->satuan == "Meter / Rol") Rol @else Meter @endif TB
                         </td>
                         <td rowspan="2" style="width: 40px" class="align-middle">Gudang</td>
                         {{-- <td style="width: 45px">
@@ -151,7 +151,8 @@
                                         ->where('status', '!=', 'BATAL');
                                     });
                         $itemsSO = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan',)->selectRaw('sum(qty) as qty')->where('id_barang', $item->id)
+                                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan')->selectRaw('sum(qty) as qty')
+                                    ->where('id_barang', $item->id)
                                     ->whereHas('so', function($q) use($awal, $akhir) {
                                         $q->whereBetween('tgl_so', [$awal, $akhir])
                                         ->where('status', '!=', 'BATAL');
