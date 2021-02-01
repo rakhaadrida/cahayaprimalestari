@@ -72,7 +72,7 @@ class DashboardController extends Controller
         $arrTotal = []; $j = 0;               
         for($i = 1; $i <= 12; $i++) {
             if(($j < $salesPerMonth->count()) && ($salesPerMonth[$j]->month == $i)) {
-                if(($returPerMonth->count() != 0) && ($returPerMonth[$j] != NULL))
+                if(($returPerMonth->count() != 0) && ($j < $returPerMonth->count()) && ($returPerMonth[$j] != NULL))
                     $int = (int) $salesPerMonth[$j]->sales - $returPerMonth[$j]->total;
                 else
                     $int = $salesPerMonth[$j]->sales;    
