@@ -35,18 +35,16 @@ class AccReceivableController extends Controller
                 ->join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->where('id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
-
-        // return response()->json($arLast);
         
-        $barang = Barang::All();
-        $harga = HargaBarang::All();
+        // $barang = Barang::All();
+        // $harga = HargaBarang::All();
 
         $data = [
             'ar' => $ar,
             'arOffice' => $arOffice,
             'arLast' => $arLast,
-            'barang' => $barang,
-            'harga' => $harga,
+            // 'barang' => $barang,
+            // 'harga' => $harga,
         ];
 
         return view('pages.receivable.index', $data);
@@ -195,7 +193,7 @@ class AccReceivableController extends Controller
         else 
             $cicil = $request->{"cicil".$request->kode};
 
-        if($so[0]->total == str_replace(",", "", $cicil) + $totCicil + $totRetur)
+        if($so[0]->total == str_replace(".", "", $cicil) + $totCicil + $totRetur)
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';

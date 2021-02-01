@@ -292,11 +292,19 @@ for(let i = 0; i < cicilModal.length; i++) {
 
   cicilModal[i].addEventListener("blur", function(e) {
     if(+e.target.value.replace(/\./g, "") > +modalAwal[i].value) {
-      kurang[i].value = addCommas(kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      if(kurangDetil.length != 0) 
+        kurang[i].value = addCommas(kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      else
+        kurang[i].value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+
       totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") + (+e.target.value.replace(/\./g, "") - +modalAwal[i].value));
       kurangAkhir.value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
     } else {
-      kurang[i].value = addCommas(+kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      if(kurangDetil.length != 0) 
+        kurang[i].value = addCommas(+kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      else
+        kurang[i].value = addCommas(+kurangAkhir[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+
       totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
       kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
     }

@@ -1,5 +1,3 @@
-{{-- @extends('pages.receivable.detail')
-@extends('pages.receivable.retur') --}}
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -77,7 +75,7 @@
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
-              @if(Auth::user()->roles != 'OFFICE02')
+              {{-- @if(Auth::user()->roles != 'OFFICE02') --}}
                 <!-- Button Submit dan Reset -->
                 {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
                   <div class="col-1">
@@ -88,7 +86,7 @@
                   </div>
                 </div> --}}
                 <!-- End Button Submit dan Reset -->
-              @endif
+              {{-- @endif --}}
 
               <!-- Tabel Data Detil AR -->
               <input type="hidden" id="kodeSO" name="kodeSO">

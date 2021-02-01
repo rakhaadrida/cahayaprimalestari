@@ -163,7 +163,7 @@ class ApprovalController extends Controller
             $tahun = substr($waktu->year, -2);
 
             $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
-                        ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
+                        ->selectRaw('max(ar.id) as id')->whereMonth('ar.created_at', $month)->get();
             $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
             $lastnumber++;
             $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
