@@ -300,6 +300,7 @@ function displayRow(e) {
       <td> 
         <input type="text" tabindex="${tab += 3}" name="gdgAsal[]" id="gdgAsal${newNum}" class="form-control form-control-sm text-dark text-bold gdgAsalRow" >
         <input type="hidden" name="kodeAsal[]" id="kodeAsal${newNum}" class="kodeAsalRow">
+        <input type="hidden" name="statusAsal[]" id="statusAsal${newNum}" class="statusAsalRow">
       </td>
       <td> 
         <input type="text" name="stokAsal[]" id="stokAsal${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokAsalRow">
@@ -307,6 +308,7 @@ function displayRow(e) {
       <td> 
         <input type="text" tabindex="${tab += 4}" name="gdgTujuan[]" id="gdgTujuan${newNum}" class="form-control form-control-sm text-dark text-bold gdgTujuanRow" >
         <input type="hidden" name="kodeTujuan[]" id="kodeTujuan${newNum}" class="kodeTujuanRow">
+        <input type="hidden" name="statusTujuan[]" id="statusTujuan${newNum}" class="statusTujuanRow">
       </td>
       <td> 
         <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokTujuanRow">
@@ -329,9 +331,11 @@ function displayRow(e) {
   const kodeRow = document.getElementById("kdBrgRow"+newNum);
   const gdgAsalRow = document.getElementById("gdgAsal"+newNum);
   const kodeAsalRow = document.getElementById("kodeAsal"+newNum);
+  const statusAsalRow = document.getElementById("statusAsal"+newNum);
   const stokAsalRow = document.getElementById("stokAsal"+newNum);
   const gdgTujuanRow = document.getElementById("gdgTujuan"+newNum);
   const kodeTujuanRow = document.getElementById("kodeTujuan"+newNum);
+  const statusTujuanRow = document.getElementById("statusTujuan"+newNum);
   const stokTujuanRow = document.getElementById("stokTujuan"+newNum);
   const qtyTransferRow = document.getElementById("qtyTransfer"+newNum);
   const hapusRow = document.getElementById("icRemoveRow"+newNum);
@@ -374,11 +378,21 @@ function displayRow(e) {
     }
 
     @foreach($gudang as $g)
+      @foreach($gudang as $g)
       if('{{ $g->nama }}' == e.target.value) {
         kodeAsalRow.value = '{{ $g->id }}';
+        statusAsalRow.value = 'T';
+      } 
+      if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Bagus')) {
+        kodeAsalRow.value = '{{ $g->id }}';
+        statusAsalRow.value = 'T';
+      } else if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Jelek')) {
+        kodeAsalRow.value = '{{ $g->id }}';
+        statusAsalRow.value = 'F';
       }
     @endforeach
-    displayStokRow(kodeAsalRow.value, stokAsalRow);
+    @endforeach
+    displayStokRow(kodeAsalRow.value, statusAsalRow.value, stokAsalRow);
   }
 
   gdgTujuanRow.addEventListener("keyup", displayTujuanRow);
@@ -393,14 +407,22 @@ function displayRow(e) {
     @foreach($gudang as $g)
       if('{{ $g->nama }}' == e.target.value) {
         kodeTujuanRow.value = '{{ $g->id }}';
+        statusTujuanRow.value = 'T';
+      } 
+      if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Bagus')) {
+        kodeTujuanRow.value = '{{ $g->id }}';
+        statusTujuanRow.value = 'T';
+      } else if(('{{ $g->tipe }}' == 'RETUR') && (e.target.value == 'Retur Jelek')) {
+        kodeTujuanRow.value = '{{ $g->id }}';
+        statusTujuanRow.value = 'F';
       }
     @endforeach
-    displayStokRow(kodeTujuanRow.value, stokTujuanRow);
+    displayStokRow(kodeTujuanRow.value, statusTujuanRow.value, stokTujuanRow);
   }
 
-  function displayStokRow(kode, stok) {
+  function displayStokRow(kode, status, stok) {
     @foreach($stok as $s)
-      if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->id_gudang }}' == kode)) {
+      if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->id_gudang }}' == kode) && ('{{ $s->status }}' == status)) {
         stok.value = '{{ $s->stok }}';
       }
     @endforeach
@@ -452,7 +474,12 @@ function displayRow(e) {
       nmBarang.push('{{ $b->nama }}');
     @endforeach
     @foreach($gudang as $g)
-      nmGudang.push('{{ $g->nama }}');
+      if('{{ $g->tipe }}' == 'RETUR') {
+        nmGudang.push('Retur Bagus');
+        nmGudang.push('Retur Jelek');
+      } else {
+        nmGudang.push('{{ $g->nama }}');
+      }
     @endforeach
       
     function split(val) {
