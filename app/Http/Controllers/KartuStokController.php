@@ -21,12 +21,34 @@ class KartuStokController extends Controller
 {
     public function index() {
         $barang = Barang::All();
+
+        $itemsBM = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'qty')
+                    ->where('id_barang', 'BRG0033')
+                    ->whereHas('bm', function($q) {
+                        $q->whereBetween('tanggal', ['2021-01-10', '2021-02-02'])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $itemsSO = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan')->selectRaw('sum(qty) as qty')
+                    ->where('id_barang', 'BRG0033')
+                    ->whereHas('so', function($q) {
+                        $q->whereBetween('tgl_so', ['2021-01-10', '2021-02-02'])
+                        ->where('status', '!=', 'BATAL');
+                    })->groupBy('id_so', 'id_barang');
+        $items = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 'detiltb.id_tb')
+                    ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', 'BRG0033')
+                    ->whereHas('tb', function($q) {
+                        $q->whereBetween('tgl_tb', ['2021-01-10', '2021-02-02']);
+                    })->union($itemsBM)->union($itemsSO)->orderBy('created_at')->get();
+        
+        return response()->json($items);
         
         $data = [
             'barang' => $barang
         ];
 
-        return view('pages.laporan.kartustok.index', $data);
+        // return view('pages.laporan.kartustok.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {

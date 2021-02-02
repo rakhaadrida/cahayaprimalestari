@@ -185,23 +185,23 @@
                               $nama = ''; $namaGud = ''; $total = ''; $user = '';
                               if(substr($it->id, 0, 2) == 'BM') {
                                 $namaBM = \App\Models\BarangMasuk::where('id', $it->id)->get();
-                                $nama = $namaBM->first()->supplier->nama;
-                                $namaGud = $namaBM->first()->gudang->nama;
-                                $total = $namaBM->first()->total;
-                                $user = $namaBM->first()->user->name;
+                                $nama = ($namaBM->count() != 0 ? $namaBM->first()->supplier->nama : '0');
+                                $namaGud = ($namaBM->count() != 0 ? $namaBM->first()->gudang->nama : '0');
+                                $total = ($namaBM->count() != 0 ? $namaBM->first()->total : '0');
+                                $user = ($namaBM->count() != 0 ? $namaBM->first()->user->name: '0');
                               }
-                              elseif(substr($it->id, 0, 2) == 'IN') {
+                              elseif((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV')) {
                                 $namaSO = \App\Models\SalesOrder::where('id', $it->id)->get();
-                                $nama = $namaSO->first()->customer->nama;
-                                $total = $namaSO->first()->total;
-                                $user = $namaSO->first()->user->name;
+                                $nama = ($namaSO->count() != 0 ? $namaSO->first()->customer->nama : '0');
+                                $total = ($namaSO->count() != 0 ? $namaSO->first()->total : '0');
+                                $user = ($namaSO->count() != 0 ? $namaSO->first()->user->name: '0');
                               } 
                               else {
                                 $namaTB = \App\Models\DetilTB::where('id_tb', $it->id)
                                           ->where('id_barang', $item->id)->get();
-                                $nama = $namaTB->first()->gudangAsal->nama;
-                                $namaGud = $namaTB->first()->gudangTuju->nama;
-                                $user = $namaTB->first()->tb->user->name;
+                                $nama = ($namaTB->count() != 0 ? $namaTB->first()->gudangAsal->nama : '0');
+                                $namaGud = ($namaTB->count() != 0 ? $namaTB->first()->gudangTuju->nama: '0');
+                                $user = ($namaTB->count() != 0 ? $namaTB->first()->tb->user->name: '0');
                               }
                             @endphp
                             <td class="align-middle">{{ $nama }}</td>
