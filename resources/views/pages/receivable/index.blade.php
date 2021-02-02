@@ -265,6 +265,7 @@ function formatTanggal(e) {
 
 /** Sort Datatable **/
 $('#dataTable').dataTable( {
+  "pageLength": 100,
   "columnDefs": [
     { "orderable": false, "targets": [0, 3] }
   ],

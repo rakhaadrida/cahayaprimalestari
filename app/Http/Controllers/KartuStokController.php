@@ -26,7 +26,7 @@ class KartuStokController extends Controller
             'barang' => $barang
         ];
 
-        // return view('pages.laporan.kartustok.index', $data);
+        return view('pages.laporan.kartustok.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
