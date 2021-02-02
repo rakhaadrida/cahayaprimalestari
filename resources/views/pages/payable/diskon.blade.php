@@ -192,12 +192,13 @@
                           <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format(($detil->qty * $detil->harga), 0, "", ".") }}">
                         </td>
                         <td align="right">
-                          <input type="text" tabindex="{{ $tab++ }}" name="dis{{$item->id}}{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off" @if($detil->diskon != null) value="{{ $detil->diskon }}" @endif required>
+                          <input type="text" tabindex="{{ $tab++ }}" name="dis{{$item->id}}{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan koma" autocomplete="off" @if($detil->diskon != null) value="{{ str_replace(".", ",", $detil->diskon) }}" @endif required>
                           <input type="hidden" name="diskon{{$item->id}}{{$detil->id_barang}}" class="disAngka" @if($detil->diskon != null) value="{{ $detil->disPersen }}" @endif>
                         </td>
                         @if($detil->diskon != null)
                           @php 
                             $diskon = 100;
+                            $detil->diskon = str_replace(",", ".", $detil->diskon);
                             $arrDiskon = explode("+", $detil->diskon);
                             for($j = 0; $j < sizeof($arrDiskon); $j++) {
                               $diskon -= ($arrDiskon[$j] * $diskon) / 100;
@@ -340,6 +341,7 @@ for(let i = 0; i < diskon.length; i++) {
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
+  angka = angka.replace(/\,/g, ".");
   var arrDiskon = angka.split('+');
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
@@ -404,7 +406,7 @@ function angkaSaja(evt, teks) {
 function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
-  if (charCode > 31 && charCode != 43  && (charCode < 48 || charCode > 57)) {
+  if (charCode > 31 && charCode != 43 && charCode != 44 && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= diskon.length; i++) {
       if(inputan == i)
         $(diskon[inputan-1]).tooltip('show');

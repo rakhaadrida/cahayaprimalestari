@@ -102,6 +102,8 @@ class RekapStokController extends Controller
             $j->{'total'} = $brg + $sub;
         }
 
+        // return response()->json($jenis);
+
         $el = 0; $k = $jenis->count(); $gabung = 0;
         foreach($jenis as $j) {
             if($j->total <= 80) {
@@ -120,9 +122,11 @@ class RekapStokController extends Controller
                         $gabung++;
                     }
                 }
-                $k -= $gabung;
+                $k -= $gabung;   
             } 
-
+            var_dump($el);
+            var_dump($k);
+            var_dump($jenis[$el]->nama);
             $el++;
         }
 
@@ -137,7 +141,7 @@ class RekapStokController extends Controller
 
         $pdf = PDF::loadview('pages.laporan.rekapstok.pdf', $data)->setPaper('A4', 'portrait');
         ob_end_clean();
-        return $pdf->stream('rekap-stok.pdf');
+        // return $pdf->stream('rekap-stok.pdf');
     }
 
     public function cetak_excel() {
