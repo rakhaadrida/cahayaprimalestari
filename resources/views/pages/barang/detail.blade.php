@@ -63,48 +63,56 @@
                 </div>
               </div>
               <hr>
-              @foreach($harga as $h)
-                <div class="form-group row">
-                  <label for="ukuran" class="col-2 col-form-label text-bold">{{ $h->nama }}</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    @foreach($hargaBarang as $hb)
-                      @if(($hb->id_harga == $h->id) && ($hb->id_barang == $item->first()->id))
-                        <input type="text" readonly class="form-control col-form-label-sm text-dark text-bold" value="{{ number_format($hb->harga_ppn, 0, "", ".") }}" >
-                        @break
-                      @endif
-                    @endforeach
+              @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER'))
+                @foreach($harga as $h)
+                  <div class="form-group row">
+                    <label for="ukuran" class="col-2 col-form-label text-bold">{{ $h->nama }}</label>
+                    <span class="col-form-label text-bold">:</span>
+                    <div class="col-2">
+                      @foreach($hargaBarang as $hb)
+                        @if(($hb->id_harga == $h->id) && ($hb->id_barang == $item->first()->id))
+                          <input type="text" readonly class="form-control col-form-label-sm text-dark text-bold" value="{{ number_format($hb->harga_ppn, 0, "", ".") }}" >
+                          @break
+                        @endif
+                      @endforeach
+                    </div>
                   </div>
-                </div>
-              @endforeach
-              <hr>
-              @foreach($gudang as $g)
-                @php
-                  if($g->tipe == 'RETUR') {
-                    $stok = App\Models\StokBarang::withTrashed()->selectRaw('sum(stok) as stok')
-                            ->where('id_barang', $item->first()->id)
-                            ->where('id_gudang', $g->id)->get();   
-                  } else {
-                    $stok = App\Models\StokBarang::withTrashed()->where('id_barang', $item->first()->id)
-                            ->where('id_gudang', $g->id)->get();  
-                  }
-                @endphp
-                <div class="form-group row">
-                  <label for="ukuran" class="col-2 col-form-label text-bold">{{ $g->nama }}</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" readonly class="form-control-plaintext col-form-label-sm text-dark text-bold" value="{{ $stok->count() != 0 ? $stok[0]->stok : '' }} @if($stok->count() != 0) @if($item->first()->satuan == "Pcs / Dus") Pcs @elseif($item->first()->satuan == "Set") Set @elseif($item->first()->satuan == "Meter / Rol") Rol @else Meter @endif @endif" >
+                @endforeach
+                <hr>  
+                @foreach($gudang as $g)
+                  @php
+                    if($g->tipe == 'RETUR') {
+                      $stok = App\Models\StokBarang::withTrashed()->selectRaw('sum(stok) as stok')
+                              ->where('id_barang', $item->first()->id)
+                              ->where('id_gudang', $g->id)->get();   
+                    } else {
+                      $stok = App\Models\StokBarang::withTrashed()->where('id_barang', $item->first()->id)
+                              ->where('id_gudang', $g->id)->get();  
+                    }
+                  @endphp
+                  <div class="form-group row">
+                    <label for="ukuran" class="col-2 col-form-label text-bold">{{ $g->nama }}</label>
+                    <span class="col-form-label text-bold">:</span>
+                    <div class="col-2">
+                      <input type="text" readonly class="form-control-plaintext col-form-label-sm text-dark text-bold" value="{{ $stok->count() != 0 ? $stok[0]->stok : '' }} @if($stok->count() != 0) @if($item->first()->satuan == "Pcs / Dus") Pcs @elseif($item->first()->satuan == "Set") Set @elseif($item->first()->satuan == "Meter / Rol") Rol @else Meter @endif @endif" >
+                    </div>
                   </div>
-                </div>
-              @endforeach
-              <hr>
+                @endforeach
+                <hr>
+              @endif
               <div class="form-row justify-content-center">
-                <div class="col-2">
-                  <a href="{{ route('barang.edit', $item->first()->id) }}" class="btn btn-outline-primary btn-block text-bold">Ubah</a>
-                </div>
-                <div class="col-2">
-                  <a href="{{ route('barang.index') }}" class="btn btn-outline-secondary btn-block text-bold">Kembali</a>
-                </div>
+                @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER'))
+                  <div class="col-2">
+                    <a href="{{ route('barang.edit', $item->first()->id) }}" class="btn btn-outline-primary btn-block text-bold">Ubah</a>
+                  </div>
+                  <div class="col-2">
+                    <a href="{{ route('barang.index') }}" class="btn btn-outline-secondary btn-block text-bold">Kembali</a>
+                  </div>
+                @else
+                  <div class="col-2">
+                    <a href="{{ route('stok-office') }}" class="btn btn-outline-secondary btn-block text-bold">Kembali</a>
+                  </div>
+                @endif
               </div>
             </form>
           </div>

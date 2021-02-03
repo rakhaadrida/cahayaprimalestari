@@ -76,7 +76,6 @@
     </li>
   @endif
 
-
   <!-- Divider -->
   <hr class="sidebar-divider">
 
@@ -161,6 +160,14 @@
             {{-- <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a> --}}
           </div>
         </div>
+      </li>
+    @endif
+
+    @if(Auth::user()->roles == 'AR')
+      <li class="nav-item sidebar-menu-icon" >
+        <a class="nav-link" href="{{ route('stok-office') }}">
+          <i class="fas fa-fw fa-warehouse"></i>
+          <span>Stok</span></a>
       </li>
     @endif
 

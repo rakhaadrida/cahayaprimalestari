@@ -32,15 +32,15 @@
             <tr align="center">
               <th>No</th>
               <th>Nama</th>
-              @if(Auth::user()->roles != 'OFFICE02')
+              @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'AR'))
                 @foreach($gudang as $g)
                   <th style="width: 40px">{{ substr($g->nama, 0, 3) }}</th>
                 @endforeach
               @else
-                <th style="width: 80px">Stok</th>
+                <th style="width: 140px">Stok</th>
               @endif
               <th>Detail</th>
-              @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG'))
+              @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR'))
                 <th>Harga</th>
                 <th>Stok</th>
                 <th>Ubah</th>
@@ -59,7 +59,7 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center" style="width: 10px">{{ $j }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
-                @if(Auth::user()->roles != 'OFFICE02')
+                @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'AR'))
                   @foreach($gudang as $g)
                     @php
                       if($g->tipe == 'RETUR') {
@@ -90,7 +90,7 @@
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
-                @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG'))
+                @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR'))
                   <td align="center" style="width: 15px">
                     <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-warning">
                       <i class="fas fa-fw fa-money-bill-alt"></i>

@@ -105,7 +105,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('gudang-hapusAll');
 
         // Detail Barang
-        Route::get('barang/detail/{id}', 'BarangController@detail')->name('detailBarang');
+        // Route::get('barang/detail/{id}', 'BarangController@detail')->name('detailBarang');
 
         // Harga Barang
         Route::get('/barang/harga/{id}', 'BarangController@harga')->name('hargaBarang');
@@ -333,6 +333,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02']], function() {
         Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
+        Route::get('barang/detail/{id}', 'BarangController@detail')->name('detailBarang');
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'GUDANG']], function() {
@@ -387,7 +388,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('retur/pembelian/batal/{id}', 'ReturController@batalReturBeli')->name('retur-beli-batal');
     });
 
-    Route::group(['roles'=>['OFFICE02', 'GUDANG']], function() {
+    Route::group(['roles'=>['OFFICE02', 'GUDANG', 'AR']], function() {
         // Account Payable
         Route::get('stok/index', 'BarangController@index')->name('stok-office');
     });
