@@ -270,7 +270,7 @@
         font-size: 13px;
         width: 90.7% !important;
         /* height: 225px; */
-        height: 52% !important;
+        height: 49% !important;
         /* margin-left: 0; // Margin minimum */
         margin-left: 20px;
         margin-right: 34.5px;

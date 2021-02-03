@@ -109,7 +109,8 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ret-process-beli', $newcode) }}" formmethod="POST" id="submitRB" class="btn btn-success btn-block text-bold">Submit</button>
+                  <button type="submit" tabindex="{{ $tab++ }}" id="submitRB" onclick="return checkRequired(event)" class="btn btn-success btn-block text-bold">Submit</button>
+                  {{-- formaction="{{ route('ret-process-beli', $newcode) }}" formmethod="POST" --}}
                 </div>
                 <div class="col-2">
                   <button type="reset" tabindex="{{ $tab += 2 }}" id="resetRB" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
@@ -119,6 +120,22 @@
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
+
+              <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title text-bold">Notifikasi Barang</h4>
+                    </div>
+                    <div class="modal-body text-dark">
+                      <h5>Terdapat <b>Kode Barang</b> yang sama. Silahkan <b>Jumlahkan Qty pada Kode Barang yang Sama </b>atau ubah kode barang.</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
             </form>
           </div>
@@ -160,7 +177,7 @@ const qty = document.querySelectorAll(".qty");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
-var tab = '{{ $tab }}';
+var tab = '{{ $tab }}'; var cek;
 
 tglRetur.addEventListener("keyup", formatTanggal);
 namaSupplier.addEventListener("keyup", displaySupp);
@@ -409,7 +426,7 @@ for(let i = 0; i < qty.length; i++) {
 }
 
 /** Inputan hanya bisa angka **/
-/* function angkaSaja(evt, inputan) {
+function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -421,7 +438,7 @@ for(let i = 0; i < qty.length; i++) {
     return false;
   }
   return true;
-} */
+} 
 
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
@@ -452,6 +469,49 @@ for(let i = 0; i < hapusBaris.length; i++) {
       }
     }
   });
+}
+
+function checkRequired(e) {
+  const kdRow = document.querySelectorAll('.kdBrgRow');
+  document.getElementById("submitRB").removeAttribute('data-toggle');
+  document.getElementById("submitRB").removeAttribute('data-target');
+  cek = 0;
+  var kode = [];
+  for(let i = 0; i < (jumBaris.value - kdRow.length); i++) {
+    if(kodeBarang[i].value != '') {
+      kode.push(kodeBarang[i].value);
+    }
+
+    /* for(let j = i+1; j < jumBaris.value; j++) {
+      if((kodeBarang[i].value != '') && (kodeBarang[i].value == kodeBarang[j].value)) {
+        cek = 1;
+        break;
+      } else {
+        cek = 0;
+      }
+    } */
+
+    // if(cek == 1)
+    //   break;
+  }
+
+  for(let i = 0; i < kdRow.length; i++) {
+    if(kdRow[i].value != '') {
+      kode.push(kdRow[i].value);
+    }
+  }
+
+  cek = new Set(kode).size !== kode.length;
+
+  if(cek === true) {
+    document.getElementById("submitRB").dataset.toggle = "modal";
+    document.getElementById("submitRB").dataset.target = "#modalNotif";
+    return false;
+  } 
+  else {
+    document.getElementById("submitRB").formMethod = "POST";
+    document.getElementById("submitRB").formAction = "{{ route('ret-process-beli', $newcode) }}";
+  }
 }
 
 /** Autocomplete Input Kode PO **/

@@ -1,5 +1,3 @@
-{{-- @extends('pages.receivable.detail')
-@extends('pages.receivable.retur') --}}
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -244,6 +242,7 @@ function formatTanggal(e) {
 
 /** Sort Datatable **/
 $('#dataTable').dataTable( {
+  "pageLength": 100,
   "columnDefs": [
     { "orderable": false, "targets": [0, 3] }
   ],

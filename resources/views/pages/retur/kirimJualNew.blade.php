@@ -368,6 +368,8 @@ for(let i = 0; i < btnCetak.length; i++) {
 }
 
 function checkLimit(e) {
+  document.getElementById("submitRJ").removeAttribute('data-toggle');
+  document.getElementById("submitRJ").removeAttribute('data-target');
   var cek = 0; var urut = [];
   for(let i = 0; i < kirimModal.length; i++) {
     if(+kirimModal[i].value > qtyBagus[i].value) {

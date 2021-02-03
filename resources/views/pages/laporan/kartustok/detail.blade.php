@@ -178,7 +178,7 @@
                             <td align="center" class="align-middle">{{ $i }}</td>
                             <td align="center" class="align-middle">{{ \Carbon\Carbon::parse($it->tanggal)->format('d-M-y') }}</td>
                             <td class="align-middle">
-                              @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif(substr($it->id, 0, 2) == 'IN')Penjualan Barang @else Transfer Barang @endif
+                              @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV'))Penjualan Barang @else Transfer Barang @endif
                             </td>
                             <td class="align-middle">{{ $it->id }}</td>
                             @php
@@ -216,7 +216,7 @@
                               {{ substr($it->id, 0, 2) == 'BM' ? number_format($total, 0, "", ".") : '' }}
                             </td>
                             <td class="align-middle" align="right">
-                              {{ substr($it->id, 0, 2) == 'IN' ? $it->qty : '' }}
+                              {{ ((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV')) ? $it->qty : '' }}
                             </td>
                             @foreach($gudang as $g)
                               @php
@@ -232,7 +232,7 @@
                               @endif
                             @endforeach
                             <td class="align-middle" align="right">
-                              {{ substr($it->id, 0, 2) == 'IN' ? number_format($total, 0, "", ".") : '' }}
+                              {{ ((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV')) ? number_format($total, 0, "", ".") : '' }}
                             </td>
                             <td class="align-middle" align="center">
                               {{ $user }} <br> {{ \Carbon\Carbon::parse($it->updated_at)->format('H:i:s') }}
@@ -240,7 +240,7 @@
                             @php
                               if(substr($it->id, 0, 2) == 'BM') 
                                 $totalBM += $it->qty; 
-                              elseif(substr($it->id, 0, 2) == 'IN')
+                              elseif((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV'))
                                 $totalSO += $it->qty;
                             @endphp
                           </tr>

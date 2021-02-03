@@ -392,6 +392,8 @@ for(let i = 0; i < btnCetak.length; i++) {
 }
 
 function checkLimit(e) {
+  document.getElementById("submitRB").removeAttribute('data-toggle');
+  document.getElementById("submitRB").removeAttribute('data-target');
   var cek = 0; var urut = []; var urutDetil = [];
   for(let i = 0; i < kirimModal.length; i++) {
     if((+kirimModal[i].value + +batalModal[i].value) > +qty[i].value) {
