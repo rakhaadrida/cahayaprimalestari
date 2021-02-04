@@ -537,7 +537,7 @@
                 <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
                 @php 
                   $diskon = 100;
-                  $iteDet->diskon = str_replace(",", ".", $itemDet->diskon);
+                  $itemDet->diskon = str_replace(",", ".", $itemDet->diskon);
                   $arrDiskon = explode("+", $itemDet->diskon);
                   for($j = 0; $j < sizeof($arrDiskon); $j++) {
                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
