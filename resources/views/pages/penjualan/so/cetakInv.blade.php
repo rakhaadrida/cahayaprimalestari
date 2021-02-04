@@ -12,8 +12,8 @@
           height: 520px;
           /* width: 8.54in;
           height: 5.43in; */
-          font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-          font-size: 1rem;
+          font-family: "Arial", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-size: 1.2rem;
           font-weight: 900;
           line-height: 1.5;
           color: #252525;
@@ -239,7 +239,7 @@
       }
 
       .table-info-cetak-so {
-        margin-top: -24px;
+        margin-top: -27px;
         font-size: 12px;
         border-spacing: 0px;
         /* margin-left: 0; // margin Minimum */
@@ -248,7 +248,7 @@
       }
 
       .table-info-cetak-so td {
-        border: 1.9px dotted;
+        border: 1px dotted;
       }
 
       .table-info-cetak-so thead td {
@@ -279,14 +279,14 @@
       }
 
       .table-cetak thead td {
-        padding-top: 0.3rem !important;
+        padding-top: 0.2rem !important;
         padding-bottom: 0.3rem !important;
       }
 
       .th-detail-cetak-so {
         line-height: 6px;
-        border: 1.9px dotted;
-        font-family: monospace, sans-serif;
+        border: 1px dotted;
+        /* font-family: monospace, sans-serif; */
       }
 
       .tr-detail-cetak-so {
@@ -505,7 +505,7 @@
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
-          <thead class="text-center text-bold th-detail-cetak-so">
+          <thead class="text-center th-detail-cetak-so" style="font-weight: 500">
             <tr>
               <td style="width: 10px">No</td>
               <td style="width: 290px">Nama Barang</td>
