@@ -103,6 +103,10 @@
                           <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Nitto">
                           <label class="form-check-label text-bold text-dark" for="kat3">Nitto</label>
                         </div>
+                        <div class="form-check">
+                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="MCB">
+                          <label class="form-check-label text-bold text-dark" for="kat3">MCB</label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -694,7 +698,7 @@ function formatTanggal(e) {
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
-  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked)) {
+  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked)) {
     tempo.removeAttribute('readonly');
     tempo.setAttribute('required', 'true');
   }
