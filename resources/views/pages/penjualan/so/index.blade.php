@@ -87,25 +87,30 @@
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
                       <div class="col-3" style="margin-top: -35px">
-                        <div class="form-check mt-2">
+                        <div class="form-check form-check-inline mt-2">
                           <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Cash" id="kategori" required>
                           <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Prime">
                           <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Extrana">
                           <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
                         </div>
-                        <div class="form-check">
+                        <br>
+                        <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Nitto">
                           <label class="form-check-label text-bold text-dark" for="kat3">Nitto</label>
                         </div>
-                        <div class="form-check">
+                        <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="MCB">
                           <label class="form-check-label text-bold text-dark" for="kat3">MCB</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="BOSS">
+                          <label class="form-check-label text-bold text-dark" for="kat3">Pipa BOSS</label>
                         </div>
                       </div>
                     </div>
@@ -698,7 +703,7 @@ function formatTanggal(e) {
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
-  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked)) {
+  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked)) {
     tempo.removeAttribute('readonly');
     tempo.setAttribute('required', 'true');
   }

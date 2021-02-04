@@ -233,15 +233,15 @@ const totalAkhir = document.getElementById('totalAkhir');
 const kurangAkhir = document.getElementById('kurangAkhir');
 const jumBaris = document.getElementById('jumBaris');
 
-cicilAR.addEventListener("keypress", checkEnter);
+// cicilAR.addEventListener("keypress", checkEnter);
 
-function checkEnter(e) {
+/* function checkEnter(e) {
   var key = e.charCode || e.keyCode || 0;     
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
   }
-}
+} */
 
 for(let i = 0; i < cicilDetil.length; i++) {
   cicilDetil[i].addEventListener("keyup", function(e) {
