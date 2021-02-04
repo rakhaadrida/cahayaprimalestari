@@ -14,7 +14,7 @@
           height: 5.43in; */
           font-family: "Arial", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
           font-size: 1.2rem;
-          font-weight: 900;
+          font-weight: 700;
           line-height: 1.5;
           color: #252525;
           text-align: left;
@@ -189,12 +189,14 @@
         margin-top: -5px;
         margin-left: 10px;
         font-size: 12px;
+        font-weight: normal;
       }
 
       .subtitle-cetak-so-second {
         margin-left: -23px;
         margin-top: -2px;
         font-size: 12px;
+        font-weight: normal;
       }
 
       .sub-title {
