@@ -295,6 +295,11 @@
           /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
+      .tr-detail-cetak-so td {
+          border-bottom: none;
+          border-top: none;
+      }
+
       tr.baris-so {
         height: 15px !important;
       }
@@ -428,6 +433,10 @@
           margin: 0;
           zoom: 1.37;
         }
+
+        /* img {
+          display: none;
+        } */
       }
     </style>
   </head>
@@ -544,9 +553,15 @@
                   } 
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
-                <td style="width: 135px" align="right">
-                  {{ str_replace(".", ",", $itemDet->diskon) }} ({{ $diskon }}%)
-                </td>
+                @if(sizeof($arrDiskon) == 1)
+                  <td style="width: 135px" align="right">
+                    {{ $diskon }}%
+                  </td>
+                @else
+                  <td style="width: 135px" align="right">
+                    {{ str_replace(".", ",", $itemDet->diskon) }} ({{ $diskon }}%)
+                  </td>
+                @endif
                 <td style="width: 65px" align="right">
                   {{ number_format($itemDet->diskonRp, 0, "", ".") }}
                 </td>
