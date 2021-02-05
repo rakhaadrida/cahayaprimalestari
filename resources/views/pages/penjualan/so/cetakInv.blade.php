@@ -12,13 +12,48 @@
           height: 520px;
           /* width: 8.54in;
           height: 5.43in; */
-          font-family: "Arial", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-family: "epson1", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
           font-size: 1.2rem;
           font-weight: 700;
           line-height: 1.5;
           color: #252525;
           text-align: left;
           background-color: #fff;
+      }
+
+      /* @font-face {
+        font-family: "epson1regular";
+        font-weight: 900;
+        color: black;
+        src: url('{{ public_path('backend/fonts/epson1regular.ttf') }}');
+      } */
+
+      @font-face {
+        font-family: "epson1";
+        font-weight: 900;
+        color: black;
+        src: url('{{ public_path('backend/fonts/epson1.woff') }}');
+      }
+
+      /* @font-face {
+        font-family: "bpdots";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/BPdots.otf') }}');
+      } */
+
+      /* @font-face {
+        font-family: "DotriceRegular";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/Dotrice-Regular.ttf') }}');
+      } */
+
+      @font-face {
+        font-family: "buenard";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/Buenard-Regular.ttf') }}');
       }
 
       h1,
@@ -54,7 +89,7 @@
       }
 
       .container-fluid {
-          width: 87%;
+          width: 87.4%;
           padding-right: 0.75rem;
           padding-left: 0.75rem;
           /* margin-right: auto; */
@@ -162,7 +197,7 @@
 
       .header-cetak-so {
           display: inline-block;
-          border: 1.9px dotted;
+          border: 1px dotted;
           border-bottom: none;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
@@ -180,7 +215,8 @@
       }
 
       .title-header {
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: "buenard";
+        /* font-family: Arial, Helvetica, sans-serif; */
         /* font-family: "Fake Receipt", Times, serif; */
         margin-left: 10px !important;
       }
@@ -188,20 +224,20 @@
       .subtitle-cetak-so-one {
         margin-top: -5px;
         margin-left: 10px;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: normal;
       }
 
       .subtitle-cetak-so-second {
-        margin-left: -23px;
+        margin-left: -6px;
         margin-top: -2px;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: normal;
       }
 
       .sub-title {
         /* font-family: 'Courier New', Courier, monospace; */
-        font-family: 'Consolas', Helvetica, sans-serif;
+        /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
       .logo-cetak-so img {
@@ -213,7 +249,7 @@
       }
 
       .customer-cetak-so {
-        font-family: 'Consolas', Helvetica, sans-serif;
+        /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 13px;
         width: 195px;
         margin-top: -95px;
@@ -258,7 +294,7 @@
       }
 
       .th-info-cetak-so {
-        font-family: 'Courier New', Courier, monospace;
+        /* font-family: 'Courier New', Courier, sans-serif; */
         line-height: 6px;
       }
 
@@ -269,7 +305,7 @@
       }
 
       .table-cetak {
-        font-size: 13px;
+        font-size: 12px;
         width: 90.7% !important;
         /* height: 225px; */
         height: 49% !important;
@@ -281,8 +317,8 @@
       }
 
       .table-cetak thead td {
-        padding-top: 0.2rem !important;
-        padding-bottom: 0.3rem !important;
+        padding-top: 0.3rem !important;
+        padding-bottom: 0.2rem !important;
       }
 
       .th-detail-cetak-so {
@@ -315,7 +351,7 @@
 
       .footer-cetak-so {
           /* display: inline-block; */
-          border: 1.9px dotted;
+          border: 1px dotted;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
           border-bottom-left-radius: 10px;
@@ -333,20 +369,21 @@
       }
 
       .ttd-penerima {
+        /* font-family: "Dotrice-Bold"; */
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 13px;
+        font-size: 12px;
         padding-left: 5px;
         margin-bottom: 12px;
         margin-top: 5px;
       }
 
       .info_bayar {
-        font-family: 'Courier New', Courier, monospace;
+        /* font-family: 'Courier New', Courier, monospace; */
         color: black;
         margin-top: -7px;
         margin-left: 5px;
         margin-right: 30px;
-        font-size: 13px;
+        font-size: 12px;
         line-height: 18px;
       }
 
@@ -375,6 +412,7 @@
       }
 
       .total-faktur {
+        /* font-family: "dotricebold"; */
         font-family: Arial, Helvetica, sans-serif;
         margin-top: 0px;
         margin-left: 5px;
@@ -394,15 +432,17 @@
 
       .angka-total {
         width: 175px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 13px;
+        font-family: "epson1";
+        /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+        font-size: 12px;
         padding-right: 0.01rem !important;
       }
 
       .angka-total-akhir {
         width: 145px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 14px;
+        font-family: "epson1";
+        /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+        font-size: 13px;
       }
 
       .waktu-cetak-so {
@@ -516,16 +556,16 @@
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
-          <thead class="text-center th-detail-cetak-so" style="font-weight: 500">
+          <thead class="text-center th-detail-cetak-so" style="font-weight: 600;">
             <tr>
               <td style="width: 10px">No</td>
               <td style="width: 290px">Nama Barang</td>
               <td style="width: 65px" class="text-right">Qty</td>
               <td style="width: 80px"></td>
               <td style="width: 50px">Harga</td>
-              <td style="width: 75px">Total</td>
+              <td style="width: 90px">Total</td>
               <td colspan="2">Diskon</td>
-              <td style="width: 80px; border-right: 1.9px dotted">Netto Rp</td>
+              <td style="width: 80px; border-right: 1px dotted">Netto Rp</td>
             </tr>
           </thead>
           <tbody class="tr-detail-cetak-so">
@@ -594,9 +634,9 @@
           <table class="table-footer">
             <thead>
               <tr>
-                <td style="border-right: 1.9px dotted; width: 90px"> 
+                <td style="border-right: 1px dotted; width: 90px"> 
                   <div class="ttd-penerima">
-                    <table style="font-size: 13px !important">
+                    <table style="font-size: 13px !important;">
                       <tr>
                         <td class="text-center">Penerima,</td>
                       </tr>
@@ -614,7 +654,7 @@
                     <span class="form-ttd">(___________)</span>
                   </div> --}}
                 </td>
-                <td style="border-right: 1.9px dotted; width: 273px">
+                <td style="border-right: 1px dotted; width: 273px">
                   <div class="info_bayar">
                     <span>Pembayaran Giro / Transfer</span>
                     <br>
@@ -646,7 +686,7 @@
                     <span class="form-ttd">(___________)</span> --}}
                   </div>
                 </td>
-                <td style="border-right: 1.9px dotted; width: 88px">
+                <td style="border-right: 1px dotted; width: 88px">
                   <div class="ttd-mengetahui">
                     {{-- <span class="tgl-ttd">
                       {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}

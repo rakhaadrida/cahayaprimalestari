@@ -161,16 +161,16 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-bm-update');
 
         // Transfer Barang
-        Route::get('/transfer', 'TransferBarangController@index')->name('tb');
+        // Route::get('/transfer', 'TransferBarangController@index')->name('tb');
         Route::post('/transfer/create/{id}', 'TransferBarangController@create')
             ->name('tb-create');
-        Route::post('/transfer/process/{id}', 'TransferBarangController@process')
-            ->name('tb-process');
+        // Route::post('/transfer/process/{id}', 'TransferBarangController@process')
+        //     ->name('tb-process');
         Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}','TransferBarangController@remove')->name('tb-remove');
-        Route::get('/tb/index', 'TransferBarangController@indexTab')
-            ->name('tb-index');
-        Route::post('/tb/detail/{id}', 'TransferBarangController@detail')
-            ->name('tb-detail');
+        // Route::get('/tb/index', 'TransferBarangController@indexTab')
+        //     ->name('tb-index');
+        // Route::post('/tb/detail/{id}', 'TransferBarangController@detail')
+        //     ->name('tb-detail');
 
         // Sales Order
         Route::get('/so/index/{status}', 'SalesOrderController@index')->name('so');
@@ -251,6 +251,16 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Rekap Qty Penjualan
         Route::get('qty-sales', 'RekapSalesPrimeController@index')->name('qty-sales');
         Route::post('qty-sales/show', 'RekapSalesPrimeController@show')->name('qs-show');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'KENARI']], function() {
+        Route::get('/transfer', 'TransferBarangController@index')->name('tb');
+        Route::post('/transfer/process/{id}', 'TransferBarangController@process')
+            ->name('tb-process');
+        Route::get('/tb/index', 'TransferBarangController@indexTab')
+            ->name('tb-index');
+        Route::post('/tb/detail/{id}', 'TransferBarangController@detail')
+            ->name('tb-detail');
     });
 
     Route::group(['roles'=>'SUPER'], function() {

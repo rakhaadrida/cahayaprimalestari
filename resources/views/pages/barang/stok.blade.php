@@ -53,8 +53,9 @@
                     name="stok[]" required @if($g->id == $gudang[0]->id) autofocus @endif
                       @foreach($items as $item)
                         @if($item->id_gudang == $g->id)
-                          value="{{ $item->stok }}" @if(Auth::user()->roles != 'SUPER') readonly @endif
+                          value="{{ $item->stok }}" 
                           @break
+                          {{-- @if(Auth::user()->roles != 'SUPER') readonly @endif --}}
                         @endif
                       @endforeach
                     />

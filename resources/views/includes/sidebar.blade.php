@@ -61,6 +61,18 @@
         <span>Stok</span></a>
     </li>
     <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTbKenari" aria-expanded="true" aria-controls="collapseTbKenari">
+        <i class="fas fa-fw fa-shopping-cart"></i>
+        <span>Transfer</span>
+      </a>
+      <div id="collapseTbKenari" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div class="py-2 collapse-inner rounded">
+            <a class="collapse-item" href="{{ route('tb') }}">Input Transfer</a>
+            <a class="collapse-item" href="{{ route('tb-index') }}">Data Transfer</a>
+          </div>
+        </div>
+    </li>
+    <li class="nav-item sidebar-menu-icon" >
       <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseKenari" aria-expanded="true" aria-controls="collapseKenari">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Penjualan</span>
