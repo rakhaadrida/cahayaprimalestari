@@ -260,7 +260,7 @@
 
       .customer-cetak-so {
         /* font-family: 'Consolas', Helvetica, sans-serif; */
-        font-size: 13px;
+        font-size: 14px;
         width: 195px;
         margin-top: -95px;
         margin-right: 105px;
@@ -278,6 +278,7 @@
       }
 
       .alamat-cetak-so {
+        font-size: 14px;
         margin-bottom: -10px;
         line-height: 15px;
       }
@@ -289,7 +290,7 @@
 
       .table-info-cetak-so {
         margin-top: -27px;
-        font-size: 12px;
+        font-size: 13px;
         border-spacing: 0px;
         /* margin-left: 0; // margin Minimum */
         margin-right: 30px;
@@ -316,7 +317,7 @@
       }
 
       .table-cetak {
-        font-size: 12px;
+        font-size: 14px;
         width: 90.7% !important;
         /* height: 225px; */
         height: 49% !important;
@@ -394,7 +395,7 @@
         margin-top: -7px;
         margin-left: 5px;
         margin-right: 30px;
-        font-size: 12px;
+        font-size: 13px;
         line-height: 18px;
       }
 
@@ -445,7 +446,7 @@
         width: 175px;
         font-family: "epson1";
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
-        font-size: 12px;
+        font-size: 14px;
         padding-right: 0.01rem !important;
       }
 
@@ -453,7 +454,7 @@
         width: 145px;
         font-family: "epson1";
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
-        font-size: 13px;
+        font-size: 15px;
       }
 
       .waktu-cetak-so {
