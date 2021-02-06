@@ -279,6 +279,22 @@
               </div>
               <!-- End Button Submit dan Reset -->
 
+              <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title text-bold">Notifikasi Barang</h4>
+                    </div>
+                    <div class="modal-body text-dark">
+                      <h5>Terdapat <b>Kode Barang</b> yang sama. Silahkan <b>Jumlahkan Qty pada Kode Barang yang Sama </b>atau ubah kode barang.</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Modal Konfirmasi Cetak atau Input -->
               <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -918,11 +934,34 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
+  const kdRow = document.querySelectorAll('.kdBrgRow');
+  document.getElementById("submitBM").removeAttribute('data-toggle');
+  document.getElementById("submitBM").removeAttribute('data-target');
+  cek = 0;
+  var kode = [];
+  for(let i = 0; i < (jumBaris.value - kdRow.length); i++) {
+    if(kodeBarang[i].value != '') {
+      kode.push(kodeBarang[i].value);
+    }
+  }
+
+  for(let i = 0; i < kdRow.length; i++) {
+    if(kdRow[i].value != '') {
+      kode.push(kdRow[i].value);
+    }
+  }
+
+  cek = new Set(kode).size !== kode.length;
+
   if((kodeBarang[0].value == "") || (qty[0].value == "") || (tanggal.value == "") || 
   (namaSup.value == "") || (gudang.value == "")) {
     e.stopPropagation();
   }
-  else {
+  else if(cek === true) {
+    document.getElementById("submitBM").dataset.toggle = "modal";
+    document.getElementById("submitBM").dataset.target = "#modalNotif";
+    return false;
+  } else {
     document.getElementById("submitBM").dataset.toggle = "modal";
     document.getElementById("submitBM").dataset.target = "#modalKonfirm";
     return false;
