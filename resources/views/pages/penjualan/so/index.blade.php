@@ -671,12 +671,6 @@ function displayCust(e) {
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
-
-      @foreach($totalKredit as $t)
-        if('{{ $t->id_customer }}' == kodeCust.value) {
-          piutang.value = '{{ $t->total }}';
-        }
-      @endforeach
     }
     else if(e.target.value == '') {
       kodeCust.value = '';
@@ -684,6 +678,12 @@ function displayCust(e) {
       piutang.value = '';
       namaSales.value = '';
       npwp.value = '';
+    }
+  @endforeach
+
+  @foreach($totalKredit as $t)
+    if('{{ $t->id_customer }}' == kodeCust.value) {
+      piutang.value = '{{ $t->total }}';
     }
   @endforeach
 }
@@ -1283,17 +1283,14 @@ function displayRow(e) {
 
   /** Autocomplete Nama  Barang **/
   $(function() {
-    var idBarang = [];
-    var nmBarang = [];
-    @foreach($barang as $b)
-      idBarang.push('{{ $b->id }}');
-      nmBarang.push('{{ $b->nama }}');
-    @endforeach
+    var idBarang = '{{ implode(",", $kodeBarang) }}';
+    idBarang = idBarang.split(',');
 
-    var tipeHrg = [];
-    @foreach($hrg as $h)
-      tipeHrg.push('{{ $h->tipe }}');
-    @endforeach
+    var nmBarang = '{{ implode(",", $namaBarang) }}';
+    nmBarang = nmBarang.split(',');
+
+    var tipeHrg = '{{ implode(",", $hrg) }}';
+    tipeHrg = tipeHrg.split(',');
       
     function split(val) {
       return val.split(/,\s/);
@@ -1938,22 +1935,17 @@ function checkRequired(e) {
 
 /** Autocomplete Input Text **/
 $(function() {
-  var barangKode = [];
-  var barangNama = [];
-  @foreach($barang as $b)
-    barangKode.push('{{ $b->id }}');
-    barangNama.push('{{ $b->nama }}');
-  @endforeach
+  var barangKode = '{{ implode(",", $kodeBarang) }}';
+  barangKode = barangKode.split(',');
 
-  var tipeHarga = [];
-  @foreach($hrg as $h)
-    tipeHarga.push('{{ $h->tipe }}');
-  @endforeach
+  var barangNama = '{{ implode(",", $namaBarang) }}';
+  barangNama = barangNama.split(',');
 
-  var customer = [];
-  @foreach($customer as $c)
-    customer.push('{{ $c->nama }}');
-  @endforeach
+  var tipeHarga = '{{ implode(",", $hrg) }}';
+  tipeHarga = tipeHarga.split(',');
+
+  var customer = '{{ implode(",", $cust) }}';
+  customer = customer.split(',');
     
   function split(val) {
     return val.split(/,\s*/);

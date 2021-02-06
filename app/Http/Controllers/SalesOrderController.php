@@ -28,9 +28,13 @@ class SalesOrderController extends Controller
 {
     public function index($status) {
         $customer = Customer::with(['sales'])->get();
+        $cust = Customer::pluck('nama')->toArray();
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $hrg = Harga::All();
+        // $hrg = Harga::All();
+        $hrg = Harga::pluck('tipe')->toArray();
+        $kodeBarang = Barang::pluck('id')->toArray();
+        $namaBarang = Barang::pluck('nama')->toArray();
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'BIASA')->get();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
@@ -86,7 +90,10 @@ class SalesOrderController extends Controller
 
         $data = [
             'customer' => $customer,
+            'cust' => $cust,
             'barang' => $barang,
+            'kodeBarang' => $kodeBarang,
+            'namaBarang' => $namaBarang,
             'harga' => $harga,
             'hrg' => $hrg,
             'stok' => $stok,
@@ -271,7 +278,8 @@ class SalesOrderController extends Controller
             'waktu' => $waktu
         ];
 
-        return view('pages.penjualan.so.cetakInv', $data);
+        // return view('pages.penjualan.so.cetakInv', $data);
+        return view('pages.penjualan.so.cetakAwal', $data);
 
         // $paper = array(0,0,686,394);
         // $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
