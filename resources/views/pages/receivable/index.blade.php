@@ -89,7 +89,7 @@
               {{-- @endif --}}
 
               <!-- Tabel Data Detil AR -->
-              <input type="hidden" id="kodeSO" name="kodeSO">
+              {{-- <input type="hidden" id="kodeSO" name="kodeSO"> --}}
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ar->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -136,8 +136,9 @@
                     <td align="right" class="align-middle">
                       {{ number_format($arLast->first()->so->total, 0, "", ",") }}
                     </td>
-                    <td class="align-middle">
-                      <input type="text" name="cic{{$arLast->first()->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif >
+                    <td class="text-right align-middle">
+                      {{ $total[0]->totCicil != null ? number_format($total[0]->totCicil, 0, "", ",") : 0}}
+                      {{-- <input type="text" name="cic{{$arLast->first()->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif > --}}
                     </td>
                     <td class="text-right align-middle">
                       <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
@@ -172,8 +173,9 @@
                       <td align="right" class="align-middle">
                         {{ number_format($a->so->total, 0, "", ",") }}
                       </td>
-                      <td class="align-middle">
-                        <input type="text" name="cic{{$a->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif >
+                      <td class="align-middle text-right">
+                        {{ $total[0]->totCicil != null ? number_format($total[0]->totCicil, 0, "", ",") : 0 }}
+                        {{-- <input type="text" name="cic{{$a->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif > --}}
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
@@ -240,7 +242,7 @@ $('.datepicker').datepicker({
 
 const cicil = document.querySelectorAll(".cicil");
 const retur = document.querySelectorAll(".retur");
-const kodeSO = document.getElementById("kodeSO");
+// const kodeSO = document.getElementById("kodeSO");
 const tglAwal = document.getElementById('tglAwal');
 const tglAkhir = document.getElementById('tglAkhir');
 

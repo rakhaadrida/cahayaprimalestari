@@ -69,7 +69,7 @@
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
               <!-- Tabel Data Detil AR -->
-              <input type="hidden" id="kodeBM" name="kodeBM">
+              {{-- <input type="hidden" id="kodeBM" name="kodeBM"> --}}
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ap->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -117,8 +117,9 @@
                       <td align="right" class="align-middle">
                         {{ $apLast->first()->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $potBM[0]->potongan, 0, "", ",") : '' }}
                       </td>
-                      <td class="align-middle">
-                        <input type="text" name="tr{{$apLast->first()->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
+                      <td class="text-right align-middle">
+                        {{ $total[0]->totTransfer != null ? number_format($total[0]->totTransfer, 0, "", ",") : 0 }}
+                        {{-- <input type="text" name="tr{{$apLast->first()->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif> --}}
                       </td>
                       <td class="align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
@@ -161,8 +162,9 @@
                       <td align="right" class="align-middle">
                         {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $potBM[0]->potongan, 0, "", ",") : '' }}
                       </td>
-                      <td class="align-middle">
-                        <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif>
+                      <td class="text-right align-middle">
+                        {{ $total[0]->totTransfer != null ? number_format($total[0]->totTransfer, 0, "", ",") : 0 }}
+                        {{-- <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif> --}}
                       </td>
                       <td class="align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
@@ -242,7 +244,7 @@ $('.datepicker').datepicker({
 });
 
 const transfer = document.querySelectorAll(".transfer");
-const kodeBM = document.getElementById("kodeBM");
+// const kodeBM = document.getElementById("kodeBM");
 const tglAwal = document.getElementById('tglAwal');
 const tglAkhir = document.getElementById('tglAkhir');
 

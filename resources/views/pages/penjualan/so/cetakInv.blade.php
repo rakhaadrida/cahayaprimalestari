@@ -42,12 +42,12 @@
         src: url('{{ public_path('backend/fonts/BPdots.otf') }}');
       } */
 
-      /* @font-face {
-        font-family: "DotriceRegular";
+      @font-face {
+        font-family: "Dotrice";
         font-weight: 800;
         color: black;
-        src: url('{{ public_path('backend/fonts/Dotrice-Regular.ttf') }}');
-      } */
+        src: url('{{ public_path('backend/fonts/Dotrice.ttf') }}');
+      } 
 
       @font-face {
         font-family: "buenard";
@@ -215,7 +215,7 @@
       }
 
       .title-header {
-        font-family: "buenard";
+        /* font-family: "Dotrice"; */
         /* font-family: Arial, Helvetica, sans-serif; */
         /* font-family: "Fake Receipt", Times, serif; */
         margin-left: 10px !important;
