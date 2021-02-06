@@ -101,6 +101,34 @@
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group row customer-detail">
+                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Nomor Faktur</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-2">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
+                              @if($items->count() != 0)
+                                value="{{ $item->id_faktur }}"
+                              @endif
+                              >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col" style="margin-left: -480px">
+                          <div class="form-group row customer-detail">
+                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Supplier</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-8">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
+                              @if($items->count() != 0)
+                                value="{{ $item->supplier->nama }}"
+                              @endif
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group row customer-detail">
                             <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal BM</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-2">
@@ -114,12 +142,12 @@
                         </div> 
                         <div class="col" style="margin-left: -480px">
                           <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Supplier</label>
+                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                             <span class="col-form-label text-bold">:</span>
-                            <div class="col-8">
+                            <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
                               @if($items->count() != 0)
-                                value="{{ $item->supplier->nama }}"
+                                value="{{ \Carbon\Carbon::parse($item->tanggal)->add($item->tempo, 'days')->format('d-M-y') }}"
                               @endif
                               >
                             </div>
@@ -139,19 +167,6 @@
                               @else
                                 value="{{ $item->status }}"
                                 @php $status = $item->status; @endphp
-                              @endif
-                              >
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col" style="margin-left: -480px">
-                          <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Jatuh Tempo</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
-                              @if($items->count() != 0)
-                                value="{{ \Carbon\Carbon::parse($item->tanggal)->add($item->tempo, 'days')->format('d-M-y') }}"
                               @endif
                               >
                             </div>
@@ -372,7 +387,6 @@ function formatTanggal(e) {
     tglAkhir.value = value;
 }
 
-
 function checkEditable(kode) {
   const ket = document.getElementById("ket"+kode.id);
   if(ket.value == "") {
@@ -397,7 +411,7 @@ $(function() {
     supplier.push('{{ $s->nama }}');
   @endforeach
   @foreach($bm as $b)
-    kodeMasuk.push('{{ $b->id }}');
+    kodeMasuk.push('{{ $b->id_faktur }}');
   @endforeach
     
   function split(val) {

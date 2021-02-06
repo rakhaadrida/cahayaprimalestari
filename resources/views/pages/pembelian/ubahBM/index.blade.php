@@ -140,8 +140,10 @@ $(function() {
     supplier.push('{{ $s->nama }}');
   @endforeach
   @foreach($bm as $b)
-    kodeMasuk.push('{{ $b->id }}');
+    kodeMasuk.push('{{ $b->id_faktur }}');
   @endforeach
+
+  console.log(kodeMasuk);
     
   function split(val) {
     return val.split(/,\s*/);

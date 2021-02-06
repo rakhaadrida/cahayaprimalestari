@@ -227,7 +227,7 @@ class BarangMasukController extends Controller
     } */
 
     public function change() {
-        $bm = BarangMasuk::All();
+        $bm = BarangMasuk::orderBy('tanggal', 'desc')->get();
         $supplier = Supplier::All();
 
         $data = [
@@ -252,7 +252,7 @@ class BarangMasukController extends Controller
 
         if($isi == 1) {
             $items = BarangMasuk::with(['supplier', 'gudang', 'need_approval'])
-                    ->where('id', $request->id)
+                    ->where('id_faktur', $request->id)
                     ->orWhere('id_supplier', $request->kode)
                     ->orWhereBetween('tanggal', [$tglAwal, $tglAkhir])
                     ->orderBy('id', 'asc')->get();
@@ -266,7 +266,7 @@ class BarangMasukController extends Controller
         
         $supplier = Supplier::All();
         $stok = StokBarang::All();
-        $bm = BarangMasuk::All();
+        $bm = BarangMasuk::orderBy('tanggal', 'desc')->get();
         
         $data = [
             'items' => $items,
