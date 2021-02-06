@@ -50,6 +50,13 @@
       } 
 
       @font-face {
+        font-family: "Dotrice Bold";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/Dotrice-Bold.otf') }}');
+      } 
+
+      @font-face {
         font-family: "buenard";
         font-weight: 800;
         color: black;
@@ -215,13 +222,15 @@
       }
 
       .title-header {
-        /* font-family: "Dotrice"; */
+        font-family: "Dotrice";
+        font-weight: bold;
         /* font-family: Arial, Helvetica, sans-serif; */
         /* font-family: "Fake Receipt", Times, serif; */
         margin-left: 10px !important;
       }
 
       .subtitle-cetak-so-one {
+        font-family: "Dotrice";
         margin-top: -5px;
         margin-left: 10px;
         font-size: 13px;
@@ -229,6 +238,7 @@
       }
 
       .subtitle-cetak-so-second {
+        font-family: "Dotrice";
         margin-left: -6px;
         margin-top: -2px;
         font-size: 13px;
@@ -261,6 +271,7 @@
       }
 
       .nama-cetak-so {
+        font-family: "Dotrice";
         margin-top: 10px;
         margin-bottom: 5px;
         font-size: 14px;
