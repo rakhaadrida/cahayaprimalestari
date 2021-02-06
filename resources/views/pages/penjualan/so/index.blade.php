@@ -37,13 +37,13 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" >
+                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" required autofocus>
                         {{-- value="{{ $newcode }}" readonly --}}
                       </div>
                       <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tanggal" value="{{ $tanggal }}" readonly>
+                        <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold mt-1" name="tanggal" value="{{ $tanggal }}" required>
                       </div>
                     </div>   
                   </div>
@@ -52,7 +52,7 @@
                   <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" tabindex="1" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
+                    <input type="text" tabindex="3" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required />
                     <input type="hidden" name="kodeCustomer" id="idCustomer">
                     <input type="hidden" name="limit" id="limit">
                     <input type="hidden" name="piutang" id="piutang">
@@ -81,35 +81,35 @@
                       <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="2" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" autocomplete="off" required />
+                        <input type="text" tabindex="4" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" autocomplete="off" required />
                         <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                       </div>
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
                       <div class="col-3" style="margin-top: -35px">
                         <div class="form-check form-check-inline mt-2">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Cash" id="kategori" required>
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Cash" id="kategori" required>
                           <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Prime">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Prime">
                           <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Extrana">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Extrana">
                           <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
                         </div>
                         <br>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Nitto">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Nitto">
                           <label class="form-check-label text-bold text-dark" for="kat3">Nitto</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="MCB">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="MCB">
                           <label class="form-check-label text-bold text-dark" for="kat3">MCB</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="BOSS">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="BOSS">
                           <label class="form-check-label text-bold text-dark" for="kat3">Pipa BOSS</label>
                         </div>
                       </div>
@@ -120,7 +120,7 @@
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="4" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo', 'tem')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" readonly >
+                        <input type="text" tabindex="6" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo', 'tem')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" readonly >
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
@@ -192,7 +192,7 @@
                   </tr>
                 </thead>
                 <tbody id="tablePO">
-                  @php $tab = 5; @endphp
+                  @php $tab = 6; @endphp
                   @for($i=1; $i<=5; $i++)
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>
