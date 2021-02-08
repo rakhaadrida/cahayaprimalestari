@@ -56,9 +56,19 @@ class TransferBarangController extends Controller
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
+
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = TransferBarang::selectRaw('max(id) as id')->whereMonth('tgl_tb', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
+        $lastnumber++;
+        $newcode = 'TB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         
         TransferBarang::create([
-            'id' => $id,
+            'id' => $newcode,
             'tgl_tb' => $tanggal,
             'id_user' => Auth::user()->id
         ]);
@@ -66,7 +76,7 @@ class TransferBarangController extends Controller
         for($i = 0; $i < $jumlah; $i++) {
             if($request->kodeBarang[$i] != "") {
                 DetilTB::create([
-                    'id_tb' => $request->id,
+                    'id_tb' => $newcode,
                     'id_barang' => $request->kodeBarang[$i],
                     'id_asal' => $request->kodeAsal[$i],
                     'id_tujuan' => $request->kodeTujuan[$i],
