@@ -148,7 +148,7 @@
                         <input type="text" name="stokTujuan[]" id="stokTujuan" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokTujuan" value="{{ old('stokTujuan[]') }}">
                       </td>
                       <td> 
-                        <input type="text" tabindex="{{ $tab += 5 }}" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-bold text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="qtyTransfer[]" id="qtyTransfer" class="form-control form-control-sm text-bold text-dark text-center qtyTransfer" value="{{ old('qtyTransfer[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Qty Transfer tidak bisa melebihi Stok Gudang Asal" autocomplete="off" @if($i == 1) required @endif>
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
@@ -314,7 +314,7 @@ function displayRow(e) {
         <input type="text" name="stokTujuan[]" id="stokTujuan${newNum}" readonly class="form-control-plaintext form-control-sm text-dark text-bold text-center stokTujuanRow">
       </td>
       <td> 
-        <input type="text" tabindex="${tab += 5}" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-bold text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+        <input type="text" tabindex="${tab += 5}" name="qtyTransfer[]" id="qtyTransfer${newNum}" class="form-control form-control-sm text-dark text-bold text-center qtyTransferRow" data-toogle="tooltip" data-placement="bottom" title="Qty Transfer tidak bisa melebihi Stok Gudang Asal" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
         <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -426,6 +426,15 @@ function displayRow(e) {
         stok.value = '{{ $s->stok }}';
       }
     @endforeach
+  }
+
+  qtyTransferRow.addEventListener("blur", displayTooltipRow);
+
+  function displayTooltipRow(e) {
+    if(+e.target.value > +stokAsalRow.value) {
+      e.target.value = '';
+      $(e.target).tooltip('show');
+    }
   }
 
   /** Inputan hanya bisa angka **/
@@ -690,6 +699,17 @@ for(let i = 0; i < gdgAsal.length; i++) {
         stok.value = '{{ $s->stok }}';
       }
     @endforeach
+  }
+}
+
+for(let i = 0; i < qtyTransfer.length; i++) {
+  qtyTransfer[i].addEventListener("blur", displayTooltip);
+
+  function displayTooltip(e) {
+    if(+e.target.value > +stokAsal[i].value) {
+      e.target.value = '';
+      $(e.target).tooltip('show');
+    }
   }
 }
 
