@@ -124,6 +124,7 @@ class RekapStokController extends Controller
                 }
                 $k -= $gabung;   
             } 
+            // return response()->json($jenis);
             var_dump($el);
             var_dump($k);
             var_dump($jenis[$el]->nama);
