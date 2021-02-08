@@ -82,9 +82,19 @@ class BarangMasukController extends Controller
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
+
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = BarangMasuk::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
+        $lastnumber++;
+        $newcodeBM = 'BM'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         
         BarangMasuk::create([
-            'id' => $id,
+            'id' => $newcodeBM,
             'id_faktur' => $request->kode,
             'tanggal' => $tanggal,
             'total' => str_replace(".", "", $request->subtotal),
@@ -96,11 +106,6 @@ class BarangMasukController extends Controller
             'diskon' => 'F',
             'id_user' => Auth::user()->id
         ]);
-
-        $waktu = Carbon::now('+07:00');
-        $bulan = $waktu->format('m');
-        $month = $waktu->month;
-        $tahun = substr($waktu->year, -2);
 
         $lastcode = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
                     ->selectRaw('max(ap.id) as id')->whereMonth('tanggal', $month)->get();
@@ -120,7 +125,7 @@ class BarangMasukController extends Controller
         for($i = 0; $i < $jumlah; $i++) {
             if($request->kodeBarang[$i] != "") {
                 DetilBM::create([
-                    'id_bm' => $id,
+                    'id_bm' => $newcodeBM,
                     'id_barang' => $request->kodeBarang[$i],
                     'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $request->qty[$i],
