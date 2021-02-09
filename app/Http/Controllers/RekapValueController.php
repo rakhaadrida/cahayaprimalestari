@@ -52,6 +52,7 @@ class RekapValueController extends Controller
                         $gabung++;
                     }
                 }
+                $jenis = $jenis->values();
                 $k -= $gabung;
             } 
 

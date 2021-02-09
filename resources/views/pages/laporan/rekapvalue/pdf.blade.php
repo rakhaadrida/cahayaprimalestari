@@ -302,12 +302,12 @@
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                           <td colspan="5" align="center">{{ $s->nama }}</td>
                         </tr>
-                        @php $kodeSub = $s->id; @endphp
+                        @php $kodeSub = $s->id; $baris++; @endphp
                       @endif
                       @php 
                         if(($baris + $barang->count()) <= 134)
                           array_push($kode, $s->id); 
-                        $baris++;
+                        
                       @endphp
                       @foreach($barang as $b)
                         @if($baris <= 134)
@@ -319,7 +319,7 @@
                                     ->where('status', 'T')->get();
                           @endphp
                           <tr class="text-dark ">
-                            <td align="center">{{ $i }}</td>
+                            <td align="center">{{ $j }}</td>
                             <td>{{ $b->nama }}</td>
                             <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
                             <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
@@ -327,6 +327,7 @@
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else
+                          @php $status = 1; @endphp
                           @break
                         @endif
                       @endforeach
@@ -368,8 +369,12 @@
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                           <td colspan="5" align="center">{{ $s->nama }}</td>
                         </tr>
+                        @php $kodeSub = $s->id; $baris++; @endphp
                       @endif
-                      @php $baris++; @endphp
+                      @php 
+                        if(($baris + $barang->count()) <= 201)
+                          array_push($kode, $s->id); 
+                      @endphp
                       @foreach($barang as $b)
                         @if($baris <= 201)
                           @php
@@ -380,7 +385,7 @@
                                     ->where('status', 'T')->get();
                           @endphp
                           <tr class="text-dark ">
-                            <td align="center">{{ $i }}</td>
+                            <td align="center">{{ $j }}</td>
                             <td>{{ $b->nama }}</td>
                             <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
                             <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
@@ -388,6 +393,73 @@
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else
+                          @php $status = 1; @endphp
+                          @break
+                        @endif
+                      @endforeach
+                    @else
+                      @php $status = 1; @endphp
+                    @endif
+                  @endif
+                @endforeach
+                @endif
+              </tbody>
+            </table>
+          @endif
+
+          @if($status == 1)
+            <table class="table table-sm table-bordered table-cetak-right">
+              <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
+                <tr>
+                  <td style="width: 5px" class="align-middle">No</td>
+                  <td class="align-middle" class="align-middle">Nama Barang</td>
+                  <td style="width: 40px;" class="align-middle">Harga</td>
+                  <td style="width: 25px;" class="align-middle">Stok</td>
+                  <td style="width: 55px;" class="align-middle">Value</td>
+                </tr>
+              </thead>
+              <tbody id="tablePO">
+                @php $status = 0;
+                    $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
+                          ->whereNotIn('id', $kode)->get();
+                @endphp
+                @if($baris <= 268)
+                  @foreach($sub as $s)
+                  @if($status != 1)
+                    @php
+                      $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                ->whereNotIn('id', $kodeBrg)->get();
+                    @endphp 
+                    @if($baris <= 268)
+                      @if(($s->id != $kodeSub) && ($baris != 268))
+                        <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+                          <td colspan="5" align="center">{{ $s->nama }}</td>
+                        </tr>
+                        @php $kodeSub = $s->id; $baris++; @endphp
+                      @endif
+                      @php 
+                        if(($baris + $barang->count()) <= 268)
+                          array_push($kode, $s->id); 
+                      @endphp
+                      @foreach($barang as $b)
+                        @if($baris <= 268)
+                          @php
+                            $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
+                                    ->where('id_harga', 'HRG01')->get();
+                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                                    DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                                    ->where('status', 'T')->get();
+                          @endphp
+                          <tr class="text-dark ">
+                            <td align="center">{{ $j }}</td>
+                            <td>{{ $b->nama }}</td>
+                            <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
+                            <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
+                            <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
+                          </tr>
+                          @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
+                        @else
+                          @php $status = 1; @endphp
                           @break
                         @endif
                       @endforeach

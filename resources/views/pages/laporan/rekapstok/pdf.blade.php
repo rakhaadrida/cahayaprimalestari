@@ -330,12 +330,11 @@
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                           <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
                         </tr>
-                        @php $kodeSub = $s->id; @endphp
+                        @php $kodeSub = $s->id; $baris++; @endphp
                       @endif
                       @php 
                         if(($baris + $barang->count()) <= 134)
                           array_push($kode, $s->id); 
-                        $baris++;
                       @endphp
                       @foreach($barang as $b)
                         @if($baris <= 134)
@@ -364,6 +363,7 @@
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else
+                          @php $status = 1; @endphp
                           @break
                         @endif
                       @endforeach
@@ -406,10 +406,86 @@
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                           <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
                         </tr>
+                        @php $kodeSub = $s->id; $baris++; @endphp
+                      @endif
+                      @php 
+                        if(($baris + $barang->count()) <= 201)
+                          array_push($kode, $s->id); 
+                      @endphp
+                      @foreach($barang as $b)
+                        @if($baris <= 201)
+                          @php
+                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                                      DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
+                                      ->groupBy('id_barang')->get();
+                          @endphp
+                          <tr class="text-dark ">
+                            <td align="center">{{ $j }}</td>
+                            <td>{{ $b->nama }}</td>
+                            <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
+                            @foreach($gudang as $sg)
+                              @php
+                                if($sg->tipe != 'RETUR') {
+                                  $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
+                                            ->where('id_gudang', $sg->id)->get();
+                                } else {
+                                  $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
+                                            stok')->where('id_barang', $b->id)
+                                            ->where('id_gudang', $sg->id)->get();
+                                }
+                              @endphp
+                              <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
+                            @endforeach
+                          </tr>
+                          @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
+                        @else
+                          @php $status = 1; @endphp
+                          @break
+                        @endif
+                      @endforeach
+                    @else
+                      @php $status = 1; @endphp
+                    @endif
+                  @endif
+                @endforeach
+                @endif
+              </tbody>
+            </table>
+          @endif
+
+          @if($status == 1)
+            <table class="table table-sm table-bordered table-cetak-right">
+              <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
+                <tr>
+                  <td style="width: 5px" class="align-middle">No</td>
+                  <td class="align-middle" class="align-middle">Nama Barang</td>
+                  <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
+                  @foreach($gudang as $g)
+                    <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody id="tablePO">
+                @php $status = 0;
+                    $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
+                          ->whereNotIn('id', $kode)->get();
+                @endphp
+                @if($baris <= 268)
+                  @foreach($sub as $s)
+                  @if($status != 1)
+                    @php
+                      $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                ->whereNotIn('id', $kodeBrg)->get();
+                    @endphp 
+                    @if($baris <= 268)
+                      @if(($s->id != $kodeSub) && ($baris != 268))
+                        <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
+                          <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
+                        </tr>
                       @endif
                       @php $baris++; @endphp
                       @foreach($barang as $b)
-                        @if($baris <= 201)
+                        @if($baris <= 268)
                           @php
                             $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
                                       DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
