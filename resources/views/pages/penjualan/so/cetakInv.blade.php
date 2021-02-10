@@ -12,7 +12,7 @@
           height: 520px;
           /* width: 8.54in;
           height: 5.43in; */
-          font-family: "epson1", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-family: "Calibri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
           font-size: 1.2rem;
           font-weight: 700;
           line-height: 1.5;
@@ -222,7 +222,7 @@
       }
 
       .title-header {
-        font-family: "Dotrice";
+        /* font-family: "Dotrice"; */
         font-weight: bold;
         /* font-family: Arial, Helvetica, sans-serif; */
         /* font-family: "Fake Receipt", Times, serif; */
@@ -230,7 +230,8 @@
       }
 
       .subtitle-cetak-so-one {
-        font-family: "Dotrice";
+        font-family: 'Courier New', Courier, monospace;
+        /* font-family: "Dotrice"; */
         margin-top: -5px;
         margin-left: 10px;
         font-size: 13px;
@@ -238,7 +239,8 @@
       }
 
       .subtitle-cetak-so-second {
-        font-family: "Dotrice";
+        font-family: 'Courier New', Courier, monospace;
+        /* font-family: "Dotrice"; */
         margin-left: -6px;
         margin-top: -2px;
         font-size: 13px;
@@ -259,6 +261,8 @@
       }
 
       .customer-cetak-so {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 500;
         /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 14px;
         width: 195px;
@@ -271,7 +275,7 @@
       }
 
       .nama-cetak-so {
-        font-family: "Dotrice";
+        /* font-family: "Dotrice"; */
         margin-top: 10px;
         margin-bottom: 5px;
         font-size: 14px;
@@ -306,7 +310,7 @@
       }
 
       .th-info-cetak-so {
-        /* font-family: 'Courier New', Courier, sans-serif; */
+        font-family: 'Courier New', Courier, sans-serif;
         line-height: 6px;
       }
 
@@ -382,7 +386,7 @@
 
       .ttd-penerima {
         /* font-family: "Dotrice-Bold"; */
-        font-family: Arial, Helvetica, sans-serif;
+        /* font-family: Arial, Helvetica, sans-serif; */
         font-size: 12px;
         padding-left: 5px;
         margin-bottom: 12px;
@@ -400,7 +404,7 @@
       }
 
       .ttd-gudang {
-        font-family: Arial, Helvetica, sans-serif;
+        /* font-family: Arial, Helvetica, sans-serif; */
         font-size: 13px;
         margin-top: -5px;
         margin-left: 1px;
@@ -409,7 +413,7 @@
       }
 
       .ttd-mengetahui {
-        font-family: Arial, Helvetica, sans-serif;
+        /* font-family: Arial, Helvetica, sans-serif; */
         font-size: 13px;
         margin-top: -10px;
         margin-bottom: -5px;
@@ -425,7 +429,7 @@
 
       .total-faktur {
         /* font-family: "dotricebold"; */
-        font-family: Arial, Helvetica, sans-serif;
+        /* font-family: Arial, Helvetica, sans-serif; */
         margin-top: 0px;
         margin-left: 5px;
         /* border: solid black; */
@@ -444,7 +448,7 @@
 
       .angka-total {
         width: 175px;
-        font-family: "epson1";
+        /* font-family: "epson1"; */
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         font-size: 14px;
         padding-right: 0.01rem !important;
@@ -452,7 +456,7 @@
 
       .angka-total-akhir {
         width: 145px;
-        font-family: "epson1";
+        /* font-family: "epson1"; */
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         font-size: 15px;
       }
@@ -532,7 +536,7 @@
         <br>
 
         <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
-          <thead class="text-center text-bold">
+          <thead class="text-center" style="font-weight: 600">
             <tr class="th-info-cetak-so">
               <td style="width: 120px">No. Order</td>
               <td style="width: 130px">Tgl. Order</td>
@@ -542,7 +546,7 @@
               <td>Route</td>
             </tr>
           </thead>
-          <tbody class="text-bold">
+          <tbody>
             <tr class="tr-info-cetak-so">
               <td align="center">{{ $item->id }}</td>
               <td align="center">
@@ -568,7 +572,7 @@
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
-          <thead class="text-center th-detail-cetak-so" style="font-weight: 600;">
+          <thead class="text-center th-detail-cetak-so">
             <tr>
               <td style="width: 10px">No</td>
               <td style="width: 290px">Nama Barang</td>

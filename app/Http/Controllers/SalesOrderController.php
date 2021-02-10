@@ -278,8 +278,8 @@ class SalesOrderController extends Controller
             'waktu' => $waktu
         ];
 
-        // return view('pages.penjualan.so.cetakInv', $data);
-        return view('pages.penjualan.so.cetakAwal', $data);
+        return view('pages.penjualan.so.cetakInv', $data);
+        // return view('pages.penjualan.so.cetakAwal', $data);
 
         // $paper = array(0,0,686,394);
         // $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
