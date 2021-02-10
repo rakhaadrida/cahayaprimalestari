@@ -1283,11 +1283,12 @@ function displayRow(e) {
 
   /** Autocomplete Nama  Barang **/
   $(function() {
-    var idBarang = '{{ implode(",", $kodeBarang) }}';
-    idBarang = idBarang.split(',');
-
-    var nmBarang = '{{ implode(",", $namaBarang) }}';
-    nmBarang = nmBarang.split(',');
+    var idBarang = [];
+    var nmBarang = [];
+    @foreach($barang as $b)
+      idBarang.push('{{ $b->id }}');
+      nmBarang.push('{{ $b->nama }}');
+    @endforeach
 
     var tipeHrg = '{{ implode(",", $hrg) }}';
     tipeHrg = tipeHrg.split(',');
@@ -1935,17 +1936,20 @@ function checkRequired(e) {
 
 /** Autocomplete Input Text **/
 $(function() {
-  var barangKode = '{{ implode(",", $kodeBarang) }}';
-  barangKode = barangKode.split(',');
-
-  var barangNama = '{{ implode(",", $namaBarang) }}';
-  barangNama = barangNama.split(',');
+  var barangKode = [];
+  var barangNama = [];
+  @foreach($barang as $b)
+    barangKode.push('{{ $b->id }}');
+    barangNama.push('{{ $b->nama }}');
+  @endforeach
 
   var tipeHarga = '{{ implode(",", $hrg) }}';
   tipeHarga = tipeHarga.split(',');
 
-  var customer = '{{ implode(",", $cust) }}';
-  customer = customer.split(',');
+  var customer = [];
+  @foreach($customer as $c)
+    customer.push('{{ $c->nama }}');
+  @endforeach
     
   function split(val) {
     return val.split(/,\s*/);

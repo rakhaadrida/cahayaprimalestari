@@ -71,7 +71,9 @@
                                 ->where('id_gudang', $g->id)->get();  
                       }
                     @endphp
-                    <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
+                    <td class="align-middle" align="center" style="width: 45px">
+                      {{ $stok->count() != 0 ? $stok[0]->stok : '' }}
+                    </td>
                   @endforeach
                 @else
                   @php 
@@ -80,7 +82,9 @@
                             ->where('id_barang', $item->id)
                             ->where('tipe', '!=', 'RETUR')->get();
                   @endphp
-                  <td class="align-middle" align="center" style="width: 45px">{{ $stok->count() != 0 ? $stok[0]->stok : '' }}</td>
+                  <td class="align-middle" align="center" style="width: 45px">
+                    {{ $stok->count() != 0 ? $stok[0]->stok : '' }}
+                  </td>
                 @endif
                 <td align="center" style="width: 15px">
                   {{-- <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
