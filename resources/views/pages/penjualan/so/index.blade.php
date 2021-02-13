@@ -541,7 +541,7 @@
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('so/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('so/cetak/'.$lastSO[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
                 {{-- <iframe src="{{url('so/cetak-ttr/'.$lastcode)}}" id="frameTTR" frameborder="0" hidden></iframe> --}}
               @endif
 

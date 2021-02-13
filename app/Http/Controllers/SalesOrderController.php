@@ -38,6 +38,7 @@ class SalesOrderController extends Controller
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'BIASA')->get();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
+        $lastSO = SalesOrder::where('created_at', '!=', NULL)->latest()->take(1)->get();
 
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');
@@ -102,6 +103,7 @@ class SalesOrderController extends Controller
             'tanggal' => $tanggal,
             'status' => $status,
             'lastcode' => $lastcode,
+            'lastSO' => $lastSO,
             'totalKredit' => $totalPerCust
         ];
 

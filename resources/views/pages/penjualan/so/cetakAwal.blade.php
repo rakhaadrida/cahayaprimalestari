@@ -16,7 +16,7 @@
           font-size: 1.2rem;
           font-weight: 700;
           line-height: 1.5;
-          color: #252525;
+          color: black;
           text-align: left;
           background-color: #fff;
       }
@@ -162,7 +162,7 @@
 
       .header-cetak-so {
           display: inline-block;
-          border: 1.9px dotted;
+          border: 1px dotted;
           border-bottom: none;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
@@ -188,15 +188,16 @@
       .subtitle-cetak-so-one {
         margin-top: -5px;
         margin-left: 10px;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: normal;
       }
 
       .subtitle-cetak-so-second {
-        margin-left: -23px;
+        margin-left: -14px;
         margin-top: -2px;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: normal;
+        letter-spacing: 1.2px;
       }
 
       .sub-title {
@@ -214,10 +215,11 @@
 
       .customer-cetak-so {
         font-family: 'Consolas', Helvetica, sans-serif;
-        font-size: 14px;
+        font-size: 15px;
         width: 195px;
         margin-top: -95px;
         margin-right: 105px;
+        font-weight: normal;
       }
 
       .kode-cetak-so {
@@ -243,7 +245,7 @@
 
       .table-info-cetak-so {
         margin-top: -27px;
-        font-size: 13px;
+        font-size: 14px;
         border-spacing: 0px;
         /* margin-left: 0; // margin Minimum */
         margin-right: 30px;
@@ -270,14 +272,14 @@
       }
 
       .table-cetak {
-        font-size: 13.5px;
+        font-size: 14px;
         width: 90.7% !important;
         /* height: 225px; */
         height: 49% !important;
         /* margin-left: 0; // Margin minimum */
         margin-left: 20px;
         margin-right: 34.5px;
-        margin-top: -14px;
+        margin-top: -13px;
         /* margin-bottom: 40px !important; */
       }
 
@@ -286,9 +288,10 @@
         padding-bottom: 0.4rem !important;
       }
 
-      .th-detail-cetak-so {
+      .th-detail-cetak-so td {
         line-height: 6px;
-        border: 1px dotted;
+        border-top: 1px dotted;
+        border-bottom: 1px dotted;
         /* font-family: monospace, sans-serif; */
       }
 
@@ -307,7 +310,7 @@
         height: 15px !important;
       }
 
-      .table-cetak td:empty {
+      .table-cetak tbody td:empty {
         border-left: 0;
         border-right: 0;
         border-top: 0;
@@ -335,7 +338,7 @@
 
       .ttd-penerima {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 13.5px;
+        font-size: 14px;
         padding-left: 5px;
         margin-bottom: 12px;
         margin-top: 5px;
@@ -347,13 +350,13 @@
         margin-top: -7px;
         margin-left: 5px;
         margin-right: 30px;
-        font-size: 13.5px;
+        font-size: 14px;
         line-height: 18px;
       }
 
       .ttd-gudang {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 13.5px;
+        font-size: 14px;
         margin-top: -5px;
         margin-left: 1px;
         margin-bottom: -6px;
@@ -362,14 +365,14 @@
 
       .ttd-mengetahui {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 13.5px;
+        font-size: 14px;
         margin-top: -10px;
         margin-bottom: -5px;
         line-height: 10px;
       }
 
       .tgl-ttd {
-        font-size: 11px;
+        font-size: 12px;
         line-height: 3px;
         padding-left: 0.4rem; 
         padding-bottom: 0.1rem;
@@ -380,11 +383,11 @@
         margin-top: 0px;
         margin-left: 5px;
         /* border: solid black; */
-        font-size: 12px;
+        font-size: 13px;
       }
 
       .tabel-total-faktur {
-        line-height: 14.5px;
+        line-height: 15px;
         margin-bottom: 3px;
       }
 
@@ -396,14 +399,14 @@
       .angka-total {
         width: 175px;
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
-        font-size: 13px;
+        font-size: 14px;
         padding-right: 0.01rem !important;
       }
 
       .angka-total-akhir {
         width: 145px;
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
-        font-size: 14px;
+        font-size: 15px;
       }
 
       .waktu-cetak-so {
@@ -456,8 +459,8 @@
           <div class="subtitle-cetak-so-one text-center">
             <span class="text-right sub-title">Nomor</span>
             <span>:</span>
-            {{-- <span class="text-bold">{{ $item->id }}</span> --}}
-            <span class="text-bold">IV21000265</span>
+            <span class="text-bold">{{ $item->id }}</span>
+            {{-- <span class="text-bold">IV21000265</span> --}}
           </div>
           <div class="subtitle-cetak-so-second text-center">
             <span class="text-right sub-title">Tanggal</span>
@@ -492,7 +495,7 @@
               <td>Route</td>
             </tr>
           </thead>
-          <tbody class="text-bold">
+          <tbody >
             <tr class="tr-info-cetak-so">
               <td align="center">{{ $item->id }}</td>
               <td align="center">
@@ -520,14 +523,14 @@
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
           <thead class="text-center th-detail-cetak-so" style="font-weight: 500">
             <tr>
-              <td style="width: 10px">No</td>
+              <td style="width: 10px; border-left: 1px dotted">No</td>
               <td style="width: 290px">Nama Barang</td>
               <td style="width: 65px" class="text-right">Qty</td>
               <td style="width: 80px"></td>
               <td style="width: 50px">Harga</td>
               <td style="width: 75px">Total</td>
               <td colspan="2">Diskon</td>
-              <td style="width: 80px; border-right: 1.9px dotted">Netto Rp</td>
+              <td style="width: 80px; border-right: 1px dotted">Netto Rp</td>
             </tr>
           </thead>
           <tbody class="tr-detail-cetak-so">
