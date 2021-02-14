@@ -253,12 +253,28 @@
         /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
-      .logo-cetak-so img {
-        width: 135px;
-        height: 50px;
-        margin-top: -95px;
-        /* margin-left: 5px; // Margin Minimum */
+      .logo-cetak-so {
+        margin-top: -99px;
         margin-left: 20px;
+      }
+ 
+      .logo-cetak-so img {
+        /* width: 135px; */
+        /* height: 50px; */
+        width: 140px;
+        height: 45px;
+        margin-bottom: -2.5px;
+        /* margin-top: -99px; */
+        /* margin-left: 5px; // Margin Minimum */
+        /* margin-left: 20px; */
+      }
+
+      .telpon-logo {
+        font-family: "Rockwell", Helvetica, sans-serif;
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 0px;
+        margin-left: 3px;
       }
 
       .customer-cetak-so {
@@ -267,7 +283,7 @@
         /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 16px;
         width: 195px;
-        margin-top: -95px;
+        margin-top: -103px;
         margin-right: 105px;
       }
 
@@ -346,7 +362,7 @@
       }
 
       .tr-detail-cetak-so {
-          color: black;
+          /* color: black; */
           line-height: 7px;
           /* font-family: 'saxMono', sans-serif; */
           /* font-family: 'Consolas', Helvetica, sans-serif; */
@@ -358,7 +374,8 @@
       }
 
       tr.baris-so {
-        height: 15px !important;
+        /* height: 15px !important; */
+        height: 22px !important;
       }
 
       .table-cetak tbody td:empty {
@@ -390,7 +407,7 @@
       .ttd-penerima {
         /* font-family: "Dotrice-Bold"; */
         /* font-family: Arial, Helvetica, sans-serif; */
-        font-size: 14px;
+        font-size: 15px;
         padding-left: 5px;
         margin-bottom: 12px;
         margin-top: 5px;
@@ -523,7 +540,9 @@
           </div>
         </div>
         <div class="float-left logo-cetak-so">
-          <img src="{{ url('backend/img/Logo_CPL.jpg') }}" alt="">
+          <img src="{{ url('backend/img/Logo_CPL_Only.jpg') }}" alt="">
+          <br>
+          <span class="telpon-logo">Office : 021 - 428 78 662</span>
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
