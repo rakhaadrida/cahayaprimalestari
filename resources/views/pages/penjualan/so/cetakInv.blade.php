@@ -231,6 +231,7 @@
 
       .subtitle-cetak-so-one {
         font-family: 'Courier New', Courier, monospace;
+        color: black;
         /* font-family: "Dotrice"; */
         margin-top: -5px;
         margin-left: 10px;
@@ -240,6 +241,7 @@
 
       .subtitle-cetak-so-second {
         font-family: 'Courier New', Courier, monospace;
+        color: black;
         /* font-family: "Dotrice"; */
         margin-left: -14px;
         margin-top: -2px;
