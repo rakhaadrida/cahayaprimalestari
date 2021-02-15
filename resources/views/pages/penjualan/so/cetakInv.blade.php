@@ -138,7 +138,7 @@
       .table {
           width: 90.1%;
           margin-bottom: 1rem;
-          color:#252525;
+          color: black;
       }
 
       .table th,
@@ -279,6 +279,7 @@
 
       .customer-cetak-so {
         font-family: 'Courier New', Courier, monospace;
+        color: black;
         font-weight: 500;
         /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 16px;
@@ -293,12 +294,14 @@
 
       .nama-cetak-so {
         /* font-family: "Dotrice"; */
+        color: black;
         margin-top: 8px;
         margin-bottom: 5px;
         font-size: 14px;
       }
 
       .alamat-cetak-so {
+        color: black;
         font-size: 14px;
         margin-bottom: -10px;
         line-height: 15px;
@@ -306,6 +309,7 @@
 
       .telepon-cetak-so {
         /* margin-bottom: -15px; */
+        color: black;
         line-height: 18px;
       }
 
