@@ -106,9 +106,10 @@
                                     ->join('customer', 'customer.id', 'so.id_customer')
                                     ->join('barang', 'barang.id', 'detilso.id_barang')
                                     ->select('id_barang')->selectRaw('sum(qty) as qty')
-                                    // ->whereIn('id_kategori', [$jenis])
+                                    ->whereIn('id_kategori', $jenis)
+                                    ->whereNotIn('status', ['BATAL', 'LIMIT'])
                                     ->where('id_customer', $c->id)->whereYear('tgl_so', $tahun)
-                                    ->whereIn(DB::raw('MONTH(tgl_so)'), [$month])
+                                    ->whereIn(DB::raw('MONTH(tgl_so)'), $month)
                                     ->groupBy('id_barang')->orderBy('customer.nama')->get();
                               $cekQty += $qty->count();
                             @endphp

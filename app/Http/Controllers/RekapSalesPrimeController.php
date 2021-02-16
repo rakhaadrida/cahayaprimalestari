@@ -74,7 +74,7 @@ class RekapSalesPrimeController extends Controller
                     break;
                 }
                 else
-                    $month = '';
+                    $month[0] = '';
             }
         }
 
