@@ -112,6 +112,11 @@
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="BOSS">
                           <label class="form-check-label text-bold text-dark" for="kat3">Pipa BOSS</label>
                         </div>
+                        <br>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
+                          <label class="form-check-label text-bold text-dark" for="kat3">Maspion</label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -703,7 +708,7 @@ function formatTanggal(e) {
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
-  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked)) {
+  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
     tempo.removeAttribute('readonly');
     tempo.setAttribute('required', 'true');
   }

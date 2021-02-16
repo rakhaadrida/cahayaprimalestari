@@ -227,6 +227,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/sj/show', 'SuratJalanController@show')->name('sj-show');
         Route::post('/sj/process/{id}', 'SuratJalanController@process')->name('sj-process');
 
+        // Barang Keluar
+        Route::get('bk', 'RekapBKController@index')->name('bk');
+        Route::post('bk/show', 'RekapBKController@show')->name('bk-show');
+        Route::post('bk/excel', 'RekapBKController@excel')->name('bk-excel');
+
         // Kartu Stok
         Route::get('kartu', 'KartuStokController@index')->name('kartu');
         Route::post('kartu/show', 'KartuStokController@show')->name('ks-show');
