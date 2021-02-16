@@ -35,7 +35,7 @@
                   <label for="tanggal" class="col-auto col-form-label text-bold">Tanggal Rekap</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tanggal" id="tanggal" placeholder="DD-MM-YYYY" autocomplete="off" autofocus>
+                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tanggal" id="tanggal" placeholder="DD-MM-YYYY" value="{{ $tanggal }}" autocomplete="off" autofocus>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('rs-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
@@ -65,7 +65,7 @@
                         <h4 class="text-bold text-dark">Rekap Stok {{ $item->nama }}</h4>
                       </div>
                       <div class="row justify-content-center" style="margin-top: -5px">
-                        <h6 class="text-dark ">Waktu : {{ \Carbon\Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss') }}</h6>
+                        <h5 class="text-dark">Tanggal Rekap : {{ $tglRekap }}</h5>
                       </div>
                     </div>
 
@@ -98,24 +98,35 @@
                               $stok = \App\Models\StokBarang::with(['barang'])
                                   ->select('id_barang', DB::raw('sum(stok) as total'))
                                   ->where('id_barang', $b->id)->groupBy('id_barang')->get();
+                              $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                      ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                      ->whereBetween('tgl_so', [$awal, $kemarin])->get();
                             @endphp
                             <tr class="text-dark text-bold collapse show" id="collapseSub{{$s->id}}">
                               <td align="center">{{ $i }}</td>
                               <td align="center">{{ $b->id }}</td>
                               <td>{{ $b->nama }}</td>
-                              <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
+                              <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty : '' }}</td>
                               @foreach($gudang as $g)
                                 @php
                                   if($g->tipe != 'RETUR') {
                                     $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
                                               ->where('id_gudang', $g->id)->get();
+                                    $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                                ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                                ->where('id_gudang', $g->id)->whereBetween('tgl_so', [$awal, $kemarin])
+                                                ->get();
                                   } else {
                                     $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
                                               stok')->where('id_barang', $b->id)
                                               ->where('id_gudang', $g->id)->get();
+                                    $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                                ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                                ->where('id_gudang', $g->id)->whereBetween('tgl_so', [$awal, $kemarin])
+                                                ->get();
                                   }
                                 @endphp
-                                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
+                                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0) && ($tambahGd->count() != 0)) ? $stokGd[0]->stok + $tambahGd->first()->qty : '' }}</td>
                               @endforeach
                             </tr>
                             @php $i++; @endphp

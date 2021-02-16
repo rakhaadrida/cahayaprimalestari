@@ -33,42 +33,22 @@ class RekapStokController extends Controller
 
     public function show(Request $request) {
         $awal = $request->tanggal;
-        $akhir = Carbon::now('+07:00')->format('Y-m-d');
+        $tglAwal = Carbon::parse($awal)->format('Y-m-d');
+        $tglRekap = Carbon::parse($awal)->isoFormat('dddd, D MMMM Y');
+        $jenis = JenisBarang::All();
         $gudang = Gudang::All();
-        $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
-                        ->groupBy('id_barang')->get();
-        $i = 0;
-        $stokAwal = [];
-        foreach($stok as $s) {
-            $stokAwal[$i] = $s->total;
-            $itemsBM = \App\Models\DetilBM::with(['bm', 'barang'])
-                        ->where('id_barang', $s->id_barang)
-                        ->whereHas('bm', function($q) use($awal, $akhir) {
-                            $q->whereBetween('tanggal', [$awal, $akhir]);
-                        })->get();
-            foreach($itemsBM as $bm) {
-                $stokAwal[$i] -= $bm->qty;
-            }
-
-            $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
-                        ->where('id_barang', $s->id_barang)
-                        ->whereHas('so', function($q) use($awal, $akhir) {
-                            $q->whereBetween('tgl_so', [$awal, $akhir]);
-                        })->get();
-            foreach($itemsSO as $so) {
-                $stokAwal[$i] += $so->qty;
-            }
-            $i++;
-        }
+        $kemarin = Carbon::yesterday()->toDateString();
 
         $data = [
-            'awal' => $awal,
-            'stokAwal' => $stokAwal,
+            'awal' => $tglAwal,
+            'jenis' => $jenis,
             'gudang' => $gudang,
-            'stok' => $stok,
+            'kemarin' => $kemarin,
+            'tanggal' => $request->tanggal,
+            'tglRekap' => $tglRekap
         ];
 
-        return view('pages.laporan.rekapstok.index', $data);
+        return view('pages.laporan.rekapstok.show', $data);
     }
 
     public function cetak() {
