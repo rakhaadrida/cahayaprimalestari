@@ -51,9 +51,9 @@
                 {{-- <div class="col-2">
                   <a href="{{ url('/rekap/cetak') }}" class="btn btn-primary btn-block text-bold btnprnt">Print</a>
                 </div> --}}
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                {{-- <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                   <button type="submit" formaction="{{ route('rs-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
-                </div>
+                </div> --}}
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                   <button type="submit" formaction="{{ route('bk-excel') }}" formmethod="POST"  class="btn btn-danger btn-block text-bold">Download Excel</>
                 </div>
