@@ -179,6 +179,18 @@
                       </tbody>
                     </table> --}}
 
+                    @php 
+                      if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
+                        $itemsGudang = \App\Models\NeedAppDetil::with(['barang'])
+                                  ->select('id_gudang')->where('id_app', $item->need_approval->last()->id)
+                                  ->groupBy('id_gudang')->get();
+                      } else {
+                        $itemsGudang = \App\Models\DetilSO::with(['barang'])
+                                  ->select('id_gudang')->where('id_so', $item->id)
+                                  ->groupBy('id_gudang')->get();
+                      }
+                    @endphp
+
                     <!-- Tabel Data Detil PO -->
                     <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                       <thead class="text-center text-bold text-dark">
@@ -189,6 +201,9 @@
                         @foreach($gudang as $g)
                           <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
                         @endforeach
+                        {{-- @foreach($itemsGudang as $g)
+                          <td style="width: 50px">{{ $g->gudang->nama }}</td>
+                        @endforeach --}}
                         <td>Harga</td>
                         <td>Jumlah</td>
                         <td style="width: 100px">Diskon(%)</td>
@@ -208,7 +223,7 @@
                                         ->get();
                             } else {
                               $itemsDetail = \App\Models\DetilSO::with(['barang'])
-                                        ->select('id_barang', 'diskon')
+                                        ->select('id_barang', 'id_gudang', 'diskon')
                                         ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
                                         ->where('id_so', $item->id)
                                         ->groupBy('id_barang', 'diskon')
@@ -240,6 +255,7 @@
                                   <td></td>
                                 @endif
                               @endforeach
+                              {{-- <td align="right">{{ $itemDet->qty }}</td> --}}
                               <td align="right">
                                 {{ number_format($itemDet->harga, 0, "", ".") }}
                               </td>
