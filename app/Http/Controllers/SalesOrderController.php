@@ -269,7 +269,32 @@ class SalesOrderController extends Controller
     }
 
     public function cetak(Request $request, $id) {
-        $items = SalesOrder::with(['customer'])->where('id', $id)->get();
+        $items = SalesOrder::where('id', $id)->get();
+        $tabel = ceil($items->first()->detilso->count() / 12);
+
+        if($tabel > 1) {
+            for($i = 1; $i < $tabel; $i++) {
+                $item = collect([
+                    'id' => $items->first()->id,
+                    'tgl_so' => $items->first()->tgl_so,
+                    'tgl_kirim' => $items->first()->tgl_kirim,
+                    'total' => $items->first()->total,
+                    'diskon' => $items->first()->diskon,
+                    'kategori' => $items->first()->kategori,
+                    'tempo' => $items->first()->tempo,
+                    'pkp' => $items->first()->pkp,
+                    'status' => $items->first()->status,
+                    'id_customer' => $items->first()->id_customer,
+                    'id_user' => $items->first()->id_user,
+                    // 'detilso' => $items->first()->detilso
+                ]);
+
+                $items->push($item);
+            }
+        }
+
+        $items = $items->values();
+
         $today = Carbon::now()->isoFormat('dddd, D MMM Y');
         $waktu = Carbon::now();
         $waktu = Carbon::parse($waktu)->format('H:i:s');
