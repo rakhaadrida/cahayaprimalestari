@@ -28,6 +28,7 @@ class LapKeuController extends Controller
 
         $jenis = JenisBarang::All();
         $sales = Sales::All();
+        $salesOff = Sales::where('id', 'SLS03')->get();
 
         $items = $this->getItems($month, $tahun);
         $retur = $this->getRetur($month, $tahun);
@@ -41,6 +42,7 @@ class LapKeuController extends Controller
             'month' => $month,
             'jenis' => $jenis,
             'sales' => $sales,
+            'salesOff' => $salesOff,
             'items' => $items,
             'retur' => $retur,
             'hppPerKat' => $hppPerKat
@@ -64,6 +66,7 @@ class LapKeuController extends Controller
 
         $jenis = JenisBarang::All();
         $sales = Sales::All();
+        $salesOff = Sales::where('id', 'SLS03')->get();
 
         $items = $this->getItems($month, $tahun);
         $retur = $this->getRetur($month, $tahun);
@@ -77,6 +80,7 @@ class LapKeuController extends Controller
             'month' => $month,
             'jenis' => $jenis,
             'sales' => $sales,
+            'salesOff' => $salesOff,
             'items' => $items,
             'retur' => $retur,
             'hppPerKat' => $hppPerKat

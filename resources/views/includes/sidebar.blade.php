@@ -51,6 +51,11 @@
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Penjualan</span></a>
     </li>
+    <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link" href="{{ route('lap-keu') }}">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Laporan</span></a>
+    </li>
   @endif
 
   @if(Auth::user()->roles == 'KENARI')

@@ -250,8 +250,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('value/excel', 'RekapValueController@cetak_excel')->name('val-excel');
 
         // Laporan Keuangan
-        Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
-        Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
+        // Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
+        // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
 
         // Rekap Qty Penjualan
         Route::get('qty-sales', 'RekapSalesPrimeController@index')->name('qty-sales');
@@ -406,6 +406,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::group(['roles'=>['OFFICE02', 'GUDANG', 'AR']], function() {
         // Account Payable
         Route::get('stok/index', 'BarangController@index')->name('stok-office');
+    });
+
+    Route::group(['roles'=>['ADMIN', 'SUPER', 'OFFICE02']], function() {
+        // Laporan Keuangan
+        Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
+        Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
     });
 
     Route::group(['roles'=>'KENARI'], function() {

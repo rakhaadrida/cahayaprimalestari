@@ -75,7 +75,11 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $no = 1; @endphp
+                  @php 
+                    $no = 1; 
+                    if(Auth::user()->roles == 'OFFICE02')
+                      $sales = $salesOff;
+                  @endphp
                   @forelse($sales as $s)
                     <tr class="text-dark">
                       <td align="center" class="align-middle" 
