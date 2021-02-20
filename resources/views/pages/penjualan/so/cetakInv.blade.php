@@ -145,16 +145,16 @@
       .table td {
           padding: 0.75rem;
           vertical-align: top;
-          border-top: 1px solid #afbbc5;
+          border-top: 1px solid black;
       }
 
       .table thead th {
           vertical-align: bottom;
-          border-bottom: 1px solid #afbbc5;
+          border-bottom: 1px solid black;
       }
 
       .table tbody+tbody {
-          border-top: 1px solid #afbbc5;
+          border-top: 1px solid black;
       }
 
       .table-sm th,
@@ -204,7 +204,8 @@
 
       .header-cetak-so {
           display: inline-block;
-          border: 1px dotted;
+          color: black;
+          border: 1.4px dotted black;
           border-bottom: none;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;

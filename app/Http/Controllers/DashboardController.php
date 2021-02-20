@@ -201,7 +201,7 @@ class DashboardController extends Controller
                         ->where('id_ar', $s->id)->get();
                 $s->total -= $retur[0]->total;
                 $s->{'cicil'} = $detil[0]->total;
-                $total = round(($detil[0]->total * 100) / ($s->total - $s->retur), 2);
+                $total = round(($detil[0]->total * 100) / (($s->total != 0) ? $s->total - $s->retur : (($detil[0]->total != 0) ? $detil[0]->total : 1 + 100)), 2);
                 $piutang = $s->total - $s->retur - $detil[0]->total;
                 $s->{'piutang'} = $piutang;
                 if($total <= 25) {
