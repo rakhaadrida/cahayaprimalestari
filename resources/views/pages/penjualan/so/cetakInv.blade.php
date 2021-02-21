@@ -101,6 +101,7 @@
           padding-left: 0.75rem;
           /* margin-right: auto; */
           margin-left: auto;
+          color: black;
       }
 
       .text-center {
@@ -205,10 +206,12 @@
       .header-cetak-so {
           display: inline-block;
           color: black;
-          border: 1.4px dotted black;
+          border: 1.4px dotted;
           border-bottom: none;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
+          border-left: 1px solid black;
+          border-right: 1px solid black;
           padding-top: 5px;
           padding-bottom: 10px;
           /* margin-top: 0px; */
@@ -235,7 +238,7 @@
         color: black;
         /* font-family: "Dotrice"; */
         margin-top: -5px;
-        margin-left: 10px;
+        margin-left: 8px;
         font-size: 15px;
         font-weight: normal;
       }
@@ -244,7 +247,7 @@
         font-family: 'Courier New', Courier, monospace;
         color: black;
         /* font-family: "Dotrice"; */
-        margin-left: -14px;
+        margin-left: 0px;
         margin-top: -2px;
         font-size: 15px;
         font-weight: normal;
@@ -252,6 +255,7 @@
       }
 
       .sub-title {
+        font-family: 'Calibri', Helvetica, sans-serif;
         /* font-family: 'Courier New', Courier, monospace; */
         /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
@@ -275,13 +279,13 @@
       .telpon-logo {
         font-family: "Rockwell", Helvetica, sans-serif;
         font-size: 10.5px;
-        font-weight: 800;
+        font-weight: 900;
         line-height: 0px;
         margin-left: 3px;
       }
 
       .customer-cetak-so {
-        font-family: 'Courier New', Courier, monospace;
+        /* font-family: 'Courier New', Courier, monospace; */
         color: black;
         font-weight: 500;
         /* font-family: 'Consolas', Helvetica, sans-serif; */
@@ -300,12 +304,12 @@
         color: black;
         margin-top: 8px;
         margin-bottom: 5px;
-        font-size: 14px;
+        font-size: 16px;
       }
 
       .alamat-cetak-so {
         color: black;
-        font-size: 14px;
+        font-size: 15px;
         margin-bottom: -10px;
         line-height: 15px;
       }
@@ -317,7 +321,7 @@
       }
 
       .table-info-cetak-so {
-        margin-top: -27px;
+        margin-top: -30px;
         font-size: 15px;
         border-spacing: 0px;
         /* margin-left: 0; // margin Minimum */
@@ -400,6 +404,8 @@
           border-top-right-radius: 10px;
           border-bottom-left-radius: 10px;
           border-bottom-right-radius: 10px;
+          border-left: 1px solid black;
+          border-right: 1px solid black;
           margin-bottom: -40px;
           /* margin-left: 0;  // Margin minimum */
           margin-left: 20px;
@@ -476,7 +482,7 @@
       }
 
       .angka-total {
-        width: 175px;
+        width: 180px;
         /* font-family: "epson1"; */
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         font-size: 16px;
@@ -609,7 +615,7 @@
           <thead class="text-center th-detail-cetak-so">
             <tr>
               <td style="width: 10px; border-left: 1px dotted">No</td>
-              <td style="width: 290px">Nama Barang</td>
+              <td style="width: 340px">Nama Barang</td>
               <td style="width: 75px">Qty</td>
               {{-- <td style="width: 65px" class="text-right">Qty</td> --}}
               {{-- <td style="width: 80px"></td> --}}
@@ -650,17 +656,18 @@
                   } 
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
-                @if(sizeof($arrDiskon) == 1)
-                  {{-- <td style="width: 135px" align="right"> --}}
-                    <td style="width: 135px; font-size: 14.5px" align="right">
+                {{-- @if(sizeof($arrDiskon) == 1)
+                  <td style="width: 135px; font-size: 14.5px" align="right">
                     {{ $diskon }}%
                   </td>
                 @else
-                  {{-- <td style="width: 135px" align="right"> --}}
                   <td style="width: 135px; font-size: 14.5px" align="right">
                     {{ str_replace(".", ",", $itemDet->diskon) }} ({{ $diskon }}%)
                   </td>
-                @endif
+                @endif --}}
+                <td style="width: 55px; font-size: 14.5px" align="right">
+                  {{ $diskon }}%
+                </td>
                 <td style="width: 65px" align="right">
                   {{ number_format($itemDet->diskonRp, 0, "", ".") }}
                 </td>
@@ -676,8 +683,8 @@
             @if($itemsDet->count() < 12)
               <tr class="text-center">
                 <td colspan="8"></td>
-                <td></td>
-                <td colspan="2"></td>
+                {{-- <td></td>
+                <td colspan="2"></td> --}}
               </tr>
             @endif
           </tbody>
@@ -697,7 +704,7 @@
               <tr>
                 <td style="border-right: 1px dotted; width: 90px"> 
                   <div class="ttd-penerima">
-                    <table style="font-size: 13px !important;">
+                    <table style="font-size: 15px !important;">
                       <tr>
                         <td class="text-center">Penerima,</td>
                       </tr>
@@ -731,7 +738,7 @@
                 </td>
                 <td style="width: 90px">
                   <div class="ttd-gudang">
-                    <table style="font-size: 13px !important">
+                    <table style="font-size: 15px !important">
                       <tr>
                         <td class="text-center">Gudang,</td>
                       </tr>
@@ -752,7 +759,7 @@
                     {{-- <span class="tgl-ttd">
                       {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
                     </span> --}}
-                    <table style="font-size: 13px !important">
+                    <table style="font-size: 15px !important">
                       <tr>
                         <td class="tgl-ttd">{{ \Carbon\Carbon::parse($items->first()->tgl_so)->format('d-M-y')}}</td>
                       </tr>
@@ -779,19 +786,19 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total + $items->first()->diskon, 0, "", ".") : 'Bersambung' }}</td>
+                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total + $items->first()->diskon, 0, "", ".") : '' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Disc Faktur</td>
-                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->diskon, 0, "", ".") : 'ke' }}</td>
+                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->diskon, 0, "", ".") : 'Bersambung' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
-                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : 'Halaman' }}</td>
+                        <td class="text-right angka-total" @if($itemsDet->count() > 12) style="letter-spacing: 0.7px;" @endif>{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : 'ke halaman' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">PPN</td>
-                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? '' : 'Berikutnya' }}</td>
+                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? '' : 'berikutnya...' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total"></td>
