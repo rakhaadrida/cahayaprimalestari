@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapStokExport;
+use App\Exports\RekapStokFilterExport;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,6 +30,11 @@ class RekapStokController extends Controller
         ];
         
         return view('pages.laporan.rekapstok.index', $data);
+    }
+
+    public function formatTanggal($tanggal, $format) {
+        $formatTanggal = Carbon::parse($tanggal)->format($format);
+        return $formatTanggal;
     }
 
     public function show(Request $request) {
@@ -122,6 +128,19 @@ class RekapStokController extends Controller
     }
 
     public function cetak_excel() {
-        return Excel::download(new RekapStokExport, 'rekap-stok.xlsx');
+        $tanggal = Carbon::now('+07:00')->toDateString();
+        $tanggal = $this->formatTanggal($tanggal, 'd M y');
+
+        return Excel::download(new RekapStokExport, 'Rekap-Stok-'.$tanggal.'.xlsx');
+    }
+
+    public function excel_filter(Request $request) {
+        $tglAwal = $request->tanggal;
+        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+
+        $awal = $this->formatTanggal($tglAwal, 'd M y');
+        $tanggal = $awal;
+
+        return Excel::download(new RekapStokFilterExport($tglAwal), 'Rekap-Stok-'.$tanggal.'.xlsx');
     }
 }

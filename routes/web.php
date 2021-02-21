@@ -243,6 +243,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
         Route::post('rekap/pdf', 'RekapStokController@cetak_pdf')->name('rs-pdf');
         Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');
+        Route::post('rekap/excel/filter', 'RekapStokController@excel_filter')->name('rs-excel-filter');
 
         // Rekap Value
         Route::get('value', 'RekapValueController@index')->name('value');
