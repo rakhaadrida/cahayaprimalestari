@@ -179,6 +179,24 @@ class BarangMasukController extends Controller
 
     public function cetak(Request $request, $id) {
         $items = BarangMasuk::where('id', $id)->get();
+        $tabel = ceil($items->first()->detilbm->count() / 8);
+
+        if($tabel > 1) {
+            for($i = 1; $i < $tabel; $i++) {
+                $item = collect([
+                    'id' => $items->first()->id,
+                    'id_faktur' => $items->first()->id_faktur,
+                    'tanggal' => $items->first()->tanggal,
+                    'total' => $items->first()->total,
+                    'id_supplier' => $items->first()->id_supplier,
+                    'id_user' => $items->first()->id_user,
+                ]);
+
+                $items->push($item);
+            }
+        }
+        $items = $items->values();
+
         $today = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y');
         $waktu = Carbon::now('+07:00');
         $waktu = Carbon::parse($waktu)->format('H:i:s');
