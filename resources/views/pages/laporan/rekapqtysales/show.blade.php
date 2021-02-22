@@ -52,6 +52,9 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('qs-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
                   </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="6" formaction="{{ route('qty-sales') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
+                  </div>
                 </div>  
               </div> 
               <hr> 

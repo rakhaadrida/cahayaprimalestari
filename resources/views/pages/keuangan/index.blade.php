@@ -31,13 +31,13 @@
                 <div class="form-group row justify-content-center">
                   <label for="tahun" class="col-auto col-form-label text-bold">Tahun</label>
                   <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="tahun" id="tahun" autofocus>
+                  <div class="col-1">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="tahun" id="tahun" autofocus required>
                   </div>
                   <label for="bulan" class="col-auto col-form-label text-bold ">Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" id="bulan" name="bulan">
+                    <input type="text" class="form-control form-control-sm text-bold mt-1" id="bulan" name="bulan" required>
                   </div>
                   <div class="col-2 col-xl-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('lap-keu-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
