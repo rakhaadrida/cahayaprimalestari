@@ -178,7 +178,7 @@
                             <td align="center" class="align-middle">{{ $i }}</td>
                             <td align="center" class="align-middle">{{ \Carbon\Carbon::parse($it->tanggal)->format('d-M-y') }}</td>
                             <td class="align-middle">
-                              @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV'))Penjualan Barang @else Transfer Barang @endif
+                              @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'TB'))Transfer Barang @else Penjualan Barang @endif
                             </td>
                             <td class="align-middle">{{ $it->id }}</td>
                             @php
@@ -190,18 +190,18 @@
                                 $total = ($namaBM->count() != 0 ? $namaBM->first()->total : '0');
                                 $user = ($namaBM->count() != 0 ? $namaBM->first()->user->name: '0');
                               }
-                              elseif((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV')) {
-                                $namaSO = \App\Models\SalesOrder::where('id', $it->id)->get();
-                                $nama = ($namaSO->count() != 0 ? $namaSO->first()->customer->nama : '0');
-                                $total = ($namaSO->count() != 0 ? $namaSO->first()->total : '0');
-                                $user = ($namaSO->count() != 0 ? $namaSO->first()->user->name: '0');
-                              } 
-                              else {
+                              elseif((substr($it->id, 0, 2) == 'TB')) {
                                 $namaTB = \App\Models\DetilTB::where('id_tb', $it->id)
                                           ->where('id_barang', $item->id)->get();
                                 $nama = ($namaTB->count() != 0 ? $namaTB->first()->gudangAsal->nama : '0');
                                 $namaGud = ($namaTB->count() != 0 ? $namaTB->first()->gudangTuju->nama: '0');
                                 $user = ($namaTB->count() != 0 ? $namaTB->first()->tb->user->name: '0');
+                              } 
+                              else {
+                                $namaSO = \App\Models\SalesOrder::where('id', $it->id)->get();
+                                $nama = ($namaSO->count() != 0 ? $namaSO->first()->customer->nama : '0');
+                                $total = ($namaSO->count() != 0 ? $namaSO->first()->total : '0');
+                                $user = ($namaSO->count() != 0 ? $namaSO->first()->user->name: '0');
                               }
                             @endphp
                             <td class="align-middle">{{ $nama }}</td>
@@ -216,7 +216,7 @@
                               {{ substr($it->id, 0, 2) == 'BM' ? number_format($total, 0, "", ".") : '' }}
                             </td>
                             <td class="align-middle" align="right">
-                              {{ ((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV')) ? $it->qty : '' }}
+                              {{ ((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB')) ? $it->qty : '' }}
                             </td>
                             @foreach($gudang as $g)
                               @php
@@ -232,7 +232,7 @@
                               @endif
                             @endforeach
                             <td class="align-middle" align="right">
-                              {{ ((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV')) ? number_format($total, 0, "", ".") : '' }}
+                              {{ ((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB')) ? number_format($total, 0, "", ".") : '' }}
                             </td>
                             <td class="align-middle" align="center">
                               {{ $user }} <br> {{ \Carbon\Carbon::parse($it->updated_at)->format('H:i:s') }}
@@ -240,7 +240,7 @@
                             @php
                               if(substr($it->id, 0, 2) == 'BM') 
                                 $totalBM += $it->qty; 
-                              elseif((substr($it->id, 0, 2) == 'IN') || (substr($it->id, 0, 2) == 'IV'))
+                              elseif((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB'))
                                 $totalSO += $it->qty;
                             @endphp
                           </tr>
