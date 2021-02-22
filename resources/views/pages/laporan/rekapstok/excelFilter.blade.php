@@ -37,11 +37,14 @@
               $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                         ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
                         ->whereBetween('tgl_so', [$awal, $kemarin])->get();
+              $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                        ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                        ->whereBetween('tanggal', [$awal, $kemarin])->get();
             @endphp
             <tr class="text-dark ">
               <td align="center">{{ $i }}</td>
               <td>{{ $b->nama }}</td>
-               <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
+               <td align="right">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : ''}}</td>
               @foreach($gudang as $g)
                 @php
                   if($g->tipe != 'RETUR') {
@@ -51,6 +54,10 @@
                                 ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
                                 ->where('id_gudang', $g->id)->whereBetween('tgl_so', [$awal, $kemarin])
                                 ->get();
+                    $kurangGd = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                ->where('id_gudang', $g->id)->whereBetween('tanggal', [$awal, $kemarin])
+                                ->get();
                   } else {
                     $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
                               stok')->where('id_barang', $b->id)
@@ -59,9 +66,13 @@
                               ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
                               ->where('id_gudang', $g->id)->whereBetween('tgl_so', [$awal, $kemarin])
                               ->get();
+                    $kurangGd = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                              ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                              ->where('id_gudang', $g->id)->whereBetween('tanggal', [$awal, $kemarin])
+                              ->get();
                   }
                 @endphp
-                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0) && ($tambahGd->count() != 0)) ? $stokGd[0]->stok + $tambahGd->first()->qty : '' }}</td>
+                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0) && (($tambahGd->count() != 0) || ($kurangGd->count() != 0))) ? $stokGd[0]->stok + $tambahGd->first()->qty - $kurangGd->first()->qty : '' }}</td>
               @endforeach
             </tr>
             @php $i++ @endphp
