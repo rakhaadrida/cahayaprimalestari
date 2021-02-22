@@ -11,7 +11,7 @@
           font-size: 1rem;
           font-weight: 400;
           line-height: 1.5;
-          color: #858796;
+          color: black;
           text-align: left;
           background-color: #fff;
       }
@@ -65,8 +65,14 @@
       }
 
       .text-dark {
-          color: #292a2b !important;
+          color: black !important;
       }
+
+      /* .text-truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      } */
       
       .text-right {
           text-align: right !important;
@@ -92,23 +98,24 @@
       .table {
           width: 100%;
           margin-bottom: 1rem;
-          color: #858796;
+          color: black;
+          /* table-layout: fixed; */
       }
 
       .table th,
       .table td {
           padding: 0.75rem;
           vertical-align: top;
-          border-top: 1px solid #afbbc5;
+          border-top: 1px solid black;
       }
 
       .table thead th {
           vertical-align: bottom;
-          border-bottom: 1px solid #afbbc5;
+          border-bottom: 1px solid black;
       }
 
       .table tbody+tbody {
-          border-top: 1px solid #afbbc5;
+          border-top: 1px solid black;
       }
 
       .table-sm th,
@@ -120,12 +127,12 @@
       }
 
       .table-bordered {
-          border: 1px solid #afbbc5;
+          border: 1px solid black;
       }
 
       .table-bordered th,
       .table-bordered td {
-          border: 1px solid #afbbc5;
+          border: 1px solid black;
       }
 
       .table-bordered thead th,
@@ -171,8 +178,11 @@
       .table-cetak td {
         padding-top: 0rem !important;
         padding-bottom: 0.1rem !important;
-        border: 0.5px solid #292a2b !important;
+        border: 0.5px solid black !important;
         border-width: thin !important;
+        /* overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; */
       }
 
       .table-cetak-right {
@@ -191,7 +201,7 @@
       .table-cetak-right td {
         padding-top: 0rem !important;
         padding-bottom: 0.1rem !important;
-        border: 0.5px solid #292a2b !important;
+        border: 0.5px solid black !important;
         border-width: thin !important;
       }
     </style>
@@ -216,7 +226,7 @@
             <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
               <tr>
                 <td style="width: 5px" class="align-middle">No</td>
-                <td class="align-middle" class="align-middle">Nama Barang</td>
+                <td class="align-middle">Nama Barang</td>
                 <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
                 @foreach($gudang as $g)
                   <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
@@ -267,7 +277,7 @@
                         @endphp
                         <tr class="text-dark ">
                           <td align="center">{{ $i }}</td>
-                          <td>{{ $b->nama }}</td>
+                          <td class="text-truncate">{{ $b->nama }}</td>
                           <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
                           @foreach($gudang as $g)
                             @php
@@ -302,7 +312,7 @@
               <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
                 <tr>
                   <td style="width: 5px" class="align-middle">No</td>
-                  <td class="align-middle" class="align-middle">Nama Barang</td>
+                  <td class="align-middle">Nama Barang</td>
                   <td style="width: 25px; background-color: yellow" class="align-middle">Total</td>
                   @foreach($gudang as $g)
                     <td style="width: 18px" class="align-middle">{{ substr($g->nama, 0, 3) }}</td>
