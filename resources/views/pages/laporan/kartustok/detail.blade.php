@@ -178,7 +178,7 @@
                             <td align="center" class="align-middle">{{ $i }}</td>
                             <td align="center" class="align-middle">{{ \Carbon\Carbon::parse($it->tanggal)->format('d-M-y') }}</td>
                             <td class="align-middle">
-                              @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'TB'))Transfer Barang @else Penjualan Barang @endif
+                              @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'TB'))Transfer @else Penjualan @endif
                             </td>
                             <td class="align-middle">{{ $it->id }}</td>
                             @php
