@@ -458,7 +458,25 @@ class ReturController extends Controller
     }
     
     public function cetakKirimJual(Request $request, $id) {
-        $items = DetilRJ::where('id_kirim', $id)->get();
+        $items = ReturJual::join('detilrj', 'detilrj.id_retur', 'returjual.id')
+                ->where('id_kirim', $id)->groupBy('id_kirim')->get();
+        // $items = DetilRJ::where('id_kirim', $id)->get();
+        $tabel = ceil($items->first()->detilrj->count() / 12);
+
+        if($tabel > 1) {
+            for($i = 1; $i < $tabel; $i++) {
+                $item = collect([
+                    'id' => $items->first()->id,
+                    'tanggal' => $items->first()->tanggal,
+                    'id_customer' => $items->first()->id_customer,
+                    'status' => $items->first()->status
+                ]);
+
+                $items->push($item);
+            }
+        }
+        $items = $items->values();
+
         $today = Carbon::now()->isoFormat('dddd, D MMM Y');
         $waktu = Carbon::now();
         $waktu = Carbon::parse($waktu)->format('H:i:s');
