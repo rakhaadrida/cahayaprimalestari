@@ -12,13 +12,55 @@
           height: 520px;
           /* width: 8.54in;
           height: 5.43in; */
-          font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-          font-size: 1rem;
-          font-weight: 900;
+          font-family: "Calibri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-size: 1.2rem;
+          font-weight: 700;
           line-height: 1.5;
-          color: #252525;
+          color: black;
           text-align: left;
           background-color: #fff;
+      }
+
+      /* @font-face {
+        font-family: "epson1regular";
+        font-weight: 900;
+        color: black;
+        src: url('{{ public_path('backend/fonts/epson1regular.ttf') }}');
+      } */
+
+      @font-face {
+        font-family: "epson1";
+        font-weight: 900;
+        color: black;
+        src: url('{{ public_path('backend/fonts/epson1.woff') }}');
+      }
+
+      /* @font-face {
+        font-family: "bpdots";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/BPdots.otf') }}');
+      } */
+
+      @font-face {
+        font-family: "Dotrice";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/Dotrice.ttf') }}');
+      } 
+
+      @font-face {
+        font-family: "Dotrice Bold";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/Dotrice-Bold.otf') }}');
+      } 
+
+      @font-face {
+        font-family: "buenard";
+        font-weight: 800;
+        color: black;
+        src: url('{{ public_path('backend/fonts/Buenard-Regular.ttf') }}');
       }
 
       h1,
@@ -54,11 +96,12 @@
       }
 
       .container-fluid {
-          width: 87%;
+          width: 87.4%;
           padding-right: 0.75rem;
           padding-left: 0.75rem;
           /* margin-right: auto; */
           margin-left: auto;
+          color: black;
       }
 
       .text-center {
@@ -96,23 +139,23 @@
       .table {
           width: 90.1%;
           margin-bottom: 1rem;
-          color:#252525;
+          color: black;
       }
 
       .table th,
       .table td {
           padding: 0.75rem;
           vertical-align: top;
-          border-top: 1px solid #afbbc5;
+          border-top: 1px solid black;
       }
 
       .table thead th {
           vertical-align: bottom;
-          border-bottom: 1px solid #afbbc5;
+          border-bottom: 1px solid black;
       }
 
       .table tbody+tbody {
-          border-top: 1px solid #afbbc5;
+          border-top: 1px solid black;
       }
 
       .table-sm th,
@@ -162,88 +205,132 @@
 
       .header-cetak-so {
           display: inline-block;
-          border: 1.9px dotted;
+          color: black;
+          border: 1.4px dotted;
           border-bottom: none;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
+          border-left: 1px solid black;
+          border-right: 1px solid black;
           padding-top: 5px;
           padding-bottom: 10px;
           /* margin-top: 0px; */
           /* margin-left: 35px;
           margin-right: 30px; */
-          margin-top: 0;
+          /* margin-top: 0;     // margin minimum
           margin-left: 0;
+          margin-right: 0; */
+          margin-top: 0;
+          margin-left: 20px;
           margin-right: 0;
       }
 
       .title-header {
+        /* font-family: "Dotrice"; */
+        font-weight: bold;
         font-family: Arial, Helvetica, sans-serif;
         /* font-family: "Fake Receipt", Times, serif; */
         margin-left: 10px !important;
       }
 
       .subtitle-cetak-so-one {
+        font-family: 'Courier New', Courier, monospace;
+        color: black;
+        /* font-family: "Dotrice"; */
         margin-top: -5px;
-        margin-left: 10px;
-        font-size: 12px;
+        margin-left: 8px;
+        font-size: 15px;
+        font-weight: normal;
       }
 
       .subtitle-cetak-so-second {
-        margin-left: -23px;
+        font-family: 'Courier New', Courier, monospace;
+        color: black;
+        /* font-family: "Dotrice"; */
+        margin-left: 0px;
         margin-top: -2px;
-        font-size: 12px;
+        font-size: 15px;
+        font-weight: normal;
+        letter-spacing: 1px;
       }
 
       .sub-title {
+        font-family: 'Calibri', Helvetica, sans-serif;
         /* font-family: 'Courier New', Courier, monospace; */
-        font-family: 'Consolas', Helvetica, sans-serif;
+        /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
+      .logo-cetak-so {
+        margin-top: -99px;
+        margin-left: 20px;
+      }
+ 
       .logo-cetak-so img {
-        width: 135px;
-        height: 50px;
-        margin-top: -95px;
-        margin-left: 5px;
+        /* width: 135px; */
+        /* height: 50px; */
+        width: 148px;
+        height: 45px;
+        margin-bottom: -2.5px;
+        /* margin-top: -99px; */
+        /* margin-left: 5px; // Margin Minimum */
+        /* margin-left: 20px; */
+      }
+
+      .telpon-logo {
+        font-family: "Rockwell", Helvetica, sans-serif;
+        font-size: 10.5px;
+        font-weight: 900;
+        line-height: 0px;
+        margin-left: 3px;
       }
 
       .customer-cetak-so {
-        font-family: 'Consolas', Helvetica, sans-serif;
-        font-size: 13px;
-        width: 195px;
-        margin-top: -95px;
-        margin-right: 105px;
+        /* font-family: 'Courier New', Courier, monospace; */
+        color: black;
+        font-weight: 500;
+        /* font-family: 'Consolas', Helvetica, sans-serif; */
+        font-size: 16px;
+        width: 255px;
+        margin-top: -110px;
+        margin-right: 75px;
       }
 
       .kode-cetak-so {
-        font-size: 11px;
+        font-size: 12px;
       }
 
       .nama-cetak-so {
-        margin-top: 10px;
+        /* font-family: "Dotrice"; */
+        color: black;
+        margin-top: 5px;
         margin-bottom: 5px;
-        font-size: 14px;
+        font-size: 16px;
       }
 
       .alamat-cetak-so {
+        color: black;
+        font-size: 15px;
         margin-bottom: -10px;
-        line-height: 15px;
+        line-height: 14px;
       }
 
       .telepon-cetak-so {
         /* margin-bottom: -15px; */
+        color: black;
         line-height: 18px;
       }
 
       .table-info-cetak-so {
-        margin-top: -24px;
-        font-size: 12px;
+        margin-top: -30px;
+        font-size: 15px;
         border-spacing: 0px;
-        margin-left: 0;
+        /* margin-left: 0; // margin Minimum */
         margin-right: 30px;
+        margin-left: 20px;
       }
 
       .table-info-cetak-so td {
-        border: 1.9px dotted;
+        border: 1px dotted;
       }
 
       .table-info-cetak-so thead td {
@@ -251,7 +338,7 @@
       }
 
       .th-info-cetak-so {
-        font-family: 'Courier New', Courier, monospace;
+        font-family: 'Courier New', Courier, sans-serif;
         line-height: 6px;
       }
 
@@ -262,38 +349,48 @@
       }
 
       .table-cetak {
-        font-size: 13px;
+        font-size: 16px;
         width: 90.7% !important;
         /* height: 225px; */
-        height: 52% !important;
-        margin-left: 0;
+        height: 52.5% !important;
+        /* margin-left: 0; // Margin minimum */
+        margin-left: 20px;
         margin-right: 34.5px;
-        margin-top: -14px;
+        margin-top: -13px;
+        /* border: 1px solid black; */
         /* margin-bottom: 40px !important; */
       }
 
       .table-cetak thead td {
         padding-top: 0.3rem !important;
-        padding-bottom: 0.3rem !important;
+        padding-bottom: 0.4rem !important;
       }
 
-      .th-detail-cetak-so {
+      .th-detail-cetak-so td {
         line-height: 6px;
-        border: 1.9px dotted;
-        font-family: monospace, sans-serif;
+        border-top: 1px dotted;
+        border-bottom: 1px dotted;
+        /* font-family: monospace, sans-serif; */
       }
 
       .tr-detail-cetak-so {
+          /* color: black; */
           line-height: 7px;
           /* font-family: 'saxMono', sans-serif; */
           /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
-      tr.baris-so {
-        height: 15px !important;
+      .tr-detail-cetak-so td {
+          border-bottom: none;
+          border-top: none;
       }
 
-      .table-cetak td:empty {
+      tr.baris-so {
+        /* height: 15px !important; */
+        height: 21px !important;
+      }
+
+      .table-cetak tbody td:empty {
         border-left: 0;
         border-right: 0;
         border-top: 0;
@@ -302,14 +399,18 @@
 
       .footer-cetak-so {
           /* display: inline-block; */
-          border: 1.9px dotted;
+          border: 1px dotted;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
           border-bottom-left-radius: 10px;
           border-bottom-right-radius: 10px;
+          border-left: 1px solid black;
+          border-right: 1px solid black;
           margin-bottom: -40px;
-          margin-left: 0;
+          /* margin-left: 0;  // Margin minimum */
+          margin-left: 20px;
           margin-right: 30px;
+          margin-top: -10px;
       }
 
       .table-footer {
@@ -319,26 +420,27 @@
       }
 
       .ttd-penerima {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 13px;
+        /* font-family: "Dotrice-Bold"; */
+        /* font-family: Arial, Helvetica, sans-serif; */
+        font-size: 15px;
         padding-left: 5px;
         margin-bottom: 12px;
         margin-top: 5px;
       }
 
       .info_bayar {
-        font-family: 'Courier New', Courier, monospace;
+        /* font-family: 'Courier New', Courier, monospace; */
         color: black;
         margin-top: -7px;
         margin-left: 5px;
         margin-right: 30px;
-        font-size: 13px;
+        font-size: 15px;
         line-height: 18px;
       }
 
       .ttd-gudang {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 13px;
+        /* font-family: Arial, Helvetica, sans-serif; */
+        font-size: 15px;
         margin-top: -5px;
         margin-left: 1px;
         margin-bottom: -4px;
@@ -346,67 +448,71 @@
       }
 
       .ttd-mengetahui {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 13px;
+        /* font-family: Arial, Helvetica, sans-serif; */
+        font-size: 15px;
         margin-top: -10px;
         margin-bottom: -5px;
         line-height: 10px;
       }
 
       .tgl-ttd {
-        font-size: 11px;
+        font-size: 13px;
         line-height: 3px;
         padding-left: 0.4rem; 
         padding-bottom: 0.01rem;
       }
 
       .total-faktur {
-        font-family: Arial, Helvetica, sans-serif;
+        /* font-family: "dotricebold"; */
+        /* font-family: Arial, Helvetica, sans-serif; */
         margin-top: 0px;
         margin-left: 5px;
         /* border: solid black; */
-        font-size: 12px;
+        font-size: 14px;
       }
 
       .tabel-total-faktur {
-        line-height: 13.5px;
+        line-height: 15px;
         margin-bottom: 3px;
       }
 
       .title-total {
         /* width: 145px; */
-        font-size: 12px;
+        font-size: 14px;
       }
 
       .angka-total {
-        width: 175px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 13px;
+        width: 180px;
+        /* font-family: "epson1"; */
+        /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+        font-size: 16px;
         padding-right: 0.01rem !important;
       }
 
       .angka-total-akhir {
         width: 145px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 14px;
+        /* font-family: "epson1"; */
+        /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+        font-size: 17px;
       }
 
       .waktu-cetak-so {
         font-weight: 700;
         margin-left: 30px;
-        margin-right: 100px;
+        /* margin-right: 100px; // Margin minimum */
+        margin-right: 80px; /* Margin custom */ 
         margin-top: 33px;
         /* border: solid black; */
       }
 
       .waktu-cetak {
-        font-size: 10px !important;
+        font-size: 12px !important;
         margin-left: -15px;
         margin-right: 10px;
       }
 
       .cetak-ke {
-        font-size: 10px !important;
+        font-size: 12px !important;
       }
 
       @media print {
@@ -420,40 +526,51 @@
           margin: 0;
           zoom: 1.37;
         }
+
+        /* img {
+          display: none;
+        } */
       }
     </style>
   </head>
   <body>
+    @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; @endphp
     @foreach($items as $item)
+      @if(($items->first()->id != $item->id) && ($det <= 12)) 
+        @php $i = 1; $no = 1; $kode = []; @endphp
+      @endif
       <div class="cetak-all-container" style="margin-bottom: -55px; @if($items[$items->count()-1]->id != $item->id) page-break-after: always; @endif ">
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">FAKTUR PENJUALAN</h5>
             <h5 class="text-bold " style="margin-top: -10px">
-              (@if($item->kategori == "Cash") CASH @else TEMPO @endif)
+              {{-- (@if($item->kategori == "Cash") CASH @else TEMPO @endif) --}}
+              (@if(($det <= 12 ? $item->tempo : $items[$urut-1]->tempo) == 0) CASH @else TEMPO @endif)
             </h5>
           </div>
           <div class="subtitle-cetak-so-one text-center">
             <span class="text-right sub-title">Nomor</span>
             <span>:</span>
-            <span class="text-bold">{{ $item->id }}</span>
+            <span class="text-bold">{{ $det <= 12 ? $item->id : $items[$urut-1]->id }}</span>
           </div>
           <div class="subtitle-cetak-so-second text-center">
             <span class="text-right sub-title">Tanggal</span>
             <span>:</span>
-            <span class="text-bold">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</span>
+            <span class="text-bold">{{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_so : $items[$urut-1]->tgl_so))->format('d-M-y') }}</span>
           </div>
         </div>
         <div class="float-left logo-cetak-so">
-          <img src="{{ url('backend/img/Logo_CPL.jpg') }}" alt="">
+          <img src="{{ url('backend/img/Logo_CPL_Only.jpg') }}" alt="">
+          <br>
+          <span class="telpon-logo">Office : 021 - 428 78 662</span>
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
           {{-- <span>{{ $item->id_customer }}</span> --}}
           <br>
-          <span class="nama-cetak-so">{{ $item->customer->nama }}</span>
+          <span class="nama-cetak-so">{{ $det <= 12 ? $item->customer->nama : $items[$urut-1]->customer->nama }}</span>
           <br>
-          <span class="alamat-cetak-so text-wrap">{{ $item->customer->alamat }}</span>
+          <span class="alamat-cetak-so text-wrap">{{ $det <= 12 ? $item->customer->alamat : $items[$urut-1]->customer->alamat }}</span>
           <br>
           {{-- <span class="telepon-cetak-so">{{ $item->customer->telepon }}</span> --}}
         </div>
@@ -461,7 +578,7 @@
         <br>
 
         <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
-          <thead class="text-center text-bold">
+          <thead class="text-center" style="font-weight: 600">
             <tr class="th-info-cetak-so">
               <td style="width: 120px">No. Order</td>
               <td style="width: 130px">Tgl. Order</td>
@@ -471,9 +588,9 @@
               <td>Route</td>
             </tr>
           </thead>
-          <tbody class="text-bold">
+          <tbody>
             <tr class="tr-info-cetak-so">
-              <td align="center">{{ $item->id }}</td>
+              <td align="center">{{ $det <= 12 ? $item->id : $items[$urut-1]->id }}</td>
               <td align="center">
                 {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
               </td>
@@ -481,62 +598,70 @@
               <td align="center">
                 {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}
               </td>
-              <td align="center">{{ $item->customer->sales->nama }}</td>
+              <td align="center">{{ $det <= 12 ? $item->customer->sales->nama : $items[$urut-1]->customer->sales->nama }}</td>
               <td align="center">{{ Auth::user()->name }}</td>
             </tr>
           </tbody>
         </table>
         
         @php 
+        if($det <= 12)
+          $so = $item->id;
+        else
+          $so = $items[$urut-1]->id;
+
         $itemsDet = \App\Models\DetilSO::with(['barang'])
                           ->select('id_barang', 'diskon')
                           ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                          ->where('id_so', $item->id)
+                          ->where('id_so', $so)
+                          ->whereNotIn('id_barang', $kode)
                           ->groupBy('id_barang', 'diskon')
                           ->get();
+        $det = $itemsDet->count();
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
-          <thead class="text-center text-bold th-detail-cetak-so">
+          <thead class="text-center th-detail-cetak-so">
             <tr>
-              <td style="width: 10px">No</td>
-              <td style="width: 290px">Nama Barang</td>
-              <td style="width: 65px" class="text-right">Qty</td>
-              <td style="width: 80px"></td>
+              <td style="width: 10px; border-left: 1px dotted">No</td>
+              <td style="width: 340px">Nama Barang</td>
+              <td style="width: 75px">Qty</td>
+              {{-- <td style="width: 65px" class="text-right">Qty</td>
+              <td style="width: 80px"></td> --}}
               <td style="width: 50px">Harga</td>
-              <td style="width: 75px">Total</td>
+              <td style="width: 90px">Total</td>
               <td colspan="2">Diskon</td>
-              <td style="width: 80px; border-right: 1.9px dotted">Netto Rp</td>
+              <td style="width: 80px; border-right: 1px dotted">Netto Rp</td>
             </tr>
           </thead>
           <tbody class="tr-detail-cetak-so">
-            @php $i = 1; @endphp
+            @php $cek = 0; @endphp
             @foreach($itemsDet as $itemDet)
               <tr class="baris-so">
-                <td align="center">{{ $i }}</td>
+                <td align="center">{{ $no }}</td>
                 <td>{{ $itemDet->barang->nama }}</td>
                 @if($itemDet->barang->satuan == "Pcs / Dus")
-                  <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} PCS</span></td>
+                  <td align="center">{{ $itemDet->qty }} PCS</td>
                 @elseif($itemDet->barang->satuan == "Set")
-                  <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} SET</span></td>
+                  <td align="center">{{ $itemDet->qty }} SET</td>
                 @elseif($itemDet->barang->satuan == "Meter / Rol")
                   <td align="center">{{ $itemDet->qty }} ROL</td>
-                  <td >{{ number_format($itemDet->qty * $itemDet->barang->ukuran, 0, "", ".") }} MTR</td>
                 @else
-                  <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} MTR</span></td>
+                  <td align="center">{{ $itemDet->qty }} MTR</td>
                 @endif
                 <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
                 @php 
                   $diskon = 100;
+                  $itemDet->diskon = str_replace(",", ".", $itemDet->diskon);
                   $arrDiskon = explode("+", $itemDet->diskon);
                   for($j = 0; $j < sizeof($arrDiskon); $j++) {
                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
                   } 
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
-                <td style="width: 135px" align="right">
-                  {{ str_replace(".", ",", $itemDet->diskon) }} ({{ $diskon }}%)
+                <td style="width: 55px; font-size: 14.5px" align="right">
+                  {{ $diskon }}%
                 </td>
                 <td style="width: 65px" align="right">
                   {{ number_format($itemDet->diskonRp, 0, "", ".") }}
@@ -544,13 +669,15 @@
                 <td align="right">
                   {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
               </tr>
-              @php $i++ @endphp
+              @php $no++; array_push($kode, $itemDet->id_barang); @endphp
+              @if($no > (12 * $i))
+                @php $cek = 1; @endphp
+                @break
+              @endif
             @endforeach
-            @if($i < 10)
+            @if($itemsDet->count() < 12)
               <tr class="text-center">
                 <td colspan="8"></td>
-                <td></td>
-                <td colspan="2"></td>
               </tr>
             @endif
           </tbody>
@@ -568,9 +695,9 @@
           <table class="table-footer">
             <thead>
               <tr>
-                <td style="border-right: 1.9px dotted; width: 90px"> 
+                <td style="border-right: 1px dotted; width: 90px"> 
                   <div class="ttd-penerima">
-                    <table style="font-size: 13px !important">
+                    <table style="font-size: 15px !important">
                       <tr>
                         <td class="text-center">Penerima,</td>
                       </tr>
@@ -588,7 +715,7 @@
                     <span class="form-ttd">(___________)</span>
                   </div> --}}
                 </td>
-                <td style="border-right: 1.9px dotted; width: 273px">
+                <td style="border-right: 1px dotted; width: 273px">
                   <div class="info_bayar">
                     <span>Pembayaran Giro / Transfer</span>
                     <br>
@@ -604,7 +731,7 @@
                 </td>
                 <td style="width: 90px">
                   <div class="ttd-gudang">
-                    <table style="font-size: 13px !important">
+                    <table style="font-size: 15px !important">
                       <tr>
                         <td class="text-center">Gudang,</td>
                       </tr>
@@ -620,12 +747,12 @@
                     <span class="form-ttd">(___________)</span> --}}
                   </div>
                 </td>
-                <td style="border-right: 1.9px dotted; width: 88px">
+                <td style="border-right: 1px dotted; width: 88px">
                   <div class="ttd-mengetahui">
                     {{-- <span class="tgl-ttd">
                       {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
                     </span> --}}
-                    <table style="font-size: 13px !important">
+                    <table style="font-size: 15px !important">
                       <tr>
                         <td class="tgl-ttd">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}</td>
                       </tr>
@@ -684,6 +811,8 @@
             </thead>
           </table>
         </div>
+
+        @php $i++; $urut++; @endphp
         <div class="float-right waktu-cetak-so">
           <span class="waktu-cetak">Waktu Cetak : {{ $today }} {{ $waktu }}</span>
           <span class="cetak-ke">Cetak ke: {{ $cetak }}</span>

@@ -290,9 +290,9 @@
         font-weight: 500;
         /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 16px;
-        width: 195px;
-        margin-top: -103px;
-        margin-right: 105px;
+        width: 255px;
+        margin-top: -110px;
+        margin-right: 75px;
       }
 
       .kode-cetak-so {
@@ -311,7 +311,7 @@
         color: black;
         font-size: 15px;
         margin-bottom: -10px;
-        line-height: 15px;
+        line-height: 14px;
       }
 
       .telepon-cetak-so {
