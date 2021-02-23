@@ -159,7 +159,7 @@
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 
 <script type="text/javascript">
-/* @if($status == 'true')
+@if($status == 'true')
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
@@ -167,7 +167,7 @@
   }
   
   printFrame.window.print();
-@endif */
+@endif 
 
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],

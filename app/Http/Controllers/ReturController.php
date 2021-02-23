@@ -769,8 +769,8 @@ class ReturController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = ReturTerima::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
-                    ->whereMonth('tanggal', $month)->get();
+        $lastcode = ReturTerima::selectRaw('max(id) as id')
+                    ->whereYear('tanggal', $waktu->year)->whereMonth('tanggal', $month)->get();
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'TRM'.$tahun.$bulan.sprintf("%04s", $lastnumber);
@@ -1135,6 +1135,21 @@ class ReturController extends Controller
         parse_str($id, $kode);
 
         $items = ReturTerima::whereIn('id', $kode['id'])->get();
+        $tabel = ceil($items->first()->detilrt->count() / 8);
+
+        if($tabel > 1) {
+            for($i = 1; $i < $tabel; $i++) {
+                $item = collect([
+                    'id' => $items->first()->id,
+                    'id_retur' => $items->first()->id_retur,
+                    'tanggal' => $items->first()->tanggal
+                ]);
+
+                $items->push($item);
+            }
+        }
+        $items = $items->values();
+
         $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $waktu = Carbon::now();
         $waktu = Carbon::parse($waktu)->format('H:i:s');
