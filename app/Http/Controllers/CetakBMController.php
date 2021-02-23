@@ -10,7 +10,7 @@ use PDF;
 class CetakBMController extends Controller
 {
     public function index($status, $awal, $akhir) {
-        $items = BarangMasuk::where('status', 'INPUT')->get();
+        $items = BarangMasuk::where('status', 'INPUT')->orderBy('tanggal', 'asc')->get();
         $data = [
             'items' => $items,
             'status' => $status,
@@ -45,7 +45,33 @@ class CetakBMController extends Controller
 
     public function cetak($awal, $akhir) {
         $items = BarangMasuk::where('status', 'INPUT')->whereBetween('id', [$awal, $akhir])
-                ->get();
+                ->orderBy('tanggal', 'asc')->get();
+
+        foreach($items as $i) {
+            $item = BarangMasuk::where('id', $i->id)->get();
+            $tabel = ceil($item->first()->detilbm->count() / 8);
+
+            if($tabel > 1) {
+                for($j = 1; $j < $tabel; $j++) {
+                    $newItem = collect([
+                        'id' => $item->first()->id.'Z',
+                        'id_faktur' => $item->first()->id_faktur,
+                        'tanggal' => $item->first()->tanggal,
+                        'total' => $items->first()->total,
+                        'id_supplier' => $items->first()->id_supplier,
+                        'id_user' => $items->first()->id_user,
+                    ]);
+
+                    $items->push($newItem);
+                }
+            }
+        }   
+
+        $items = $items->sortBy(function ($product, $key) {
+                    return $product['tanggal'].$product['id'];
+                });
+        $items = $items->values();
+
         $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $waktu = Carbon::now();
         $waktu = Carbon::parse($waktu)->format('H:i:s');

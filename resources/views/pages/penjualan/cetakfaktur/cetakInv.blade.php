@@ -539,7 +539,7 @@
       @if(($items->first()->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 12)) 
         @php $i = 1; $no = 1; $kur = 0; $kode = []; @endphp
       @endif
-      <div class="cetak-all-container" style="margin-bottom: -55px; @if($items[$urut-$kur]->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) page-break-after: always; @endif">
+      <div class="cetak-all-container" style="margin-bottom: -55px; page-break-after: always;">
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">FAKTUR PENJUALAN</h5>

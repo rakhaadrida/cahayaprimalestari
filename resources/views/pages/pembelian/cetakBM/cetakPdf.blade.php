@@ -13,7 +13,7 @@
           font-size: 1rem;
           font-weight: 400;
           line-height: 1.5;
-          color: #131313;
+          color: black;
           text-align: left;
           background-color: #fff;
           margin-left: 35px;
@@ -68,7 +68,7 @@
       }
 
       .text-dark {
-          color: #5a5c69 !important;
+          color: black !important;
       }
       
       .text-right {
@@ -94,7 +94,7 @@
       .table {
           width: 116%;
           margin-bottom: 1rem;
-          color: #858796;
+          color: black;
       }
 
       .table th,
@@ -109,7 +109,7 @@
       } */
 
       .table tbody+tbody {
-          border-top: 1px solid #afbbc5;
+          border-top: 1px solid black;
       }
 
       .table-sm th {
@@ -168,7 +168,7 @@
         font-size: 31px;
         font-family: Arial, Helvetica, sans-serif;
         margin-top: 65px;
-        margin-left: 85px;
+        margin-left: 35px;
       }
 
       .subtitle-cetak-so {
@@ -185,9 +185,9 @@
       .detail-cetak-so {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 17px;
-        width: 195px;
+        width: 235px;
         margin-top: -95px;
-        margin-left: 693px;
+        margin-left: 678px;
         line-height: 20px;
       }
 
@@ -224,7 +224,7 @@
       .customer-cetak-so {
         font-family: 'Courier New', Courier, monospace;
         font-size: 15px;
-        width: 350px;
+        width: 355px;
         margin-top: -175px;
         margin-right: -95px;
         line-height: 16px;
@@ -293,8 +293,12 @@
     </style>
   </head>
   <body>
-     @foreach($items as $item)
-      <div class="cetak-all-container" @if($items[$items->count()-1]->id != $item->id) style="page-break-after: always" @endif>
+    @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; @endphp
+    @foreach($items as $item)
+      @if(($items->first()->id != ($det <= 8 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 8)) 
+        @php $i = 1; $no = 1; $kur = 0; $kode = []; @endphp
+      @endif
+      <div class="cetak-all-container" style="page-break-after: always;" >
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h3 class="text-bold">Goods Receipt Note</h3>
@@ -302,7 +306,7 @@
           <div class="subtitle-cetak-so">
             <span class="text-right">Supplier</span>
             <span>:</span>
-            <span>{{ $item->supplier->nama }}</span>
+            <span>{{ $det <= 8 ? $item->supplier->nama : $items[$urut-$kur]->supplier->nama }}</span>
           </div>
           <div class="subtitle-cetak-so subtitle-second">
             <span class="text-right">We had accepted these following item(s) :</span>
@@ -329,48 +333,57 @@
         <div class="detail-cetak-so">
           <span class="text-right">GRN Date</span>
           <span>:</span>
-          <span>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</span>
+          <span>{{ \Carbon\Carbon::parse(($det <= 8 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
           <br>
           <span class="detail-second text-right">GRN Number</span>
           <span>:</span>
-          <span>{{ $item->id }}</span>
+          <span>{{ $items->first()->id }}</span>
           <br>
           <span class="detail-third text-right">DO. Date</span>
           <span>:</span>
-          <span>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</span>
+          <span>{{ \Carbon\Carbon::parse(($det <= 8 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
           <br>
           <span class="detail-fourth text-right">DO. Number</span>
           <span>:</span>
-          <span>{{ $item->id_faktur }}</span>
+          <span>{{ $det <= 8 ? $item->id_faktur : $items[$urut-$kur]->id_faktur }}</span>
         </div>
         <br>
         
         @php 
+        $stat = $det;
+        if($det <= 8)
+          $bm = $item->id;
+        else
+          $bm = $items[$urut-$kur]->id;
+
         $itemsDet = \App\Models\DetilBM::with(['barang'])
-                          ->select('id_barang', 'diskon')
-                          ->selectRaw('avg(harga) as harga, sum(qty) as qty')
-                          ->where('id_bm', $item->id)
-                          ->groupBy('id_barang', 'diskon')
-                          ->get();
+                      ->select('id_barang', 'diskon')
+                      ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                      ->where('id_bm', $bm)
+                      ->whereNotIn('id_barang', $kode)
+                      ->groupBy('id_barang', 'diskon')
+                      ->get();
+        $det = $itemsDet->count();
         @endphp
+        
         <!-- Tabel Data Detil BM-->
-        <span class="page-number text-right">Page  :   1</span>
+        <span class="page-number text-right">Page  :   {{ $i }}</span>
         <table class="table table-sm table-responsive-sm table-cetak">
           <thead class="text-center text-bold th-detail-cetak-so">
             <tr>
               <th style="width: 5px">No.</th>
               <th style="width: 30px">Kode</th>
-              <th style="width: 330px">Nama Barang</th>
+              <th style="width: 350px">Nama Barang</th>
               {{-- <th colspan="3"><span style="margin-left: 10px !important">Quantity</span> </th> --}}
               <th><span style="margin-left: 10px !important">Quantity</span> </th>
-              <th style="width: 250px">Description</th>
+              <th style="width: 200px">Description</th>
             </tr>
           </thead>
           <tbody class="tr-detail-cetak-so">
-            @php $i = 1; @endphp
+            @php $cek = 0; @endphp
             @foreach($itemsDet as $itemDet)
               <tr>
-                <td align="center">{{ $i }}</td>
+                <td align="center">{{ $no }}</td>
                 <td align="center">{{ $itemDet->id_barang }}</td>
                 <td>{{ $itemDet->barang->nama }}</td>
                 <td align="center" style="width: 50px">{{ $itemDet->qty }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @elseif($itemDet->barang->satuan == "Set") Set @else Rol @endif</td>
@@ -380,10 +393,15 @@
                 </td> --}}
                 <td></td>
               </tr>
-              @php $i++ @endphp
+              @php $no++; array_push($kode, $itemDet->id_barang); @endphp
+              @if($no > (8 * $i))
+                @php $cek = 1; @endphp
+                @break
+              @endif
             @endforeach
           </tbody>
         </table>
+        @php $i++; $urut++; $kur++; @endphp
         
         <div class="container-fluid footer-cetak-so">
           <table class="table-footer">
