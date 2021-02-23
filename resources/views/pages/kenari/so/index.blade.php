@@ -447,7 +447,7 @@ const totalTagihan = document.getElementById('totalTagihan');
 const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
-var netPast; var ukuran; var tab = '{{ $tab }}';
+var netPast; var tab = '{{ $tab }}';
 var kodeModal; var totPast;
 var sisa; var stokJohar; var stokLain; var totStok;
 

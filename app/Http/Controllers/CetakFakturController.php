@@ -88,7 +88,7 @@ class CetakFakturController extends Controller
             if($tabel > 1) {
                 for($j = 1; $j < $tabel; $j++) {
                     $newItem = collect([
-                        'id' => $item->first()->id.'N',
+                        'id' => $item->first()->id.'Z',
                         'tgl_so' => $item->first()->tgl_so,
                         'tgl_kirim' => $item->first()->tgl_kirim,
                         'total' => $item->first()->total,

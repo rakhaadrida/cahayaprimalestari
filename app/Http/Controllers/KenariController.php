@@ -53,7 +53,8 @@ class KenariController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'INV%')
+                    ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
         $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
@@ -149,7 +150,8 @@ class KenariController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereMonth('tgl_so', $month)->get();
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'INV%')
+                    ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
         $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
@@ -230,6 +232,30 @@ class KenariController extends Controller
 
     public function cetak(Request $request, $id) {
         $items = SalesOrder::with(['customer'])->where('id', $id)->get();
+        $tabel = ceil($items->first()->detilso->count() / 12);
+
+        if($tabel > 1) {
+            for($i = 1; $i < $tabel; $i++) {
+                $item = collect([
+                    'id' => $items->first()->id,
+                    'tgl_so' => $items->first()->tgl_so,
+                    'tgl_kirim' => $items->first()->tgl_kirim,
+                    'total' => $items->first()->total,
+                    'diskon' => $items->first()->diskon,
+                    'kategori' => $items->first()->kategori,
+                    'tempo' => $items->first()->tempo,
+                    'pkp' => $items->first()->pkp,
+                    'status' => $items->first()->status,
+                    'id_customer' => $items->first()->id_customer,
+                    'id_user' => $items->first()->id_user
+                ]);
+
+                $items->push($item);
+            }
+        }
+
+        $items = $items->values();
+
         $today = Carbon::now()->isoFormat('dddd, D MMM Y');
         $waktu = Carbon::now();
         $waktu = Carbon::parse($waktu)->format('H:i:s');
@@ -240,7 +266,8 @@ class KenariController extends Controller
             'waktu' => $waktu
         ];
 
-        return view('pages.kenari.so.cetakPdf', $data);
+        return view('pages.kenari.so.cetakInv', $data);
+        // return view('pages.kenari.so.cetakPdf', $data);
     }
     
     public function afterPrint($id) {
@@ -549,8 +576,37 @@ class KenariController extends Controller
 
     public function cetakFaktur($awal, $akhir) {
         $items = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.*')->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->whereBetween('so.id', [$awal, $akhir])->where('roles', 'KENARI')->get();
+                ->select('so.id as id', 'so.*')->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
+                ->whereBetween('so.id', [$awal, $akhir])->where('roles', 'KENARI')
+                ->orderBy('tgl_so', 'asc')->get();
+
+        foreach($items as $i) {
+            $item = SalesOrder::where('id', $i->id)->get();
+            $tabel = ceil($item->first()->detilso->count() / 12);
+
+            if($tabel > 1) {
+                for($j = 1; $j < $tabel; $j++) {
+                    $newItem = collect([
+                        'id' => $item->first()->id.'Z',
+                        'tgl_so' => $item->first()->tgl_so,
+                        'tgl_kirim' => $item->first()->tgl_kirim,
+                        'total' => $item->first()->total,
+                        'diskon' => $item->first()->diskon,
+                        'kategori' => $item->first()->kategori,
+                        'tempo' => $item->first()->tempo,
+                        'id_customer' => $item->first()->id_customer,
+                        'id_user' => $item->first()->id_user,
+                    ]);
+
+                    $items->push($newItem);
+                }
+            }
+        }   
+
+        $items = $items->sortBy(function ($product, $key) {
+                    return $product['tgl_so'].$product['id'];
+                });
+        $items = $items->values();
 
         $today = Carbon::now()->isoFormat('dddd, D MMM Y');
         $waktu = Carbon::now();
@@ -562,7 +618,8 @@ class KenariController extends Controller
             'waktu' => $waktu
         ];
 
-        return view('pages.kenari.cetakfaktur.cetakPdf', $data);
+        return view('pages.kenari.cetakfaktur.cetakInv', $data);
+        // return view('pages.kenari.cetakfaktur.cetakPdf', $data);
     } 
 
     public function updateFaktur($awal, $akhir) {
