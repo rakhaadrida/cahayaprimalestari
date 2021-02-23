@@ -17,39 +17,42 @@ class CetakFakturController extends Controller
                 ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
                 ->orderBy('tgl_so', 'asc')->get();
 
-        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
-                ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->whereBetween('so.id', [$awal, $akhir])
-                ->orderBy('tgl_so', 'asc')->get();
+        // $items = SalesOrder::join('users', 'users.id', 'so.id_user')
+        //         ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+        //         ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
+        //         ->whereBetween('so.id', [$awal, $akhir])
+        //         ->orderBy('tgl_so', 'asc')->get();
 
-        foreach($items as $i) {
-            $item = SalesOrder::where('id', $i->id)->get();
-            $tabel = ceil($item->first()->detilso->count() / 12);
+        // foreach($items as $i) {
+        //     $item = SalesOrder::where('id', $i->id)->get();
+        //     $tabel = ceil($item->first()->detilso->count() / 12);
 
-            if($tabel > 1) {
-                for($j = 1; $j < $tabel; $j++) {
-                    $newItem = collect([
-                        'id' => $item->first()->id.'N',
-                        'tgl_so' => $item->first()->tgl_so,
-                        'tgl_kirim' => $item->first()->tgl_kirim,
-                        'total' => $item->first()->total,
-                        'diskon' => $item->first()->diskon,
-                        'kategori' => $item->first()->kategori,
-                        'tempo' => $item->first()->tempo,
-                        'id_customer' => $item->first()->id_customer,
-                        'id_user' => $item->first()->id_user,
-                    ]);
+        //     if($tabel > 1) {
+        //         for($j = 1; $j < $tabel; $j++) {
+        //             $newItem = collect([
+        //                 'id' => $item->first()->id.'Z',
+        //                 'tgl_so' => $item->first()->tgl_so,
+        //                 'tgl_kirim' => $item->first()->tgl_kirim,
+        //                 'total' => $item->first()->total,
+        //                 'diskon' => $item->first()->diskon,
+        //                 'kategori' => $item->first()->kategori,
+        //                 'tempo' => $item->first()->tempo,
+        //                 'id_customer' => $item->first()->id_customer,
+        //                 'id_user' => $item->first()->id_user,
+        //             ]);
 
-                    $items->push($newItem);
-                }
-            }
-        }   
+        //             $items->push($newItem);
+        //         }
+        //     }
+        // }   
 
-        $items = $items->sortBy('tgl_so', SORT_NATURAL);
-        $items = $items->values();
+        // // $items = $items->sortBy('tgl_so', SORT_NATURAL);
+        // $items = $items->sortBy(function ($product, $key) {
+        //             return $product['tgl_so'].$product['id'];
+        //         });
+        // $items = $items->values();
 
-        return response()->json($items);
+        // return response()->json($items);
 
         $data = [
             'items' => $items,
@@ -58,7 +61,7 @@ class CetakFakturController extends Controller
             'akhir' => $akhir
         ];
 
-        // return view('pages.penjualan.cetakfaktur.index', $data);
+        return view('pages.penjualan.cetakfaktur.index', $data);
     }
 
     public function process(Request $request) {
@@ -101,7 +104,9 @@ class CetakFakturController extends Controller
             }
         }   
 
-        $items = $items->sortBy('tgl_so');
+        $items = $items->sortBy(function ($product, $key) {
+                    return $product['tgl_so'].$product['id'];
+                });
         $items = $items->values();
 
         // return response()->json($items);
