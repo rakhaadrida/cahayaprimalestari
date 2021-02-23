@@ -324,7 +324,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('ap', 'AccPayableController@index')->name('ap');
         Route::post('ap', 'AccPayableController@index')->name('ap-home');
         Route::get('ap/show', 'AccPayableController@show')->name('ap-show');
-        Route::post('ap/detail/{id}', 'AccPayableController@detail')->name('ap-detail');
+        Route::post('ap/detail/{id}', 'AccPayableController@detail')->where('id', '(.*)')->name('ap-detail');
         Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
         Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
         Route::post('ap/retur', 'AccPayableController@retur')->name('ap-retur');

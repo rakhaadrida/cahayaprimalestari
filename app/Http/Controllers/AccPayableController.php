@@ -20,6 +20,7 @@ use App\Models\DetilRT;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AccPayableController extends Controller
 {
