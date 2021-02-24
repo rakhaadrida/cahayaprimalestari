@@ -51,7 +51,7 @@
                   <a href="{{ url('/rekap/cetak') }}" class="btn btn-primary btn-block text-bold btnprnt">Print</a>
                 </div> --}}
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                  <button type="submit" formaction="{{ route('rs-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
+                  <button type="submit" formaction="{{ route('rs-pdf-filter') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
                 </div>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                   <button type="submit" formaction="{{ route('rs-excel-filter') }}" formmethod="POST" class="btn btn-danger btn-block text-bold">Download Excel</>
@@ -127,10 +127,19 @@
                                                 ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
                                                 ->where('id_gudang', $g->id)->whereBetween('tanggal', [$awal, $kemarin])
                                                 ->get();
+                                    $tambahTb = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 
+                                                'detiltb.id_tb')
+                                                ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                                ->where('id_asal', $g->id)->whereBetween('tgl_tb', 
+                                                [$awal, $kemarin])->get();
+                                    $kurangTb = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 
+                                                'detiltb.id_tb')
+                                                ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                                ->where('id_tujuan', $g->id)->whereBetween('tgl_tb', 
+                                                [$awal, $kemarin])->get();
                                   } else {
-                                    $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
-                                              stok')->where('id_barang', $b->id)
-                                              ->where('id_gudang', $g->id)->get();
+                                    $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as stok')
+                                              ->where('id_barang', $b->id)->where('id_gudang', $g->id)->get();
                                     $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                                                 ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
                                                 ->where('id_gudang', $g->id)->whereBetween('tgl_so', [$awal, $kemarin])
@@ -140,9 +149,19 @@
                                                 ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
                                                 ->where('id_gudang', $g->id)->whereBetween('tanggal', [$awal, $kemarin])
                                                 ->get();
+                                    $tambahTb = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 
+                                                'detiltb.id_tb')
+                                                ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                                ->where('id_asal', $g->id)->whereBetween('tgl_tb', 
+                                                [$awal, $kemarin])->get();
+                                    $kurangTb = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 
+                                                'detiltb.id_tb')
+                                                ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
+                                                ->where('id_tujuan', $g->id)->whereBetween('tgl_tb', 
+                                                [$awal, $kemarin])->get();
                                   }
                                 @endphp
-                                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0) && (($tambahGd->count() != 0) || ($kurangGd->count() != 0))) ? $stokGd[0]->stok + $tambahGd->first()->qty - $kurangGd->first()->qty : '' }}</td>
+                                <td align="right">{{ (($stokGd->count() != 0) && (($tambahGd->count() != 0) || ($kurangGd->count() != 0) || ($tambahTb->count() != 0) || ($kurangTb->count() != 0))) ? (($stokGd[0]->stok + $tambahGd->first()->qty + $tambahTb->first()->qty - $kurangGd->first()->qty - $kurangTb->first()->qty) != 0 ? $stokGd[0]->stok + $tambahGd->first()->qty + $tambahTb->first()->qty - $kurangGd->first()->qty - $kurangTb->first()->qty : '') : '' }}</td>
                               @endforeach
                             </tr>
                             @php $i++; @endphp

@@ -92,7 +92,7 @@
                     <tr class="text-dark text-bold" id="{{$i-1}}">
                       <td class="text-center align-middle">{{ $i }}</td>
                       <td class="text-center align-middle">
-                        <input type="text" class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeBarang[]" required value="{{ $dr->id_barang }}">
+                        <input type="text" class="form-control form-control-sm text-bold text-center text-dark kodeBarang" name="kodeBarang[]" required value="{{ $dr->id_barang }}">
                       </td>
                       <td class="align-middle">
                         <input type="text" class="form-control form-control-sm text-bold text-dark namaBarang" name="namaBarang[]" required value="{{ $dr->barang->nama }}">

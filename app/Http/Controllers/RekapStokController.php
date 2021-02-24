@@ -139,6 +139,68 @@ class RekapStokController extends Controller
         return Excel::download(new RekapStokExport, 'Rekap-Stok-'.$tanggal.'.xlsx');
     }
 
+    public function pdf_filter(Request $request) {
+        $jenis = JenisBarang::All();
+        $gudang = Gudang::All();
+        $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
+                        ->groupBy('id_barang')->get();
+        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
+
+        foreach($jenis as $j) {
+            $sub = Subjenis::where('id_kategori', $j->id)->count();
+            $brg = Barang::where('id_kategori', $j->id)->count();
+            $j->{'total'} = $brg + $sub;
+        }
+
+        $el = 0; $k = $jenis->count(); 
+        foreach($jenis as $j) {
+            $gabung = 0;
+            if($j->total <= 80) {
+                for($i = $el+1; $i < $k; $i++) { 
+                    if($jenis[$el]->total + $jenis[$i]->total <= 127) {
+                        // if($jenis[$i]->nama != 'PRIME') {
+                            $jenis[$el]->total += $jenis[$i]->total;
+                            $jenis[$el]->id = $jenis[$el]->id.','.$jenis[$i]->id;
+                            $jenis[$el]->nama = $jenis[$el]->nama.', '.$jenis[$i]->nama;
+                            $kode = $jenis[$i]->id;
+
+                            $jenis = $jenis->filter(function($item) use($kode) {
+                                return $item->id != $kode;
+                            });
+                        // }
+                        $gabung++;   
+                    }
+                }
+                $jenis = $jenis->values();
+                $k -= $gabung;   
+            } 
+            $el++;
+        }
+
+        $jenis = $jenis->values();
+
+        $tglAwal = $request->tanggal;
+        $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
+        $awal = $this->formatTanggal($tglAwal, 'd M y');
+        $tanggal = $awal;
+        $kemarin = Carbon::yesterday()->toDateString();
+        $tglRekap = Carbon::parse($awal)->isoFormat('dddd, D MMMM Y');
+
+        $data = [
+            'jenis' => $jenis,
+            'gudang' => $gudang,
+            'stok' => $stok,
+            'waktu' => $waktu,
+            'awal' => $tglAwal,
+            'kemarin' => $kemarin,
+            'tglRekap' => $tglRekap
+        ];
+
+        $pdf = PDF::loadview('pages.laporan.rekapstok.pdfFilter', $data)->setPaper('A4', 'portrait');
+        ob_end_clean();
+        return $pdf->stream('Rekap-Stok-'.$tanggal.'.pdf');
+    }
+
     public function excel_filter(Request $request) {
         $tglAwal = $request->tanggal;
         $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
