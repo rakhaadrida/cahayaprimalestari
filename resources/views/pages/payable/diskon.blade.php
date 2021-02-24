@@ -203,14 +203,14 @@
                             for($j = 0; $j < sizeof($arrDiskon); $j++) {
                               $diskon -= ($arrDiskon[$j] * $diskon) / 100;
                             } 
-                            $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                            // $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                            $diskon = number_format((($diskon - 100) * -1), 20, ",", "");
                           @endphp
                         @endif
                         <td align="right">
-                          <input type="text" name="disRp{{$detil->id_barang}}" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" @if($detil->diskon != null) 
-                          value="{{ number_format((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}" 
-                          {{-- value="{{ $diskon }}" --}}
-                          @endif>
+                          <input type="text" name="disRp{{$detil->id_barang}}" id="diskonRp"  class="form-control form-control-sm text-bold text-dark text-right diskonRp" onkeypress="return angkaSajaDiskon(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off"
+                          value="{{ $detil->diskon != null ? number_format((($detil->qty * $detil->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") : '' }}" 
+                          >
                         </td>
                         <td align="right">
                           <input type="text" name="hpp{{$item->id}}{{$detil->id_barang}}" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" @if($detil->diskon != null) 
@@ -338,6 +338,33 @@ for(let i = 0; i < diskon.length; i++) {
   });
 }
 
+for(let i = 0; i < diskonRp.length; i++) {
+  diskonRp[i].addEventListener("keyup", function (e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });
+    
+    if(e.target.value == "") {
+      netPast = netto[i].value.replace(/\./g, "");
+      netto[i].value = "";
+      checkSubtotal(netPast, netto[i].value.replace(/\./g, ""));
+      diskon[i].value = "";
+    }
+    else {
+      var angkaDiskon = hitungDiskonRp(e.target.value, jumlah[i].value);
+      netPast = +netto[i].value.replace(/\./g, "");
+      disAngka[i].value = angkaDiskon;
+      diskon[i].value = angkaDiskon;
+      diskon[i].value = diskon[i].value.replace(/\./g, ",");
+      netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +e.target.value.replace(/\./g, ""));
+      checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    }
+    // total_ppn(subtotal.value.replace(/\./g, ""));
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +potongan.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
+  });
+}
+
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
@@ -346,8 +373,15 @@ function hitungDiskon(angka) {
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
-  totDiskon = ((totDiskon - 100) * -1).toFixed(2);
+  totDiskon = ((totDiskon - 100) * -1).toFixed(15);
   return totDiskon;
+}
+
+/** Hitung Diskon **/
+function hitungDiskonRp(angka, jum) {
+  angka = angka.replace(/\./g, "");
+  var persen = ((angka / jum.replace(/\./g, "")) * 100);
+  return persen;
 }
 
 /** Add Nominal Separators **/
@@ -410,6 +444,19 @@ function angkaPlus(evt, inputan) {
     for(let i = 1; i <= diskon.length; i++) {
       if(inputan == i)
         $(diskon[inputan-1]).tooltip('show');
+    }
+    return false;
+  }
+  return true;
+}
+
+function angkaSajaDiskon(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= diskonRp.length; i++) {
+      if(inputan == i)
+        $(diskonRp[inputan-1]).tooltip('show');
     }
     return false;
   }
