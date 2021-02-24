@@ -23,6 +23,11 @@ class RekapStokController extends Controller
     public function index() {
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
+        // $stokGd = StokBarang::join('barang', 'barang.id', 'stok.id_barang')
+        //           ->select('id_gudang')->selectRaw('sum(stok) as stok')
+        //           ->where('id_kategori', 'KAT04')->where('stok', '!=', 0)->groupBy('id_gudang')->get();
+
+        // return response()->json($stokGd);
 
         $data = [
             'jenis' => $jenis,
@@ -94,7 +99,7 @@ class RekapStokController extends Controller
             if($j->total <= 80) {
                 for($i = $el+1; $i < $k; $i++) { 
                     if($jenis[$el]->total + $jenis[$i]->total <= 127) {
-                        if($jenis[$i]->nama != 'PRIME') {
+                        // if($jenis[$i]->nama != 'PRIME') {
                             $jenis[$el]->total += $jenis[$i]->total;
                             $jenis[$el]->id = $jenis[$el]->id.','.$jenis[$i]->id;
                             $jenis[$el]->nama = $jenis[$el]->nama.', '.$jenis[$i]->nama;
@@ -103,7 +108,7 @@ class RekapStokController extends Controller
                             $jenis = $jenis->filter(function($item) use($kode) {
                                 return $item->id != $kode;
                             });
-                        }
+                        // }
                         $gabung++;   
                     }
                 }
