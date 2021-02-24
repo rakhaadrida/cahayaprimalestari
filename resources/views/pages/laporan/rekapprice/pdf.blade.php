@@ -204,7 +204,7 @@
       <div class="cetak-rekap-all" @if($jenis[$jenis->count()-1]->id != $item->id) style="page-break-after: always" @endif>
         <center>
           <div class="title-rekap-all">
-            <h5 class="text-bold text-dark title-rekap">REKAP VALUE {{$item->nama}}</h5>
+            <h5 class="text-bold text-dark title-rekap">PRICE LIST {{$item->nama}}</h5>
             <h6 class="text-dark waktu-cetak">Waktu Cetak : {{$waktu}}</h6>
           </div>
         </center>
@@ -217,15 +217,15 @@
               <tr>
                 <td style="width: 5px" class="align-middle">No</td>
                 <td class="align-middle" class="align-middle">Nama Barang</td>
-                <td style="width: 45px;" class="align-middle">Harga</td>
-                <td style="width: 22px;" class="align-middle">Stok</td>
-                <td style="width: 55px;" class="align-middle">Value</td>
+                <td style="width: 45px;" class="align-middle">Price</td>
+                <td style="width: 22px;" class="align-middle">%</td>
+                <td style="width: 45px;" class="align-middle">Net</td>
               </tr>
             </thead>
             <tbody>
               @php 
                 $i = 1; $baris = 1; $kode = []; $status = 0; $kodeBrg = [];
-                $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)->get();
+                $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)->orderBy('id_kategori')->get();
               @endphp
               @foreach($sub as $s)
                 @if($status != 1)
@@ -249,16 +249,13 @@
                         @php
                           $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
                                   ->where('id_harga', 'HRG01')->get();
-                          $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
-                                    DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
-                                    ->where('status', 'T')->get();
                         @endphp
                         <tr class="text-dark ">
                           <td align="center">{{ $i }}</td>
                           <td>{{ $b->nama }}</td>
                           <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
-                          <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
-                          <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
+                          <td align="right">1,1</td>
+                          <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga, 0, "", ".") : '0' }}</td>
                         </tr>
                         @php $i++; $baris++; array_push($kodeBrg, $b->id); @endphp
                       @else
@@ -280,15 +277,15 @@
                 <tr>
                   <td style="width: 5px" class="align-middle">No</td>
                   <td class="align-middle" class="align-middle">Nama Barang</td>
-                  <td style="width: 40px;" class="align-middle">Harga</td>
-                  <td style="width: 25px;" class="align-middle">Stok</td>
-                  <td style="width: 55px;" class="align-middle">Value</td>
+                  <td style="width: 45px;" class="align-middle">Price</td>
+                  <td style="width: 22px;" class="align-middle">%</td>
+                  <td style="width: 45px;" class="align-middle">Net</td>
                 </tr>
               </thead>
               <tbody id="tablePO">
                 @php $j = $i; $status = 0;
                     $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
-                          ->whereNotIn('id', $kode)->get();
+                          ->whereNotIn('id', $kode)->orderBy('id_kategori')->get();
                 @endphp
                 @if($baris <= 134)
                   @foreach($sub as $s)
@@ -314,16 +311,13 @@
                           @php
                             $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
                                     ->where('id_harga', 'HRG01')->get();
-                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
-                                    DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
-                                    ->where('status', 'T')->get();
                           @endphp
                           <tr class="text-dark ">
                             <td align="center">{{ $j }}</td>
                             <td>{{ $b->nama }}</td>
                             <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
-                            <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
-                            <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
+                            <td align="right">1,1</td>
+                            <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga, 0, "", ".") : '0' }}</td>
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else
@@ -347,15 +341,15 @@
                 <tr>
                   <td style="width: 5px" class="align-middle">No</td>
                   <td class="align-middle" class="align-middle">Nama Barang</td>
-                  <td style="width: 40px;" class="align-middle">Harga</td>
-                  <td style="width: 25px;" class="align-middle">Stok</td>
-                  <td style="width: 55px;" class="align-middle">Value</td>
+                  <td style="width: 45px;" class="align-middle">Price</td>
+                  <td style="width: 22px;" class="align-middle">%</td>
+                  <td style="width: 45px;" class="align-middle">Net</td>
                 </tr>
               </thead>
               <tbody id="tablePO">
                 @php $status = 0;
                     $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
-                          ->whereNotIn('id', $kode)->get();
+                          ->whereNotIn('id', $kode)->orderBy('id_kategori')->get();
                 @endphp
                 @if($baris <= 201)
                   @foreach($sub as $s)
@@ -388,8 +382,8 @@
                             <td align="center">{{ $j }}</td>
                             <td>{{ $b->nama }}</td>
                             <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
-                            <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
-                            <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
+                            <td align="right">1,1</td>
+                            <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga, 0, "", ".") : '0' }}</td>
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else
@@ -413,15 +407,15 @@
                 <tr>
                   <td style="width: 5px" class="align-middle">No</td>
                   <td class="align-middle" class="align-middle">Nama Barang</td>
-                  <td style="width: 40px;" class="align-middle">Harga</td>
-                  <td style="width: 25px;" class="align-middle">Stok</td>
-                  <td style="width: 55px;" class="align-middle">Value</td>
+                  <td style="width: 45px;" class="align-middle">Price</td>
+                  <td style="width: 22px;" class="align-middle">%</td>
+                  <td style="width: 45px;" class="align-middle">Net</td>
                 </tr>
               </thead>
               <tbody id="tablePO">
                 @php $status = 0;
                     $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
-                          ->whereNotIn('id', $kode)->get();
+                          ->whereNotIn('id', $kode)->orderBy('id_kategori')->get();
                 @endphp
                 @if($baris <= 268)
                   @foreach($sub as $s)
@@ -454,8 +448,8 @@
                             <td align="center">{{ $j }}</td>
                             <td>{{ $b->nama }}</td>
                             <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga_ppn, 0, "", ".")  : '' }}</td>
-                            <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : 0 }}</td>
-                            <td align="right">{{ (($stok->count() != 0) && ($harga->count() != 0)) ? number_format($harga[0]->harga_ppn * $stok[0]->total, 0, "", ".") : '0' }}</td>
+                            <td align="right">1,1</td>
+                            <td align="right">{{ $harga->count() != 0 ? number_format($harga[0]->harga, 0, "", ".") : '0' }}</td>
                           </tr>
                           @php $j++; $baris++; array_push($kodeBrg, $b->id); @endphp
                         @else

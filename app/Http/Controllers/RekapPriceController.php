@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\StokBarang;
 use App\Models\JenisBarang;
 use App\Models\Subjenis;
 use App\Models\Barang;
 use Carbon\Carbon;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\RekapValueExport;
+use App\Exports\RekapPriceExport;
 
-class RekapValueController extends Controller
+class RekapPriceController extends Controller
 {
     public function index() {
         $jenis = JenisBarang::All();
@@ -21,7 +20,7 @@ class RekapValueController extends Controller
             'jenis' => $jenis,
         ];
         
-        return view('pages.laporan.rekapvalue.index', $data);
+        return view('pages.laporan.rekapprice.index', $data);
     }
 
     public function cetak_pdf() {
@@ -66,12 +65,12 @@ class RekapValueController extends Controller
             'waktu' => $waktu
         ];
 
-        $pdf = PDF::loadview('pages.laporan.rekapvalue.pdf', $data)->setPaper('A4', 'portrait');
+        $pdf = PDF::loadview('pages.laporan.rekapprice.pdf', $data)->setPaper('A4', 'portrait');
         ob_end_clean();
-        return $pdf->stream('Rekap-Value.pdf');
+        return $pdf->stream('Price-List.pdf');
     }
 
     public function cetak_excel() {
-        return Excel::download(new RekapValueExport, 'Rekap-Value.xlsx');
+        return Excel::download(new RekapPriceExport, 'Price-List.xlsx');
     }
 }

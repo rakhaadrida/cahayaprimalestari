@@ -329,7 +329,7 @@
               <tbody id="tablePO">
                 @php $j = $i; $status = 0;
                     $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
-                          ->whereNotIn('id', $kode)->get();
+                          ->whereNotIn('id', $kode)->orderBy('id_kategori')->get();
                 @endphp
                 @if($baris <= 134)
                   @foreach($sub as $s)
@@ -409,7 +409,7 @@
               <tbody id="tablePO">
                 @php $status = 0;
                     $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
-                          ->whereNotIn('id', $kode)->get();
+                          ->whereNotIn('id', $kode)->orderBy('id_kategori')->get();
                 @endphp
                 @if($baris <= 201)
                   @foreach($sub as $s)
@@ -485,7 +485,7 @@
               <tbody id="tablePO">
                 @php $status = 0;
                     $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)
-                          ->whereNotIn('id', $kode)->get();
+                          ->whereNotIn('id', $kode)->orderBy('id_kategori')->get();
                 @endphp
                 @if($baris <= 268)
                   @foreach($sub as $s)

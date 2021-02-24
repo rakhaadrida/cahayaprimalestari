@@ -218,6 +218,7 @@
         </a>
         <div id="collapseLaporan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="py-2 collapse-inner rounded">
+            <a class="collapse-item" href="{{ route('price') }}">Price List</a>
             <a class="collapse-item" href="{{ route('bk') }}">Barang Keluar</a>
             <a class="collapse-item" href="{{ route('kartu') }}">Kartu Stok</a>
             <a class="collapse-item" href="{{ route('rekap') }}">Rekap Stok</a>
