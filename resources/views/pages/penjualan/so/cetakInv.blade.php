@@ -7,7 +7,7 @@
     <link href="backend/css/main.css" rel="stylesheet"> --}}
     <style>
       body {
-          margin: 0;
+          /* margin: 0; */
           width: 914.7px;
           height: 520px;
           /* width: 8.54in;
@@ -220,8 +220,9 @@
           /* margin-top: 0;     // margin minimum
           margin-left: 0;
           margin-right: 0; */
-          margin-top: 0;
-          margin-left: 20px;
+          margin-left: 0;
+          /* margin-top: 0; */
+          /* margin-left: 20px; */
           margin-right: 0;
       }
 
@@ -230,7 +231,7 @@
         font-weight: bold;
         font-family: Arial, Helvetica, sans-serif;
         /* font-family: "Fake Receipt", Times, serif; */
-        margin-left: 10px !important;
+        /* margin-left: 10px !important; */
       }
 
       .subtitle-cetak-so-one {
@@ -238,7 +239,7 @@
         color: black;
         /* font-family: "Dotrice"; */
         margin-top: -5px;
-        margin-left: 8px;
+        /* margin-left: 8px; */
         font-size: 15px;
         font-weight: normal;
       }
@@ -262,7 +263,7 @@
 
       .logo-cetak-so {
         margin-top: -99px;
-        margin-left: 20px;
+        /* margin-left: 20px; */
       }
  
       .logo-cetak-so img {
@@ -290,7 +291,7 @@
         font-weight: 500;
         /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 16px;
-        width: 255px;
+        width: 275px;
         margin-top: -110px;
         margin-right: 75px;
       }
@@ -326,7 +327,7 @@
         border-spacing: 0px;
         /* margin-left: 0; // margin Minimum */
         margin-right: 30px;
-        margin-left: 20px;
+        /* margin-left: 20px; */
       }
 
       .table-info-cetak-so td {
@@ -354,7 +355,7 @@
         /* height: 225px; */
         height: 52.5% !important;
         /* margin-left: 0; // Margin minimum */
-        margin-left: 20px;
+        /* margin-left: 20px; */
         margin-right: 34.5px;
         margin-top: -13px;
         /* border: 1px solid black; */
@@ -407,8 +408,8 @@
           border-left: 1px solid black;
           border-right: 1px solid black;
           margin-bottom: -40px;
-          /* margin-left: 0;  // Margin minimum */
-          margin-left: 20px;
+          margin-left: 0; 
+          /* margin-left: 20px; */
           margin-right: 30px;
           margin-top: -10px;
       }
@@ -520,10 +521,16 @@
           /* size: 24.2cm 13.8cm; */
           width: 21.8cm;
           height: 13.8cm;
+          /* margin: -10cm -10cm 0cm 0cm; */
+          margin-top: 0.38cm;
+          margin-left: 0.381cm;
+          margin-bottom: 0.254cm;
+          margin-right: 1.27cm;
         }
 
         body {
           margin: 0;
+          /* margin: 0.13in 0.13in 0.5in 0.15in; */
           zoom: 1.37;
         }
 
