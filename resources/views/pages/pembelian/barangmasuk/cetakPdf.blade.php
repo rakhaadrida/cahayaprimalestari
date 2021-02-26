@@ -285,11 +285,16 @@
           font-size: 18px;
       }
 
-      /* @media print {
+      @media print {
         @page {
-          size: 21.59cm 13.9cm;
+          /* size: 21.59cm 13.9cm; */
+          margin-top: 0.3302cm;
+          margin-left: 0.381cm;
+          margin-bottom: 0.254cm;
+          /* margin-bottom: 0.4826cm;  0.19in */
+          margin-right: 1.27cm;
         }
-      } */
+      }
     </style>
   </head>
   <body>

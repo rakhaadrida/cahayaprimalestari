@@ -520,6 +520,11 @@
           /* size: 24.2cm 13.8cm; */
           width: 21.8cm;
           height: 13.8cm;
+          margin-top: 0.3302cm;
+          margin-left: 0.381cm;
+          margin-bottom: 0.254cm;
+          /* margin-bottom: 0.4826cm;  0.19in */
+          margin-right: 1.27cm;
         }
 
         body {

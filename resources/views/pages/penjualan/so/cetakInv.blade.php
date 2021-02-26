@@ -501,7 +501,7 @@
         font-weight: 700;
         margin-left: 30px;
         /* margin-right: 100px; // Margin minimum */
-        margin-right: 80px; /* Margin custom */ 
+        margin-right: 100px; /* Margin custom */ 
         margin-top: 33px;
         /* border: solid black; */
       }
@@ -522,9 +522,10 @@
           width: 21.8cm;
           height: 13.8cm;
           /* margin: -10cm -10cm 0cm 0cm; */
-          margin-top: 0.38cm;
+          margin-top: 0.3302cm;
           margin-left: 0.381cm;
           margin-bottom: 0.254cm;
+          /* margin-bottom: 0.4826cm;  0.19in */
           margin-right: 1.27cm;
         }
 
