@@ -102,20 +102,20 @@
                         <br>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Nitto">
-                          <label class="form-check-label text-bold text-dark" for="kat3">Nitto</label>
+                          <label class="form-check-label text-bold text-dark" for="kat4">Nitto</label>
                         </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="MCB">
-                          <label class="form-check-label text-bold text-dark" for="kat3">MCB</label>
+                          <label class="form-check-label text-bold text-dark" for="kat5">MCB</label>
                         </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="BOSS">
-                          <label class="form-check-label text-bold text-dark" for="kat3">Pipa BOSS</label>
+                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa BOSS</label>
                         </div>
                         <br>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
-                          <label class="form-check-label text-bold text-dark" for="kat3">Maspion</label>
+                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>
                         </div>
                       </div>
                     </div>

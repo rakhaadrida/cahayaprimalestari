@@ -83,17 +83,35 @@
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
                       <div class="col-3" style="margin-top: -35px">
-                        <div class="form-check mt-2">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Cash" id="kategori" required>
+                        <div class="form-check form-check-inline mt-2">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Cash" id="kategori" required>
                           <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
                         </div>
-                        <div class="form-check">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Prime">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Prime">
                           <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
                         </div>
-                        <div class="form-check">
-                          <input class="form-check-input" tabindex="3" type="radio" name="kategori"  value="Extrana">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Extrana">
                           <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Nitto">
+                          <label class="form-check-label text-bold text-dark" for="kat4">Nitto</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="MCB">
+                          <label class="form-check-label text-bold text-dark" for="kat5">MCB</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="BOSS">
+                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa BOSS</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
+                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>
                         </div>
                       </div>
                     </div>
@@ -183,7 +201,7 @@
                         value="{{ old('tipe[]') }}">
                       </td>
                       <td>
-                        <input type="text" name="harga[]" id="harga" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}">
+                        <input type="text" name="harga[]" id="harga" readonly class="form-control form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}" onkeypress="return angkaSajaHarga(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td>
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
@@ -193,7 +211,7 @@
                         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
                       </td>
                       <td>
-                        <input type="text" name="diskonRp[]" id="diskonRp" class="form-control form-control-sm text-bold text-right text-dark diskonRp" 
+                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
                         value="{{ old('diskonRp[]') }}" >
                       </td>
                       <td>
@@ -472,12 +490,6 @@ function displayCust(e) {
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
-
-      @foreach($totalKredit as $t)
-        if('{{ $t->id_customer }}' == kodeCust.value) {
-          piutang.value = '{{ $t->total }}';
-        }
-      @endforeach
     }
     else if(e.target.value == '') {
       kodeCust.value = '';
@@ -485,6 +497,12 @@ function displayCust(e) {
       piutang.value = '';
       namaSales.value = '';
       npwp.value = '';
+    }
+  @endforeach
+
+  @foreach($totalKredit as $t)
+    if('{{ $t->id_customer }}' == kodeCust.value) {
+      piutang.value = '{{ $t->total }}';
     }
   @endforeach
 }
@@ -504,7 +522,7 @@ function formatTanggal(e) {
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
-  if((radios[1].checked) || (radios[2].checked)) {
+  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
     tempo.removeAttribute('readonly');
     tempo.setAttribute('required', 'true');
   }
@@ -546,7 +564,7 @@ function displayRow(e) {
         value="{{ old('tipe[]') }}">
       </td>
       <td>
-        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow">
+        <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control form-control-sm text-bold text-dark text-right hargaRow" onkeypress="return angkaSajaHarga(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
       <td>
         <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
@@ -556,7 +574,7 @@ function displayRow(e) {
         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
       </td>
       <td style="width: 120px">
-        <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRpRow" 
+        <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRpRow" 
         value="{{ old('diskonRp[]') }}" >
       </td>
       <td>
@@ -657,6 +675,12 @@ function displayRow(e) {
           satuanRow.setAttribute('readonly', 'true');
         }
         ukuranRow = '{{ $br->ukuran }}';
+
+        if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}')) {
+          hargaRow.removeAttribute('readonly');
+        } else {
+          hargaRow.setAttribute('readonly', 'true');
+        }
       }
     @endforeach
 
@@ -670,8 +694,24 @@ function displayRow(e) {
 
     kodeGudangRow.value = '{{ $gudang[0]->id }}';
     qtyGudangRow.value = '';
-    qtyRow.value = '';
+    // qtyRow.value = '';
   } 
+
+  hargaRow.addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });
+
+    netPast = +nettoRow.value.replace(/\./g, "");
+    jumlahRow.value = addCommas(hargaRow.value.replace(/\./g, "") * qtyRow.value);
+    if(diskonRow.value != "") {
+      var angkaDiskon = hitungDiskon(diskonRow.value)
+      diskonRpRow.value = addCommas((angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100).toFixed(0));
+    }
+
+    nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
+    checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
+  });
 
   /** Inputan hanya bisa angka **/
   qtyRow.addEventListener("keypress", function (e, evt) {
@@ -1026,6 +1066,12 @@ for(let i = 0; i < brgNama.length; i++) {
           satuan[i].setAttribute('readonly', 'true');
         }
         ukuran[i].value = '{{ $br->ukuran }}';
+
+        if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}')) {
+          harga[i].removeAttribute('readonly');
+        } else {
+          harga[i].setAttribute('readonly', 'true');
+        }
       }
     @endforeach
 
@@ -1041,6 +1087,24 @@ for(let i = 0; i < brgNama.length; i++) {
     qtyGudang[i].value = '';
     qty[i].value = '';
   }
+}
+
+for(let i = 0; i < harga.length; i++) {
+  harga[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });
+
+    netPast = +netto[i].value.replace(/\./g, "");
+    jumlah[i].value = addCommas(harga[i].value.replace(/\./g, "") * qty[i].value);
+    if(diskon[i].value != "") {
+      var angkaDiskon = hitungDiskon(diskon[i].value)
+      diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
+    }
+
+    netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+    checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+  });
 }
 
 /** Tampil Jumlah Harga Otomatis **/
@@ -1233,6 +1297,20 @@ function angkaSaja(evt, inputan, teks) {
             $(satuan[inputan-1]).tooltip('show');
         }
       }
+    }
+    return false;
+  }
+  return true;
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSajaHarga(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    for(let i = 1; i <= harga.length; i++) {
+      if(inputan == i)
+        $(harga[inputan-1]).tooltip('show');
     }
     return false;
   }
