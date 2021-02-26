@@ -26,11 +26,9 @@ class AccReceivableController extends Controller
 {
     public function index() {
         $arLast = AccReceivable::join('detilar', 'detilar.id_ar', 'ar.id')
-                    ->orderBy('detilar.updated_at', 'desc')->take(1)->get();
+                ->orderBy('detilar.updated_at', 'desc')->take(1)->get();
 
-        // return response()->json($arLast);
-                    
-        $ar = AccReceivable::where('id', '!=', $arLast->first()->id)
+        $ar = AccReceivable::where('id', '!=', $arLast->first()->id)->where('keterangan', 'BELUM LUNAS')
                 ->orderBy('created_at', 'desc')->get();
         $arOffice = AccReceivable::with(['so'])
                 ->select('ar.id', 'ar.id_so', 'ar.keterangan')
