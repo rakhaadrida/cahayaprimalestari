@@ -55,9 +55,9 @@ class KenariController extends Controller
 
         $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'INV%')
                     ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $newcode = 'IN'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $lastcodeKen = SalesOrder::join('users', 'users.id', 'so.id_user')
                         ->selectRaw('max(so.id) as id')->where('roles', 'KENARI')
@@ -150,11 +150,11 @@ class KenariController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'INV%')
-                    ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereYear('tgl_so', $waktu->year)
+                    ->whereMonth('tgl_so', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $newcode = 'IN'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         $kode = $newcode;
 
         $statusHal = $status;
