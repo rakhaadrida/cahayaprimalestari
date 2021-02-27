@@ -58,6 +58,7 @@
                           {{-- @if(Auth::user()->roles != 'SUPER') readonly @endif --}}
                         @endif
                       @endforeach
+                      @if(Auth::user()->roles != 'SUPER') readonly @endif
                     />
                   </div>
                   <span class="col-form-label text-bold">

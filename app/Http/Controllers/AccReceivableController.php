@@ -569,7 +569,7 @@ class AccReceivableController extends Controller
         else
             $tglAkhir = $request->tglAkhir;
 
-        return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul), 'trans-bulanan.xlsx');
+        return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul), 'Trans-Bulanan.xlsx');
     }
 
     public function excelNow() {

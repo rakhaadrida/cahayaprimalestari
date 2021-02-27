@@ -159,6 +159,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-bm-all');
         Route::get('/cetak-bm-update/{awal}/{akhir}', 'CetakBMController@update')
             ->name('cetak-bm-update');
+        
+        // Barang Masuk Harian
+        Route::get('/bm-harian', 'BMHarianController@index')->name('bm-harian');
+        Route::get('/bm-harian/show', 'BMHarianController@show')->name('bm-harian-show');
+        Route::post('/bm-harian/detail/{id}', 'BMHarianController@detail')->name('bm-harian-detail');
+        Route::post('/bm-harian/excelNow', 'BMHarianController@excelNow')->name('bm-harian-excel-now');
 
         // Transfer Barang
         // Route::get('/transfer', 'TransferBarangController@index')->name('tb');
@@ -166,7 +172,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('tb-create');
         // Route::post('/transfer/process/{id}', 'TransferBarangController@process')
         //     ->name('tb-process');
-        Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}','TransferBarangController@remove')->name('tb-remove');
+        Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}','TransferBarangController@remove')
+            ->name('tb-remove');
         // Route::get('/tb/index', 'TransferBarangController@indexTab')
         //     ->name('tb-index');
         // Route::post('/tb/detail/{id}', 'TransferBarangController@detail')

@@ -47,9 +47,9 @@ class SalesOrderController extends Controller
 
         $lastcode = SalesOrder::selectRaw('max(id) as id')
                     ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'INV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $newcode = 'IN'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
