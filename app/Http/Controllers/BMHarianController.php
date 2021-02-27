@@ -7,7 +7,7 @@ use App\Models\BarangMasuk;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BMHarianExport;
-// use App\Exports\BMAllExport;
+use App\Exports\BMAllExport;
 
 class BMHarianController extends Controller
 {
@@ -73,16 +73,14 @@ class BMHarianController extends Controller
         $tglAkhir= $request->tglAkhir;
         $akhir = $this->formatTanggal($request->tglAkhir, 'Y-m-d');
 
-        if($request->tglAwal == '')
-            $tglAwal = 'KOSONG';
-        else
-            $tglAwal = $request->tglAwal;
-        
-        if($request->tglAkhir == '')
-            $tglAkhir = 'KOSONG';
-        else
-            $tglAkhir = $request->tglAkhir;
+        $namaAwal = $this->formatTanggal($tglAwal, 'd');
+        $namaAkhir = $this->formatTanggal($tglAkhir, 'd M y');
+        if($request->tglAkhir != $request->tglAwal) {
+            $tanggal = $namaAwal.'-'.$namaAkhir;
+        } else {
+            $tanggal = $namaAkhir;
+        }
 
-        return Excel::download(new BMAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul), 'BM-Harian.xlsx');
+        return Excel::download(new BMAllExport($tglAwal, $tglAkhir, $awal, $akhir), 'BM-Harian'.$tanggal.'.xlsx');
     }
 }

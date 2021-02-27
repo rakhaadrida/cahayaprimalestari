@@ -46,7 +46,7 @@
                     <button type="submit" tabindex="3" formaction="{{ route('bm-harian-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-2 mt-1">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold ">Print</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('bm-harian-excel') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold ">Excel</button>
                   </div>
                 </div>  
               </div>

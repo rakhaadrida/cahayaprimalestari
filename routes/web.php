@@ -165,6 +165,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/bm-harian/show', 'BMHarianController@show')->name('bm-harian-show');
         Route::post('/bm-harian/detail/{id}', 'BMHarianController@detail')->name('bm-harian-detail');
         Route::post('/bm-harian/excelNow', 'BMHarianController@excelNow')->name('bm-harian-excel-now');
+        Route::post('/bm-harian/excel', 'BMHarianController@excel')->name('bm-harian-excel');
 
         // Transfer Barang
         // Route::get('/transfer', 'TransferBarangController@index')->name('tb');
