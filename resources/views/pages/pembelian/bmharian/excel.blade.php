@@ -15,29 +15,31 @@
           <th>No</th>
           <th>Supplier</th>
           <th>Gudang</th>
-          <th>No. Faktur</th>
           <th>Tanggal</th>
-          <th>Tempo</th>
-          <th>Total</th>
-          <th>Keterangan</th>
+          <th>No. Faktur</th>
+          <th>Item Barang</th>
+          <th>Qty</th>
         </tr>
       </thead>
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($items as $item)
-          <tr class="text-dark">
-            <td align="center">{{ $i }}</td>
-            <td>{{ $item->supplier->nama }}</td>
-            <td align="center">{{ $item->gudang->nama }}</td>
-            <td align="center">{{ $item->id_faktur }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</td>
-            <td align="center">
-              {{ \Carbon\Carbon::parse($item->tanggal)->add($item->tempo, 'days')
-                ->format('d-M-y') }}
-            </td>
-            <td align="right">{{ number_format($item->total, 0, "", ",") }}</td>
-            <td></td>
-          </tr> 
+          @php
+            $j = 1;
+            $detil = \App\Models\DetilBM::where('id_bm', $item->id)->get();
+          @endphp
+          @foreach($detil as $d)
+            <tr class="text-dark">
+              <td align="center">{{ $j == 1 ? $i : '' }}</td>
+              <td>{{ $j == 1 ? $item->supplier->nama : '' }}</td>
+              <td align="center">{{ $j == 1 ? $item->gudang->nama : '' }}</td>
+              <td align="center">{{ $j == 1 ? \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') : '' }}</td>
+              <td align="center">{{ $j == 1 ? $item->id_faktur : '' }}</td>
+              <td>{{ $d->barang->nama }}</td>
+              <td align="right">{{ $d->qty }}</td>
+            </tr> 
+            @php $j++; @endphp
+          @endforeach
           @php $i++ @endphp
         @endforeach
       </tbody>
