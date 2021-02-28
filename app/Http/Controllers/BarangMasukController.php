@@ -179,7 +179,7 @@ class BarangMasukController extends Controller
 
     public function cetak(Request $request, $id) {
         $items = BarangMasuk::where('id', $id)->get();
-        $tabel = ceil($items->first()->detilbm->count() / 8);
+        $tabel = ceil($items->first()->detilbm->count() / 34);
 
         if($tabel > 1) {
             for($i = 1; $i < $tabel; $i++) {

@@ -224,7 +224,7 @@
       .customer-cetak-so {
         font-family: 'Courier New', Courier, monospace;
         font-size: 15px;
-        width: 355px;
+        width: 370px;
         margin-top: -175px;
         margin-right: -95px;
         line-height: 16px;
@@ -285,17 +285,22 @@
           font-size: 18px;
       }
 
-      /* @media print {
+      @media print {
         @page {
-          size: 21.59cm 13.9cm;
+          /* size: 21.59cm 13.9cm; */
+          margin-top: 0.4302cm;
+          margin-left: 0.381cm;
+          margin-bottom: 0.254cm;
+          /* margin-bottom: 0.4826cm;  0.19in */
+          margin-right: 1.27cm;
         }
-      } */
+      }
     </style>
   </head>
   <body>
     @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; @endphp
     @foreach($items as $item)
-      @if(($items->first()->id != ($det <= 8 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 8)) 
+      @if(($items->first()->id != ($det <= 34 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 34)) 
         @php $i = 1; $no = 1; $kur = 0; $kode = []; @endphp
       @endif
       <div class="cetak-all-container" style="page-break-after: always;" >
@@ -306,7 +311,7 @@
           <div class="subtitle-cetak-so">
             <span class="text-right">Supplier</span>
             <span>:</span>
-            <span>{{ $det <= 8 ? $item->supplier->nama : $items[$urut-$kur]->supplier->nama }}</span>
+            <span>{{ $det <= 34 ? $item->supplier->nama : $items[$urut-$kur]->supplier->nama }}</span>
           </div>
           <div class="subtitle-cetak-so subtitle-second">
             <span class="text-right">We had accepted these following item(s) :</span>
@@ -333,7 +338,7 @@
         <div class="detail-cetak-so">
           <span class="text-right">GRN Date</span>
           <span>:</span>
-          <span>{{ \Carbon\Carbon::parse(($det <= 8 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
+          <span>{{ \Carbon\Carbon::parse(($det <= 34 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
           <br>
           <span class="detail-second text-right">GRN Number</span>
           <span>:</span>
@@ -341,17 +346,17 @@
           <br>
           <span class="detail-third text-right">DO. Date</span>
           <span>:</span>
-          <span>{{ \Carbon\Carbon::parse(($det <= 8 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
+          <span>{{ \Carbon\Carbon::parse(($det <= 34 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
           <br>
           <span class="detail-fourth text-right">DO. Number</span>
           <span>:</span>
-          <span>{{ $det <= 8 ? $item->id_faktur : $items[$urut-$kur]->id_faktur }}</span>
+          <span>{{ $det <= 34 ? $item->id_faktur : $items[$urut-$kur]->id_faktur }}</span>
         </div>
         <br>
         
         @php 
         $stat = $det;
-        if($det <= 8)
+        if($det <= 34)
           $bm = $item->id;
         else
           $bm = $items[$urut-$kur]->id;
@@ -394,7 +399,7 @@
                 <td></td>
               </tr>
               @php $no++; array_push($kode, $itemDet->id_barang); @endphp
-              @if($no > (8 * $i))
+              @if($no > (34 * $i))
                 @php $cek = 1; @endphp
                 @break
               @endif

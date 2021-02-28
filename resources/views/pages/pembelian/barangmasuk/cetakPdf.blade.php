@@ -224,7 +224,7 @@
       .customer-cetak-so {
         font-family: 'Courier New', Courier, monospace;
         font-size: 15px;
-        width: 355px;
+        width: 370px;
         margin-top: -175px;
         margin-right: -95px;
         line-height: 16px;
@@ -288,7 +288,7 @@
       @media print {
         @page {
           /* size: 21.59cm 13.9cm; */
-          margin-top: 0.3302cm;
+          margin-top: 0.4302cm;
           margin-left: 0.381cm;
           margin-bottom: 0.254cm;
           /* margin-bottom: 0.4826cm;  0.19in */
@@ -389,7 +389,7 @@
                 <td></td>
               </tr>
               @php $no++; array_push($kode, $itemDet->id_barang); @endphp
-              @if($no > (8 * $i))
+              @if($no > (34 * $i))
                 @php $cek = 1; @endphp
                 @break
               @endif

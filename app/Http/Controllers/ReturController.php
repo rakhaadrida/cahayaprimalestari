@@ -1136,7 +1136,7 @@ class ReturController extends Controller
         parse_str($id, $kode);
 
         $items = ReturTerima::whereIn('id', $kode['id'])->get();
-        $tabel = ceil($items->first()->detilrt->count() / 8);
+        $tabel = ceil($items->first()->detilrt->count() / 34);
 
         if($tabel > 1) {
             for($i = 1; $i < $tabel; $i++) {

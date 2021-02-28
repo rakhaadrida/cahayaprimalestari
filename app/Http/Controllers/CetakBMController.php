@@ -49,7 +49,7 @@ class CetakBMController extends Controller
 
         foreach($items as $i) {
             $item = BarangMasuk::where('id', $i->id)->get();
-            $tabel = ceil($item->first()->detilbm->count() / 8);
+            $tabel = ceil($item->first()->detilbm->count() / 34);
 
             if($tabel > 1) {
                 for($j = 1; $j < $tabel; $j++) {
