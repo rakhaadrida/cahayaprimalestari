@@ -7,7 +7,7 @@
     <link href="backend/css/main.css" rel="stylesheet"> --}}
     <style>
       body {
-          margin: 0;
+          /* margin: 0; */
           width: 914.7px;
           height: 520px;
           /* width: 8.54in;
@@ -96,7 +96,7 @@
       }
 
       .container-fluid {
-          width: 87.4%;
+          width: 87.29%;
           padding-right: 0.75rem;
           padding-left: 0.75rem;
           /* margin-right: auto; */
@@ -220,8 +220,9 @@
           /* margin-top: 0;     // margin minimum
           margin-left: 0;
           margin-right: 0; */
-          margin-top: 0;
-          margin-left: 20px;
+          margin-left: 0;
+          /* margin-top: 0; */
+          /* margin-left: 20px; */
           margin-right: 0;
       }
 
@@ -230,7 +231,7 @@
         font-weight: bold;
         font-family: Arial, Helvetica, sans-serif;
         /* font-family: "Fake Receipt", Times, serif; */
-        margin-left: 10px !important;
+        /* margin-left: 10px !important; */
       }
 
       .subtitle-cetak-so-one {
@@ -238,7 +239,7 @@
         color: black;
         /* font-family: "Dotrice"; */
         margin-top: -5px;
-        margin-left: 8px;
+        /* margin-left: 8px; */
         font-size: 15px;
         font-weight: normal;
       }
@@ -247,7 +248,7 @@
         font-family: 'Courier New', Courier, monospace;
         color: black;
         /* font-family: "Dotrice"; */
-        margin-left: 0px;
+        margin-left: -9px;
         margin-top: -2px;
         font-size: 15px;
         font-weight: normal;
@@ -262,7 +263,7 @@
 
       .logo-cetak-so {
         margin-top: -99px;
-        margin-left: 20px;
+        /* margin-left: 20px; */
       }
  
       .logo-cetak-so img {
@@ -290,7 +291,7 @@
         font-weight: 500;
         /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 16px;
-        width: 255px;
+        width: 275px;
         margin-top: -110px;
         margin-right: 75px;
       }
@@ -302,7 +303,7 @@
       .nama-cetak-so {
         /* font-family: "Dotrice"; */
         color: black;
-        margin-top: 5px;
+        margin-top: 8px;
         margin-bottom: 5px;
         font-size: 16px;
       }
@@ -326,7 +327,7 @@
         border-spacing: 0px;
         /* margin-left: 0; // margin Minimum */
         margin-right: 30px;
-        margin-left: 20px;
+        /* margin-left: 20px; */
       }
 
       .table-info-cetak-so td {
@@ -350,11 +351,11 @@
 
       .table-cetak {
         font-size: 16px;
-        width: 90.7% !important;
+        width: 90.1% !important;
         /* height: 225px; */
         height: 52.5% !important;
         /* margin-left: 0; // Margin minimum */
-        margin-left: 20px;
+        /* margin-left: 20px; */
         margin-right: 34.5px;
         margin-top: -13px;
         /* border: 1px solid black; */
@@ -407,8 +408,8 @@
           border-left: 1px solid black;
           border-right: 1px solid black;
           margin-bottom: -40px;
-          /* margin-left: 0;  // Margin minimum */
-          margin-left: 20px;
+          margin-left: 0; 
+          /* margin-left: 20px; */
           margin-right: 30px;
           margin-top: -10px;
       }
@@ -500,7 +501,7 @@
         font-weight: 700;
         margin-left: 30px;
         /* margin-right: 100px; // Margin minimum */
-        margin-right: 80px; /* Margin custom */ 
+        margin-right: 100px; /* Margin custom */ 
         margin-top: 33px;
         /* border: solid black; */
       }
@@ -520,15 +521,17 @@
           /* size: 24.2cm 13.8cm; */
           width: 21.8cm;
           height: 13.8cm;
-          margin-top: 0.3302cm;
-          margin-left: 0.381cm;
-          margin-bottom: 0.254cm;
+          /* margin: -10cm -10cm 0cm 0cm; */
+          margin-top: 0.4302cm;
+          margin-left: 0.281cm;
+          margin-bottom: 0.154cm;
           /* margin-bottom: 0.4826cm;  0.19in */
           margin-right: 1.27cm;
         }
 
         body {
           margin: 0;
+          /* margin: 0.13in 0.13in 0.5in 0.15in; */
           zoom: 1.37;
         }
 

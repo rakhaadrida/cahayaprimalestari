@@ -288,7 +288,8 @@ class ReturController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('tgl_kirim', $waktu->year)
+        $lastcode = DetilRJ::selectRaw('max(id_kirim) as id')
+                    ->whereYear('tgl_kirim', $waktu->year)
                     ->whereMonth('tgl_kirim', $month)->get();
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;

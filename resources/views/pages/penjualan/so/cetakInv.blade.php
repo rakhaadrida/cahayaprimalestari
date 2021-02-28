@@ -96,7 +96,7 @@
       }
 
       .container-fluid {
-          width: 87.4%;
+          width: 87.29%;
           padding-right: 0.75rem;
           padding-left: 0.75rem;
           /* margin-right: auto; */
@@ -248,7 +248,7 @@
         font-family: 'Courier New', Courier, monospace;
         color: black;
         /* font-family: "Dotrice"; */
-        margin-left: 0px;
+        margin-left: -9px;
         margin-top: -2px;
         font-size: 15px;
         font-weight: normal;
@@ -351,7 +351,7 @@
 
       .table-cetak {
         font-size: 16px;
-        width: 90.7% !important;
+        width: 90.1% !important;
         /* height: 225px; */
         height: 52.5% !important;
         /* margin-left: 0; // Margin minimum */
@@ -522,9 +522,9 @@
           width: 21.8cm;
           height: 13.8cm;
           /* margin: -10cm -10cm 0cm 0cm; */
-          margin-top: 0.3302cm;
-          margin-left: 0.381cm;
-          margin-bottom: 0.254cm;
+          margin-top: 0.4302cm;
+          margin-left: 0.281cm;
+          margin-bottom: 0.154cm;
           /* margin-bottom: 0.4826cm;  0.19in */
           margin-right: 1.27cm;
         }
