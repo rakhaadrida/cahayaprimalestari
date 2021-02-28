@@ -45,7 +45,8 @@ class SalesOrderController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereYear('tgl_so', $waktu->year)
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IN%')
+                    ->whereYear('tgl_so', $waktu->year)
                     ->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
@@ -142,7 +143,8 @@ class SalesOrderController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereYear('tgl_so', $waktu->year)
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IN%')
+                    ->whereYear('tgl_so', $waktu->year)
                     ->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
@@ -155,13 +157,13 @@ class SalesOrderController extends Controller
             $status = 'INPUT';
         
         SalesOrder::create([
-            // 'id' => $kode,
-            'id' => $request->kode,
+            'id' => $kode,
+            // 'id' => $request->kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
             'total' => str_replace(".", "", $request->grandtotal),
             'diskon' => str_replace(".", "", $diskon),
-            'kategori' => $request->kategori,
+            'kategori' => $request->kategori.' '.$request->jenis,
             'tempo' => $tempo,
             'pkp' => $pkp,
             'status' => $status,
@@ -209,8 +211,8 @@ class SalesOrderController extends Controller
                 $diskonRp = ($request->diskonRp[$i] != '' ? str_replace(".", "", $request->diskonRp[$i]) : 0) / sizeof($arrGudang);
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
-                        // 'id_so' => $kode,
-                        'id_so' => $request->kode,
+                        'id_so' => $kode,
+                        // 'id_so' => $request->kode,
                         'id_barang' => $request->kodeBarang[$i],
                         'id_gudang' => $arrGudang[$j],
                         'harga' => str_replace(".", "", $request->harga[$i]),

@@ -6,11 +6,19 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use App\Models\Sales;
+use App\Models\SuratJalan;
 
 class CustomerController extends Controller
 {
     public function index()
     {
+        // $sj = SuratJalan::All();
+        // foreach($sj as $s) {
+        //     $item = Customer::withTrashed()->where('id', $s->id)->first();
+        //     $item->{'tempo'} = $s->tempo;
+        //     $item->save();
+        // }
+        
         $items = Customer::with(['sales'])->get();
         $data = [
             'items' => $items

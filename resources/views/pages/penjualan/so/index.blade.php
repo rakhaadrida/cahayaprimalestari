@@ -88,28 +88,28 @@
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
                       <div class="col-3" style="margin-top: -35px">
                         <div class="form-check form-check-inline mt-2">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Cash" id="kategori" required>
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Cash" id="kategori" required>
                           <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Prime">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">
                           <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Extrana">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">
                           <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
                         </div>
                         <br>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Nitto">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">
                           <label class="form-check-label text-bold text-dark" for="kat4">Nitto</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="MCB">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">
                           <label class="form-check-label text-bold text-dark" for="kat5">MCB</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="BOSS">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">
                           <label class="form-check-label text-bold text-dark" for="kat6">Pipa BOSS</label>
                         </div>
                         <br>
@@ -170,7 +170,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3 jenis-check">
                         <div class="form-check mt-2">
-                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" >
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" required>
                           <label class="form-check-label text-bold text-dark" for="jenis1">Cash</label>
                         </div>
                         <div class="form-check">
@@ -617,6 +617,8 @@ const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
 const radios = document.querySelectorAll('input[type=radio][name="kategori"]');
 const kategori = document.getElementById('kategori');
+const radiosJen = document.querySelectorAll('input[type=radio][name="jenis"]');
+const jenis = document.getElementById('jenis');
 const pkp = document.getElementById('pkp');
 const pcs = document.getElementById("pcs");
 const satuanUkuran = document.getElementById("satuanUkuran");
@@ -665,7 +667,7 @@ const totalTagihan = document.getElementById('totalTagihan');
 const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
-var netPast; var tab = '{{ $tab }}';
+var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
 var kodeModal; var totPast; var g; var gdg;
 var sisa; var stokJohar; var stokLain; var totStok;
 
@@ -679,6 +681,10 @@ diskonFaktur.addEventListener('keyup', formatNominal);
 diskonFaktur.addEventListener('keyup', displayTotal);
 
 Array.prototype.forEach.call(radios, function(radio) {
+   radio.addEventListener('change', displayJenis);
+}); 
+
+Array.prototype.forEach.call(radiosJen, function(radio) {
    radio.addEventListener('change', displayTempo);
 }); 
 
@@ -690,6 +696,8 @@ function displayCust(e) {
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
+      tempo.value = '{{ $c->tempo }}';
+      tempTempo = '{{ $c->tempo }}';
     }
     else if(e.target.value == '') {
       kodeCust.value = '';
@@ -697,6 +705,8 @@ function displayCust(e) {
       piutang.value = '';
       namaSales.value = '';
       npwp.value = '';
+      tempo.value = '';
+      tempTempo = '';
     }
   @endforeach
 
@@ -721,17 +731,38 @@ function formatTanggal(e) {
 }
 
 /** Tampil Input Tempo **/
-function displayTempo(e) {
+function displayJenis(e) {
+  // if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
+  //   tempo.removeAttribute('readonly');
+  //   tempo.setAttribute('required', 'true');
+  // }
   if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
-    tempo.removeAttribute('readonly');
-    tempo.setAttribute('required', 'true');
+    tempo.value = tempTempo;
+    radiosJen[0].checked = false;
+    radiosJen[0].disabled = false;
+    radiosJen[1].disabled = false;
   }
   else if(radios[0].checked) {
     tempo.setAttribute('readonly', 'true');
     tempo.removeAttribute('required');
     tempo.value = '';
-    // tempo.tabIndex = '';
-    // pkp.tabIndex = 4;
+    radiosJen[0].checked = true;
+    radiosJen[0].disabled = true;
+    radiosJen[1].disabled = true;
+  }
+} 
+
+/** Tampil Input Tempo **/
+function displayTempo(e) {
+  if(radiosJen[1].checked) {
+    tempo.removeAttribute('readonly');
+    tempo.setAttribute('required', 'true');
+    tempo.value = tempTempo;
+  }
+  else if(radiosJen[0].checked) {
+    tempo.setAttribute('readonly', 'true');
+    tempo.removeAttribute('required');
+    tempo.value = '';
   }
 } 
 
