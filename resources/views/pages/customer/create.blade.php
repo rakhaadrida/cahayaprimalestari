@@ -76,6 +76,14 @@
                   @if(Auth::user()->roles == 'ADMIN') readonly @endif>
                 </div>
               </div>
+              <div class="form-group row">
+                <label for="tempo" class="col-1 col-form-label text-bold">Tempo</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-2">
+                  <input type="text" class="form-control col-form-label-sm" name="tempo" 
+                  value="{{ old('tempo') }}" onkeypress="return angkaSaja(event, tempo)" id="tempo" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
+                </div>
+              </div>
               <div class="form-group row" style="margin-top: -10px">
                 <label for="sales_cover" class="col-1 col-form-label text-bold" style="margin-top: -7px">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
@@ -122,6 +130,7 @@ const kodeSales = document.getElementById("kodeSales");
 const telepon = document.getElementById("telepon");
 const npwp = document.getElementById("npwp");
 const limit = document.getElementById("limit");
+const tempo = document.getElementById("tempo");
 
 namaSales.addEventListener("keyup", displayKode);
 namaSales.addEventListener("blur", displayKode);
@@ -139,6 +148,8 @@ function angkaSaja(evt, inputan) {
       $(npwp).tooltip('show');
     else if(inputan.id == "limit")
       $(limit).tooltip('show');
+    else if(inputan.id == "tempo")
+      $(tempo).tooltip('show');
 
     return false;
   }

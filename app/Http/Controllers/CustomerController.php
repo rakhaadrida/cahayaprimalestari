@@ -45,6 +45,7 @@ class CustomerController extends Controller
             'contact_person' => $request->contact_person,
             'npwp' => $request->npwp,
             'limit' => (int) str_replace(".", "", $request->limit),
+            'tempo' => $request->tempo,
             'id_sales' => $request->id_sales,
             // 'ktp' => $request->file('ktp')->store('assets/product', 'public')
         ]);
@@ -84,6 +85,7 @@ class CustomerController extends Controller
         $item->{'contact_person'} = $request->contact_person;
         $item->{'npwp'} = $request->npwp;
         $item->{'limit'} = str_replace(".", "", $request->limit);
+        $item->{'tempo'} = $request->tempo;
         $item->{'id_sales'} = $request->id_sales;
         $item->save();
 

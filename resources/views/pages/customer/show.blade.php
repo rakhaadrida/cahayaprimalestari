@@ -63,6 +63,11 @@
                 <td>{{ number_format($item->limit, 0, "", ".") }}</td>
               </tr>
               <tr>
+                <td width="200px" class="text-bold">Tempo</td>
+                <td class="text-bold">:</td>
+                <td>{{ $item->tempo }}</td>
+              </tr>
+              <tr>
                 <td width="200px" class="text-bold">Sales Cover</td>
                 <td class="text-bold">:</td>
                 <td>

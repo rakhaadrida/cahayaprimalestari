@@ -165,6 +165,20 @@
                         </div>
                       </div>
                     </div>
+                    <div class="form-group row">
+                      <label for="jenis" class="col-6 col-form-label text-bold text-right">Jenis</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-3 jenis-check">
+                        <div class="form-check mt-2">
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" >
+                          <label class="form-check-label text-bold text-dark" for="jenis1">Cash</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="T" >
+                          <label class="form-check-label text-bold text-dark" for="jenis2">Tempo</label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
