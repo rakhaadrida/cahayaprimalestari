@@ -37,12 +37,12 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly>
+                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly>
                       </div>
                       <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="tanggal" value="{{ $tanggal }}" readonly>
+                        <input type="text" tabindex="2" class="form-control form-control-sm text-bold mt-1" name="tanggal" value="{{ $tanggal }}" readonly>
                       </div>
                     </div>   
                   </div>
@@ -51,7 +51,7 @@
                   <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" tabindex="1" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
+                    <input type="text" tabindex="3" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
                     <input type="hidden" name="kodeCustomer" id="idCustomer">
                     <input type="hidden" name="limit" id="limit">
                     <input type="hidden" name="piutang" id="piutang">
@@ -77,7 +77,7 @@
                       <label for="tglKirim" class="col-2 col-form-label text-bold">Tanggal Kirim</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="2" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" autocomplete="off" required />
+                        <input type="text" tabindex="4" name="tanggalKirim" id="tanggalKirim" placeholder="DD-MM-YYYY" class="form-control datepicker form-control-sm mt-1" autocomplete="off" required />
                         <input type="hidden" name="jumBaris" id="jumBaris" value="5">
                       </div>
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
@@ -121,7 +121,7 @@
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="4" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo', 'tem')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" readonly >
+                        <input type="text" tabindex="6" class="form-control form-control-sm text-bold mt-1" name="tempo" id="tempo" onkeypress="return angkaSaja(event, 'tempo', 'tem')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" readonly >
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
@@ -136,6 +136,20 @@
                         <div class="form-check">
                           <input class="form-check-input" tabindex="5" type="radio" name="pkp" id="pkp" value="0" >
                           <label class="form-check-label text-bold text-dark" for="pkp2">Tidak</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="jenis" class="col-6 col-form-label text-bold text-right">Jenis</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <div class="col-3 jenis-check">
+                        <div class="form-check mt-2">
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" required>
+                          <label class="form-check-label text-bold text-dark" for="jenis1">Cash</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="T" >
+                          <label class="form-check-label text-bold text-dark" for="jenis2">Tempo</label>
                         </div>
                       </div>
                     </div>
@@ -430,6 +444,8 @@ const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
 const radios = document.querySelectorAll('input[type=radio][name="kategori"]');
 const kategori = document.getElementById('kategori');
+const radiosJen = document.querySelectorAll('input[type=radio][name="jenis"]');
+const jenis = document.getElementById('jenis');
 const pkp = document.getElementById('pkp');
 const pcs = document.getElementById("pcs");
 const satuanUkuran = document.getElementById("satuanUkuran");
@@ -465,7 +481,7 @@ const totalTagihan = document.getElementById('totalTagihan');
 const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
-var netPast; var tab = '{{ $tab }}';
+var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
 var kodeModal; var totPast;
 var sisa; var stokJohar; var stokLain; var totStok;
 
@@ -479,8 +495,12 @@ diskonFaktur.addEventListener('keyup', formatNominal);
 diskonFaktur.addEventListener('keyup', displayTotal);
 
 Array.prototype.forEach.call(radios, function(radio) {
-   radio.addEventListener('change', displayTempo);
+   radio.addEventListener('change', displayJenis);
 }); 
+
+Array.prototype.forEach.call(radiosJen, function(radio) {
+   radio.addEventListener('change', displayTempo);
+});  
 
 /** Tampil Id Supplier **/
 function displayCust(e) {
@@ -490,6 +510,8 @@ function displayCust(e) {
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
+      tempo.value = '{{ $c->tempo }}';
+      tempTempo = '{{ $c->tempo }}';
     }
     else if(e.target.value == '') {
       kodeCust.value = '';
@@ -497,6 +519,8 @@ function displayCust(e) {
       piutang.value = '';
       namaSales.value = '';
       npwp.value = '';
+      tempo.value = '';
+      tempTempo = '';
     }
   @endforeach
 
@@ -521,16 +545,38 @@ function formatTanggal(e) {
 }
 
 /** Tampil Input Tempo **/
-function displayTempo(e) {
+function displayJenis(e) {
+  // if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
+  //   tempo.removeAttribute('readonly');
+  //   tempo.setAttribute('required', 'true');
+  // }
   if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
-    tempo.removeAttribute('readonly');
-    tempo.setAttribute('required', 'true');
+    tempo.value = tempTempo;
+    radiosJen[0].checked = false;
+    radiosJen[0].disabled = false;
+    radiosJen[1].disabled = false;
   }
   else if(radios[0].checked) {
     tempo.setAttribute('readonly', 'true');
     tempo.removeAttribute('required');
-    // tempo.tabIndex = '';
-    // pkp.tabIndex = 4;
+    tempo.value = '';
+    radiosJen[0].checked = true;
+    radiosJen[0].disabled = true;
+    radiosJen[1].disabled = true;
+  }
+} 
+
+/** Tampil Input Tempo **/
+function displayTempo(e) {
+  if(radiosJen[1].checked) {
+    tempo.removeAttribute('readonly');
+    tempo.setAttribute('required', 'true');
+    tempo.value = tempTempo;
+  }
+  else if(radiosJen[0].checked) {
+    tempo.setAttribute('readonly', 'true');
+    tempo.removeAttribute('required');
+    tempo.value = '';
   }
 } 
 

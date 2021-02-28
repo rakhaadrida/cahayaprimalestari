@@ -53,7 +53,7 @@ class KenariController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'INV%')
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IN%')
                     ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
@@ -150,7 +150,8 @@ class KenariController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->whereYear('tgl_so', $waktu->year)
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IN%')
+                    ->whereYear('tgl_so', $waktu->year)
                     ->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
@@ -168,7 +169,7 @@ class KenariController extends Controller
             'tgl_kirim' => $tglKirim,
             'total' => str_replace(".", "", $request->grandtotal),
             'diskon' => str_replace(".", "", $diskon),
-            'kategori' => $request->kategori,
+            'kategori' => $request->kategori.' '.$request->jenis,
             'tempo' => $tempo,
             'pkp' => $pkp,
             'status' => $status,
