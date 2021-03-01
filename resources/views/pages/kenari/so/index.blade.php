@@ -110,12 +110,12 @@
                         </div>
                         <br>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
-                          <label class="form-check-label text-bold text-dark" for="kat8">Maspion</label>
-                        </div>
-                        <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">
                           <label class="form-check-label text-bold text-dark" for="kat7">Pipa</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
+                          <label class="form-check-label text-bold text-dark" for="kat8">Maspion</label>
                         </div>
                         <div class="form-check form-check-inline" style="margin-left: -1px">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">
@@ -513,13 +513,14 @@ Array.prototype.forEach.call(radiosJen, function(radio) {
 /** Tampil Id Supplier **/
 function displayCust(e) {
   @foreach($customer as $c)
-    if('{{ $c->nama }}' == e.target.value) {
+    if('{{ $c->nama }} ({{ $c->alamat }})' == e.target.value) {
       kodeCust.value = '{{ $c->id }}';
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
       npwp.value = '{{ $c->npwp }}';
       tempo.value = '{{ $c->tempo }}';
       tempTempo = '{{ $c->tempo }}';
+      namaCust.value = '{{ $c->nama }}';
     }
     else if(e.target.value == '') {
       kodeCust.value = '';
@@ -529,6 +530,7 @@ function displayCust(e) {
       npwp.value = '';
       tempo.value = '';
       tempTempo = '';
+      namaCust.value = '';
     }
   @endforeach
 
@@ -559,6 +561,9 @@ function displayJenis(e) {
   //   tempo.setAttribute('required', 'true');
   // }
   if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
+    if((radios[4].checked) && (tempTempo == 0))
+      tempTempo = '30';
+      
     tempo.value = tempTempo;
     radiosJen[0].checked = false;
     radiosJen[0].disabled = false;
@@ -1520,7 +1525,8 @@ $(function() {
 
   var customer = [];
   @foreach($customer as $c)
-    customer.push('{{ $c->nama }}');
+    // customer.push('{{ $c->nama }}');
+    customer.push('{{ $c->nama }} ({{ $c->alamat }})');
   @endforeach
     
   function split(val) {
