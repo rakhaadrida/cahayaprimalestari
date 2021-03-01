@@ -123,15 +123,15 @@ class ApprovalController extends Controller
             $item->save(); 
             if($tipe == 'Faktur') {
                 $ar = AccReceivable::where('id_so', $id)->get();
-                $detilar = DetilAR::where('id_ar', $ar[0]->id)->get();
+                $detilar = DetilAR::where('id_ar', $ar->first()->id)->get();
                 if($detilar->count() != 0) {
-                    DetilAR::where('id_ar', $ar[0]->id)->delete();
+                    DetilAR::where('id_ar', $ar->first()->id)->delete();
                 }
 
-                $arRetur = AR_Retur::where('id_ar', $ar[0]->id)->get();
+                $arRetur = AR_Retur::where('id_ar', $ar->first()->id)->get();
                 if($arRetur->count() != 0) {
-                    $detilARR = DetilRAR::where('id_retur', $arRetur[0]->id)->delete();
-                    AR_Retur::where('id_ar', $ar[0]->id)->delete();
+                    $detilARR = DetilRAR::where('id_retur', $arRetur->first()->id)->delete();
+                    AR_Retur::where('id_ar', $ar->first()->id)->delete();
                 }
                 AccReceivable::where('id_so', $id)->delete(); 
             } elseif($tipe == 'Dokumen') {
@@ -140,15 +140,15 @@ class ApprovalController extends Controller
 
                 if($bm == 0) { 
                     $ap = AccPayable::where('id_bm', $item->{'id_faktur'})->get();
-                    $detilap = DetilAP::where('id_ap', $ap[0]->id)->get();
+                    $detilap = DetilAP::where('id_ap', $ap->first()->id)->get();
                     if($detilap->count() != 0) {
-                        DetilAP::where('id_ap', $ap[0]->id)->delete();
+                        DetilAP::where('id_ap', $ap->first()->id)->delete();
                     }
 
-                    $apRetur = AP_Retur::where('id_ap', $ap[0]->id)->get();
+                    $apRetur = AP_Retur::where('id_ap', $ap->first()->id)->get();
                     if($apRetur->count() != 0) {
-                        $detilAPR = DetilRAP::where('id_retur', $apRetur[0]->id)->delete();
-                        AP_Retur::where('id_ap', $ap[0]->id)->delete();
+                        $detilAPR = DetilRAP::where('id_retur', $apRetur->first()->id)->delete();
+                        AP_Retur::where('id_ap', $ap->first()->id)->delete();
                     }
                     AccPayable::where('id_bm', $item->{'id_faktur'})->delete(); 
                 }
