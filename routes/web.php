@@ -235,10 +235,15 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/sj/show', 'SuratJalanController@show')->name('sj-show');
         Route::post('/sj/process/{id}', 'SuratJalanController@process')->name('sj-process');
 
-        // Barang Keluar
+        // Price List
         Route::get('price', 'RekapPriceController@index')->name('price');
         Route::post('price/pdf', 'RekapPriceController@cetak_pdf')->name('price-pdf');
         Route::post('price/excel', 'RekapPriceController@cetak_excel')->name('price-excel');
+        
+        // Barang Masuk
+        Route::get('bmk', 'RekapBMKController@index')->name('bmk');
+        Route::post('bmk/show', 'RekapBMKController@show')->name('bmk-show');
+        Route::post('bmk/excel', 'RekapBMKController@excel')->name('bmk-excel');
         
         // Barang Keluar
         Route::get('bk', 'RekapBKController@index')->name('bk');

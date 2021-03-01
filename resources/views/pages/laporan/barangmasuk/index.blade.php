@@ -10,7 +10,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Rekap Barang Keluar</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Rekap Barang Masuk</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -42,10 +42,10 @@
                     <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY" value="{{ $tglAkhir != NULL ? $tglAkhir : ''}}" autocomplete="off" autofocus>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('bk-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('bmk-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="6" formaction="{{ route('bk') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
+                    <button type="submit" tabindex="6" formaction="{{ route('bmk') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                 </div>  
               </div>  
@@ -58,14 +58,14 @@
                   <button type="submit" formaction="{{ route('rs-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
                 </div> --}}
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                  <button type="submit" formaction="{{ route('bk-excel') }}" formmethod="POST"  class="btn btn-danger btn-block text-bold">Download Excel</>
+                  <button type="submit" formaction="{{ route('bmk-excel') }}" formmethod="POST"  class="btn btn-danger btn-block text-bold">Download Excel</>
                 </div>
               </div>
               <hr>
 
               <div class="container" style="margin-bottom: 0px">
                 <div class="row justify-content-center">
-                  <h4 class="text-bold text-dark">Rekap Barang Keluar {{ $tanggal }}</h4>
+                  <h4 class="text-bold text-dark">Rekap Barang Masuk {{ $tanggal }}</h4>
                 </div>
                 <div class="row justify-content-center" style="margin-top: -5px">
                   <h6 class="text-dark ">Waktu : {{$waktu}}</h6>
@@ -88,7 +88,7 @@
                       <td align="center">{{ $i }}</td>
                       <td align="center">{{ $item->id_barang }}</td>
                       <td>{{ $item->barang->nama }}</td>
-                      <td align="center">{{ $item->gudang->nama }}</td>
+                      <td align="center">{{ $item->bm->gudang->nama }}</td>
                       <td align="right" style="background-color: yellow">{{ $item->qty }}</td>
                     </tr>
                     @php $i++; @endphp

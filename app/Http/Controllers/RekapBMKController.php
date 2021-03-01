@@ -3,20 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DetilSO;
+use App\Models\DetilBM;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\BarangKeluarExport;
+use App\Exports\BarangMasukExport;
 
-class RekapBKController extends Controller
+class RekapBMKController extends Controller
 {
     public function index() {
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
         $tanggal = Carbon::now('+07:00')->toDateString();
-        $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
-                    ->where('tgl_so', $tanggal)->groupBy('id_barang', 'id_gudang')->get();
+        $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->select('id_bm', 'id_barang')->selectRaw('sum(qty) as qty')
+                    ->where('tanggal', $tanggal)->groupBy('id_barang')->get();
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
+        // return response()->json($items);
         
         $data = [
             'items' => $items,
@@ -26,7 +27,7 @@ class RekapBKController extends Controller
             'tglAkhir' => NULL
         ];
 
-        return view('pages.laporan.barangkeluar.index', $data);
+        return view('pages.laporan.barangmasuk.index', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
@@ -44,9 +45,9 @@ class RekapBKController extends Controller
             $tglAkhir = $tglAwal;
         }
 
-        $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
-                    ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->groupBy('id_barang', 'id_gudang')->get();
+        $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->select('id_bm', 'id_barang')->selectRaw('sum(qty) as qty')
+                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])->groupBy('id_barang')->get();
         
         $awal = $this->formatTanggal($tglAwal, 'd');
         $akhir = $this->formatTanggal($tglAkhir, 'd M y');
@@ -67,7 +68,7 @@ class RekapBKController extends Controller
             'tglAkhir' => $request->tglAkhir
         ];
 
-        return view('pages.laporan.barangkeluar.index', $data);
+        return view('pages.laporan.barangmasuk.index', $data);
     }
 
     public function excel(Request $request) {
@@ -93,6 +94,6 @@ class RekapBKController extends Controller
             $tanggal = $akhir;
         }
 
-        return Excel::download(new BarangKeluarExport($tglAwal, $tglAkhir), 'Barang-Keluar-'.$tanggal.'.xlsx');
+        return Excel::download(new BarangMasukExport($tglAwal, $tglAkhir), 'Barang-Masuk-'.$tanggal.'.xlsx');
     }
 }
