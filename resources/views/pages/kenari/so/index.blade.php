@@ -388,7 +388,7 @@
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('kenari/so/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('kenari/so/cetak/'.$lastSO[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
               @endif
 
             </form>
@@ -410,7 +410,7 @@
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('so-after-print-kenari', $lastcode[0]->id) }}";
+    window.location = "{{ route('so-after-print-kenari', $lastSO[0]->id) }}";
   }
   
   printFrame.window.focus();

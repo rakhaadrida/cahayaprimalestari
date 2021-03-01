@@ -47,6 +47,10 @@ class KenariController extends Controller
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'KENARI')->get();
         $gudang = Gudang::where('tipe', 'KENARI')->get();
+        $lastSO = SalesOrder::join('users', 'users.id', 'so.id_user')
+                    ->select('so.id as id', 'so.*')->where('roles', 'KENARI')
+                    ->where('so.created_at', '!=', NULL)->latest('so.created_at')->take(1)->get();
+        // return response()->json($lastSO);
 
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');
@@ -61,7 +65,7 @@ class KenariController extends Controller
 
         $lastcodeKen = SalesOrder::join('users', 'users.id', 'so.id_user')
                         ->selectRaw('max(so.id) as id')->where('roles', 'KENARI')
-                        ->whereMonth('tgl_so', $month)->get();
+                        ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -111,6 +115,7 @@ class KenariController extends Controller
             'newcode' => $newcode,
             'tanggal' => $tanggal,
             'status' => $status,
+            'lastSO' => $lastSO,
             'lastcode' => $lastcodeKen,
             'totalKredit' => $totalPerCust
         ];

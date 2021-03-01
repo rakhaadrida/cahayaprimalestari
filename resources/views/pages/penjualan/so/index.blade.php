@@ -583,7 +583,7 @@
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('so-after-print', $lastcode[0]->id) }}";
+    window.location = "{{ route('so-after-print', $lastSO[0]->id) }}";
   }
   
   printFrame.window.focus();
