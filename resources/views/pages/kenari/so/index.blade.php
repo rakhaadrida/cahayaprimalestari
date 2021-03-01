@@ -84,34 +84,38 @@
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
                       <div class="col-3" style="margin-top: -35px">
                         <div class="form-check form-check-inline mt-2">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Cash" id="kategori" required>
-                          <label class="form-check-label text-bold text-dark" for="kat1">Cash</label>
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>
+                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>
+                        </div>
+                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>
+                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Prime">
-                          <label class="form-check-label text-bold text-dark" for="kat2">Prime</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Extrana">
-                          <label class="form-check-label text-bold text-dark" for="kat3">Extrana</label>
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">
+                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>
                         </div>
                         <br>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Nitto">
-                          <label class="form-check-label text-bold text-dark" for="kat4">Nitto</label>
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">
+                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="MCB">
-                          <label class="form-check-label text-bold text-dark" for="kat5">MCB</label>
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">
+                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="BOSS">
-                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa BOSS</label>
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">
+                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>
                         </div>
                         <br>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
-                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>
+                          <label class="form-check-label text-bold text-dark" for="kat8">Maspion</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">
+                          <label class="form-check-label text-bold text-dark" for="kat7">Pipa BOSS</label>
                         </div>
                       </div>
                     </div>
@@ -550,7 +554,7 @@ function displayJenis(e) {
   //   tempo.removeAttribute('readonly');
   //   tempo.setAttribute('required', 'true');
   // }
-  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
+  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked)) {
     tempo.value = tempTempo;
     radiosJen[0].checked = false;
     radiosJen[0].disabled = false;
