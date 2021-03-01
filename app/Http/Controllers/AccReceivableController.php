@@ -42,7 +42,8 @@ class AccReceivableController extends Controller
         //         ->where('keterangan', 'BELUM LUNAS')->get();
         // foreach($arLunas as $a) {
         //     $item = DetilAR::selectRaw('sum(cicil) as cicil')->where('id_ar', $a->id)->first();
-        //     if($item->{'cicil'} == ($a->total - $a->diskon)) {
+        //     $retur = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $a->id)->get();
+        //     if(($item->{'cicil'} + $retur->first()->total) == ($a->total - $a->diskon)) {
         //         $a->keterangan = 'LUNAS';
         //         $a->save();
         //     }
