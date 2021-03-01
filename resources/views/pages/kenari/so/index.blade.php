@@ -1466,7 +1466,7 @@ function checkRequired(e) {
     e.stopPropagation();
   }
   else {
-    if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
+    /* if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalLimit";
       limitTitle.textContent = namaCust.value;
@@ -1493,7 +1493,10 @@ function checkRequired(e) {
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalKonfirm";
       return false;
-    }
+    } */
+    document.getElementById("submitSO").dataset.toggle = "modal";
+    document.getElementById("submitSO").dataset.target = "#modalKonfirm";
+    return false;
   }
 }
 
