@@ -86,7 +86,7 @@
                       </div>
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
-                      <div class="col-3" style="margin-top: -35px">
+                      <div class="col-auto" style="margin-top: -35px">
                         <div class="form-check form-check-inline mt-2">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>
                           <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>
@@ -119,12 +119,16 @@
                         </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">
-                          <label class="form-check-label text-bold text-dark" for="kat7">Pipa BOSS</label>
+                          <label class="form-check-label text-bold text-dark" for="kat7">Pipa</label>
+                        </div>
+                        <div class="form-check form-check-inline" style="margin-left: -1px">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">
+                          <label class="form-check-label text-bold text-dark" for="kat7">Panasonic</label>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col" style="margin-left: -350px; margin-right:-40px; margin-top: -120px">
+                  <div class="col" style="margin-left: -340px; margin-right:-40px; margin-top: -120px">
                     <div class="form-group row subtotal-po">
                       <label for="tempo" class="col-6 col-form-label text-bold text-right">Jatuh Tempo</label>
                       <span class="col-form-label text-bold">:</span>
@@ -740,7 +744,7 @@ function displayJenis(e) {
   //   tempo.removeAttribute('readonly');
   //   tempo.setAttribute('required', 'true');
   // }
-  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked)) {
+  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
     tempo.value = tempTempo;
     radiosJen[0].checked = false;
     radiosJen[0].disabled = false;
