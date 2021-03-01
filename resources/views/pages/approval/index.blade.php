@@ -41,7 +41,7 @@
                 <td class="align-middle" align="center">{{ $item->id_dokumen }}</td>
                 <td class="align-middle" align="center">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y') }}</td>
                 @if($item->tipe == 'Faktur') 
-                  <td class="align-middle" align="center">{{ $item->so->customer->nama }}</td>
+                  <td class="align-middle" align="center">{{ $item->so != null ? $item->so->customer->nama : '' }}</td>
                 @elseif($item->tipe == 'Dokumen') 
                   <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
                 @elseif($item->tipe == 'RJ') 
