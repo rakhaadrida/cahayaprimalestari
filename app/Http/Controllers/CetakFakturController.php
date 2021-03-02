@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
+use App\Models\DetilSO;
 use App\Models\TandaTerima;
 use App\Models\Approval;
 use Carbon\Carbon;
@@ -54,6 +55,24 @@ class CetakFakturController extends Controller
 
         // return response()->json($items);
 
+        // $itemsDet = \App\Models\DetilSO::with(['barang'])
+        //             ->select('id_barang', 'diskon')
+        //             ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+        //             ->where('id_so', 'IV21001281')
+        //             // ->whereNotIn('id_barang', $kode)
+        //             ->groupBy('id_barang', 'diskon')
+        //             ->get();
+        // return response()->json($itemsDet);
+
+        // $itemsBar = \App\Models\DetilSO::with(['barang'])
+        //             ->select('id_barang', 'diskon')
+        //             // ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+        //             ->where('id_so', 'IV21001281')
+        //             // ->whereNotIn('id_barang', $kode)
+        //             ->get();
+
+        //             return response()->json($itemsBar);
+
         $data = [
             'items' => $items,
             'status' => $status,
@@ -83,7 +102,12 @@ class CetakFakturController extends Controller
 
         foreach($items as $i) {
             $item = SalesOrder::where('id', $i->id)->get();
-            $tabel = ceil($item->first()->detilso->count() / 12);
+            $detil = DetilSO::select('id_barang', 'diskon')
+                    ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                    ->where('id_so', $item->first()->id)
+                    ->groupBy('id_barang', 'diskon')
+                    ->get();
+            $tabel = ceil($detil->count() / 12);
 
             if($tabel > 1) {
                 for($j = 1; $j < $tabel; $j++) {

@@ -625,6 +625,13 @@
                     ->whereNotIn('id_barang', $kode)
                     ->groupBy('id_barang', 'diskon')
                     ->get();
+
+        $itemsBar = \App\Models\DetilSO::with(['barang'])
+                    ->select('id_barang', 'diskon')
+                    // ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                    ->where('id_so', $so)
+                    ->whereNotIn('id_barang', $kode)
+                    ->get();
         $det = $itemsDet->count();
         @endphp
         <!-- Tabel Data Detil BM-->
