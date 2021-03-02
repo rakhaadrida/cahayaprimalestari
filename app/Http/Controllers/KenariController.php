@@ -216,7 +216,7 @@ class KenariController extends Controller
                     'id_gudang' => $request->kodeGudang[$i],
                     'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $request->qty[$i],
-                    'diskon' => $request->diskon[$i],
+                    'diskon' => ($request->diskon[$i] != '' ? $request->diskon[$i] : '0'),
                     'diskonRp' =>  str_replace(".", "", $request->diskonRp[$i])
                 ]);
 

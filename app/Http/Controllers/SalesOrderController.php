@@ -217,7 +217,7 @@ class SalesOrderController extends Controller
                         'id_gudang' => $arrGudang[$j],
                         'harga' => str_replace(".", "", $request->harga[$i]),
                         'qty' => $arrStok[$j],
-                        'diskon' => $request->diskon[$i],
+                        'diskon' => ($request->diskon[$i] != '' ? $request->diskon[$i] : '0'),
                         'diskonRp' => $diskonRp
                     ]);
 
