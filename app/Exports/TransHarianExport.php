@@ -18,10 +18,11 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    public function __construct(String $tanggal, String $tanggalStr)
+    public function __construct(String $tanggal, String $tanggalStr, String $status)
     {
         $this->tanggal = $tanggal;
         $this->tanggalStr = $tanggalStr;
+        $this->status = $status;
     }
 
     public function view(): View
@@ -30,9 +31,24 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
         $waktu = $waktu->format('d F Y, H:i:s');
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
-        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->where('tgl_so', $this->tanggal)->orderBy('id_sales')->orderBy('id')->get();
+
+        if($this->status == 'All') {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('tgl_so', $this->tanggal)->where('kategori', 'NOT LIKE', 'Extrana%')
+                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')->orderBy('id')->get();
+            
+            $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Extrana%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+        } else {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Prime%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+            $itemsEx = NULL;
+        }
 
         $data = [
             'waktu' => $waktu,
@@ -40,7 +56,8 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
             'akhir' => $this->tanggalStr,
             'tahun' => $tahun,
             'sejak' => $sejak,
-            'items' => $items
+            'items' => $items,
+            'itemsEx' => $itemsEx
         ];
         
         return view('pages.receivable.excel', $data);

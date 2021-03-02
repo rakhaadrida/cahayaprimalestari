@@ -45,8 +45,14 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="3" formaction="{{ route('trans-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                  <div class="col-2 mt-1">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold ">Print</button>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="6" formaction="{{ route('trans-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: 30px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold ">Print All</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold ">Print Prime</button>
                   </div>
                 </div>  
               </div>

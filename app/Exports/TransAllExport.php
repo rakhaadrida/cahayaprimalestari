@@ -18,13 +18,14 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    public function __construct(String $tglAwal, String $tglAkhir,String $awal, String $akhir, String $bul)
+    public function __construct(String $tglAwal, String $tglAkhir,String $awal, String $akhir, String $bul, String $status)
     {
         $this->tglAwal = $tglAwal;
         $this->tglAkhir = $tglAkhir;
         $this->awal = $awal;
         $this->akhir = $akhir;
         $this->bul = $bul;
+        $this->status = $status;
     }
 
     public function formatTanggal($tanggal, $format) {
@@ -68,9 +69,26 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
         $tglAwal = $this->formatTanggal($tglAwal, 'd-M-y');
         $tglAkhir = $this->formatTanggal($tglAkhir, 'd-M-y');
 
-        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->whereBetween('tgl_so', [$this->awal, $this->akhir])->orderBy('id_sales')->orderBy('id')->get();
+        if($this->status == 'All') {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])
+                    ->where('kategori', 'NOT LIKE', 'Extrana%')
+                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')->orderBy('id')->get();
+
+            $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])
+                    ->where('kategori', 'LIKE', 'Extrana%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+        } else {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])
+                    ->where('kategori', 'LIKE', 'Prime%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+            $itemsEx = NULL;
+        }
 
         $data = [
             'waktu' => $waktu,
@@ -78,7 +96,8 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
             'akhir' => $tglAkhir,
             'tahun' => $tahun,
             'sejak' => $sejak,
-            'items' => $items
+            'items' => $items,
+            'itemsEx' => $itemsEx
         ];
         
         return view('pages.receivable.excel', $data);

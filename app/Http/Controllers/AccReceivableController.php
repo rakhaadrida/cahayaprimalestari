@@ -489,7 +489,7 @@ class AccReceivableController extends Controller
         return redirect()->route('ar');
     }
 
-    public function cetak(Request $request) {
+    public function cetak(Request $request, $status) {
         $awal = $request->tglAwal;
         $awal = $this->formatTanggal($awal, 'Y-m-d');
         $akhir = $request->tglAkhir;
@@ -523,12 +523,27 @@ class AccReceivableController extends Controller
         $request->tglAwal = $this->formatTanggal($request->tglAwal, 'd-M-y');
         $request->tglAkhir = $this->formatTanggal($request->tglAkhir, 'd-M-y');
 
-        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->whereBetween('tgl_so', [$awal, $akhir])->orderBy('id_sales')->orderBy('id')->get();
+        if($status == 'All') {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'NOT LIKE', 'Extrana%')
+                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')->orderBy('id')->get();
+            
+            $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'LIKE', 'Extrana%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+        } else {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'LIKE', 'Prime%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+            $itemsEx = NULL;
+        }
         
         $data = [
             'items' => $items,
+            'itemsEx' => $itemsEx,
             'awal' => $request->tglAwal,
             'akhir' => $request->tglAkhir, 
             'waktu' => $waktu
@@ -540,19 +555,34 @@ class AccReceivableController extends Controller
         return $pdf->stream('cetak-all.pdf');
     }
 
-    public function cetakNow(Request $request) {
+    public function cetakNow(Request $request, $status) {
         $tahun = Carbon::now('+07:00');
         $waktu = $tahun->format('d F Y, H:i:s');
         $tanggal = Carbon::now()->toDateString();
 
-        $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->where('tgl_so', $tanggal)->orderBy('id_sales')->orderBy('id')->get();
+        if($status == 'All') {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('tgl_so', $tanggal)->where('kategori', 'NOT LIKE', 'Extrana%')
+                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')->orderBy('id')->get();
+
+            $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('tgl_so', $tanggal)->where('kategori', 'LIKE', 'Extrana%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+        } else {
+            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('tgl_so', $tanggal)->where('kategori', 'LIKE', 'Prime%')
+                    ->orderBy('id_sales')->orderBy('id')->get();
+            $itemsEx = NULL;
+        }
 
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         
         $data = [
             'items' => $items,
+            'itemsEx' => $itemsEx,
             'awal' => $tanggal,
             'akhir' => $tanggal, 
             'waktu' => $waktu
@@ -564,7 +594,7 @@ class AccReceivableController extends Controller
         return $pdf->stream('cetak-all.pdf');
     }
 
-    public function excel(Request $request) {
+    public function excel(Request $request, $status) {
         $tglAwal = $request->tglAwal;
         $awal = $this->formatTanggal($request->tglAwal, 'Y-m-d');
         $tglAkhir= $request->tglAkhir;
@@ -584,13 +614,22 @@ class AccReceivableController extends Controller
         else
             $tglAkhir = $request->tglAkhir;
 
-        return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul), 'Trans-Bulanan.xlsx');
+        $fileAwal = $this->formatTanggal($request->tglAwal, 'd');
+        $fileAkhir = $this->formatTanggal($request->tglkhir, 'd M');
+
+        if($request->bulan == '')
+            $tglFile = $fileAwal.'-'.$fileAkhir;
+        else
+            $tglFile = $request->bulan;
+
+        return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul, $status), 'TH-'.$status.'-'.$tglFile.'.xlsx');
     }
 
-    public function excelNow() {
+    public function excelNow($status) {
         $tanggal = Carbon::now()->toDateString();
         $tanggalStr = $this->formatTanggal($tanggal, 'd-M-y');
+        $tglFile = $this->formatTanggal($tanggal, 'd-M');
 
-        return Excel::download(new TransHarianExport($tanggal, $tanggalStr), 'trans-harian.xlsx');
+        return Excel::download(new TransHarianExport($tanggal, $tanggalStr, $status), 'TH-'.$status.'-'.$tglFile.'.xlsx');
     }
 }

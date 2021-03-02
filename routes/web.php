@@ -198,6 +198,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
         // Transaksi Harian
         Route::get('/transaksi', 'TransaksiController@index')->name('trans');
+        Route::post('/transaksi', 'TransaksiController@index')->name('trans-home');
         Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
         // Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
         //     ->name('trans-detail');
@@ -334,8 +335,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Account Receivable
         Route::get('ar/retur/{id}', 'AccReceivableController@createRetur')->name('ar-retur-create');
         Route::get('ar/cicil/{id}', 'AccReceivableController@createCicil')->name('ar-cicil-create');
-        Route::post('ar/excel', 'AccReceivableController@excel')->name('ar-excel');
-        Route::post('ar/excelNow', 'AccReceivableController@excelNow')->name('ar-excel-now');
+        Route::post('ar/excel/{status}', 'AccReceivableController@excel')->name('ar-excel');
+        Route::post('ar/excelNow/{status}', 'AccReceivableController@excelNow')->name('ar-excel-now');
     });
 
     Route::group(['roles'=>['AP', 'SUPER']], function() {
@@ -362,8 +363,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
 
-        Route::post('ar/cetak', 'AccReceivableController@cetak')->name('ar-cetak');
-        Route::post('ar/cetakNow', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
+        Route::post('ar/cetak/{status}', 'AccReceivableController@cetak')->name('ar-cetak');
+        Route::post('ar/cetakNow/{status}', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02']], function() {

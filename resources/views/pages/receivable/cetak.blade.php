@@ -177,8 +177,8 @@
         <thead class="text-center text-dark text-bold" >
           <tr>
             <th style="width: 10px" class="align-middle">No</th>
-            <th style="width: 170px" class="align-middle">Customer</th>
             <th style="width: 40px" class="align-middle">Sales</th>
+            <th style="width: 170px" class="align-middle">Customer</th>
             <th style="width: 30px" class="align-middle">Kategori</th>
             <th style="width: 50px" class="align-middle">No. Faktur</th>
             <th style="width: 50px" class="align-middle">Tgl. Faktur</th>
@@ -192,8 +192,8 @@
           @foreach($items as $item)
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $i }}</td>
-              <td class="align-middle">{{ $item->customer->nama }}</td>
               <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td>
+              <td class="align-middle">{{ $item->customer->nama }}</td>
               <td align="center" class="align-middle">{{ $item->kategori }}</td>
               <td align="center" class="align-middle">{{ $item->id }}</td>
               <td align="center" class="align-middle">
@@ -210,6 +210,29 @@
             </tr> 
             @php $i++ @endphp
           @endforeach
+          @if($itemsEx != NULL)
+            @foreach($itemsEx as $item)
+              <tr class="text-dark">
+                <td align="center" class="align-middle">{{ $i }}</td>
+                <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td>
+                <td class="align-middle">{{ $item->customer->nama }}</td>
+                <td align="center" class="align-middle">{{ $item->kategori }}</td>
+                <td align="center" class="align-middle">{{ $item->id }}</td>
+                <td align="center" class="align-middle">
+                  {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
+                </td>
+                <td align="center" class="align-middle">
+                  {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')
+                    ->format('d-M-y') }}
+                </td>
+                <td align="right" class="align-middle">
+                  {{ number_format($item->total, 0, "", ",") }}
+                </td>
+                <td></td>
+              </tr> 
+              @php $i++ @endphp
+            @endforeach
+          @endif
           {{-- @for($j = 1; $j <= 50; $j++)
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $j }}</td>

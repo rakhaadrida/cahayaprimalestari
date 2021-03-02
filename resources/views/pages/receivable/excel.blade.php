@@ -13,8 +13,8 @@
       <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
           <th>No</th>
-          <th>Customer</th>
           <th>Sales</th>
+          <th>Customer</th>
           <th>Kategori</th>
           <th>No. Faktur</th>
           <th>Tgl. Faktur</th>
@@ -28,8 +28,8 @@
         @foreach($items as $item)
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
-            <td>{{ $item->customer->nama }}</td>
             <td align="center">{{ $item->customer->sales->nama }}</td>
+            <td>{{ $item->customer->nama }}</td>
             <td align="center">{{ $item->kategori }}</td>
             <td align="center">{{ $item->id }}</td>
             <td align="center">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</td>
@@ -42,6 +42,29 @@
           </tr> 
           @php $i++ @endphp
         @endforeach
+        @if($itemsEx != NULL)
+          @foreach($itemsEx as $item)
+            <tr class="text-dark">
+              <td align="center" class="align-middle">{{ $i }}</td>
+              <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td>
+              <td class="align-middle">{{ $item->customer->nama }}</td>
+              <td align="center" class="align-middle">{{ $item->kategori }}</td>
+              <td align="center" class="align-middle">{{ $item->id }}</td>
+              <td align="center" class="align-middle">
+                {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
+              </td>
+              <td align="center" class="align-middle">
+                {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')
+                  ->format('d-M-y') }}
+              </td>
+              <td align="right" class="align-middle">
+                {{ number_format($item->total, 0, "", ",") }}
+              </td>
+              <td></td>
+            </tr> 
+            @php $i++ @endphp
+          @endforeach
+        @endif
       </tbody>
     </table>
     <br>

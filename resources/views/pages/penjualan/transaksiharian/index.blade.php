@@ -46,8 +46,11 @@
                     <button type="submit" id="btn-cari" formaction="{{ route('trans-show') }}" 
                     formmethod="GET" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                  <div class="col-2 mt-1">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold ">Print</button>
+                  <div class="col-auto mt-1" style="margin-left: 30px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold ">Print All</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold ">Print Prime</button>
                   </div>
                 </div>  
               </div>

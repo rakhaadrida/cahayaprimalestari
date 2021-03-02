@@ -50,6 +50,12 @@
                   {{-- <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
                   </div> --}}
+                  <div class="col-auto mt-1" style="margin-left: 215px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
+                  </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
@@ -64,11 +70,11 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                  <div class="col-1 mt-1" style="margin-left: 180px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print</button>
+                  <div class="col-auto mt-1" style="margin-left: 155px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print All</button>
                   </div>
-                  <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel</button>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
                   </div>
                 </div>  
               </div>
