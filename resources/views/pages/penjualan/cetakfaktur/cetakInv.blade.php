@@ -522,9 +522,9 @@
           width: 21.8cm;
           height: 13.8cm;
           /* margin: -10cm -10cm 0cm 0cm; */
-          margin-top: 0.4302cm;
+          margin-top: 0.4002cm;
           margin-left: 0.281cm;
-          margin-bottom: 0.154cm;
+          margin-bottom: 0.144cm;
           /* margin-bottom: 0.4826cm;  0.19in */
           margin-right: 1.27cm;
         }
@@ -601,7 +601,7 @@
               <td align="center">
                 {{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_so : $items[$urut-$kur]->tgl_so))->format('d-M-y') }}
               </td>
-              <td align="center">0 Hari</td>
+              <td align="center">{{ $det <= 12 ? $item->tempo : $items[$urut-$kur]->tempo }} Hari</td>
               <td align="center">
                 {{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_so : $items[$urut-$kur]->tgl_so))->add(($det <= 12 ? $item->tempo : $items[$urut-$kur]->tempo), 'days')->format('d-M-y') }}
               </td>

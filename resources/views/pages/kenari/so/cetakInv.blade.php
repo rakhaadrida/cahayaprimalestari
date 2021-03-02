@@ -522,9 +522,9 @@
           width: 21.8cm;
           height: 13.8cm;
           /* margin: -10cm -10cm 0cm 0cm; */
-          margin-top: 0.4302cm;
+          margin-top: 0.4002cm;
           margin-left: 0.281cm;
-          margin-bottom: 0.154cm;
+          margin-bottom: 0.144cm;
           /* margin-bottom: 0.4826cm;  0.19in */
           margin-right: 1.27cm;
         }
@@ -599,7 +599,7 @@
               <td align="center">
                 {{ \Carbon\Carbon::parse($items->first()->tgl_so)->format('d-M-y') }}
               </td>
-              <td align="center">0 Hari</td>
+              <td align="center">{{ $items->first()->tempo }} Hari</td>
               <td align="center">
                 {{ \Carbon\Carbon::parse($items->first()->tgl_so)->add($items->first()->tempo, 'days')->format('d-M-y') }}
               </td>
