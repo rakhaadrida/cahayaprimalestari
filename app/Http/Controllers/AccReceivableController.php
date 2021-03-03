@@ -595,21 +595,35 @@ class AccReceivableController extends Controller
     }
 
     public function excel(Request $request, $status) {
+        $stat = $request->status;
+
         $tglAwal = $request->tglAwal;
-        $awal = $this->formatTanggal($request->tglAwal, 'Y-m-d');
+        if(($request->tglAwal == '') && ($request->bulan == ''))
+            $awal = '2015-01-01';
+        else
+            $awal = $this->formatTanggal($request->tglAwal, 'Y-m-d');
+
         $tglAkhir= $request->tglAkhir;
-        $akhir = $this->formatTanggal($request->tglAkhir, 'Y-m-d');
+        if(($request->tglAwal == '') && ($request->bulan == ''))
+            $akhir = Carbon::now()->toDateString();
+        else
+            $akhir = $this->formatTanggal($request->tglAkhir, 'Y-m-d');
+
         if($request->bulan == '')
             $bul = 'KOSONG';
         else
             $bul = $request->bulan;
 
-        if($request->tglAwal == '')
+        if(($request->tglAwal == '') && ($request->bulan == ''))
+            $tglAwal = '2015-01-01';
+        elseif(($request->tglAwal == '') && ($request->bulan != ''))
             $tglAwal = 'KOSONG';
         else
             $tglAwal = $request->tglAwal;
         
-        if($request->tglAkhir == '')
+        if(($request->tglAkhir == '') && ($request->bulan == ''))
+            $tglAkhir = Carbon::now()->toDateString();
+        elseif(($request->tglAkhir == '') && ($request->bulan != ''))
             $tglAkhir = 'KOSONG';
         else
             $tglAkhir = $request->tglAkhir;
@@ -622,7 +636,7 @@ class AccReceivableController extends Controller
         else
             $tglFile = $request->bulan;
 
-        return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul, $status), 'TH-'.$status.'-'.$tglFile.'.xlsx');
+        return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul, $status, $stat), 'TH-'.$status.'-'.$tglFile.'.xlsx');
     }
 
     public function excelNow($status) {

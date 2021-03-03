@@ -19,7 +19,7 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    public function __construct(String $tglAwal, String $tglAkhir,String $awal, String $akhir, String $bul, String $status)
+    public function __construct(String $tglAwal, String $tglAkhir, String $awal, String $akhir, String $bul, String $status, String $stat)
     {
         $this->tglAwal = $tglAwal;
         $this->tglAkhir = $tglAkhir;
@@ -27,6 +27,7 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
         $this->akhir = $akhir;
         $this->bul = $bul;
         $this->status = $status;
+        $this->stat = $stat;
     }
 
     public function formatTanggal($tanggal, $format) {
@@ -40,6 +41,15 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
         $waktu = $waktu->format('d F Y, H:i:s');
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
+
+        if($this->stat == 'ALL')  {
+            $status[0] = 'LUNAS';
+            $status[1] = 'BELUM LUNAS';
+        }
+        else {
+            $status[0] = $this->stat;
+            $status[1] = '';
+        }
 
         $tglAwal = $this->tglAwal;
         $tglAkhir = $this->tglAkhir;
@@ -75,17 +85,20 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
         if($this->status == 'All') {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'NOT LIKE', 'Extrana%')
                     ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('tgl_so')->get();
 
             $itemsEx = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'LIKE', 'Extrana%')->orderBy('tgl_so')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'LIKE', 'Prime%')->orderBy('tgl_so')->get();
 
@@ -118,11 +131,19 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(10);
                
         if($this->status == 'All') {
-            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'NOT LIKE', 'Prime%')
-                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+            // $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'NOT LIKE', 'Prime%')
+                    // ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+            $so = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])
+                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('tgl_so')->get();
         } else {
-            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'LIKE', 'Prime%')
-                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+            // $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'LIKE', 'Prime%')
+            //         ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+            $so = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])
+                    ->where('kategori', 'LIKE', 'Prime%')->orderBy('tgl_so')->get();
         }
 
         $range = 5 + $so->count();

@@ -676,7 +676,7 @@ const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
 var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
-var kodeModal; var totPast; var g; var gdg;
+var kodeModal; var totPast; var g; var gdg; var = qtyTemp;
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
@@ -1561,6 +1561,7 @@ for(let i = 0; i < qty.length; i++) {
     totStok = 0;
     gdg = [];
     g = 0;
+    
 
     @foreach($stok as $s)
       if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
@@ -1652,7 +1653,7 @@ for(let i = 0; i < qty.length; i++) {
             gudangUkuran[j].textContent = ``;
           }
         }
-        qtyGudang[i].value = stokJohar;
+        // qtyGudang[i].value = stokJohar;
       }
       else {
         kodeGudang[i].value = "GDG01";
