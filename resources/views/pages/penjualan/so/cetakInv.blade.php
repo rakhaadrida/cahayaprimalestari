@@ -610,9 +610,10 @@
         </table>
         
         @php 
+        // sum(diskonRp) as diskonRp
         $itemsDet = \App\Models\DetilSO::with(['barang'])
-                          ->select('id_barang', 'diskon')
-                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                          ->select('id_barang', 'diskon', 'diskonRp')
+                          ->selectRaw('avg(harga) as harga, sum(qty) as qty')
                           ->where('id_so', $items->first()->id)
                           ->whereNotIn('id_barang', $kode)
                           ->groupBy('id_barang', 'diskon')

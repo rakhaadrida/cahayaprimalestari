@@ -1,7 +1,7 @@
 <html>
   <body>
     <center>
-      <h2 class="text-bold text-dark">Transaksi Harian</h2>
+      <h2 class="text-bold text-dark">Data AR</h2>
       <h5 class="waktu-cetak">Tanggal : {{$awal}} s/d {{$akhir}}</h5>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
@@ -20,47 +20,66 @@
           <th>Tgl. Faktur</th>
           <th>Tempo</th>
           <th>Total</th>
+          <th>Cicil</th>
+          <th>Retur</th>
+          <th>Kurang Bayar</th>
           <th>Keterangan</th>
         </tr>
       </thead>
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($items as $item)
+          @php 
+            $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
+                      ->where('id_ar', $item->id)->get();
+            $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
+                    ->where('id_ar', $item->id)->get();
+          @endphp
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
-            <td align="center">{{ $item->customer->sales->nama }}</td>
-            <td>{{ $item->customer->nama }}</td>
-            <td align="center">{{ $item->kategori }}</td>
-            <td align="center">{{ $item->id }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}</td>
+            <td align="center">{{ $item->so->customer->sales->nama }}</td>
+            <td>{{ $item->so->customer->nama }}</td>
+            <td align="center">{{ $item->so->kategori }}</td>
+            <td align="center">{{ $item->id_so }}</td>
+            <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}</td>
             <td align="center">
-              {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')
+              {{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
                 ->format('d-M-y') }}
             </td>
-            <td align="right">{{ number_format($item->total, 0, "", ",") }}</td>
-            <td></td>
+            <td align="right">{{ $item->so->total }}</td>
+            <td align="right">{{ $total->first()->totCicil }}</td>
+            <td align="right">{{ $retur->first()->total }}</td>
+            <td align="right">{{ $item->so->total - $total->first()->totCicil - $retur->first()->total }}</td>
+            <td>{{ $item->keterangan }}</td>
           </tr> 
           @php $i++ @endphp
         @endforeach
         @if($itemsEx != NULL)
           @foreach($itemsEx as $item)
+            @php 
+              $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
+                        ->where('id_ar', $item->id)->get();
+              $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
+                      ->where('id_ar', $item->id)->get();
+            @endphp
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $i }}</td>
-              <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td>
-              <td class="align-middle">{{ $item->customer->nama }}</td>
-              <td align="center" class="align-middle">{{ $item->kategori }}</td>
-              <td align="center" class="align-middle">{{ $item->id }}</td>
+              <td class="align-middle text-center">{{ $item->so->customer->sales->nama }}</td>
+              <td class="align-middle">{{ $item->so->customer->nama }}</td>
+              <td align="center" class="align-middle">{{ $item->so->kategori }}</td>
+              <td align="center" class="align-middle">{{ $item->id_so }}</td>
               <td align="center" class="align-middle">
-                {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}
+                {{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}
               </td>
               <td align="center" class="align-middle">
-                {{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')
+                {{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
                   ->format('d-M-y') }}
               </td>
-              <td align="right" class="align-middle">
-                {{ number_format($item->total, 0, "", ",") }}
-              </td>
-              <td></td>
+              <td align="right">{{ $item->so->total }}</td>
+              <td align="right">{{ $total->first()->totCicil }}</td>
+              <td align="right">{{ $retur->first()->total }}</td>
+              <td align="right">{{ $item->so->total - $total->first()->totCicil - $retur->first()->total }}</td>
+              <td>{{ $item->keterangan }}</td>
             </tr> 
             @php $i++ @endphp
           @endforeach

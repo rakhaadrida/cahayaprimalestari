@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Contracts\View\View;
 use App\Models\SalesOrder;
+use App\Models\AccReceivable;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -60,33 +61,34 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
             $this->akhir = $tahun->year.'-'.$month.'-31';
 
             $tglAwal = '01-'.$month.'-'.$tahun->year;
-            if((($angkaMonth % 2 == 0) && ($angkaMonth < 8)) || (($angkaMonth % 2 != 0) && ($angkaMonth > 8)))
+            if($month == 2)
+                $tglAkhir = '28-'.$month.'-'.$tahun->year;
+            elseif((($angkaMonth % 2 == 0) && ($angkaMonth < 8)) || (($angkaMonth % 2 != 0) && ($angkaMonth > 8)))
                 $tglAkhir = '30-'.$month.'-'.$tahun->year;
             else
                 $tglAkhir = '31-'.$month.'-'.$tahun->year;
-        }
-
+        } 
+            
         $tglAwal = $this->formatTanggal($tglAwal, 'd-M-y');
         $tglAkhir = $this->formatTanggal($tglAkhir, 'd-M-y');
 
         if($this->status == 'All') {
-            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+            $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'NOT LIKE', 'Extrana%')
-                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')->orderBy('id')->get();
+                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('tgl_so')->get();
 
-            $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+            $itemsEx = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                    ->where('kategori', 'LIKE', 'Extrana%')
-                    ->orderBy('id_sales')->orderBy('id')->get();
+                    ->where('kategori', 'LIKE', 'Extrana%')->orderBy('tgl_so')->get();
         } else {
-            $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
+            $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                    ->where('kategori', 'LIKE', 'Prime%')
-                    ->orderBy('id_sales')->orderBy('id')->get();
+                    ->where('kategori', 'LIKE', 'Prime%')->orderBy('tgl_so')->get();
+
             $itemsEx = NULL;
         }
 
@@ -113,28 +115,33 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setHeight(50);
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
-        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
-                
-        $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(10);
+               
+        if($this->status == 'All') {
+            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'NOT LIKE', 'Prime%')
+                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+        } else {
+            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'LIKE', 'Prime%')
+                    ->whereBetween('tgl_so', [$this->awal, $this->akhir])->get();
+        }
 
         $range = 5 + $so->count();
         $rangeStr = strval($range);
-        $rangeTab = 'I'.$rangeStr;
+        $rangeTab = 'L'.$rangeStr;
 
-        $header = 'A5:I5';
+        $header = 'A5:L5';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
         $sheet->getStyle($header)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
         
-        $sheet->mergeCells('A1:I1');
-        $sheet->mergeCells('A2:I2');
-        $sheet->mergeCells('A3:I3');
-        $title = 'A1:I3';
+        $sheet->mergeCells('A1:L1');
+        $sheet->mergeCells('A2:L2');
+        $sheet->mergeCells('A3:L3');
+        $title = 'A1:L3';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A2:I3')->getFont()->setBold(false)->setSize(12);
+        $sheet->getStyle('A2:L3')->getFont()->setBold(false)->setSize(12);
 
         $styleArray = [
             'borders' => [
@@ -144,6 +151,9 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                 ],
             ],
         ];
+
+        $rangeTot = 'H6:K'.$rangeStr;
+        $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
 
         $rangeTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);

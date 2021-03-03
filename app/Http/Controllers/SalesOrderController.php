@@ -209,6 +209,7 @@ class SalesOrderController extends Controller
                 $arrGudang = explode(",", $request->kodeGudang[$i]);
                 $arrStok = explode(",", $request->qtyGudang[$i]);
                 $diskonRp = ($request->diskonRp[$i] != '' ? str_replace(".", "", $request->diskonRp[$i]) : 0) / sizeof($arrGudang);
+                // return response()->json($diskonRp);
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
                         'id_so' => $kode,
@@ -218,7 +219,8 @@ class SalesOrderController extends Controller
                         'harga' => str_replace(".", "", $request->harga[$i]),
                         'qty' => $arrStok[$j],
                         'diskon' => ($request->diskon[$i] != '' ? $request->diskon[$i] : '0'),
-                        'diskonRp' => $diskonRp
+                        // 'diskonRp' => $diskonRp
+                        'diskonRp' => ($request->diskonRp[$i] != '' ? str_replace(".", "", $request->diskonRp[$i]) : 0)
                     ]);
 
                     /* if($status == 'LIMIT') {

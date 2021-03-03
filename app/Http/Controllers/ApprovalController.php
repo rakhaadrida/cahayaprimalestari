@@ -114,8 +114,8 @@ class ApprovalController extends Controller
 
         if($statusApp == 'PENDING_UPDATE') {
             $item->{'status'} = "UPDATE";
-            // $item->{'total'} = str_replace(".", "", $request->input("grandtotal".$id));
-            $item->{'total'} = str_replace(".", "", $request->grandtotalAkhir);
+            $item->{'total'} = str_replace(".", "", $request->input("grandtotalAkhir".$id));
+            // $item->{'total'} = str_replace(".", "", $request->grandtotalAkhir);
             $item->save(); 
         }
         elseif($status == 'PENDING_BATAL') {

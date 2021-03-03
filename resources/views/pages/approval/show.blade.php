@@ -629,7 +629,7 @@
                           <label for="grandtotal" class="col-4 col-sm-4 col-md-2 col-form-label text-bold text-right text-dark">@if($itemsUpdate->last()->status == 'LIMIT') Total Tagihan @else Grand Total @endif</label>
                           <span class="col-form-label text-bold">:</span>
                           <div class="col-4 col-sm-4 col-md-2 mr-1">
-                            <input type="text" name="grandtotalAkhir" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($itemsUpdate->last()->status == 'LIMIT') && ($itemsUpdate->last()->status != 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{ $item->tipe == 'Faktur' ? number_format($subtotalUpdate - $item->so->diskon, 0, "", ".") : number_format($subtotalUpdate, 0, "", ".") }}" />
+                            <input type="text" name="grandtotalAkhir{{$item->id_dokumen}}" id="grandtotal" readonly class="form-control-plaintext text-bold @if(($itemsUpdate->last()->status == 'LIMIT') && ($itemsUpdate->last()->status == 'PENDING_BATAL')) bg-warning text-danger @else text-dark @endif text-lg text-right" value="{{ $item->tipe == 'Faktur' ? number_format($subtotalUpdate - $item->so->diskon, 0, "", ".") : number_format($subtotalUpdate, 0, "", ".") }}" />
                           </div>
                         </div>
                       @endif

@@ -237,8 +237,8 @@
                         <input type="hidden" name="teksSat[]" class="teksSat">
                         <input type="hidden" name="teksSatUk[]" class="teksSatUk">
                         <input type="hidden" name="ukuran[]" class="ukuran">
-                        <input type="hidden" name="kodeGudang[]" class="kodeGudang">
-                        <input type="hidden" name="qtyGudang[]" class="qtyGudang">
+                        <input type="text" name="kodeGudang[]" class="kodeGudang">
+                        <input type="text" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
