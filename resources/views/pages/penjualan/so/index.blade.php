@@ -237,8 +237,8 @@
                         <input type="hidden" name="teksSat[]" class="teksSat">
                         <input type="hidden" name="teksSatUk[]" class="teksSatUk">
                         <input type="hidden" name="ukuran[]" class="ukuran">
-                        <input type="text" name="kodeGudang[]" class="kodeGudang">
-                        <input type="text" name="qtyGudang[]" class="qtyGudang">
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang">
+                        <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
@@ -676,7 +676,7 @@ const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
 var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
-var kodeModal; var totPast; var g; var gdg; var = qtyTemp;
+var kodeModal; var totPast; var g; var gdg; 
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
