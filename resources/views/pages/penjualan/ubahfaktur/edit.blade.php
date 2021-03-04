@@ -141,10 +141,12 @@
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td>
                         <input type="text" tabindex="{{ $tab++ }}" name="kodeBarang[]" class="form-control form-control-sm text-bold text-dark kodeBarang" value="{{ $item->id_barang }}" required>
+                        <input type="hidden" name="kodeBarangAwal[]" class="kodeBarangAwal" value="{{ $item->id_barang }}">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark text-wrap namaBarang" value="{{ $item->barang->nama }}" required>
                         <input type="hidden" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}">
+                        <input type="hidden" name="namaBarangAwal[]" class="namaBarangAwal" value="{{ $item->barang->nama }}">
                       </td>
                       <td> 
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required>
@@ -401,7 +403,9 @@
 <script type="text/javascript">
 const editSO = document.getElementById("editSO");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
+const kodeBarangAwal = document.querySelectorAll('.kodeBarangAwal');
 const brgNama = document.querySelectorAll(".namaBarang");
+const namaBarangAwal = document.querySelectorAll('.namaBarangAwal');
 const qtyAwal = document.querySelectorAll(".qtyAwal");
 const qty = document.querySelectorAll(".qty");
 const teksSat = document.querySelectorAll(".teksSat");
@@ -472,9 +476,9 @@ for(let i = 0; i < brgNama.length; i++) {
     }
 
     @foreach($barang as $br)
-      if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+      if(('{{ ($br->nama) }}'.replace(/&quot;/g, '\"') == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
         kodeBarang[i].value = '{{ $br->id }}';
-        brgNama[i].value = '{{ $br->nama }}';
+        brgNama[i].value = '{{ $br->nama }}'.replace(/&quot;/g, '\"');
       }
     @endforeach
 
@@ -495,7 +499,16 @@ for(let i = 0; i < brgNama.length; i++) {
       grandtotal.value = totalNotPPN.value;
     }
 
-    // kodeGudang[i].value = 'GDG01';
+    if((kodeBarangAwal[i].value != kodeBarang[i].value) || (namaBarangAwal[i].value != brgNama[i].value)) {
+      qty[i].value = '';
+      qtyAwal[i].value = 0;
+      kodeGudangArr[i].value = 'GDG01';
+      qtyAwalArr[i].value = 0;
+      kodeGudang[i].value = 'GDG01';
+      qtyGudang[i].value = 0;
+      kodeBarangAwal[i].value = kodeBarang[i].value;
+      namaBarangAwal[i].value = brgNama[i].value;
+    }
   }
 }
 
@@ -511,8 +524,7 @@ for(let i = 0; i < qty.length; i++) {
 
     @foreach($stok as $s)
       // if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) 
-      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && (('{{ $s->id_gudang }}' == arrKodeGud[0]) || ('{{ $s->id_gudang }}' == 'GDG01')))
-      {
+      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && (('{{ $s->id_gudang }}' == arrKodeGud[0]) || ('{{ $s->id_gudang }}' == 'GDG01'))) {
         stokJohar += +'{{ $s->stok }}';
         totStok += +'{{ $s->stok }}';
         if('{{ $s->id_gudang }}' == 'GDG01') {
@@ -527,7 +539,7 @@ for(let i = 0; i < qty.length; i++) {
       }
     @endforeach
 
-    console.log(totStok);
+    // console.log(totStok);
 
     @foreach($barang as $br)
       if('{{ $br->id }}' == kodeBarang[i].value) {
@@ -992,7 +1004,7 @@ $(function() {
   var namaBrg = [];
   @foreach($barang as $b)
     kodeBrg.push('{{ $b->id }}');
-    namaBrg.push('{{ $b->nama }}');
+    namaBrg.push('{{ $b->nama }}'.replace(/&quot;/g, '\"'));
   @endforeach
 
   var tipeHarga = [];
