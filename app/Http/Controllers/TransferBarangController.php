@@ -130,4 +130,48 @@ class TransferBarangController extends Controller
 
         return view('pages.pembelian.transferbarang.detail', $data);
     }
+
+    public function cetak(Request $request, $id) {
+        $items = TransferBarang::where('id', $id)->get();
+        $tabel = ceil($items->first()->detiltb->count() / 12);
+
+        if($tabel > 1) {
+            for($i = 1; $i < $tabel; $i++) {
+                $item = collect([
+                    'id' => $items->first()->id,
+                    'tgl_tb' => $items->first()->tgl_tb,
+                    'status' => $items->first()->status,
+                    'id_user' => $items->first()->id_user,
+                ]);
+
+                $items->push($item);
+            }
+        }
+
+        $items = $items->values();
+
+        $today = Carbon::now()->isoFormat('dddd, D MMM Y');
+        $waktu = Carbon::now();
+        $waktu = Carbon::parse($waktu)->format('H:i:s');
+
+        $data = [
+            'items' => $items,
+            'today' => $today,
+            'waktu' => $waktu
+        ];
+
+        return view('pages.pembelian.transferbarang.cetakInv', $data);
+    }
+
+    public function afterPrint($id) {
+        $item = SalesOrder::where('id', $id)->first();
+        $item->{'status'} = 'CETAK';
+        $item->save();
+
+        $data = [
+            'status' => 'false'
+        ];
+
+        return redirect()->route('so', $data);
+    }
 }

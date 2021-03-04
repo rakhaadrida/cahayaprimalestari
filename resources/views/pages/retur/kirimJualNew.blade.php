@@ -326,6 +326,17 @@ for(let i = 0; i < tglBayar.length; i++) {
   });
 } */
 
+for(let i = 0; i < kirimModal.length; i++) {
+  kirimModal[i].addEventListener("blur", function(e) {
+    if(e.target.value == "") {
+      tglBayar[i].removeAttribute('required');
+    } else {
+      console.log(e.target.value);
+      tglBayar[i].setAttribute('required', true);
+    }
+  });
+} 
+
 for(let i = 0; i < batalModal.length; i++) {
   batalModal[i].addEventListener("change", function(e) {
     if(kurang[i].value == '')

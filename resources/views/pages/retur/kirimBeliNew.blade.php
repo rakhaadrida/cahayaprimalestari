@@ -351,6 +351,13 @@ for(let i = 0; i < kirimModal.length; i++) {
     else
       kurang[i].value -= e.target.value;
   });
+
+  kirimModal[i].addEventListener("blur", function(e) {
+    if(e.target.value == '')
+      tglBayar[i].removeAttribute('required');
+    else
+      tglBayar[i].setAttribute('required', true);
+  });
 }
 
 for(let i = 0; i < batalModal.length; i++) {
