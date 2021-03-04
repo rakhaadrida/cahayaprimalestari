@@ -1118,9 +1118,6 @@ function displayRow(e) {
       if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow.value) > stokJohar)) {
         var arrJumQtyRow = qtyGudangRow.value.split(',');
         var jumQtyRow = arrJumQtyRow.reduce(getSum, 0);
-        console.log(arrJumQtyRow);
-        console.log(jumQtyRow);
-        console.log(tempQty);
         if((tempQty == 0) || ((tempQty > 0) && (jumQtyRow != e.target.value))) {
           $('#gud'+newNum).modal("show");
           kodeModal = newNum;
@@ -1619,9 +1616,6 @@ for(let i = 0; i < qty.length; i++) {
       if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > stokJohar))) {
         var arrJumQty = qtyGudang[i].value.split(',');
         var jumQty = arrJumQty.reduce(getSum, 0);
-        console.log(arrJumQty);
-        console.log(jumQty);
-        console.log(tempQty);
         if((tempQty == 0) || ((tempQty > 0) && (jumQty != e.target.value))) {
           $('#'+i).modal("show");
           kodeModal = i;

@@ -289,13 +289,17 @@
                                   } else {
                                     $diskon = 0;
                                   }
+                                  $diskonRpAwal = ($i->qty * $i->harga) * $diskon / 100;
+                                  $diskonRpAwal = round($diskonRpAwal);
                                 @endphp
                                 <td align="right">
-                                  {{ number_format((($i->qty * $i->harga) * $diskon) / 100, 0, "", ".") }}
+                                  {{-- {{ number_format((($i->qty * $i->harga) * $diskon) / 100, 0, "", ".") }} --}}
+                                  {{ number_format($diskonRpAwal, 0, "", ".") }}
                                 </td>
                                 <td align="right">
-                                  {{ number_format(($i->qty * $i->harga) - 
-                                  ((($i->qty * $i->harga) * $diskon) / 100), 0, "", ".") }}
+                                  {{-- {{ number_format(($i->qty * $i->harga) - 
+                                  ((($i->qty * $i->harga) * $diskon) / 100), 0, "", ".") }} --}}
+                                  {{ number_format(($i->qty * $i->harga) - $diskonRpAwal, 0, "", ".") }}
                                 </td>
                               {{-- @endif --}}
                             @else
@@ -320,8 +324,8 @@
                             @endif
                             @php 
                               if($item->tipe == 'Faktur') {
-                                $subtotal += ($i->qty * $i->harga) - 
-                                ((($i->qty * $i->harga) * $diskon) / 100); 
+                                // $subtotal += ($i->qty * $i->harga) - ((($i->qty * $i->harga) * $diskon) / 100); 
+                                $subtotal += ($i->qty * $i->harga) - $diskonRpAwal; 
                               }
                               elseif($item->tipe == 'Dokumen')
                                 $subtotal += $i->qty * $i->harga;
@@ -565,21 +569,26 @@
                                     } else {
                                       $diskon = 0;
                                     }
+                                    $diskonRp = ($detItem->qty * $detItem->harga) * $diskon / 100;
+                                    $diskonRp = round($diskonRp);
                                   @endphp
                                   <td align="right"
                                   @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
-                                    {{ number_format((($detItem->qty * $detItem->harga) * $diskon) / 100, 0, "", ".") }}
+                                    {{-- {{ number_format((($detItem->qty * $detItem->harga) * $diskon) / 100, 0, "", ".") }} --}}
+                                    {{ number_format($diskonRp, 0, "", ".") }}
                                   </td>
                                   <td align="right"
                                   @if($detItem->qty != $items[$i-1]->qty) class="bg-warning text-danger" @endif>
-                                    {{ number_format(($detItem->qty * $detItem->harga) - 
-                                    ((($detItem->qty * $detItem->harga) * $diskon) / 100), 0, "", ".") }}
+                                    {{-- {{ number_format(($detItem->qty * $detItem->harga) - 
+                                    ((($detItem->qty * $detItem->harga) * $diskon) / 100), 0, "", ".") }} --}}
+                                    {{ number_format(($detItem->qty * $detItem->harga) - $diskonRp, 0, "", ".") }}
                                   </td>
                                 {{-- @endif --}}
                                 @php 
                                   // if($item->tipe != 'Dokumen') {
-                                    $subtotalUpdate += ($detItem->qty * $detItem->harga) - 
-                                    ((($detItem->qty * $detItem->harga) * $diskon) / 100); 
+                                    // $subtotalUpdate += ($detItem->qty * $detItem->harga) - 
+                                    // ((($detItem->qty * $detItem->harga) * $diskon) / 100); 
+                                    $subtotalUpdate += ($detItem->qty * $detItem->harga) - $diskonRp; 
                                   // } else {
                                   //   $subtotalUpdate += ($detItem->qty * $detItem->harga);
                                   // }

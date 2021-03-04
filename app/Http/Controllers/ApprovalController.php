@@ -259,6 +259,15 @@ class ApprovalController extends Controller
             $items = DetilApproval::where('id_app', $newcode)->get();
 
         foreach($items as $item) {
+            if($statusApp == 'PENDING_UPDATE')
+                $totQty = NeedAppDetil::selectRaw('sum(qty) as qty')->where('id_app', $needApp[0]->id)
+                        ->where('id_barang', $item->id_barang)->get();
+            else
+                $totQty = DetilApproval::selectRaw('sum(qty) as qty')->where('id_app', $newcode)
+                        ->where('id_barang', $item->id_barang)->get();
+
+            // return response()->json($totQty);
+            
             if($item->diskon != '') {
                 $diskon = 100;
                 $item->diskon = str_replace(",", ".", $item->diskon);
@@ -267,7 +276,7 @@ class ApprovalController extends Controller
                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
                 } 
                 $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
-                $diskonRp = (($item->qty * $item->harga) * $diskon) / 100;
+                $diskonRp = (($totQty->first()->qty * $item->harga) * $diskon) / 100;
             } else {
                 $diskon = NULL;
             }
