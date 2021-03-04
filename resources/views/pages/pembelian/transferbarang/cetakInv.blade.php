@@ -550,7 +550,7 @@
             <h5 class="text-bold ">TRANSFER BARANG</h5>
             <h5 class="text-bold " style="margin-top: -10px">
               {{-- (@if($items->first()->kategori == "Cash") CASH @else TEMPO @endif) --}}
-              {{-- (@if($items->first()->tempo == 0) CASH @else TEMPO @endif) --}}
+              (TRANSFER)
             </h5>
           </div>
           <div class="subtitle-cetak-so-one text-center">
@@ -569,14 +569,14 @@
           <br>
           <span class="telpon-logo">Office : 021 - 428 78 662</span>
         </div>
-        {{-- <div class="float-right customer-cetak-so">
-          <span class="kode-cetak-so">Ke Gudang :</span>
+        <div class="float-right customer-cetak-so">
+          <span class="kode-cetak-so"></span>
           <br>
-          <span class="nama-cetak-so">{{ $items->first()->customer->nama }}</span>
+          <span class="nama-cetak-so"></span>
           <br>
-          <span class="alamat-cetak-so text-wrap">{{ $items->first()->customer->alamat }}</span>
+          <span class="alamat-cetak-so text-wrap"></span>
           <br>
-        </div> --}}
+        </div>
         <br>
         <br>
 
@@ -608,7 +608,7 @@
         @php 
         // sum(diskonRp) as diskonRp
         $itemsDet = \App\Models\DetilTB::where('id_tb', $items->first()->id)
-                          ->whereNotIn('id_barang', $kode)->get();
+                      ->whereNotIn('id_barang', $kode)->get();
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
@@ -616,7 +616,7 @@
             <tr>
               <td style="width: 10px; border-left: 1px dotted">No</td>
               <td style="width: 340px">Nama Barang</td>
-              <td style="width: 80px; border-right: 1px dotted">Asal</td>
+              <td style="width: 80px;">Asal</td>
               <td style="width: 75px">Qty</td>
               <td style="width: 80px; border-right: 1px dotted">Tujuan</td>
             </tr>
@@ -627,7 +627,7 @@
               <tr class="baris-so">
                 <td align="center">{{ $no }}</td>
                 <td>{{ $itemDet->barang->nama }}</td>
-                <td>{{ $itemDer->gudangAsal->nama }}</td>
+                <td align="center">{{ $itemDet->gudangAsal->nama }}</td>
                 @if($itemDet->barang->satuan == "Pcs / Dus")
                   <td align="center">{{ $itemDet->qty }} PCS</td>
                 @elseif($itemDet->barang->satuan == "Set")
@@ -637,7 +637,7 @@
                 @else
                   <td align="center">{{ $itemDet->qty }} MTR</td>
                 @endif
-                <td>{{ $itemDer->gudangTujuan->nama }}</td>
+                <td align="center">{{ $itemDet->gudangTuju->nama }}</td>
               </tr>
               @php $no++; array_push($kode, $itemDet->id_barang); $total += $itemDet->qty; @endphp
               @if($no > (12 * $i))

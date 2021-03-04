@@ -181,7 +181,7 @@ class SalesOrderController extends Controller
             AccReceivable::create([
                 'id' => $newcode,
                 // 'id_so' => $id,
-                'id_so' => $request->kode,
+                'id_so' => $kode,
                 'keterangan' => 'BELUM LUNAS'
             ]);
         }

@@ -147,7 +147,7 @@
             <a class="collapse-item" href="{{ route('cetak-bm', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Barang Masuk</a>
             <a class="collapse-item" href="{{ route('bm-change')}}">Ubah Barang Masuk</a>
             <a class="collapse-item" href="{{ route('bm-harian')}}">Barang Masuk Harian</a>
-            <a class="collapse-item" href="{{ route('tb') }}">Transfer Barang</a>
+            <a class="collapse-item" href="{{ route('tb', 'false') }}">Transfer Barang</a>
             <a class="collapse-item" href="{{ route('tb-index') }}">Data Transfer Barang</a>
           </div>
         </div>

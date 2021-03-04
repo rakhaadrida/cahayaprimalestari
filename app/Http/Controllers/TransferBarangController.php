@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TransferBarangController extends Controller
 {
-    public function index() {
+    public function index($status) {
         $barang = Barang::All();
         $gudang = Gudang::All();
         $stok = StokBarang::with(['gudang'])->get();
@@ -33,13 +33,16 @@ class TransferBarangController extends Controller
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
+        $lastTB = TransferBarang::where('created_at', '!=', NULL)->latest()->take(1)->get();
 
         $data = [
             'barang' => $barang,
             'gudang' => $gudang,
             'stok' => $stok,
             'newcode' => $newcode,
-            'tanggal' => $tanggal
+            'tanggal' => $tanggal,
+            'lastTB' => $lastTB,
+            'status' => $status
             // 'items' => $items,
             // 'itemsRow' => $itemsRow
         ];
@@ -52,7 +55,7 @@ class TransferBarangController extends Controller
         return $formatTanggal;
     }
 
-    public function process(Request $request, $id) {
+    public function process(Request $request, $id, $status) {
         $tanggal = $request->tanggal;
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
@@ -70,6 +73,7 @@ class TransferBarangController extends Controller
         TransferBarang::create([
             'id' => $newcode,
             'tgl_tb' => $tanggal,
+            'status' => $status,
             'id_user' => Auth::user()->id
         ]);
 
@@ -109,26 +113,13 @@ class TransferBarangController extends Controller
             }
         }
 
-        return redirect()->route('tb');
-    }
+        if($status != 'CETAK')
+            $cetak = 'false';
+        else {
+            $cetak = 'true';
+        }
 
-    public function indexTab() {
-        $items = TransferBarang::orderBy('id', 'desc')->get();
-        $data = [
-            'items' => $items
-        ];
-
-        return view('pages.pembelian.transferbarang.indexTab', $data);
-    }
-
-    public function detail(Request $request, $id) {
-        $items = TransferBarang::All();
-        $data = [
-            'items' => $items,
-            'kode' => $id
-        ];
-
-        return view('pages.pembelian.transferbarang.detail', $data);
+        return redirect()->route('tb', $cetak);
     }
 
     public function cetak(Request $request, $id) {
@@ -164,7 +155,7 @@ class TransferBarangController extends Controller
     }
 
     public function afterPrint($id) {
-        $item = SalesOrder::where('id', $id)->first();
+        $item = TransferBarang::where('id', $id)->first();
         $item->{'status'} = 'CETAK';
         $item->save();
 
@@ -172,6 +163,25 @@ class TransferBarangController extends Controller
             'status' => 'false'
         ];
 
-        return redirect()->route('so', $data);
+        return redirect()->route('tb', $data);
     }
+
+    public function indexTab() {
+        $items = TransferBarang::orderBy('id', 'desc')->get();
+        $data = [
+            'items' => $items
+        ];
+
+        return view('pages.pembelian.transferbarang.indexTab', $data);
+    }
+
+    public function detail(Request $request, $id) {
+        $items = TransferBarang::All();
+        $data = [
+            'items' => $items,
+            'kode' => $id
+        ];
+
+        return view('pages.pembelian.transferbarang.detail', $data);
+    }    
 }

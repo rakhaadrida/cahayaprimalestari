@@ -203,13 +203,46 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" tabindex="{{ $tab++ }}" id="submitTB" formaction="{{ route('tb-process', $newcode) }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" tabindex="{{ $tab++ }}" id="submitTB" onclick="return checkRequired(event)"  class="btn btn-success btn-block text-bold">Submit</>
+                  {{-- formaction="{{ route('tb-process', $newcode) }}" formmethod="POST" --}}
                 </div>
                 <div class="col-2">
                   <button type="reset" tabindex="{{ $tab++ }}" id="resetTB" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
               <!-- End Button Submit dan Reset -->
+
+              <!-- Modal Konfirmasi Cetak atau Input -->
+              <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title">Konfirmasi Transfer <b>{{$newcode}}</b></h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Data Transfer <strong>{{$newcode}}</strong> akan disimpan. Silahkan pilih cetak atau input data lagi.</p>
+                      <hr>
+                      <div class="form-row justify-content-center">
+                        <div class="col-3">
+                          <button type="submit" formaction="{{ route('tb-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                        </div>
+                        <div class="col-3">
+                          <button type="submit" formaction="{{ route('tb-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Modal Konfirmasi -->
+
+              @if($status == 'true')
+                <!-- Tampilan Cetak -->
+                <iframe src="{{url('transfer/cetak/'.$lastTB[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+              @endif
             </form>
           </div>
         </div>
@@ -222,6 +255,17 @@
 @push('addon-script')
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
+@if($status == 'true')
+  const printFrame = document.getElementById("frameCetak").contentWindow;
+
+  printFrame.window.onafterprint = function(e) {
+    window.location = "{{ route('tb-after-print', $lastTB[0]->id) }}";
+  }
+  
+  printFrame.window.focus();
+  printFrame.window.print();
+@endif 
+
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
@@ -752,6 +796,17 @@ for(let i = 0; i < hapusBaris.length; i++) {
     $(this).parents('tr').next().find('input').val('');
     kodeBarang[i].focus();
   });
+}
+
+function checkRequired(e) {
+  if((tanggal.value == "") || (kodeBarang[0].value == "") || (qtyTransfer[0].value == "")) {
+    e.stopPropagation();
+  }
+  else {
+    document.getElementById("submitTB").dataset.toggle = "modal";
+    document.getElementById("submitTB").dataset.target = "#modalKonfirm";
+    return false;
+  }
 }
 
 /** Autocomplete Input Text **/

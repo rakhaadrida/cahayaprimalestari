@@ -173,7 +173,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('tb-create');
         // Route::post('/transfer/process/{id}', 'TransferBarangController@process')
         //     ->name('tb-process');
-        Route::get('/transfer/cetak/{id}', 'TransferBarangController@cetak')->name('tb-cetak');
         Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}','TransferBarangController@remove')
             ->name('tb-remove');
         // Route::get('/tb/index', 'TransferBarangController@indexTab')
@@ -281,9 +280,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'KENARI']], function() {
-        Route::get('/transfer', 'TransferBarangController@index')->name('tb');
-        Route::post('/transfer/process/{id}', 'TransferBarangController@process')
+        Route::get('/transfer/{status}', 'TransferBarangController@index')->name('tb');
+        Route::post('/transfer/process/{id}/{status}', 'TransferBarangController@process')
             ->name('tb-process');
+        Route::get('/transfer/cetak/{id}', 'TransferBarangController@cetak')->name('tb-cetak');
+        Route::get('/transfer/afterPrint/{id}', 'TransferBarangController@afterPrint')
+            ->name('tb-after-print');
         Route::get('/tb/index', 'TransferBarangController@indexTab')
             ->name('tb-index');
         Route::post('/tb/detail/{id}', 'TransferBarangController@detail')

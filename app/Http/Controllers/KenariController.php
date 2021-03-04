@@ -191,7 +191,7 @@ class KenariController extends Controller
         if($status != 'LIMIT') {
             AccReceivable::create([
                 'id' => $newcode,
-                'id_so' => $id,
+                'id_so' => $kode,
                 'keterangan' => 'BELUM LUNAS'
             ]);
         }
