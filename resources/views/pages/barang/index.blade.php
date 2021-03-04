@@ -11,7 +11,7 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
     <h1 class="h3 mb-0 text-gray-800 menu-title">Data Barang</h1>
-    @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG'))
+    @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'GUDANG') && (Auth::user()->roles != 'AR'))
       <div class="justify-content-end">
         <a href="{{ route('barang.create') }}" class="btn btn-sm btn-primary shadow-sm">
           <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Barang
@@ -32,7 +32,7 @@
             <tr align="center">
               <th>No</th>
               <th>Nama</th>
-              @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'AR'))
+              @if(Auth::user()->roles != 'OFFICE02')
                 @foreach($gudang as $g)
                   <th style="width: 40px">{{ substr($g->nama, 0, 3) }}</th>
                 @endforeach
@@ -59,7 +59,7 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center" style="width: 10px">{{ $j }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
-                @if((Auth::user()->roles != 'OFFICE02') && (Auth::user()->roles != 'AR'))
+                @if(Auth::user()->roles != 'OFFICE02')
                   @foreach($gudang as $g)
                     @php
                       if($g->tipe == 'RETUR') {

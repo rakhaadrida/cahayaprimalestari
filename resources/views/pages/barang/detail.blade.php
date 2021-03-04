@@ -63,7 +63,7 @@
                 </div>
               </div>
               <hr>
-              @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER'))
+              @if((Auth::user()->roles == 'ADMIN') || (Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
                 @foreach($harga as $h)
                   <div class="form-group row">
                     <label for="ukuran" class="col-2 col-form-label text-bold">{{ $h->nama }}</label>
