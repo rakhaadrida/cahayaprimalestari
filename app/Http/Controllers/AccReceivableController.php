@@ -174,12 +174,6 @@ class AccReceivableController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('tgl_bayar', $waktu->year)
-                    ->whereMonth('tgl_bayar', $month)->get();
-        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
-        $lastnumber++;
-        $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
-
         $tglBayar = $request->{"tgl".$request->kode};
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
@@ -235,6 +229,12 @@ class AccReceivableController extends Controller
 
             $j++;
         }
+
+        $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('tgl_bayar', $waktu->year)
+                    ->whereMonth('tgl_bayar', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
+        $lastnumber++;
+        $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
         if(($request->{"cicil".$request->kode} != '') && ($request->{"tgl".$request->kode} != '')) {
             DetilAR::create([
