@@ -676,7 +676,7 @@ const limitTitle = document.getElementById('limitTitle');
 const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
 var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
-var kodeModal; var totPast; var g; var gdg; 
+var kodeModal; var totPast; var g; var gdg; var tempQty = 0;
 var sisa; var stokJohar; var stokLain; var totStok;
 
 /** Call Fungsi Setelah Inputan Terisi **/
@@ -963,6 +963,7 @@ function displayRow(e) {
       grandtotal.value = totalNotPPN.value;
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
+      diskonRow.removeAttribute('required');
     } 
 
     @foreach($barang as $br)
@@ -1008,6 +1009,7 @@ function displayRow(e) {
         tipeRow.value = '{{ $hb->hargaBarang->tipe }}';
         hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
         qtyRow.setAttribute('required', true);
+        diskonRow.setAttribute('required', true);
       }
     @endforeach
 
@@ -1114,54 +1116,61 @@ function displayRow(e) {
     }
     else {
       if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow.value) > stokJohar)) {
-        $('#gud'+newNum).modal("show");
-        kodeModal = newNum;
-        teksJoharRow.textContent = `${stokJohar}`;
-        teksSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
-        if(teksSatRow.value == 'Pcs') {
-          teksJoharUkuranRow.textContent = `\u00A0/ ${stokJohar / ukuranRow.value}`;
-          teksUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
-        } else {
-          teksJoharUkuranRow.textContent = ``;
-          teksUkuranRow.textContent = ``;
-        }
-
-        qtyOrderRow.textContent = `${qtyRow.value}`;
-        qtySatuanRow.textContent = `\u00A0${teksSatRow.value} `;
-        if(teksSatRow.value == 'Pcs') {
-          qtyOrderUkuranRow.textContent = `\u00A0/ ${qtyRow.value / ukuranRow.value}`;
-          qtyUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
-        } else {
-          qtyOrderUkuranRow.textContent = ``;
-          qtyUkuranRow.textContent = ``;
-        }
-
-        sisaQtyRow.textContent = `${+qtyRow.value - +stokJohar}`;
-        sisaSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
-        if(teksSatRow.value == 'Pcs') {
-          sisaQtyUkuranRow.textContent = `\u00A0/ ${(qtyRow.value - +stokJohar) / ukuranRow.value}`;
-          sisaUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
-        } else {
-          sisaQtyUkuranRow.textContent = ``;
-          sisaUkuranRow.textContent = ``;
-        }
-
-        const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
-        const gudangSatuanRow = document.querySelectorAll('.gudangSatuanRow'+newNum);
-        const stokGudangUkuranRow = document.querySelectorAll('.stokGudangUkuranRow'+newNum);
-        const gudangUkuranRow = document.querySelectorAll('.gudangUkuranRow'+newNum);
-        for(let i = 0; i < stokGudangRow.length; i++) {
-          stokGudangRow[i].textContent = `${stokLain[i]}`;
-          gudangSatuanRow[i].textContent = `\u00A0${teksSatRow.value}`;
+        var arrJumQtyRow = qtyGudangRow.value.split(',');
+        var jumQtyRow = arrJumQtyRow.reduce(getSum, 0);
+        console.log(arrJumQtyRow);
+        console.log(jumQtyRow);
+        console.log(tempQty);
+        if((tempQty == 0) || ((tempQty > 0) && (jumQtyRow != e.target.value))) {
+          $('#gud'+newNum).modal("show");
+          kodeModal = newNum;
+          teksJoharRow.textContent = `${stokJohar}`;
+          teksSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
           if(teksSatRow.value == 'Pcs') {
-            stokGudangUkuranRow[i].textContent = `\u00A0/ ${stokLain[i] / ukuranRow.value}`;
-            gudangUkuranRow[i].textContent = `\u00A0${teksSatUkRow.value}`;
+            teksJoharUkuranRow.textContent = `\u00A0/ ${stokJohar / ukuranRow.value}`;
+            teksUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
           } else {
-            stokGudangUkuranRow[i].textContent = ``;
-            gudangUkuranRow[i].textContent = ``;
+            teksJoharUkuranRow.textContent = ``;
+            teksUkuranRow.textContent = ``;
           }
+
+          qtyOrderRow.textContent = `${qtyRow.value}`;
+          qtySatuanRow.textContent = `\u00A0${teksSatRow.value} `;
+          if(teksSatRow.value == 'Pcs') {
+            qtyOrderUkuranRow.textContent = `\u00A0/ ${qtyRow.value / ukuranRow.value}`;
+            qtyUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
+          } else {
+            qtyOrderUkuranRow.textContent = ``;
+            qtyUkuranRow.textContent = ``;
+          }
+
+          sisaQtyRow.textContent = `${+qtyRow.value - +stokJohar}`;
+          sisaSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
+          if(teksSatRow.value == 'Pcs') {
+            sisaQtyUkuranRow.textContent = `\u00A0/ ${(qtyRow.value - +stokJohar) / ukuranRow.value}`;
+            sisaUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
+          } else {
+            sisaQtyUkuranRow.textContent = ``;
+            sisaUkuranRow.textContent = ``;
+          }
+
+          const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
+          const gudangSatuanRow = document.querySelectorAll('.gudangSatuanRow'+newNum);
+          const stokGudangUkuranRow = document.querySelectorAll('.stokGudangUkuranRow'+newNum);
+          const gudangUkuranRow = document.querySelectorAll('.gudangUkuranRow'+newNum);
+          for(let i = 0; i < stokGudangRow.length; i++) {
+            stokGudangRow[i].textContent = `${stokLain[i]}`;
+            gudangSatuanRow[i].textContent = `\u00A0${teksSatRow.value}`;
+            if(teksSatRow.value == 'Pcs') {
+              stokGudangUkuranRow[i].textContent = `\u00A0/ ${stokLain[i] / ukuranRow.value}`;
+              gudangUkuranRow[i].textContent = `\u00A0${teksSatUkRow.value}`;
+            } else {
+              stokGudangUkuranRow[i].textContent = ``;
+              gudangUkuranRow[i].textContent = ``;
+            }
+          }
+          // qtyGudangRow.value = stokJohar;
         }
-        qtyGudangRow.value = stokJohar;
       }
       else {
         kodeGudangRow.value = "GDG01";
@@ -1460,6 +1469,7 @@ for(let i = 0; i < brgNama.length; i++) {
       grandtotal.value = totalNotPPN.value;
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
+      diskon[i].removeAttribute('required');
     } 
 
     @foreach($barang as $br)
@@ -1511,6 +1521,7 @@ for(let i = 0; i < brgNama.length; i++) {
         tipe[i].value = '{{ $hb->hargaBarang->tipe }}';
         harga[i].value = addCommas('{{ $hb->harga_ppn }}');
         qty[i].setAttribute('required', true);
+        diskon[i].setAttribute('required', true);
       }
     @endforeach
 
@@ -1606,54 +1617,61 @@ for(let i = 0; i < qty.length; i++) {
     }
     else {
       if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > stokJohar))) {
-        $('#'+i).modal("show");
-        kodeModal = i;
-        teksJohar[i].textContent = `${stokJohar}`;
-        teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        if(teksSat[i].value == 'Pcs') {
-          teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran[i].value}`; 
-          teksUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;         
-        } else {
-          teksJoharUkuran[i].textContent = ``;
-          teksUkuran[i].textContent = ``;
-        }
-
-        qtyOrder[i].textContent = `${qty[i].value}`;
-        qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        if(teksSat[i].value == 'Pcs') {
-          qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran[i].value}`;
-          qtyUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
-        } else {
-          qtyOrderUkuran[i].textContent = ``;
-          qtyUkuran[i].textContent = ``;
-        }
-
-        sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
-        sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
-        if(teksSat[i].value == 'Pcs') {
-          sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran[i].value}`; 
-          sisaUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
-        } else {
-          sisaQtyUkuran[i].textContent = ``;
-          sisaUkuran[i].textContent = ``;
-        }
-
-        const stokGudang = document.querySelectorAll('.stokGudang'+i);
-        const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
-        const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
-        const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
-        for(let j = 0; j < stokGudang.length; j++) {
-          stokGudang[j].textContent = `${stokLain[j] != null ? stokLain[j] : 0}`;
-          gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
+        var arrJumQty = qtyGudang[i].value.split(',');
+        var jumQty = arrJumQty.reduce(getSum, 0);
+        console.log(arrJumQty);
+        console.log(jumQty);
+        console.log(tempQty);
+        if((tempQty == 0) || ((tempQty > 0) && (jumQty != e.target.value))) {
+          $('#'+i).modal("show");
+          kodeModal = i;
+          teksJohar[i].textContent = `${stokJohar}`;
+          teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
           if(teksSat[i].value == 'Pcs') {
-            stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] != null ? stokLain[j] : 0 / ukuran[i].value}`;
-            gudangUkuran[j].textContent = `\u00A0${teksSatUk[i].value}`;
+            teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran[i].value}`; 
+            teksUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;         
           } else {
-            stokGudangUkuran[j].textContent = ``;
-            gudangUkuran[j].textContent = ``;
+            teksJoharUkuran[i].textContent = ``;
+            teksUkuran[i].textContent = ``;
           }
+
+          qtyOrder[i].textContent = `${qty[i].value}`;
+          qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+          if(teksSat[i].value == 'Pcs') {
+            qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran[i].value}`;
+            qtyUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
+          } else {
+            qtyOrderUkuran[i].textContent = ``;
+            qtyUkuran[i].textContent = ``;
+          }
+
+          sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
+          sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+          if(teksSat[i].value == 'Pcs') {
+            sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran[i].value}`; 
+            sisaUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
+          } else {
+            sisaQtyUkuran[i].textContent = ``;
+            sisaUkuran[i].textContent = ``;
+          }
+
+          const stokGudang = document.querySelectorAll('.stokGudang'+i);
+          const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
+          const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
+          const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
+          for(let j = 0; j < stokGudang.length; j++) {
+            stokGudang[j].textContent = `${stokLain[j] != null ? stokLain[j] : 0}`;
+            gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
+            if(teksSat[i].value == 'Pcs') {
+              stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] != null ? stokLain[j] : 0 / ukuran[i].value}`;
+              gudangUkuran[j].textContent = `\u00A0${teksSatUk[i].value}`;
+            } else {
+              stokGudangUkuran[j].textContent = ``;
+              gudangUkuran[j].textContent = ``;
+            }
+          }
+          // qtyGudang[i].value = stokJohar;
         }
-        // qtyGudang[i].value = stokJohar;
       }
       else {
         kodeGudang[i].value = "GDG01";
@@ -1672,6 +1690,7 @@ for(let i = 0; i < qty.length; i++) {
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
     // total_ppn(subtotal.value.replace(/\./g, ""));
+    tempQty = e.target.value;
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
@@ -1782,6 +1801,10 @@ for(let j = 0; j < modalGudang.length; j++) {
       });
     } 
   });
+}
+
+function getSum(total, num) {
+  return +total + +num;
 }
 
 /** Hitung Qty **/
