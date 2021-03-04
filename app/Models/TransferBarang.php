@@ -8,7 +8,7 @@ class TransferBarang extends Model
 {
     protected $table = "transferbarang";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tgl_tb', 'id_user'];
+    protected $fillable = ['id', 'tgl_tb', 'status', 'id_user'];
     public $incrementing = false;
 
     public function detiltb() {

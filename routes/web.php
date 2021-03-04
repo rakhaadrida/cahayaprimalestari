@@ -290,6 +290,16 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('tb-index');
         Route::post('/tb/detail/{id}', 'TransferBarangController@detail')
             ->name('tb-detail');
+
+        // Cetak Transfer Barang
+        Route::get('/cetak-tb/{status}/{awal}/{akhir}', 'CetakTBController@index')
+            ->name('cetak-tb');
+        Route::post('/cetak-tb/process', 'CetakTBController@process')
+            ->name('cetak-tb-process');
+        Route::get('/cetak-tb-all/{awal}/{akhir}', 'CetakTBController@cetak')
+            ->name('cetak-tb-all');
+        Route::get('/cetak-tb-update/{awal}/{akhir}', 'CetakTBController@update')
+            ->name('cetak-tb-update');
     });
 
     Route::group(['roles'=>'SUPER'], function() {

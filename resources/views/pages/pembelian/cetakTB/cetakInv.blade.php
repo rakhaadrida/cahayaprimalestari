@@ -542,26 +542,28 @@
     </style>
   </head>
   <body>
-    @php $i = 1; $no = 1; $kode = []; $total = 0; @endphp
+    @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; $total = 0; @endphp
     @foreach($items as $item)
+      @if(($items->first()->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 12)) 
+        @php $i = 1; $no = 1; $kur = 0; $kode = []; $total = 0; @endphp
+      @endif
       <div class="cetak-all-container" style="margin-bottom: -55px; page-break-after: always;">
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
             <h5 class="text-bold ">TRANSFER BARANG</h5>
             <h5 class="text-bold " style="margin-top: -10px">
-              {{-- (@if($items->first()->kategori == "Cash") CASH @else TEMPO @endif) --}}
               (TRANSFER)
             </h5>
           </div>
           <div class="subtitle-cetak-so-one text-center">
             <span class="text-right sub-title">Nomor</span>
             <span>:</span>
-            <span class="text-bold">{{ $items->first()->id }}</span>
+            <span class="text-bold">{{ $det <= 12 ? $item->id : $items[$urut-$kur]->id }}</span>
           </div>
           <div class="subtitle-cetak-so-second text-center">
             <span class="text-right sub-title">Tanggal</span>
             <span>:</span>
-            <span class="text-bold">{{ \Carbon\Carbon::parse($items->first()->tgl_tb)->format('d-M-y') }}</span>
+            <span class="text-bold">{{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_tb : $items[$urut-$kur]->tgl_tb))->format('d-M-y') }}</span>
           </div>
         </div>
         <div class="float-left logo-cetak-so">
@@ -583,8 +585,8 @@
         <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
           <thead class="text-center" style="font-weight: 600">
             <tr class="th-info-cetak-so">
-              <td style="width: 120px">No. Transfer</td>
-              <td style="width: 130px">Tgl. Transfer</td>
+              <td style="width: 120px">No. Order</td>
+              <td style="width: 130px">Tgl. Order</td>
               <td style="width: 110px">Kredit Term</td>
               <td style="width: 130px">Jatuh Tempo</td>
               <td style="width: 180px">Sales</td>
@@ -593,9 +595,9 @@
           </thead>
           <tbody>
             <tr class="tr-info-cetak-so">
-              <td align="center">{{ $items->first()->id }}</td>
+              <td align="center">{{ $det <= 12 ? $item->id : $items[$urut-$kur]->id }}</td>
               <td align="center">
-                {{ \Carbon\Carbon::parse($items->first()->tgl_tb)->format('d-M-y') }}
+                {{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_tb : $items[$urut-$kur]->tgl_tb))->format('d-M-y') }}
               </td>
               <td align="center"></td>
               <td align="center"></td>
@@ -606,9 +608,15 @@
         </table>
         
         @php 
-        // sum(diskonRp) as diskonRp
-        $itemsDet = \App\Models\DetilTB::where('id_tb', $items->first()->id)
-                      ->whereNotIn('id_barang', $kode)->get();
+        $stat = $det;
+        if($det <= 12)
+          $tb = $item->id;
+        else
+          $tb = $items[$urut-$kur]->id;
+
+          // , sum(diskonRp) as diskonRp
+        $itemsDet = \App\Models\DetilTB::where('id_tb', $tb)->whereNotIn('id_barang', $kode)->get();
+        $det = $itemsDet->count();
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
@@ -647,27 +655,19 @@
             @endforeach
             @if($itemsDet->count() < 12)
               <tr class="text-center">
-                <td colspan="5"></td>
+                <td colspan="8"></td>
               </tr>
             @endif
           </tbody>
         </table>
         
-        @php 
-          $cetak = 1;
-          if($items->first()->status != 'INPUT') {
-            $ubah = App\Models\Approval::where('id_dokumen', $items->first()->id)->count();
-            $cetak += $ubah; 
-          }
-        @endphp
-
         <div class="container-fluid footer-cetak-so">
           <table class="table-footer">
             <thead>
               <tr>
                 <td style="border-right: 1px dotted; width: 90px"> 
                   <div class="ttd-penerima">
-                    <table style="font-size: 15px !important;">
+                    <table style="font-size: 15px !important">
                       <tr>
                         <td class="text-center">Penerima,</td>
                       </tr>
@@ -682,11 +682,11 @@
                 </td>
                 <td style="border-right: 1px dotted; width: 273px">
                   <div class="info_bayar">
-                    {{-- <span>Pembayaran Giro / Transfer</span>
+                    <span>Pembayaran Giro / Transfer</span>
                     <br>
                     <span>Rekening Bank BCA</span>
                     <br>
-                    <span>a/n Indah Ramadhon 5790416491</span> --}}
+                    <span>a/n Indah Ramadhon 5790416491</span>
                   </div>
                 </td>
                 <td style="width: 90px">
@@ -708,7 +708,7 @@
                   <div class="ttd-mengetahui">
                     <table style="font-size: 15px !important">
                       <tr>
-                        <td class="tgl-ttd">{{ \Carbon\Carbon::parse($items->first()->tgl_so)->format('d-M-y')}}</td>
+                        <td class="tgl-ttd">{{ \Carbon\Carbon::parse(($stat <= 12 ? $item->tgl_tb : $items[$urut-$kur]->tgl_tb))->format('d-M-y')}}</td>
                       </tr>
                       <tr>
                         <td class="text-center">Mengetahui,</td>
@@ -760,10 +760,10 @@
           </table>
         </div>
 
-        @php $i++; @endphp
+        @php $i++; $urut++; $kur++; @endphp
         <div class="float-right waktu-cetak-so">
           <span class="waktu-cetak">Waktu Cetak : {{ $today }} {{ $waktu }}</span>
-          <span class="cetak-ke">Cetak ke: {{ $cetak }}</span>
+          <span class="cetak-ke">Cetak ke: 1</span>
         </div>
       </div>
     @endforeach
