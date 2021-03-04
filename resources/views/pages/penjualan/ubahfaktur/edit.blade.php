@@ -177,8 +177,8 @@
                         <input type="hidden" name="teksSat[]" class="teksSat" value="{{ substr($item->barang->satuan, 0, 3) }}">
                         <input type="hidden" name="KodeGudangArr[]" class="text-bold text-dark kodeGudangArr" value="{{ $arrKode }}">
                         <input type="hidden" name="qtyAwalArr[]" class="text-bold text-dark qtyAwalArr" value="{{ $arrQty }}">
-                        <input type="text" name="kodeGudang[]" class="kodeGudang" value="{{ $arrKode }}">
-                        <input type="text" name="qtyGudang[]" class="qtyGudang" value="{{ $arrQty }}">
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang" value="{{ $arrKode }}">
+                        <input type="hidden" name="qtyGudang[]" class="qtyGudang" value="{{ $arrQty }}">
                       </td>
                       @foreach($gudang as $g)
                         @php
