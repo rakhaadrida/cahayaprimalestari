@@ -408,7 +408,7 @@ for(let i = 0; i < qty.length; i++) {
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
       if(diskon[i].value != "") {
         var angkaDiskon = hitungDiskon(diskon[i].value)
-        diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
+        diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
       }
 
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
@@ -431,7 +431,7 @@ for(let i = 0; i < tipe.length; i++) {
       grandtotal.value = totalNotPPN.value;
       harga[i].value = "";
       jumlah[i].value = "";
-      diskonRp[i].value = "";
+      // diskonRp[i].value = "";
       netto[i].value = "";
     }
 
@@ -442,8 +442,8 @@ for(let i = 0; i < tipe.length; i++) {
 
         netPast = +netto[i].value.replace(/\./g, "");
         if(diskon[i].value != "") {
-          var angkaDiskon = hitungDiskon(diskon[i].value)
-          diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100);
+          var angkaDiskon = hitungDiskon(diskon[i].value);
+          diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100).toFixed(0));
         }
 
         netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
@@ -488,11 +488,12 @@ function checkSubtotal(Past, Now) {
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
+  angka = angka.replace(/\,/g, ".");
   var arrDiskon = angka.split('+');
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
-  totDiskon =  Math.floor(((totDiskon - 100) * -1).toFixed(2));
+  totDiskon =  ((totDiskon - 100) * -1).toFixed(2);
   return totDiskon;
 }
 

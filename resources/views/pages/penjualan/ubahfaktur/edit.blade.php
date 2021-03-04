@@ -777,8 +777,8 @@ for(let i = 0; i < tipe.length; i++) {
 
         netPast = +netto[i].value.replace(/\./g, "");
         if(diskon[i].value != "") {
-          var angkaDiskon = hitungDiskon(diskon[i].value)
-          diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100).toFixed(0);
+          var angkaDiskon = hitungDiskon(diskon[i].value);
+          diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100).toFixed(0));
         }
 
         netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
@@ -899,7 +899,7 @@ function checkSubtotal(Past, Now) {
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
-  angka = angka.replace(/\,/g, ".")
+  angka = angka.replace(/\,/g, ".");
   var arrDiskon = angka.split('+');
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;

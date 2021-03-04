@@ -72,7 +72,7 @@
       </a>
       <div id="collapseTbKenari" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="py-2 collapse-inner rounded">
-            <a class="collapse-item" href="{{ route('tb') }}">Input Transfer</a>
+            <a class="collapse-item" href="{{ route('tb', 'false') }}">Input Transfer</a>
             <a class="collapse-item" href="{{ route('tb-index') }}">Data Transfer</a>
           </div>
         </div>
