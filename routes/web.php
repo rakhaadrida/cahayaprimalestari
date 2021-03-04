@@ -56,6 +56,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('customer/hapus/{id}', 'CustomerController@hapus')->name('cus-hapus');
         Route::get('customer/hapus-all/all', 'CustomerController@hapusAll')
             ->name('cus-hapusAll');
+        Route::get('customer/excel/all', 'CustomerController@excel')->name('cus-excel');
 
         // Soft Deletes Jenis Barang
         Route::get('jenisbarang/trash/all', 'JenisBarangController@trash')->name('jb-trash');
