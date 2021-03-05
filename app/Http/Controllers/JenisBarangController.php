@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\JenisBarang;
 use App\Models\Subjenis;
 use App\Models\Barang;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\JenisExport;
+use Carbon\Carbon;
 
 class JenisBarangController extends Controller
 {
@@ -115,5 +118,12 @@ class JenisBarangController extends Controller
         $items->forceDelete();
 
         return redirect()->back();
+    }
+
+    public function excel() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new JenisExport(), 'Master JenisBarang-'.$tglFile.'.xlsx');
     }
 }

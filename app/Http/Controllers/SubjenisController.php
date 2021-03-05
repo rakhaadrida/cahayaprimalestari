@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Subjenis;
 use App\Models\JenisBarang;
 use App\Models\Barang;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SubjenisExport;
+use Carbon\Carbon;
 
 class SubjenisController extends Controller
 {
@@ -126,5 +129,12 @@ class SubjenisController extends Controller
         $items->forceDelete();
 
         return redirect()->back();
+    }
+
+    public function excel() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new SubjenisExport(), 'Master Subjenis-'.$tglFile.'.xlsx');
     }
 }

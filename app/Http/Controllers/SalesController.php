@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SalesRequest;
 use App\Models\Sales;
 use App\Models\Customer;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SalesExport;
+use Carbon\Carbon;
 
 class SalesController extends Controller
 {
@@ -109,5 +112,12 @@ class SalesController extends Controller
         $items->forceDelete();
 
         return redirect()->back();
+    }
+
+    public function excel() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new SalesExport(), 'Master Sales-'.$tglFile.'.xlsx');
     }
 }

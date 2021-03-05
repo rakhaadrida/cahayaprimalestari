@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GudangExport;
+use Carbon\Carbon;
 
 class GudangController extends Controller
 {
@@ -130,5 +133,12 @@ class GudangController extends Controller
         $item->forceDelete();
 
         return redirect()->back();
+    }
+
+    public function excel() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new GudangExport(), 'Master Gudang-'.$tglFile.'.xlsx');
     }
 }

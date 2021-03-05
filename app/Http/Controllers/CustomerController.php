@@ -152,6 +152,6 @@ class CustomerController extends Controller
         $tanggal = Carbon::now()->toDateString();
         $tglFile = Carbon::parse($tanggal)->format('d-M');
 
-        return Excel::download(new CustomerExport(), 'Customer-'.$tglFile.'.xlsx');
+        return Excel::download(new CustomerExport(), 'Master Customer-'.$tglFile.'.xlsx');
     }
 }

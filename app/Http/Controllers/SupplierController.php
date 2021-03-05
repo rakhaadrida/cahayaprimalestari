@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Supplier;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SupplierExport;
+use Carbon\Carbon;
 
 class SupplierController extends Controller
 {
@@ -115,5 +118,12 @@ class SupplierController extends Controller
         $items->forceDelete();
 
         return redirect()->back();
+    }
+
+    public function excel() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new SupplierExport(), 'Master Supplier-'.$tglFile.'.xlsx');
     }
 }

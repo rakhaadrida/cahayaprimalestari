@@ -11,6 +11,9 @@ use App\Models\HargaBarang;
 use App\Models\StokBarang;
 use Illuminate\Http\Request;
 use App\Http\Requests\BarangRequest;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BarangExport;
+use Carbon\Carbon;
 
 class BarangController extends Controller
 {
@@ -357,5 +360,12 @@ class BarangController extends Controller
         $item->forceDelete();
 
         return redirect()->back();
+    }
+
+    public function excel() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new BarangExport(), 'Master Barang-'.$tglFile.'.xlsx');
     }
 }

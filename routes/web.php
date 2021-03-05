@@ -38,6 +38,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('supplier/hapus/{id}', 'SupplierController@hapus')->name('sup-hapus');
         Route::get('supplier/hapus-all/all', 'SupplierController@hapusAll')
             ->name('sup-hapusAll');
+        Route::get('supplier/excel/all', 'SupplierController@excel')->name('sup-excel');
         
         // Soft Deletes Sales
         Route::get('sales/trash/all', 'SalesController@trash')->name('sales-trash');
@@ -47,6 +48,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('sales/hapus/{id}', 'SalesController@hapus')->name('sales-hapus');
         Route::get('sales/hapus-all/all', 'SalesController@hapusAll')
             ->name('sales-hapusAll');
+        Route::get('sales/excel/all', 'SalesController@excel')->name('sales-excel');
 
         // Soft Deletes Customer
         Route::get('customer/trash/all', 'CustomerController@trash')->name('cus-trash');
@@ -67,6 +69,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('jenisbarang/hapus/{id}', 'JenisBarangController@hapus')->name('jb-hapus');
         Route::get('jenisbarang/hapus-all/all', 'JenisBarangController@hapusAll')
             ->name('jb-hapusAll');
+        Route::get('jenisbarang/excel/all', 'JenisBarangController@excel')->name('jb-excel');
 
         // Soft Deletes Sub Jenis Barang
         Route::get('subjenis/trash/all', 'SubjenisController@trash')->name('sub-trash');
@@ -77,15 +80,15 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('subjenis/hapus/{id}', 'SubjenisController@hapus')->name('sub-hapus');
         Route::get('subjenis/hapus-all/all', 'SubjenisController@hapusAll')
             ->name('sub-hapusAll');
+        Route::get('subjenis/excel/all', 'SubjenisController@excel')->name('sub-excel');
 
         // Soft Deletes Barang
         Route::get('barang/trash/all', 'BarangController@trash')->name('barang-trash');
         Route::get('barang/restore/{id}', 'BarangController@restore')->name('barang-restore');
-        Route::get('barang/restore-all/all', 'BarangController@restoreAll')
-            ->name('barang-restoreAll');
+        Route::get('barang/restore-all/all', 'BarangController@restoreAll')->name('barang-restoreAll');
         Route::get('barang/hapus/{id}', 'BarangController@hapus')->name('barang-hapus');
-        Route::get('barang/hapus-all/all', 'BarangController@hapusAll')
-            ->name('barang-hapusAll');
+        Route::get('barang/hapus-all/all', 'BarangController@hapusAll')->name('barang-hapusAll');
+        Route::get('barang/excel/all', 'BarangController@excel')->name('barang-excel');
 
         // Soft Deletes Harga
         Route::get('harga/trash/all', 'HargaController@trash')->name('harga-trash');
@@ -104,6 +107,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('gudang/hapus/{id}', 'GudangController@hapus')->name('gudang-hapus');
         Route::get('gudang/hapus-all/all', 'GudangController@hapusAll')
             ->name('gudang-hapusAll');
+        Route::get('gudang/excel/all', 'GudangController@excel')->name('gudang-excel');
 
         // Detail Barang
         // Route::get('barang/detail/{id}', 'BarangController@detail')->name('detailBarang');
