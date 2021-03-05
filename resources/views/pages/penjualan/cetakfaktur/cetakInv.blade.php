@@ -291,9 +291,9 @@
         font-weight: 500;
         /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 16px;
-        width: 275px;
+        width: 260px;
         margin-top: -110px;
-        margin-right: 75px;
+        margin-right: 90px;
       }
 
       .kode-cetak-so {
@@ -577,7 +577,7 @@
           <br>
           <span class="nama-cetak-so">{{ $det <= 12 ? $item->customer->nama : $items[$urut-$kur]->customer->nama }}</span>
           <br>
-          <span class="alamat-cetak-so text-wrap">{{ $det <= 12 ? $item->customer->alamat : $items[$urut-$kur]->customer->alamat }}</span>
+          <span class="alamat-cetak-so text-wrap">{{ $det <= 12 ? substr($item->customer->alamat, 0, 96) : substr($items[$urut-$kur]->customer->alamat, 0, 96) }}</span>
           <br>
           {{-- <span class="telepon-cetak-so">{{ $item->customer->telepon }}</span> --}}
         </div>

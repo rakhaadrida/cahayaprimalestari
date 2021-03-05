@@ -293,7 +293,7 @@
         font-size: 16px;
         width: 260px;
         margin-top: -110px;
-        margin-right: 85px;
+        margin-right: 90px;
       }
 
       .kode-cetak-so {
