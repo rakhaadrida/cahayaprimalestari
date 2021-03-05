@@ -205,7 +205,7 @@ class SalesOrderController extends Controller
         }
 
         for($i = 0; $i < $jumlah; $i++) {
-            if($request->kodeBarang[$i] != "") {
+            if(($request->kodeBarang[$i] != "") && ($request->qty[$i] != "")) {
                 $arrGudang = explode(",", $request->kodeGudang[$i]);
                 $arrStok = explode(",", $request->qtyGudang[$i]);
                 $diskonRp = ($request->diskonRp[$i] != '' ? str_replace(".", "", $request->diskonRp[$i]) : 0) / sizeof($arrGudang);
