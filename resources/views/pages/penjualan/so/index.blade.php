@@ -237,8 +237,8 @@
                         <input type="hidden" name="teksSat[]" class="teksSat">
                         <input type="hidden" name="teksSatUk[]" class="teksSatUk">
                         <input type="hidden" name="ukuran[]" class="ukuran">
-                        <input type="text" name="kodeGudang[]" class="kodeGudang">
-                        <input type="text" name="qtyGudang[]" class="qtyGudang">
+                        <input type="hidden" name="kodeGudang[]" class="kodeGudang">
+                        <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
@@ -799,8 +799,8 @@ function displayRow(e) {
         <input type="hidden" name="teksSat[]" class="teksSatRow" id="teksSatRow${newNum}">
         <input type="hidden" name="teksSatUk[]" class="teksSatUkRow" id="teksSatUkRow${newNum}">
         <input type="hidden" name="ukuran[]" class="ukuranRow" id="ukuranRow${newNum}">
-        <input type="text" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
-        <input type="text" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
+        <input type="hidden" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
+        <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
       </td>
       <td>
         <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
