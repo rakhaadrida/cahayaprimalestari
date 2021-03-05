@@ -99,13 +99,19 @@
                       <td align="center" style="background-color: #f0ededda !important">Revenue</td>
                       @php $total = 0; @endphp
                       @foreach($jenis as $j)
+                        @php $cek = 0; @endphp
                         <td align="right" class="align-middle" style="background-color: #f0ededda !important">
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
-                            {{ number_format($i->total, 0, "", ",") }}
-                            @php $total += $i->total @endphp
+                            {{ (Auth::user()->roles != 'OFFICE02' ? number_format($i->total, 0, "", ",") : (((Auth::user()->roles == 'OFFICE02') && (($j->id == 'KAT03') || ($j->id == 'KAT08'))) ? number_format($i->total, 0, "", ",") : 0)) }}
+                            @php 
+                              (Auth::user()->roles != 'OFFICE02' ? $total += $i->total : (((Auth::user()->roles == 'OFFICE02') && (($j->id == 'KAT03') || ($j->id == 'KAT08'))) ? $total += $i->total : $total += 0)); 
+                              $cek = 1;
+                            @endphp
+                            @break
                           @endif
                         @endforeach
+                        @if((Auth::user()->roles == 'OFFICE02') && ($cek == 0)) 0 @endif
                         </td>
                       @endforeach
                       <td align="right" class="align-middle" style="background-color: #f0ededda !important">
@@ -135,16 +141,23 @@
                       <td align="center">Retur</td>
                       @php $ret = 0; $arrRet = []; $k = 0; @endphp
                       @foreach($jenis as $j)
+                        @php $cekRetur = 0; @endphp
                         <td align="right" class="align-middle">
                           @foreach($retur as $r)
                             @if(($r->id_sales == $s->id) && ($r->id_kategori == $j->id))
-                              {{ number_format($r->total, 0, "", ",") }}
-                              @php $ret += $r->total; $arrRet[$k] = $r->total; @endphp
+                              {{ (Auth::user()->roles != 'OFFICE02' ? number_format($r->total, 0, "", ",") : (((Auth::user()->roles == 'OFFICE02') && (($j->id == 'KAT03') || ($j->id == 'KAT08'))) ? number_format($r->total, 0, "", ",") : 0)) }}
+                              @php 
+                                (Auth::user()->roles != 'OFFICE02' ? $ret += $r->total : (((Auth::user()->roles == 'OFFICE02') && (($j->id == 'KAT03') || ($j->id == 'KAT08'))) ? $ret += $r->total : $arrRet[$k] = 0)); 
+
+                                (Auth::user()->roles != 'OFFICE02' ? $arrRet[$k] = $r->total : (((Auth::user()->roles == 'OFFICE02') && (($j->id == 'KAT03') || ($j->id == 'KAT08'))) ? $arrRet[$k] = $r->total : $arrRet[$k] = 0)); 
+                                $cekRetur = 1;
+                              @endphp
                               @break
                             @else
                               @php $arrRet[$k] = 0; @endphp
                             @endif
                           @endforeach
+                          @if((Auth::user()->roles == 'OFFICE02') && ($cekRetur == 0)) 0 @endif
                           @if($retur->count() == 0)
                             @php $arrRet[$k] = 0; @endphp
                           @endif
@@ -163,6 +176,7 @@
                       @endif
                       @php $laba = 0; $k = 0; @endphp
                       @foreach($jenis as $j)
+                        @php $cekLaba = 0; @endphp 
                         <td align="right" class="align-middle">
                         @foreach($items as $i)
                           @if(($i->id_sales == $s->id) && ($i->id_kategori == $j->id))
@@ -170,11 +184,16 @@
                               {{ number_format($i->total - $j->$kode - $arrRet[$k], 0, "", ",") }}
                               @php $laba += ($i->total - $j->$kode - $arrRet[$k]) @endphp
                             @else
-                              {{ number_format($i->total - $arrRet[$k], 0, "", ",") }}
-                              @php $laba += ($i->total - $arrRet[$k]) @endphp
+                              {{ ((Auth::user()->roles != 'OFFICE02') ? number_format($i->total - $arrRet[$k], 0, "", ",") : (($j->id == 'KAT03') || ($j->id == 'KAT08') ? number_format($i->total - $arrRet[$k], 0, "", ",") : 0)) }}
+                              @php 
+                                ((Auth::user()->roles != 'OFFICE02') ? $laba += ($i->total - $arrRet[$k]) : (($j->id == 'KAT03') || ($j->id == 'KAT08') ? $laba += ($i->total - $arrRet[$k]) : $total += 0));
+                                $cekLaba = 1; 
+                              @endphp
+                              @break
                             @endif
                           @endif
                         @endforeach
+                        @if((Auth::user()->roles == 'OFFICE02') && ($cekLaba == 0)) 0 @endif
                         @php $k++ @endphp
                         </td>
                       @endforeach
