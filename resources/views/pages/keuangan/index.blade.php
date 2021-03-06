@@ -3,7 +3,7 @@
 
 @section('content')
 <!-- Begin Page Content -->
-<div class="container-fluid">
+<div class="container-fluid" style="overflow-x:auto;">
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
