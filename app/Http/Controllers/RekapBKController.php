@@ -15,7 +15,8 @@ class RekapBKController extends Controller
         $tanggal = Carbon::now('+07:00')->toDateString();
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
                     ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
-                    ->where('tgl_so', $tanggal)->groupBy('id_barang', 'id_gudang')->get();
+                    ->where('tgl_so', $tanggal)->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->groupBy('id_barang', 'id_gudang')->get();
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         
         $data = [
@@ -46,7 +47,8 @@ class RekapBKController extends Controller
 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
                     ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
-                    ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->groupBy('id_barang', 'id_gudang')->get();
+                    ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->groupBy('id_barang', 'id_gudang')->get();
         
         $awal = $this->formatTanggal($tglAwal, 'd');
         $akhir = $this->formatTanggal($tglAkhir, 'd M y');

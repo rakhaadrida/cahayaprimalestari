@@ -110,7 +110,8 @@ class LapKeuController extends Controller
                         ->where('id_barang', $b->id)->get();
                 $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
                         ->selectRaw('sum(qty) as totQty')
-                        ->where('id_barang', $b->id)->whereMonth('tgl_so', '<', $month)
+                        ->where('id_barang', $b->id)->where('tgl_so', '<', $month)
+                        // ->whereMonth('tgl_so', '<', $month)
                         ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
                 
                 if($totSO[0]->totQty != null) {
@@ -136,8 +137,8 @@ class LapKeuController extends Controller
                 }
 
                 $soPerBrg = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                            ->select('detilso.*')
-                            ->where('id_barang', $b->id)->whereMonth('tgl_so', '=', $month)
+                            ->select('detilso.*')->where('id_barang', $b->id)
+                            ->whereMonth('tgl_so', $month)
                             ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
                            
                 if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {

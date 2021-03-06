@@ -15,7 +15,8 @@ class RekapBMKController extends Controller
         $tanggal = Carbon::now('+07:00')->toDateString();
         $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                     ->select('id_bm', 'id_barang')->selectRaw('sum(qty) as qty')
-                    ->where('tanggal', $tanggal)->groupBy('id_barang')->get();
+                    ->where('tanggal', $tanggal)->where('status', '!=', 'BATAL')
+                    ->groupBy('id_barang')->get();
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         // return response()->json($items);
         
@@ -46,7 +47,7 @@ class RekapBMKController extends Controller
         }
 
         $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                    ->select('id_bm', 'id_barang')->selectRaw('sum(qty) as qty')
+                    ->select('id_bm', 'id_barang')->selectRaw('sum(qty) as qty')->where('status', '!=', 'BATAL')
                     ->whereBetween('tanggal', [$tglAwal, $tglAkhir])->groupBy('id_barang')->get();
         
         $awal = $this->formatTanggal($tglAwal, 'd');
