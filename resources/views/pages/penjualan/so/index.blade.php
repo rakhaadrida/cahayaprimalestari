@@ -1075,14 +1075,31 @@ function displayRow(e) {
     stokJohar = 0;
     stokLain = [];
     totStok = 0;
+    var kgr = [];
+    var urutKGR = 1;
+
+    @foreach($gudang as $g)
+      kgr.push('{{ $g->id }}');
+    @endforeach
+
     @foreach($stok as $s)
       if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
         stokJohar = '{{ $s->stok }}';
         totStok = +totStok + +stokJohar;
       }
       else if('{{ $s->id_barang }}' == kodeRow.value){
-        stokLain.push('{{ $s->stok }}');
-        totStok = +totStok + +'{{ $s->stok }}';
+        for(let kr = urutKGR; kr < kgr.length; kr++) {
+          if('{{ $s->id_gudang }}' == kgr[kr]) {
+            stokLain.push('{{ $s->stok }}');
+            totStok = +totStok + +'{{ $s->stok }}';
+            break;
+          } else {
+            stokLain.push(0);
+          }
+        }
+        urutKGR++;
+        // stokLain.push('{{ $s->stok }}');
+        // totStok = +totStok + +'{{ $s->stok }}';
       }
     @endforeach
 
@@ -1570,7 +1587,12 @@ for(let i = 0; i < qty.length; i++) {
     totStok = 0;
     gdg = [];
     g = 0;
-    
+    var kg = [];
+    var urutKG = 1;
+
+    @foreach($gudang as $g)
+      kg.push('{{ $g->id }}');
+    @endforeach
 
     @foreach($stok as $s)
       if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
@@ -1578,8 +1600,16 @@ for(let i = 0; i < qty.length; i++) {
         totStok = +totStok + +stokJohar;
       }
       else if('{{ $s->id_barang }}' == kodeBarang[i].value) {
-        stokLain.push('{{ $s->stok }}');
-        totStok = +totStok + +'{{ $s->stok }}';
+        for(let k = urutKG; k < kg.length; k++) {
+          if('{{ $s->id_gudang }}' == kg[k]) {
+            stokLain.push('{{ $s->stok }}');
+            totStok = +totStok + +'{{ $s->stok }}';
+            break;
+          } else {
+            stokLain.push(0);
+          }
+        }
+        urutKG++;
       }
     @endforeach
 

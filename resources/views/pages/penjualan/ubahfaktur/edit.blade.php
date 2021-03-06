@@ -446,7 +446,7 @@ var ukuran; var satuanUkuran; var pcs; var qtyJoharAwal;
 var netPast; var cek; var stokTambah; var qtyAwalModal; var tempQty = 0;
 var kodeModal; var arrKodeGud; var arrQtyAwal; var arrQtyGud;
 var totTemp; var qtyJohar; var qtyLebih; var stokAwal; var kodeAwal;
-var sisa; var stokJohar; var stokLain; var kodeLain; var totStok;
+var sisa; var stokJohar; var stokLain; var kodeLain; var totStok; var kg;
 
 editSO.addEventListener("keypress", checkEnter);
 
@@ -521,6 +521,12 @@ for(let i = 0; i < qty.length; i++) {
     totStok = 0;
     arrKodeGud = kodeGudangArr[i].value.split(',');
     arrQtyAwal = qtyAwalArr[i].value.split(',');
+    var kg = [];
+    var urutKG = 1;
+
+    @foreach($gudang as $g)
+      kg.push('{{ $g->id }}');
+    @endforeach
 
     @foreach($stok as $s)
       // if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) 
@@ -533,9 +539,21 @@ for(let i = 0; i < qty.length; i++) {
         }
       }
       else if('{{ $s->id_barang }}' == kodeBarang[i].value) {
-        stokLain.push('{{ $s->stok }}');
-        kodeLain.push('{{ $s->id_gudang }}');
-        totStok += +'{{ $s->stok }}';
+        for(let k = urutKG; k < kg.length; k++) {
+          if('{{ $s->id_gudang }}' == kg[k]) {
+            stokLain.push('{{ $s->stok }}');
+            kodeLain.push('{{ $s->id_gudang }}');
+            totStok = +totStok + +'{{ $s->stok }}';
+            break;
+          } else {
+            stokLain.push(0);
+            kodeLain.push(kg[k]);
+          }
+        }
+        urutKG++;
+        // stokLain.push('{{ $s->stok }}');
+        // kodeLain.push('{{ $s->id_gudang }}');
+        // totStok += +'{{ $s->stok }}';
       }
     @endforeach
 

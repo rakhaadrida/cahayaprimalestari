@@ -297,38 +297,41 @@
                       <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}"
-                        />
+                        {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}"
+                        /> --}}
+                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal, 0, "", ".") }}</span>
                       </div>
                     </div>
                     <div class="form-group row justify-content-end total-so">
                       <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->diskon, 0, "", ".") }}" />
+                        {{-- <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->diskon, 0, "", ".") }}" /> --}}
+                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($item->diskon, 0, "", ".") }}</span>
                       </div>
                     </div>
                     <div class="form-group row justify-content-end total-so">
                       <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->diskon, 0, "", ".") }}" />
+                        {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
+                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
                       </div>
                     </div>
                     <div class="form-group row justify-content-end total-so">
                       <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0"
-                        />
+                        {{-- <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0"/> --}}
+                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">0</span>
                       </div>
                     </div>
                     <div class="form-group row justify-content-end grandtotal-so">
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($subtotal - $item->diskon, 0, "", ".") }}"
-                        />
+                        {{-- <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
+                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-secondary text-lg text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
                       </div>
                     </div>
                     <hr>
