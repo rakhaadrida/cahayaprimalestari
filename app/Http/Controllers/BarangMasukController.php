@@ -11,6 +11,7 @@ use App\Models\DetilBM;
 use App\Models\StokBarang;
 use App\Models\Gudang;
 use App\Models\AccPayable;
+use App\Models\DetilAP;
 use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
 use Illuminate\Support\Facades\URL;
@@ -112,13 +113,29 @@ class BarangMasukController extends Controller
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'AP'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $apKode = $newcode;
 
         $items = AccPayable::where('id_bm', $request->kode)->count();
         if($items != 1) {
             AccPayable::create([
                 'id' => $newcode, 
                 'id_bm' => $request->kode,
-                'keterangan' => 'BELUM LUNAS'
+                'keterangan' => ($request->namaSupplier != 'REVISI' ? 'BELUM LUNAS' : 'LUNAS')
+            ]);
+        }
+
+        $lastcode = DetilAP::selectRaw('max(id_bayar) as id')->whereYear('tgl_bayar', $waktu->year)
+                    ->whereMonth('tgl_bayar', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
+        $lastnumber++;
+        $newcode = 'TRS'.$tahun.$bulan.sprintf("%04s", $lastnumber);
+
+        if($request->namaSupplier == 'REVISI') {
+            DetilAP::create([
+                'id_ap' => $apKode,
+                'id_bayar' => $newcode,
+                'tgl_bayar' => Carbon::now()->toDateString(),
+                'transfer' => str_replace(".", "", $request->subtotal)
             ]);
         }
 
