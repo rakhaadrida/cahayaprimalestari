@@ -372,7 +372,8 @@ class KenariController extends Controller
             'status' => 'PENDING_BATAL',
             'keterangan' => $request->input("ket".$id),
             'id_dokumen' => $id,
-            'tipe' => 'Faktur'
+            'tipe' => 'Faktur',
+            'id_user' => Auth::user()->id
         ]);
 
         if(($items->count() != 0) && ($items->first()->need_appdetil->count() != 0)) {

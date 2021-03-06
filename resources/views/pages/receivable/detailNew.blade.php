@@ -55,7 +55,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <span class="col-form-label text-bold ml-2">Rp</span>
                       <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="subtotal" id="subtotal" value={{ number_format($item->first()->so->total, 0, "", ".") }}>
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="subtotal" id="subtotal" value={{ number_format($item->first()->so->total - $item->first()->so->diskon, 0, "", ".") }}>
                       </div>
                     </div>
                   </div>
