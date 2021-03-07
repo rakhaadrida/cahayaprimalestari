@@ -12,7 +12,10 @@ use App\Models\Barang;
 use App\Models\DetilBM;
 use App\Models\AccReceivable;
 use App\Models\DetilRAR;
+use App\Models\Keuangan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
 
 class LapKeuController extends Controller
@@ -36,6 +39,8 @@ class LapKeuController extends Controller
         $jenis = $this->getJenis($jenis, $sales);
         $hppPerKat = $this->getHpp($jenis, $month);
 
+        $keu = Keuangan::where('tahun', $tahun)->where('bulan', $month)->get();
+
         $data = [
             'tahun' => $tahun,
             'bulan' => $bulan,
@@ -45,23 +50,29 @@ class LapKeuController extends Controller
             'salesOff' => $salesOff,
             'items' => $items,
             'retur' => $retur,
-            'hppPerKat' => $hppPerKat
+            'hppPerKat' => $hppPerKat,
+            'keu' => $keu
         ];
 
         return view('pages.keuangan.index', $data);
     }
 
-    public function show(Request $request) {
-        $tahun = $request->tahun;
+    public function show(Request $request, $tah, $mo) {
+        $tahun = ($tah == 'now' ? $request->tahun : $tah);
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
-        for($i = 0; $i < sizeof($bulan); $i++) {
-            if($request->bulan == $bulan[$i]) {
-                $month = $i+1;
-                break;
+        if($mo == 'now') {
+            for($i = 0; $i < sizeof($bulan); $i++) {
+                if($request->bulan == $bulan[$i]) {
+                    $month = $i+1;
+                    break;
+                }
+                else
+                    $month = '';
             }
-            else
-                $month = '';
+        }
+        else {
+            $month = $mo;
         }
 
         $jenis = JenisBarang::All();
@@ -74,6 +85,8 @@ class LapKeuController extends Controller
         $jenis = $this->getJenis($jenis, $sales);
         $hppPerKat = $this->getHpp($jenis, $month);
 
+        $keu = Keuangan::where('tahun', $tahun)->where('bulan', $month)->get();
+
         $data = [
             'tahun' => $tahun,
             'bulan' => $request->bulan,
@@ -83,7 +96,8 @@ class LapKeuController extends Controller
             'salesOff' => $salesOff,
             'items' => $items,
             'retur' => $retur,
-            'hppPerKat' => $hppPerKat
+            'hppPerKat' => $hppPerKat,
+            'keu' => $keu
         ];
 
         return view('pages.keuangan.show', $data);
@@ -235,6 +249,61 @@ class LapKeuController extends Controller
         
         return $retur;
     } 
+
+    public function storeIndex(Request $request) {
+        $date = Carbon::now('+07:00');
+        $tahun = $date->year;
+        $bulan = $date->month;
+
+        $item = Keuangan::where('tahun', $tahun)->where('bulan', $bulan)->first();
+
+        if($item == NULL) {
+            Keuangan::create([
+                'tahun' => $tahun,
+                'bulan' => $bulan,
+                'pendapatan' => ($request->pendapatan != '' ? str_replace(".", "", $request->pendapatan) : 0),
+                'beban_gaji' => ($request->bebanGaji != '' ? str_replace(".", "", $request->bebanGaji) : 0),
+                'beban_jual' => ($request->bebanJual != '' ? str_replace(".", "", $request->bebanJual) : 0),
+                'beban_lain' => ($request->bebanLain != '' ? str_replace(".", "", $request->bebanLain) : 0),
+                'petty_cash' => ($request->pettyCash != '' ? str_replace(".", "", $request->pettyCash) : 0),
+            ]);
+        } else {
+            $item->{'pendapatan'} = ($request->pendapatan != '' ? str_replace(".", "", $request->pendapatan) : 0);
+            $item->{'beban_gaji'} = ($request->bebanGaji != '' ? str_replace(".", "", $request->bebanGaji) : 0);
+            $item->{'beban_jual'} = ($request->bebanJual != '' ? str_replace(".", "", $request->bebanJual) : 0);
+            $item->{'beban_lain'} = ($request->bebanLain != '' ? str_replace(".", "", $request->bebanLain) : 0);
+            $item->{'petty_cash'} = ($request->pettyCash != '' ? str_replace(".", "", $request->pettyCash) : 0);
+            $item->save();
+        }
+
+        return redirect()->route('lap-keu');
+    }
+
+    public function storeShow(Request $request, $tahun, $bulan) {
+        $item = Keuangan::where('tahun', $tahun)->where('bulan', $bulan)->first();
+
+        if($item == NULL) {
+            Keuangan::create([
+                'tahun' => $tahun,
+                'bulan' => $bulan,
+                'pendapatan' => ($request->pendapatan != '' ? str_replace(".", "", $request->pendapatan) : 0),
+                'beban_gaji' => ($request->bebanGaji != '' ? str_replace(".", "", $request->bebanGaji) : 0),
+                'beban_jual' => ($request->bebanJual != '' ? str_replace(".", "", $request->bebanJual) : 0),
+                'beban_lain' => ($request->bebanLain != '' ? str_replace(".", "", $request->bebanLain) : 0),
+                'petty_cash' => ($request->pettyCash != '' ? str_replace(".", "", $request->pettyCash) : 0),
+            ]);
+        } else {
+            $item->{'pendapatan'} = ($request->pendapatan != '' ? str_replace(".", "", $request->pendapatan) : 0);
+            $item->{'beban_gaji'} = ($request->bebanGaji != '' ? str_replace(".", "", $request->bebanGaji) : 0);
+            $item->{'beban_jual'} = ($request->bebanJual != '' ? str_replace(".", "", $request->bebanJual) : 0);
+            $item->{'beban_lain'} = ($request->bebanLain != '' ? str_replace(".", "", $request->bebanLain) : 0);
+            $item->{'petty_cash'} = ($request->pettyCash != '' ? str_replace(".", "", $request->pettyCash) : 0);
+            $item->save();
+        }
+
+        // return redirect()->route('lap-keu'); POST
+        return redirect()->route('lap-keu-show', ['tah' => $tahun, 'mo' => $bulan]);
+    }
 
     /* public function getQty($bulan, $tahun) {
         $qtySalesPerItems = DetilSO::join('barang', 'barang.id', '=', 'detilso.id_barang')

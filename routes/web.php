@@ -278,6 +278,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Laporan Keuangan
         // Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
         // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
+        Route::post('keuangan/store-index', 'LapKeuController@storeIndex')->name('lap-keu-store-index');
+        Route::post('keuangan/store-show/{tahun}/{bulan}', 'LapKeuController@storeShow')->name('lap-keu-store-show');
 
         // Rekap Qty Penjualan
         Route::get('qty-sales', 'RekapSalesPrimeController@index')->name('qty-sales');
@@ -450,7 +452,9 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::group(['roles'=>['ADMIN', 'SUPER', 'OFFICE02']], function() {
         // Laporan Keuangan
         Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
-        Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
+        // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
+        Route::get('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show');
+        // Route::post('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show');
     });
 
     Route::group(['roles'=>'KENARI'], function() {

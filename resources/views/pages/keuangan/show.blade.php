@@ -23,7 +23,7 @@
     </div>
   @endif
 
-  <div class="row">
+  <div class="row" style="overflow-x:auto;">
     <div class="card-body">
       <div class="table-responsive">
         <div class="card show">
@@ -44,7 +44,7 @@
                     <input type="text" class="form-control form-control-sm text-bold mt-1" id="bulan" name="bulan" value="{{$bulan}}" autofocus required>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('lap-keu-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('lap-keu-show', ['tah' => $tahun, 'mo' => $month]) }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('lap-keu') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
@@ -83,7 +83,7 @@
                 </thead>
                 <tbody class="table-ar">
                   @php 
-                    $no = 1; 
+                    $no = 1; $subRevenue = 0; $subHPP = 0; $subRetur = 0; $subLaba = 0;
                     if(Auth::user()->roles == 'OFFICE02')
                       $sales = $salesOff;
                   @endphp
@@ -118,6 +118,7 @@
                       <td align="right" class="align-middle" style="background-color: #f0ededda !important">
                         {{ number_format($total, 0, "", ",") }}
                       </td>
+                      @php $subRevenue += $total @endphp
                     </tr>
                     @if(Auth::user()->roles == 'SUPER')
                     <tr class="text-dark" style="background-color: white">
@@ -140,6 +141,7 @@
                       <td align="right" class="align-middle">
                         {{ number_format($hpp, 0, "", ",") }}
                       </td>
+                      @php $subHPP += $hpp; @endphp
                     </tr>
                     @endif
                     <tr class="text-dark">
@@ -165,6 +167,7 @@
                       <td align="right" class="align-middle">
                         {{ number_format($ret, 0, "", ",") }}
                       </td>
+                      @php $subRetur += $ret; @endphp
                     </tr>
                     <tr class="text-dark text-bold" style="background-color: yellow">
                       @if(Auth::user()->roles == 'SUPER')
@@ -192,6 +195,7 @@
                       <td align="right" class="align-middle">
                         {{ number_format($laba, 0, "", ",") }}
                       </td>
+                      @php $subLaba += $laba; @endphp
                     </tr>
                     @php $no++ @endphp
                   @empty
@@ -199,9 +203,76 @@
                       <td colspan=12 class="text-center text-bold h4 p-2"><i>Belum Ada Laporan Keuangan</i></td>
                     </tr>
                   @endforelse
+                  @if(Auth::user()->roles == 'SUPER')
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark" style="letter-spacing: 0.8px">Total Revenue</td>
+                      <td align="right" class="text-bold">{{ number_format($subRevenue, 0, "", ".") }}</td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark" style="letter-spacing: 0.8px">Total HPP</td>
+                      <td align="right" class="text-bold">{{ number_format($subHPP, 0, "", ".") }}</td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark" style="letter-spacing: 0.8px">Total Retur</td>
+                      <td align="right" class="text-bold">{{ number_format($subRetur, 0, "", ".") }}</td>
+                    </tr>
+                    <tr class="text-bold" style="font-size: 15px; color: black">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold bg-warning" style="letter-spacing: 0.8px">Total Laba</td>
+                      <td align="right" class="text-bold bg-warning" id="laba">{{ number_format($subLaba, 0, "", ".") }}</td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Pendapatan Lain-Lain</td>
+                      <td>
+                        <input type="text" name="pendapatan" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'pendapatan')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="pendapatan" value="{{ $keu->count() != 0 ? number_format($keu->first()->pendapatan, 0, "", ".") : '' }}">
+                      </td>
+                    </tr>
+                    <tr class="text-bold" style="font-size: 15px; color: black">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold bg-success" style="letter-spacing: 0.8px">Total Laba & Pendapatan</td>
+                      <td align="right" class="text-bold bg-success" id="totLaba">{{ number_format($keu->count() != 0 ? $subLaba + $keu->first()->pendapatan : $subLaba, 0, "", ".") }}</td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Beban Gaji</td>
+                      <td align="right" class="text-bold">
+                        <input type="text" name="bebanGaji" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'gaji')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="gaji" value="{{ $keu->count() != 0 ? number_format($keu->first()->beban_gaji, 0, "", ".") : '' }}">
+                      </td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Beban Penjualan</td>
+                      <td align="right" class="text-bold">
+                        <input type="text" name="bebanJual" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'jual')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="jual" value="{{ $keu->count() != 0 ? number_format($keu->first()->beban_jual, 0, "", ".") : '' }}">
+                      </td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Beban Lain-Lain</td>
+                      <td align="right" class="text-bold">
+                        <input type="text" name="bebanLain" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'lain')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="lain" value="{{ $keu->count() != 0 ? number_format($keu->first()->beban_lain, 0, "", ".") : '' }}">
+                      </td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Petty Cash</td>
+                      <td align="right" class="text-bold">
+                        <input type="text" name="pettyCash" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'petty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="petty" value="{{ $keu->count() != 0 ? number_format($keu->first()->petty_cash, 0, "", ".") : '' }}">
+                      </td>
+                    </tr>
+                    <tr class="text-dark text-bold" style="font-size: 15px">
+                      <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-white bg-primary" style="letter-spacing: 0.8px">Grand Total</td>
+                      <td align="right" class="text-bold text-white bg-primary" id="subLaba">{{ number_format($keu->count() != 0 ? $subLaba + $keu->first()->pendapatan - $keu->first()->beban_gaji - $keu->first()->beban_jual - $keu->first()->beban_lain - $keu->first()->petty_cash : $subLaba, 0, "", ".") }}</td>
+                    </tr>
+                  @endif
                 </tbody>
               </table>
               <!-- End Tabel Data Detil PO -->
+
+              <!-- Button Submit dan Reset -->
+              {{-- <div class="form-row justify-content-center" style="margin-top: 30px">
+                <div class="col-2">
+                  <button type="submit" class="btn btn-success btn-block text-bold" onclick="return checkRequired(event)" id="submitKeu" >Submit</button>
+                </div>
+                <div class="col-2">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold" >Reset</button>
+                </div>
+              </div> --}}
+              <!-- End Button Submit dan Reset -->
 
             </form>
           </div>
@@ -214,20 +285,78 @@
 @endsection
 
 @push('addon-script')
-{{-- <script src="{{ url('backend/vendor/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script> --}}
 <script type="text/javascript">
 const tahun = document.getElementById('tahun');
 const bulan = document.getElementById('bulan');
+const laba = document.getElementById('laba');
+const pendapatan = document.getElementById('pendapatan');
+const totLaba = document.getElementById('totLaba');
+const gaji = document.getElementById('gaji');
+const jual = document.getElementById('jual');
+const lain = document.getElementById('lain');
+const petty = document.getElementById('petty');
+const subLaba = document.getElementById('subLaba');
 
-/** Sort Datatable **/
-/* $('#dataTable').dataTable( {
-  "columnDefs": [
-    { "orderable": false, "targets": [0, 1, 2] }
-  ],
-  "aaSorting" : []
-}); */
+pendapatan.addEventListener("keyup", getTotal);
+gaji.addEventListener("keyup", getTotal);
+jual.addEventListener("keyup", getTotal);
+lain.addEventListener("keyup", getTotal);
+petty.addEventListener("keyup", getTotal);
+
+function getTotal(e) {
+  $(this).val(function(index, value) {
+    return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  });
+
+  totLaba.textContent = addCommas(+laba.textContent.replace(/\./g, "") + +pendapatan.value.replace(/\./g, ""));
+  subLaba.textContent = displayTotal(laba.textContent, pendapatan.value, gaji.value, jual.value, lain.value, petty.value);
+}
+
+function displayTotal(awal, dapat, bg, bj, bl, pc) {
+  total = addCommas(+awal.replace(/\./g, "") + +dapat.replace(/\./g, "") - +bg.replace(/\./g, "") - +bj.replace(/\./g, "") - +bl.replace(/\./g, "") - +pc.replace(/\./g, ""));
+  return total;
+}
+
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    if(inputan == 'pendapatan')
+      $(pendapatan).tooltip('show');
+    if(inputan == 'gaji')
+      $(gaji).tooltip('show');
+    if(inputan == 'lain')
+      $(lain).tooltip('show');
+    if(inputan == 'jual')
+      $(jual).tooltip('show');
+    if(inputan == 'petty')
+      $(petty).tooltip('show');
+    return false;
+  }
+  return true;
+}
+
+/** Add Thousand Separators **/
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + '.' + '$2');
+	}
+	return x1 + x2;
+}
+
+function checkRequired(e) {
+  tahun.removeAttribute('required');
+  bulan.removeAttribute('required');
+
+  document.getElementById("submitKeu").formMethod = "POST";
+  document.getElementById("submitKeu").formAction = "{{ route('lap-keu-store-show', ['tahun' => $tahun, 'bulan' => $month]) }}";
+}
 
 $(function() {
   $("[autofocus]").on("focus", function() {

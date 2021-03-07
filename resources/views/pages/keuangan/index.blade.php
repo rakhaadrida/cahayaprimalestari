@@ -3,7 +3,7 @@
 
 @section('content')
 <!-- Begin Page Content -->
-<div class="container-fluid" style="overflow-x:auto;">
+<div class="container-fluid">
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
@@ -19,7 +19,7 @@
     </div>
   @endif
 
-  <div class="row">
+  <div class="row" style="overflow-x:auto;">
     <div class="card-body">
       <div class="table-responsive">
         <div class="card show">
@@ -40,7 +40,7 @@
                     <input type="text" class="form-control form-control-sm text-bold mt-1" id="bulan" name="bulan" required>
                   </div>
                   <div class="col-2 col-xl-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('lap-keu-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" formaction="{{ route('lap-keu-show', ['tah' => 'now', 'mo' => 'now']) }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                 </div>   
               </div>
@@ -62,7 +62,7 @@
               </div>
 
               <!-- Tabel Data Detil PO -->
-              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($items->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
+              <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($items->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif> 
                 <thead class="text-center text-bold text-dark">
                   <tr style="font-size: 14px">
                     <th style="width: 10px" class="align-middle">NO</th>
@@ -231,45 +231,56 @@
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Pendapatan Lain-Lain</td>
                       <td>
-                        <input type="text" name="pendapatan" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'pendapatan')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="pendapatan">
+                        <input type="text" name="pendapatan" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'pendapatan')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="pendapatan" value="{{ $keu->count() != 0 ? number_format($keu->first()->pendapatan, 0, "", ".") : '' }}">
                       </td>
                     </tr>
                     <tr class="text-bold" style="font-size: 15px; color: black">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold bg-success" style="letter-spacing: 0.8px">Total Laba & Pendapatan</td>
-                      <td align="right" class="text-bold bg-success" id="totLaba">{{ number_format($subLaba, 0, "", ".") }}</td>
+                      <td align="right" class="text-bold bg-success" id="totLaba">{{ number_format($keu->count() != 0 ? $subLaba + $keu->first()->pendapatan : $subLaba, 0, "", ".") }}</td>
                     </tr>
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Beban Gaji</td>
                       <td align="right" class="text-bold">
-                        <input type="text" name="bebanGaji" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'gaji')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="gaji">
+                        <input type="text" name="bebanGaji" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'gaji')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="gaji" value="{{ $keu->count() != 0 ? number_format($keu->first()->beban_gaji, 0, "", ".") : '' }}">
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Beban Penjualan</td>
                       <td align="right" class="text-bold">
-                        <input type="text" name="bebanJual" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'jual')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="jual">
+                        <input type="text" name="bebanJual" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'jual')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="jual" value="{{ $keu->count() != 0 ? number_format($keu->first()->beban_jual, 0, "", ".") : '' }}">
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Beban Lain-Lain</td>
                       <td align="right" class="text-bold">
-                        <input type="text" name="bebanLain" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'lain')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="lain">
+                        <input type="text" name="bebanLain" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'lain')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="lain" value="{{ $keu->count() != 0 ? number_format($keu->first()->beban_lain, 0, "", ".") : '' }}">
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark align-middle" style="letter-spacing: 0.8px">Petty Cash</td>
                       <td align="right" class="text-bold">
-                        <input type="text" name="pettyCash" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'petty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="petty">
+                        <input type="text" name="pettyCash" class="form-control form-control-sm text-bold text-dark text-right" onkeypress="return angkaSaja(event, 'petty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 15px" id="petty" value="{{ $keu->count() != 0 ? number_format($keu->first()->petty_cash, 0, "", ".") : '' }}">
                       </td>
                     </tr>
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-white bg-primary" style="letter-spacing: 0.8px">Grand Total</td>
-                      <td align="right" class="text-bold text-white bg-primary" id="subLaba">{{ number_format($subLaba, 0, "", ".") }}</td>
+                      <td align="right" class="text-bold text-white bg-primary" id="subLaba">{{ number_format($keu->count() != 0 ? $subLaba + $keu->first()->pendapatan - $keu->first()->beban_gaji - $keu->first()->beban_jual - $keu->first()->beban_lain - $keu->first()->petty_cash : $subLaba, 0, "", ".") }}</td>
                     </tr>
                   @endif
                 </tbody>
               </table>
               <!-- End Tabel Data Detil PO -->
+
+              <!-- Button Submit dan Reset -->
+              {{-- <div class="form-row justify-content-center" style="margin-top: 30px">
+                <div class="col-2">
+                  <button type="submit" class="btn btn-success btn-block text-bold" onclick="return checkRequired(event)" id="submitKeu" >Submit</button>
+                </div>
+                <div class="col-2">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold" >Reset</button>
+                </div>
+              </div> --}}
+              <!-- End Button Submit dan Reset -->
 
             </form>
           </div>
@@ -345,6 +356,14 @@ function addCommas(nStr) {
 		x1 = x1.replace(rgx, '$1' + '.' + '$2');
 	}
 	return x1 + x2;
+}
+
+function checkRequired(e) {
+  tahun.removeAttribute('required');
+  bulan.removeAttribute('required');
+
+  document.getElementById("submitKeu").formMethod = "POST";
+  document.getElementById("submitKeu").formAction = "{{ route('lap-keu-store-index') }}";
 }
 
 /** Autocomplete Input Text **/
