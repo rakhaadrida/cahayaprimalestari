@@ -30,36 +30,15 @@ class AccReceivableController extends Controller
 
         $ar = AccReceivable::where('id', '!=', $arLast->first()->id)->where('keterangan', 'BELUM LUNAS')
                 ->orderBy('created_at', 'desc')->get();
-        $arOffice = AccReceivable::with(['so'])
-                ->select('ar.id', 'ar.id_so', 'ar.keterangan')
-                ->join('so', 'so.id', 'ar.id_so')
+        $arOffice = AccReceivable::with(['so'])->join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
+                ->select('ar.id', 'ar.id_so', 'ar.keterangan')
                 ->where('id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
-
-        // $arLunas = AccReceivable::join('so', 'so.id', 'ar.id_so')
-        //         ->select('ar.id as id', 'ar.*', 'so.tgl_so', 'so.total', 'so.diskon')
-        //         ->whereYear('tgl_so', '2021')->whereMonth('tgl_so', '1')
-        //         ->where('keterangan', 'BELUM LUNAS')->get();
-        // foreach($arLunas as $a) {
-        //     $item = DetilAR::selectRaw('sum(cicil) as cicil')->where('id_ar', $a->id)->first();
-        //     $retur = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $a->id)->get();
-        //     if(($item->{'cicil'} + $retur->first()->total) == ($a->total - $a->diskon)) {
-        //         $a->keterangan = 'LUNAS';
-        //         $a->save();
-        //     }
-        // }
-
-        // return response()->json($arLunas);
-        
-        // $barang = Barang::All();
-        // $harga = HargaBarang::All();
 
         $data = [
             'ar' => $ar,
             'arOffice' => $arOffice,
-            'arLast' => $arLast,
-            // 'barang' => $barang,
-            // 'harga' => $harga,
+            'arLast' => $arLast
         ];
 
         return view('pages.receivable.index', $data);
@@ -209,6 +188,7 @@ class AccReceivableController extends Controller
 
         // $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
         $ar->{'keterangan'} = $status;
+        // $ar->{'updated_at'} = Carbon::now('+07:00');
         $ar->save();
 
         $items = DetilAR::where('id_ar', $request->kodeAR)->get();

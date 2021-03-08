@@ -36,63 +36,61 @@
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autocomplete="off" autofocus>
+                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autocomplete="off" autofocus>
                   </div>
                   <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <select class="form-control form-control-sm mt-1" tabindex="2" name="status">
-                      <option value="ALL" selected>ALL</option>
-                      <option value="LUNAS">LUNAS</option>
-                      <option value="BELUM LUNAS">BELUM LUNAS</option>
+                      <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
+                      <option value="LUNAS" @if($status == 'LUNAS') selected @endif>LUNAS</option>
+                      <option value="BELUM LUNAS" @if($status == 'BELUM LUNAS') selected @endif>BELUM LUNAS</option>
                     </select>
                   </div>
-                  {{-- <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
-                  </div> --}}
                   <div class="col-auto mt-1" style="margin-left: 215px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
                   </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" autocomplete="off">
+                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}" autocomplete="off">
                   </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
+                  <label for="tanggal" class="col-auto col-form-label text-bold ml-3">s / d</label>
                   <div class="col-2">
-                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY" autocomplete="off">
+                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" autocomplete="off">
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                  <div class="col-auto mt-1" style="margin-left: 155px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print All</button>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="6" formaction="{{ route('ar-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: 50px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print All</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
                   </div>
                 </div>  
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
-              {{-- @if(Auth::user()->roles != 'OFFICE02') --}}
-                <!-- Button Submit dan Reset -->
-                {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
-                  <div class="col-1">
-                    <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
-                  </div>
-                  <div class="col-1">
-                    <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
-                  </div>
-                </div> --}}
-                <!-- End Button Submit dan Reset -->
-              {{-- @endif --}}
+              <!-- Button Submit dan Reset -->
+              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
+                <div class="col-1">
+                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
+                </div>
+                <div class="col-1">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                </div>
+              </div> --}}
+              <!-- End Button Submit dan Reset -->
 
               <!-- Tabel Data Detil AR -->
               {{-- <input type="hidden" id="kodeSO" name="kodeSO"> --}}
@@ -114,63 +112,27 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php $i = 1; $tab = 5;
+                  @php 
+                    $i = 1; $tab = 6; 
                     if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
                       $items = $ar;
                     elseif(Auth::user()->roles == 'OFFICE02')
                       $items = $arOffice
                   @endphp
-                  @php 
-                    $total = App\Models\DetilAR::selectRaw('sum(cicil) as totCicil')
-                              ->where('id_ar', $arLast->first()->id)->get();
-                    $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                            ->where('id_ar', $arLast->first()->id)->get();
-                  @endphp
-                  @if(Auth::user()->roles != 'OFFICE02')
-                    <tr class="text-dark">
-                      <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="align-middle">{{ $arLast->first()->so->customer->nama }}</td>
-                      <td class="align-middle">{{ $arLast->first()->so->customer->sales->nama }}</td>
-                      <td align="center" class="align-middle">{{ $arLast->first()->so->kategori }}</td>
-                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $arLast->first()->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $arLast->first()->id_so }}</button></td>
-                      <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($arLast->first()->so->tgl_so)->format('d-M-y') }}
-                      </td>
-                      <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($arLast->first()->so->tgl_so)->add($arLast->first()->so->tempo, 'days')
-                          ->format('d-M-y') }}
-                      </td>
-                      <td align="right" class="align-middle">
-                        {{ number_format($arLast->first()->so->total, 0, "", ",") }}
-                      </td>
-                      <td class="text-right align-middle">
-                        {{ $total[0]->totCicil != null ? number_format($total[0]->totCicil, 0, "", ",") : 0}}
-                        {{-- <input type="text" name="cic{{$arLast->first()->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif > --}}
-                      </td>
-                      <td class="text-right align-middle">
-                        <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
-                        <a href="{{ route('ar-retur-create', $arLast->first()->id_so) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
-                      </td>
-                      <td align="right" class="align-middle">{{ number_format($arLast->first()->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
-                      <td align="center" class="align-middle text-bold" @if(($arLast->first()->keterangan != null) && ($arLast->first()->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="{{ route('ar-cicil-create', $arLast->first()->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$arLast->first()->keterangan}}</a>
-                      </td>
-                    </tr>  
-                  @endif
-                  @php $i++; @endphp
                   @forelse($items as $a)
                     @php 
-                      $total = App\Models\DetilAR::selectRaw('sum(cicil) as totCicil')
+                      $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
                                 ->where('id_ar', $a->id)->get();
                       $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
                               ->where('id_ar', $a->id)->get();
+                      
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="align-middle">{{ $a->so->customer != NULL ? $a->so->customer->nama : $a->so->id_customer }}</td>
-                      <td class="align-middle">{{ $a->so->customer != NULL ? $a->so->customer->sales->nama : $a->so->id_customer }}</td>
+                      <td class="align-middle">{{ $a->so->customer->nama }}</td>
+                      <td class="align-middle">{{ $a->so->customer->sales->nama }}</td>
                       <td align="center" class="align-middle">{{ $a->so->kategori }}</td>
-                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->so->tgl_so)->format('d-M-y') }}
                       </td>
@@ -181,21 +143,21 @@
                       <td align="right" class="align-middle">
                         {{ number_format($a->so->total, 0, "", ",") }}
                       </td>
-                      <td class="align-middle text-right">
+                      <td class="text-right align-middle">
                         {{ $total[0]->totCicil != null ? number_format($total[0]->totCicil, 0, "", ",") : 0 }}
-                        {{-- <input type="text" name="cic{{$a->id_so}}" id="cicil" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif > --}}
+                        {{-- <input type="text" name="cic{{$a->id_so}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif> --}}
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
-                        {{-- <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a> --}}
+                        {{-- <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a> --}}
                         <a href="{{ route('ar-retur-create', $a->id_so) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        {{-- <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a> --}}
+                        {{-- <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a> --}}
                         <a href="{{ route('ar-cicil-create', $a->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
-                    </tr>     
+                    </tr>
                     @php $i++; @endphp
                   @empty
                     <tr>
@@ -213,7 +175,19 @@
                     <td></td>
                   </tr>
                 </tfoot>
-              </table>              
+              </table>
+
+              <!-- Button Submit dan Reset -->
+              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
+                <div class="col-1">
+                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
+                </div>
+                <div class="col-1">
+                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
+                </div>
+              </div> --}}
+              <!-- End Button Submit dan Reset -->
+              
             </form>
           </div>
         </div>
@@ -338,22 +312,18 @@ $('#dataTable').dataTable( {
 });
 
 /** Input nominal comma separator **/
-/* for(let i = 0; i < cicil.length; i++) {
-  // cicil[i].addEventListener("keyup", function(e) {
-  //   $(this).val(function(index, value) {
-  //     return value
-  //     .replace(/\D/g, "")
-  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  //     ;
-  //   });
-  // })
+// for(let i = 0; i < cicil.length; i++) {
+  /* cicil[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value
+      .replace(/\D/g, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      ;
+    });
+  })
 
   cicil[i].addEventListener("focus", function(e) {
     cicil[i].value = cicil[i].value.replace(/\,/g, "");
-  })
-
-  cicil[i].addEventListener("focusout", function(e) {
-    cicil[i].value = addCommas(cicil[i].value);
   })
 
   cicil[i].addEventListener("change", function(e) {
@@ -366,18 +336,18 @@ $('#dataTable').dataTable( {
     else {
       kodeSO.value = kode;
     }
-  })
+  }) */
 
-  // retur[i].addEventListener("keyup", function(e) {
-  //   $(this).val(function(index, value) {
-  //     return value
-  //     .replace(/\D/g, "")
-  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  //     ;
-  //   });
-  // })
+  /* retur[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value
+      .replace(/\D/g, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      ;
+    });
+  }) */
 
-  retur[i].addEventListener("focus", function(e) {
+  /* retur[i].addEventListener("focus", function(e) {
     retur[i].value = retur[i].value.replace(/\,/g, "");
   })
 
@@ -395,8 +365,8 @@ $('#dataTable').dataTable( {
     else {
       kodeSO.value = kode;
     }
-  })
-} */
+  }) */
+// }
 
 /** Add Thousand Separators **/
 function addCommas(nStr) {
@@ -410,6 +380,18 @@ function addCommas(nStr) {
 	}
 	return x1 + x2;
 }
+
+$(function() {
+  $("[autofocus]").on("focus", function() {
+    if (this.setSelectionRange) {
+      var len = this.value.length * 2;
+      this.setSelectionRange(len, len);
+    } else {
+      this.value = this.value;
+    }
+    this.scrollTop = 999999;
+  }).focus();
+});
 
 /** Autocomplete Input Text **/
 $(function() {
@@ -425,7 +407,7 @@ $(function() {
     return split(term).pop();
   }
 
-  /*-- Autocomplete Input Bulan --*/
+  /*-- Autocomplete Input Barang --*/
   $("#bulan").on("keydown", function(event) {
     if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
       event.preventDefault();

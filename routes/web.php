@@ -332,6 +332,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
         // Sales Prime
         Route::get('sales-prime', 'RekapSalesPrimeController@index')->name('prime');
+
+        // Komisi Sales
+        Route::get('komisi', 'KomisiSalesController@index')->name('komisi');
+        Route::get('komisi/show', 'KomisiSalesController@show')->name('komisi-show');
     });
 
     Route::group(['roles'=>['ADMIN', 'AR']], function() {

@@ -275,9 +275,20 @@
   @if(Auth::user()->roles == 'SUPER')
     <!-- Nav Item - Laporan Keuangan -->
     <li class="nav-item sidebar-menu-icon">
-      <a class="nav-link" href="{{ route('lap-keu') }}">
+      {{-- <a class="nav-link" href="{{ route('lap-keu') }}">
         <i class="fas fa-fw fa-table"></i>
-        <span>Laporan</span></a>
+        <span>Laporan</span>
+      </a> --}}
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporanFinance" aria-expanded="true" aria-controls="collapseLaporanFinance">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Laporan</span>
+      </a>
+      <div id="collapseLaporanFinance" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div class="py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('lap-keu') }}">Laporan Keuangan</a>
+          <a class="collapse-item" href="{{ route('komisi') }}">Komisi Sales</a>
+        </div>
+      </div>
     </li>
   @endif
 
