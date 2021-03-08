@@ -67,8 +67,6 @@ class KomisiSalesController extends Controller
         $monthNow = Carbon::parse($tanggal)->format('Y-m-20');
         $lastMonth = Carbon::parse($lastTanggal)->format('Y-m-21');
 
-        // return response()->json($monthNow);
-
         $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'customer.id_sales')
@@ -78,12 +76,16 @@ class KomisiSalesController extends Controller
                 ->where('id_sales', 'SLS12')
                 ->orderBy('ar.created_at', 'desc')->get();
 
-        return response()->json($ar);
+        // return response()->json($ar);
 
         $data = [
             'ar' => $ar,
+            'bulan' => $request->bulan,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir,
+            'status' => $request->status,
         ];
 
-        // return view('pages.komisi.index', $data);
+        return view('pages.komisi.show', $data);
     }
 }

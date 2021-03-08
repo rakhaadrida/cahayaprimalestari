@@ -252,7 +252,7 @@ $('#dataTable').dataTable( {
 
     $.each([6, 7, 8, 9], function(index, value) {
 
-      if((value == 6) || (value == 9)) {
+      if((value == 6) || (value == 7) || (value == 9)) {
         var column = api
           .column(value, {
               page: 'current'
@@ -273,7 +273,7 @@ $('#dataTable').dataTable( {
           }, 0 );
       }
 
-      if((value == 6) || (value == 9)) {
+      if((value == 6) || (value == 7) || (value == 9)) {
         var column_total = api
           .column(value)
           .data()

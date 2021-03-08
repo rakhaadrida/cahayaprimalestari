@@ -335,6 +335,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
         // Komisi Sales
         Route::get('komisi', 'KomisiSalesController@index')->name('komisi');
+        Route::post('komisi', 'KomisiSalesController@index')->name('komisi-home');
         Route::get('komisi/show', 'KomisiSalesController@show')->name('komisi-show');
     });
 

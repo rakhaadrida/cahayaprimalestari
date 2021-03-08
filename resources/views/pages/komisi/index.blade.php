@@ -11,7 +11,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Komisi Sales Fadil</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Komisi Sales Fadil</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -47,9 +47,6 @@
                       <option value="BELUM LUNAS">BELUM LUNAS</option>
                     </select>
                   </div>
-                  {{-- <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
-                  </div> --}}
                   <div class="col-auto mt-1" style="margin-left: 215px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
                   </div>
@@ -129,6 +126,7 @@
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
+                        <a href="{{ route('ar-retur-create', $a->id_so) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
@@ -232,7 +230,7 @@ $('#dataTable').dataTable( {
 
     $.each([7, 8, 9, 10], function(index, value) {
 
-      if((value == 7) || (value == 10)) {
+      if((value == 7) || (value == 8) || (value == 10)) {
         var column = api
           .column(value, {
               page: 'current'
@@ -253,7 +251,7 @@ $('#dataTable').dataTable( {
           }, 0 );
       }
 
-      if((value == 7) || (value == 10)) {
+      if((value == 7) || (value == 8) || (value == 10)) {
         var column_total = api
           .column(value)
           .data()

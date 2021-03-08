@@ -11,7 +11,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Account Receivable</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Komisi Sales Fadil</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -68,7 +68,7 @@
                     <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="6" formaction="{{ route('ar-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
+                    <button type="submit" tabindex="6" formaction="{{ route('komisi-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: 50px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print All</button>
@@ -81,19 +81,7 @@
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
-              <!-- Button Submit dan Reset -->
-              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
-                <div class="col-1">
-                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
-                </div>
-                <div class="col-1">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
-                </div>
-              </div> --}}
-              <!-- End Button Submit dan Reset -->
-
               <!-- Tabel Data Detil AR -->
-              {{-- <input type="hidden" id="kodeSO" name="kodeSO"> --}}
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ar->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -112,16 +100,10 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php 
-                    $i = 1; $tab = 6; 
-                    if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
-                      $items = $ar;
-                    elseif(Auth::user()->roles == 'OFFICE02')
-                      $items = $arOffice
-                  @endphp
-                  @forelse($items as $a)
+                  @php $i = 1; $tab = 6; @endphp
+                  @forelse($ar as $a)
                     @php 
-                      $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
+                      $total = App\Models\DetilAR::selectRaw('sum(cicil) as totCicil')
                                 ->where('id_ar', $a->id)->get();
                       $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
                               ->where('id_ar', $a->id)->get();
@@ -145,16 +127,13 @@
                       </td>
                       <td class="text-right align-middle">
                         {{ $total[0]->totCicil != null ? number_format($total[0]->totCicil, 0, "", ",") : 0 }}
-                        {{-- <input type="text" name="cic{{$a->id_so}}" id="cicil" class="form-control form-control-sm text-bold text-dark text-right cicil" @if($total[0]->totCicil != null) value="{{ number_format($total[0]->totCicil, 0, "", ",") }}" @endif> --}}
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
-                        {{-- <a href="#Retur{{ $a->id_so }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a> --}}
                         <a href="{{ route('ar-retur-create', $a->id_so) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->so->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        {{-- <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a> --}}
                         <a href="{{ route('ar-cicil-create', $a->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
                     </tr>
@@ -176,17 +155,6 @@
                   </tr>
                 </tfoot>
               </table>
-
-              <!-- Button Submit dan Reset -->
-              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
-                <div class="col-1">
-                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
-                </div>
-                <div class="col-1">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
-                </div>
-              </div> --}}
-              <!-- End Button Submit dan Reset -->
               
             </form>
           </div>
@@ -224,7 +192,6 @@ $('.datepicker').datepicker({
 
 const cicil = document.querySelectorAll(".cicil");
 const retur = document.querySelectorAll(".retur");
-// const kodeSO = document.getElementById("kodeSO");
 const tglAwal = document.getElementById('tglAwal');
 const tglAkhir = document.getElementById('tglAkhir');
 
@@ -267,7 +234,7 @@ $('#dataTable').dataTable( {
 
     $.each([7, 8, 9, 10], function(index, value) {
 
-      if((value == 7) || (value == 10)) {
+      if((value == 7) || (value == 8) || (value == 10)) {
         var column = api
           .column(value, {
               page: 'current'
@@ -288,7 +255,7 @@ $('#dataTable').dataTable( {
           }, 0 );
       }
 
-      if((value == 7) || (value == 10)) {
+      if((value == 7) || (value == 8) || (value == 10)) {
         var column_total = api
           .column(value)
           .data()
@@ -310,63 +277,6 @@ $('#dataTable').dataTable( {
     }); 
   }
 });
-
-/** Input nominal comma separator **/
-// for(let i = 0; i < cicil.length; i++) {
-  /* cicil[i].addEventListener("keyup", function(e) {
-    $(this).val(function(index, value) {
-      return value
-      .replace(/\D/g, "")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      ;
-    });
-  })
-
-  cicil[i].addEventListener("focus", function(e) {
-    cicil[i].value = cicil[i].value.replace(/\,/g, "");
-  })
-
-  cicil[i].addEventListener("change", function(e) {
-    var arrKode = kodeSO.value.split(',');
-    var kode = cicil[i].name.substr(-7);
-
-    if(arrKode[0] != "") {
-      kodeSO.value = kodeSO.value.concat(`,${kode}`);
-    }
-    else {
-      kodeSO.value = kode;
-    }
-  }) */
-
-  /* retur[i].addEventListener("keyup", function(e) {
-    $(this).val(function(index, value) {
-      return value
-      .replace(/\D/g, "")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      ;
-    });
-  }) */
-
-  /* retur[i].addEventListener("focus", function(e) {
-    retur[i].value = retur[i].value.replace(/\,/g, "");
-  })
-
-  retur[i].addEventListener("focusout", function(e) {
-    retur[i].value = addCommas(retur[i].value);
-  })
-
-  retur[i].addEventListener("change", function(e) {
-    var arrKode = kodeSO.value.split(',');
-    var kode = retur[i].name.substr(-7);
-
-    if(arrKode[0] != "") {
-      kodeSO.value = kodeSO.value.concat(`,${kode}`);
-    }
-    else {
-      kodeSO.value = kode;
-    }
-  }) */
-// }
 
 /** Add Thousand Separators **/
 function addCommas(nStr) {
