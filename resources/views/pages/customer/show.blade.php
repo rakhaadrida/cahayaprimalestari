@@ -74,6 +74,16 @@
                   @if($item->id_sales != '') {{ $item->sales->nama }} @else - @endif
                 </td>
               </tr>
+              <tr>
+                <td width="200px" class="text-bold">KTP</td>
+                <td class="text-bold">:</td>
+                <td>
+                  @if($item->ktp != NULL) <img src="{{ url($item->ktp) }}" alt="">@endif
+                  {{-- <img src="{{ url($item->ktp) }}" alt=""> --}}
+                  {{-- <img src="{{ $item->ktp != NULL ? url($item->ktp) : url('') }}" alt=""> --}}
+                  {{-- {{ $item->ktp != NULL ? $item->ktp : '' }} --}}
+                </td>
+              </tr>
             </tbody>
           </table>
         </form>

@@ -21,4 +21,8 @@ class Customer extends Model
     public function so() {
         return $this->hasMany('App\Models\SalesOrder', 'id_customer', 'id');
     }
+
+    public function getKtpAttribute($value) {
+        return url('/storage' . $value);
+    }
 }

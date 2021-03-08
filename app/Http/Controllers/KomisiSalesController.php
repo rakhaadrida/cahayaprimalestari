@@ -75,9 +75,7 @@ class KomisiSalesController extends Controller
                 ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
                 ->where('id_sales', 'SLS12')
                 ->orderBy('ar.created_at', 'desc')->get();
-
-        // return response()->json($ar);
-
+                
         $data = [
             'ar' => $ar,
             'bulan' => $request->bulan,
