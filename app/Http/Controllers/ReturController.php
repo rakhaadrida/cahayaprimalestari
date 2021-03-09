@@ -779,11 +779,12 @@ class ReturController extends Controller
         $rb = DetilRB::where('id_retur', $request->kode)->get();
         $jum = $request->jumBaris - $request->jumRB;
 
-        $lastcode = ReturTerima::selectRaw('max(id) as id')
-                    ->whereYear('tanggal', $waktu->year)->whereMonth('tanggal', $month)->get();
+        $lastcode = ReturTerima::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
+                    ->whereMonth('tanggal', $month)->where('id', 'LIKE', 'TRM'.$tahun.$bulan.'%')->get();
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'TRM'.$tahun.$bulan.sprintf("%04s", $lastnumber);
+        // return response()->json($newcode);
 
         $kodeBarang = []; $kodeTerima = [];
         if($items->count() != 0) {
@@ -889,7 +890,7 @@ class ReturController extends Controller
         }
 
         $items = DetilRB::where('id_retur', $request->kode)->get();
-        $t = 0;
+        $t = 0; $det = 0;
         foreach($items as $i) {
             if($request->kodeBarang[$t] != $i->id_barang) {
                 $rt = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
@@ -994,7 +995,7 @@ class ReturController extends Controller
                 } 
                 elseif($rt->last()->tanggal != $tglTerima) {
                     $lastcode = ReturTerima::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
-                                ->whereMonth('tanggal', $month)->get();
+                                ->whereMonth('tanggal', $month)->where('id', 'LIKE', 'TRM'.$tahun.$bulan.'%')->get();
                     $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
                     $lastnumber++;
                     $newcode = 'TRM'.$tahun.$bulan.sprintf("%04s", $lastnumber);

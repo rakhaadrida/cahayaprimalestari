@@ -58,7 +58,7 @@ class CustomerController extends Controller
             'limit' => (int) str_replace(".", "", $request->limit),
             'tempo' => $request->tempo,
             'id_sales' => $request->id_sales,
-            'ktp' => $request->file('ktp')->store('assets/customer', 'public')
+            // 'ktp' => $request->file('ktp')->store('assets/customer', 'public')
         ]);
 
         return redirect()->route('customer.index');

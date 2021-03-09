@@ -111,4 +111,12 @@ class KomisiSalesController extends Controller
 
         return view('pages.komisi.show', $data);
     }
+
+    public function excel() {
+        $tanggal = Carbon::now()->toDateString();
+        $tanggalStr = $this->formatTanggal($tanggal, 'd-M-y');
+        $tglFile = $this->formatTanggal($tanggal, 'd-M');
+
+        return Excel::download(new TransHarianExport($tanggal, $tanggalStr, $status), 'TH-'.$status.'-'.$tglFile.'.xlsx');
+    }
 }

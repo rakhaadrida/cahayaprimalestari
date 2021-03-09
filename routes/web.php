@@ -337,6 +337,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('komisi', 'KomisiSalesController@index')->name('komisi');
         Route::post('komisi', 'KomisiSalesController@index')->name('komisi-home');
         Route::get('komisi/show', 'KomisiSalesController@show')->name('komisi-show');
+        Route::post('komisi/excel', 'KomisiSalesController@excel')->name('komisi-excel');
     });
 
     Route::group(['roles'=>['ADMIN', 'AR']], function() {
