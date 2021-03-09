@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AccReceivable;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\KomisiNowExport;
+use App\Exports\KomisiFilterExport;
 use Carbon\Carbon;
 
 class KomisiSalesController extends Controller
@@ -53,6 +56,7 @@ class KomisiSalesController extends Controller
         $date = Carbon::now('+07:00');
         $tahun = $date->year;
         $bulNow = $date->month;
+        $waktu = Carbon::now('+07:00');
 
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
@@ -63,9 +67,11 @@ class KomisiSalesController extends Controller
                 $lastYear = ($month == 1 ? $date->subYear(1)->format('Y') : $tahun);
                 break;
             }
-            else
-                $month = '';
-                $lastMo = '';
+            else {
+                $month = $bulNow;
+                $lastMo = ($bulNow == 1 ? 12 : $bulNow-1);
+                $lastYear = ($bulNow == 1 ? $tahun-1 : $tahun);
+            }
         }
 
         $tanggal = $tahun.'-'.$month;
@@ -113,10 +119,45 @@ class KomisiSalesController extends Controller
     }
 
     public function excel() {
-        $tanggal = Carbon::now()->toDateString();
-        $tanggalStr = $this->formatTanggal($tanggal, 'd-M-y');
-        $tglFile = $this->formatTanggal($tanggal, 'd-M');
+        $date = Carbon::now('+07:00');
+        $bulanNow = Carbon::parse($date)->isoFormat('MMM'); 
+        $lastMonth = $date->subMonths(1)->format('Y-m-21');
+        $bulanLast = Carbon::parse($date)->isoFormat('MMM');
 
-        return Excel::download(new TransHarianExport($tanggal, $tanggalStr, $status), 'TH-'.$status.'-'.$tglFile.'.xlsx');
+        return Excel::download(new KomisiNowExport(), 'Komisi-Fadil-'.$bulanLast.'-'.$bulanNow.'.xlsx');
+    }
+
+    public function excelFilter(Request $request) {
+        $date = Carbon::now('+07:00');
+        $tahun = $date->year;
+        $bulNow = $date->month;
+
+        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                'September', 'Oktober', 'November', 'Desember'];
+        for($i = 0; $i < sizeof($bulan); $i++) {
+            if($request->bulan == $bulan[$i]) {
+                $month = $i+1;
+                $lastMo = ($month == 1 ? 12 : $month-1);
+                $lastYear = ($month == 1 ? $date->subYear(1)->format('Y') : $tahun);
+                break;
+            }
+            else {
+                $month = $bulNow;
+                $lastMo = ($bulNow == 1 ? 12 : $bulNow-1);
+                $lastYear = ($bulNow == 1 ? $tahun-1 : $tahun);
+            }
+        }
+
+        $tanggal = $tahun.'-'.$month;
+        $lastTanggal = $lastYear.'-'.$lastMo;
+
+        $monthNow = Carbon::parse($tanggal)->format('Y-m-20');
+        $bulanNow = Carbon::parse($tanggal)->isoFormat('MMM'); 
+        $lastMonth = Carbon::parse($lastTanggal)->format('Y-m-21');
+        $bulanLast = Carbon::parse($lastTanggal)->isoFormat('MMM');
+        
+        $status = $request->status;
+
+        return Excel::download(new KomisiFilterExport($month, $status, $tanggal, $lastTanggal), 'Komisi-Fadil-'.$bulanLast.'-'.$bulanNow.'.xlsx');
     }
 }

@@ -54,7 +54,7 @@
                     <button type="submit" tabindex="6" formaction="{{ route('komisi-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: 60px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('komisi-excel-filter') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
                   </div>
                   {{-- <div class="col-auto mt-1" style="margin-left: 215px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
