@@ -64,7 +64,7 @@
             @endphp
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $i }}</td>
-              <td class="align-middle text-center">{{ $item->so->customer->sales->nama }}</td>
+              <td align="center" class="align-middle text-center">{{ $item->so->customer->sales->nama }}</td>
               <td class="align-middle">{{ $item->so->customer->nama }}</td>
               <td align="center" class="align-middle">{{ $item->so->kategori }}</td>
               <td align="center" class="align-middle">{{ $item->id_so }}</td>

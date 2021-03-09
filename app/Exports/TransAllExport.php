@@ -84,23 +84,29 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
 
         if($this->status == 'All') {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'NOT LIKE', 'Extrana%')
-                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('tgl_so')->get();
+                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')
+                    ->orderBy('customer.nama')->get();
 
             $itemsEx = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                    ->where('kategori', 'LIKE', 'Extrana%')->orderBy('tgl_so')->get();
+                    ->where('kategori', 'LIKE', 'Extrana%')->orderBy('id_sales')
+                    ->orderBy('customer.nama')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                    ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                    ->where('kategori', 'LIKE', 'Prime%')->orderBy('tgl_so')->get();
+                    ->where('kategori', 'LIKE', 'Prime%')->orderBy('id_sales')
+                    ->orderBy('customer.nama')->get();
 
             $itemsEx = NULL;
         }
