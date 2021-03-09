@@ -47,39 +47,37 @@
                       <option value="BELUM LUNAS" @if($status == 'BELUM LUNAS') selected @endif>BELUM LUNAS</option>
                     </select>
                   </div>
-                  <div class="col-auto mt-1" style="margin-left: 215px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
-                  </div>
-                  <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
-                  </div>
-                </div>   
-                <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" value="{{ $tglAwal }}" autocomplete="off">
-                  </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ml-3">s / d</label>
-                  <div class="col-2">
-                    <input type="text" tabindex="4" class="form-control datepicker form-control-sm text-bold mt-1 ml-1" name="tglAkhir" id="tglAkhir" value="{{ $tglAkhir }}" autocomplete="off">
-                  </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('komisi-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('komisi-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
-                  <div class="col-auto mt-1" style="margin-left: 50px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print All</button>
+                  <div class="col-auto mt-1" style="margin-left: 60px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                  </div>
+                  {{-- <div class="col-auto mt-1" style="margin-left: 215px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
-                  </div>
-                </div>  
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
+                  </div> --}}
+                </div> 
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
+
+              <div class="container" style="margin-bottom: -25px">
+                <div class="row justify-content-center">
+                  <h5 class="text-bold text-dark">
+                    Periode : {{$bulanLast}} s / d {{$bulanNow}}
+                  </h5>
+                </div>
+                <div class="row justify-content-center" style="margin-top: -5px">
+                  <h5 class="text-dark">Tanggal : {{ \Carbon\Carbon::parse($lastMonth)->format('d-M-y') }} s / d {{ \Carbon\Carbon::parse($monthNow)->format('d-M-y') }}</h5>
+                </div>
+              </div>
+              <br>
 
               <!-- Tabel Data Detil AR -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ar->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
@@ -140,7 +138,7 @@
                     @php $i++; @endphp
                   @empty
                     <tr>
-                      <td colspan=12 class="text-center text-bold h4 p-2"><i>Tidak ada daftar account receivable</i></td>
+                      <td colspan=12 class="text-center text-bold h4 p-2"><i>Tidak ada Data Komisi Sales untuk Periode ini</i></td>
                     </tr>
                   @endforelse
                 </tbody>
@@ -192,27 +190,6 @@ $('.datepicker').datepicker({
 
 const cicil = document.querySelectorAll(".cicil");
 const retur = document.querySelectorAll(".retur");
-const tglAwal = document.getElementById('tglAwal');
-const tglAkhir = document.getElementById('tglAkhir');
-
-tglAwal.addEventListener("keyup", formatTanggal);
-tglAkhir.addEventListener("keyup", formatTanggal);
-
-function formatTanggal(e) {
-  var value = e.target.value.replaceAll("-","");
-  var arrValue = value.split("", 3);
-  var kode = arrValue.join("");
-
-  if(value.length > 2 && value.length <= 4) 
-    value = value.slice(0,2) + "-" + value.slice(2);
-  else if(value.length > 4 && value.length <= 8)
-    value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
-  if(e.target.id == 'tglAwal')
-    tglAwal.value = value;
-  else
-    tglAkhir.value = value;
-}
 
 /** Sort Datatable **/
 $('#dataTable').dataTable( {
