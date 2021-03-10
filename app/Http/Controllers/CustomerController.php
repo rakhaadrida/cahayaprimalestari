@@ -58,7 +58,7 @@ class CustomerController extends Controller
             'limit' => (int) str_replace(".", "", $request->limit),
             'tempo' => $request->tempo,
             'id_sales' => $request->id_sales,
-            // 'ktp' => $request->file('ktp')->store('assets/customer', 'public')
+            'ktp' => ($request->ktp != '' ? $request->file('ktp')->store('assets/customer', 'public') : NULL)
         ]);
 
         return redirect()->route('customer.index');
@@ -98,7 +98,12 @@ class CustomerController extends Controller
         $item->{'limit'} = str_replace(".", "", $request->limit);
         $item->{'tempo'} = $request->tempo;
         $item->{'id_sales'} = $request->id_sales;
+        if($request->ktp != '')
+            $item->{'ktp'} = $request->file('ktp')->store('assets/customer', 'public');
+
         $item->save();
+
+        // $item->{'ktp'} = ($request->ktp != '' ? $request->file('ktp')->store('assets/customer', 'public') : $item->{'ktp'});
 
         return redirect()->route('customer.index');
     }

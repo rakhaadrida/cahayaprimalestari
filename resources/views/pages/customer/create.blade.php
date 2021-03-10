@@ -93,14 +93,15 @@
                 </div>
               </div>
               {{-- Scan KTP --}}
-              {{-- <div class="form-group row" style="margin-top: -20px">
+              <div class="form-group row" style="margin-top: -20px">
                 <label for="ktp" class="col-1 col-form-label text-bold">Scan KTP</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-3">
                   <input type="file" name="ktp" value="{{ old('ktp') }}" accept="image/*" class="form-control col-form-label-sm @error('ktp') is-invalid @enderror">
                   @error('ktp') <div class="text-muted">{{ $message }}</div> @enderror
                 </div>
-              </div> --}}
+              </div>
+              <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>

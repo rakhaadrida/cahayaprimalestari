@@ -23,7 +23,7 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="{{ route('customer.update', $item->id )}}" method="POST">
+            <form action="{{ route('customer.update', $item->id )}}" method="POST" enctype="multipart/form-data">
               @method('PUT')
               @csrf
               <div class="form-group row">
@@ -93,6 +93,16 @@
                   <input type="hidden" name="id_sales" id="kodeSales" value="{{ $item->id_sales != '' ? $item->id_sales : '' }}">
                 </div>
               </div>
+              {{-- Scan KTP --}}
+              <div class="form-group row" style="margin-top: -20px">
+                <label for="ktp" class="col-1 col-form-label text-bold">Scan KTP</label>
+                <span class="col-form-label text-bold">:</span>
+                <div class="col-3">
+                  <input type="file" name="ktp" accept="image/*" class="form-control col-form-label-sm @error('ktp') is-invalid @enderror">
+                  @error('ktp') <div class="text-muted">{{ $message }}</div> @enderror
+                </div>
+              </div>
+              <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>

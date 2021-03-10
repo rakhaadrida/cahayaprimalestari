@@ -28,59 +28,59 @@
           <table class="table table-responsive table-md table-modal">
             <tbody>
               <tr class="table-modal-first-row">
-                <td width="100px" class="text-bold">Kode</td>
+                <td width="80px" class="text-bold">Kode</td>
                 <td class="text-bold">:</td>
                 <td><b></b>{{ $item->id }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">Nama</td>
+                <td width="80px" class="text-bold">Nama</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->nama }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">Alamat</td>
+                <td width="80px" class="text-bold">Alamat</td>
                 <td class="text-bold">:</td>
-                <td width="330px">{{ $item->alamat }}</td>
+                <td width="350px">{{ $item->alamat }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">Telepon</td>
+                <td width="80px" class="text-bold">Telepon</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->telepon }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">Contact Person</td>
+                <td width="80px" class="text-bold">Contact Person</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->contact_person }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">NPWP</td>
+                <td width="80px" class="text-bold">NPWP</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->npwp }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">Limit</td>
+                <td width="80px" class="text-bold">Limit</td>
                 <td class="text-bold">:</td>
                 <td>{{ number_format($item->limit, 0, "", ".") }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">Tempo</td>
+                <td width="80px" class="text-bold">Tempo</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->tempo }}</td>
               </tr>
               <tr>
-                <td width="100px" class="text-bold">Sales</td>
+                <td width="80px" class="text-bold">Sales</td>
                 <td class="text-bold">:</td>
                 <td>
                   @if($item->id_sales != '') {{ $item->sales->nama }} @else - @endif
                 </td>
               </tr>
-              {{-- <tr>
-                <td width="100px" class="text-bold">KTP</td>
+              <tr>
+                <td width="80px" class="text-bold">KTP</td>
                 <td class="text-bold">:</td>
                 <td>
-                  @if($item->ktp != NULL) <img src="{{ url($item->ktp) }}" alt="" width="310px" >@endif
+                  @if($item->ktp != NULL) <img src="{{ url($item->ktp) }}" alt="" width="330px" >@endif
                 </td>
-              </tr> --}}
+              </tr>
             </tbody>
           </table>
         </form>
