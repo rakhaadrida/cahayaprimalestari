@@ -1,6 +1,6 @@
 @foreach($items as $item)
 <div class="modal fade" id="DetailCustomer{{ $item->id }}" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
         <div class="row">
@@ -28,60 +28,57 @@
           <table class="table table-responsive table-md table-modal">
             <tbody>
               <tr class="table-modal-first-row">
-                <td width="200px" class="text-bold">Kode Customer</td>
+                <td width="100px" class="text-bold">Kode</td>
                 <td class="text-bold">:</td>
                 <td><b></b>{{ $item->id }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">Nama Customer</td>
+                <td width="100px" class="text-bold">Nama</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->nama }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">Alamat</td>
+                <td width="100px" class="text-bold">Alamat</td>
                 <td class="text-bold">:</td>
-                <td width="300px">{{ $item->alamat }}</td>
+                <td width="330px">{{ $item->alamat }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">Telepon</td>
+                <td width="100px" class="text-bold">Telepon</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->telepon }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">Contact Person</td>
+                <td width="100px" class="text-bold">Contact Person</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->contact_person }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">NPWP</td>
+                <td width="100px" class="text-bold">NPWP</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->npwp }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">Limit</td>
+                <td width="100px" class="text-bold">Limit</td>
                 <td class="text-bold">:</td>
                 <td>{{ number_format($item->limit, 0, "", ".") }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">Tempo</td>
+                <td width="100px" class="text-bold">Tempo</td>
                 <td class="text-bold">:</td>
                 <td>{{ $item->tempo }}</td>
               </tr>
               <tr>
-                <td width="200px" class="text-bold">Sales Cover</td>
+                <td width="100px" class="text-bold">Sales</td>
                 <td class="text-bold">:</td>
                 <td>
                   @if($item->id_sales != '') {{ $item->sales->nama }} @else - @endif
                 </td>
               </tr>
               {{-- <tr>
-                <td width="200px" class="text-bold">KTP</td>
+                <td width="100px" class="text-bold">KTP</td>
                 <td class="text-bold">:</td>
                 <td>
-                  @if($item->ktp != NULL) <img src="{{ url($item->ktp) }}" alt="">@endif
-                  <img src="{{ url($item->ktp) }}" alt="">
-                  <img src="{{ $item->ktp != NULL ? url($item->ktp) : url('') }}" alt="">
-                  {{ $item->ktp != NULL ? $item->ktp : '' }}
+                  @if($item->ktp != NULL) <img src="{{ url($item->ktp) }}" alt="" width="310px" >@endif
                 </td>
               </tr> --}}
             </tbody>

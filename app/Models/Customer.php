@@ -23,6 +23,6 @@ class Customer extends Model
     }
 
     public function getKtpAttribute($value) {
-        return url('/storage' . $value);
+        return url('/storage/' . $value);
     }
 }
