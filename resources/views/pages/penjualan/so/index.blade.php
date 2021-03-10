@@ -1708,7 +1708,7 @@ for(let i = 0; i < qty.length; i++) {
 
       if(diskon[i].value != "") {
         var angkaDiskon = hitungDiskon(diskon[i].value)
-        diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100);
+        diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
       }
 
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
@@ -1746,7 +1746,7 @@ for(let i = 0; i < tipe.length; i++) {
         netPast = +netto[i].value.replace(/\./g, "");
         if(diskon[i].value != "") {
           var angkaDiskon = hitungDiskon(diskon[i].value)
-          diskonRp[i].value = addCommas(angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100);
+          diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g,"") / 100).toFixed(0));
         }
 
         netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));

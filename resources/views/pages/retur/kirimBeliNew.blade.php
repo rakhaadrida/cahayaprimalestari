@@ -55,7 +55,7 @@
                     <input type="text" tabindex="5" name="namaCust" readonly class="form-control form-control-sm text-bold text-dark" value="{{ $item->first()->supplier->nama }}" />
                     <input type="hidden" name="kodeCustomer" value="{{ $item->first()->id_supplier }}">
                   </div>
-                  <input type="hidden" name="jumRB" id="jumRB" value="{{ $retur->count() }}">
+                  <input type="text" name="jumRB" id="jumRB" value="{{ $retur->count() }}">
                 </div>
               </div>
               <hr>
@@ -86,7 +86,7 @@
                   @php $i = 1; $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kurang = 0; $totalDRT = 0; @endphp
                   @foreach($retur as $d)
                     @php 
-                      $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kode = $item->first()->id;
+                      $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kode = $item->first()->id; $no = 0;
                       $returTerima = App\Models\DetilRT::join('returterima', 'returterima.id',
                                     'detilrt.id_terima')->where('id_retur', $item->first()->id)
                                     ->where('id_barang', $d->id_barang)->get();
@@ -99,6 +99,14 @@
                           <td class="text-center align-middle">
                             <input type="hidden" name="kodeTerima" value="{{ $dr->id_terima }}">
                             <input type="text" class="form-control-plaintext form-control-sm text-bold text-dark text-center kodeDetil" name="kodeDetil[]" readonly value="{{ $dr->id_barang }}">
+                            {{-- @if((($no == 0) && ($dr->id_barang == $d->id_barang)) || (($no > 0) && ($dr->id_barang != $returTerima[$no-1]->id_barang))) --}}
+                            @if(($dr->id_barang == $d->id_barang) && ($dr->qty_terima + $dr->qty_batal + $dr->potong == $d->qty_retur))
+                              <input type="hidden" name="kodeBarang[]" value="{{ $dr->id_barang }}">
+                              <input type="hidden" name="qty[]" value="{{ $d->qty_retur }}">
+                              <input type="hidden" name="terima[]" value="">
+                              <input type="hidden" name="batal[]" value="">
+                              <input type="hidden" name="tgl[]" value="">
+                            @endif
                           </td>
                           <td class="align-middle">{{ $dr->barang->nama }}</td>
                           <td class="text-center align-middle">
@@ -123,7 +131,7 @@
                           </td>
                         </tr>
                         @php $i++; $totalTerima += $dr->qty_terima; $totalBatal += $dr->qty_batal; 
-                              $totalPotong += $dr->potong; @endphp
+                              $totalPotong += $dr->potong; $no++; @endphp
                       @endforeach
                       @php $totalDRT += $returTerima->count(); @endphp
                     @endif
@@ -159,8 +167,9 @@
                           </a>
                         </td>
                       </tr>
+                      @php $i++; @endphp
                     @endif
-                    @php $i++; @endphp
+                    
                   @endforeach
                 </tbody>
                 <tfoot>
@@ -174,7 +183,7 @@
                   </tr>
                 </tfoot>
               </table>
-              <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $totalDRT + $retur->count() }}">
+              <input type="text" name="jumBaris" id="jumBaris" value="{{ $totalDRT + $retur->count() }}">
               <hr>
               <!-- End Tabel Data Detil PO -->
 

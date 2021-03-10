@@ -298,8 +298,11 @@
     </style>
   </head>
   <body>
-    @php $i = 1; $no = 1; $kode = []; @endphp
+    @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; @endphp
     @foreach($items as $item)
+      @if(($items->first()->id != ($det <= 34 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 34)) 
+        @php $i = 1; $no = 1; $kur = 0; $kode = []; @endphp
+      @endif
       <div class="cetak-all-container" style="page-break-after: always">
         <div class="container-fluid header-cetak-so">
           <div class="title-header text-center">
@@ -308,7 +311,7 @@
           <div class="subtitle-cetak-so">
             <span class="text-right">Supplier</span>
             <span>:</span>
-            <span>{{ $items->first()->returbeli->supplier->nama }}</span>
+            <span>{{ $det <= 34 ? $item->returbeli->supplier->nama : $items[$urut-$kur]->returbeli->supplier->nama }}</span>
           </div>
           <div class="subtitle-cetak-so subtitle-second">
             <span class="text-right">We had accepted these following item(s) :</span>
@@ -335,7 +338,7 @@
         <div class="detail-cetak-so">
           <span class="text-right">GRN Date</span>
           <span>:</span>
-          <span>{{ \Carbon\Carbon::parse($items->first()->tanggal)->format('d-M-y') }}</span>
+          <span>{{ \Carbon\Carbon::parse(($det <= 34 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
           <br>
           <span class="detail-second text-right">GRN Number</span>
           <span>:</span>
@@ -343,7 +346,7 @@
           <br>
           <span class="detail-third text-right">DO. Date</span>
           <span>:</span>
-          <span>{{ \Carbon\Carbon::parse($items->first()->tanggal)->format('d-M-y') }}</span>
+          <span>{{ \Carbon\Carbon::parse(($det <= 34 ? $item->tanggal : $items[$urut-$kur]->tanggal))->format('d-M-y') }}</span>
           <br>
           <span class="detail-fourth text-right">DO. Number</span>
           <span>:</span>
@@ -352,8 +355,15 @@
         <br>
         
         @php 
-        $itemsDet = \App\Models\DetilRT::where('id_terima', $items->first()->id)
+        $stat = $det;
+        if($det <= 34)
+          $rb = $item->id;
+        else
+          $rb = $items[$urut-$kur]->id;
+
+        $itemsDet = \App\Models\DetilRT::where('id_terima', $rb)
                     ->whereNotIn('id_barang', $kode)->groupBy('id_barang')->get();
+        $det = $itemsDet->count();
         @endphp
         <!-- Tabel Data Detil BM-->
         <span class="page-number text-right">Page  :   {{ $i }}</span>
@@ -390,7 +400,7 @@
             @endforeach
           </tbody>
         </table>
-        @php $i++ @endphp
+        @php $i++; $urut++; $kur++; @endphp
         
         <div class="container-fluid footer-cetak-so">
           <table class="table-footer">

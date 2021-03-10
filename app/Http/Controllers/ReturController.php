@@ -1137,20 +1137,29 @@ class ReturController extends Controller
         parse_str($id, $kode);
 
         $items = ReturTerima::whereIn('id', $kode['id'])->get();
-        $tabel = ceil($items->first()->detilrt->count() / 34);
 
-        if($tabel > 1) {
-            for($i = 1; $i < $tabel; $i++) {
-                $item = collect([
-                    'id' => $items->first()->id,
-                    'id_retur' => $items->first()->id_retur,
-                    'tanggal' => $items->first()->tanggal
-                ]);
+        foreach($items as $i) {
+            $item = ReturTerima::where('id', $i->id)->get();
+            $tabel = ceil($item->first()->detilrt->count() / 34);
 
-                $items->push($item);
+            if($tabel > 1) {
+                for($j = 1; $j < $tabel; $j++) {
+                    $newItem = collect([
+                        'id' => $item->first()->id.'Z',
+                        'id_retur' => $item->first()->id_retur,
+                        'tanggal' => $item->first()->tanggal
+                    ]);
+
+                    $items->push($newItem);
+                }
             }
         }
+        $items = $items->sortBy(function ($product, $key) {
+                    return $product['tanggal'].$product['id'];
+                });
         $items = $items->values();
+
+        // return response()->json($items);
 
         $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $waktu = Carbon::now();
