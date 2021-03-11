@@ -25,14 +25,22 @@ use PDF;
 class AccReceivableController extends Controller
 {
     public function index() {
-        $arLast = AccReceivable::join('detilar', 'detilar.id_ar', 'ar.id')
-                ->orderBy('detilar.updated_at', 'desc')->take(1)->get();
-
-        $ar = AccReceivable::where('id', '!=', $arLast->first()->id)->where('keterangan', 'BELUM LUNAS')
-                ->orderBy('created_at', 'desc')->get();
-        $arOffice = AccReceivable::with(['so'])->join('so', 'so.id', 'ar.id_so')
+        $arLast = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->select('ar.id', 'ar.id_so', 'ar.keterangan')
+                ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
+                ->orderBy('ar.updated_at', 'desc')->take(1)->get();
+
+        $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
+                ->where('ar.id', '!=', $arLast->first()->id)->where('keterangan', 'BELUM LUNAS')
+                ->orderBy('ar.created_at', 'desc')->get();
+        $arOffice = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
                 ->where('id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
 
         $data = [
@@ -83,29 +91,35 @@ class AccReceivableController extends Controller
         }
 
         if($isi == 1) {
-            $ar = AccReceivable::with(['so'])->whereIn('keterangan', [$status[0], $status[1]])
-                ->orderBy('created_at', 'desc')->get();
-
-            $arOffice = AccReceivable::with(['so'])
-                ->select('ar.id', 'ar.id_so', 'ar.keterangan')
-                ->join('so', 'so.id', 'ar.id_so')
+            $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
+                ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
+                ->whereIn('keterangan', [$status[0], $status[1]])
+                ->orderBy('ar.created_at', 'desc')->get();
+
+            $arOffice = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
                 ->where('id_sales', 'SLS03')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->orderBy('tgl_so', 'desc')->get();
         } else {
-            $ar = AccReceivable::with(['so'])->join('so', 'so.id', '=', 'ar.id_so')
-                ->select('*', 'so.id as id_so', 'ar.id as id')
+            $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
                 })->orderBy('tgl_so', 'desc')->get();
 
-            $arOffice = AccReceivable::with(['so'])
-                ->join('so', 'so.id', '=', 'ar.id_so')
+            $arOffice = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->select('*', 'so.id as id_so', 'ar.id as id')
+                ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
                 ->where('id_sales', 'SLS03')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->where(function ($q) use ($awal, $akhir, $month) {
@@ -113,8 +127,6 @@ class AccReceivableController extends Controller
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
                 })->orderBy('tgl_so', 'desc')->get();
         }
-
-        // return response()->json($ar);
 
         $barang = Barang::All();
         $harga = HargaBarang::All();
