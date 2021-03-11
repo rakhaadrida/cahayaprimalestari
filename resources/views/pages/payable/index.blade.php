@@ -90,12 +90,12 @@
                   @php $i = 1; $tab = 5 @endphp
                   @php 
                     if($apLast->count() != 0) {
-                      $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))
+                      $totalBM = App\Models\BarangMasuk::selectRaw('sum(total) as totBM')
                                 ->where('id_faktur', $apLast->first()->id_bm)->where('status', '!=', 'BATAL')->get();
-                      $potBM = App\Models\BarangMasuk::select(DB::raw('sum(potongan) as potongan'))
+                      $potBM = App\Models\BarangMasuk::selectRaw('sum(potongan) as potongan')
                               ->where('id_faktur', $apLast->first()->id_bm)->get();
-                      $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as 
-                              totTransfer'))->where('id_ap', $apLast->first()->id)->get();
+                      $total = App\Models\DetilAP::selectRaw('sum(transfer) as totTransfer')
+                              ->where('id_ap', $apLast->first()->id)->get();
                       $retur = App\Models\AP_Retur::selectRaw('sum(total) as total')
                               ->where('id_ap', $apLast->first()->id)->get();
                     }
@@ -103,13 +103,13 @@
                   @if($apLast->count() != 0)
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="align-middle">{{ $apLast->first()->bm[0]->supplier->nama }}</td>
+                      <td class="align-middle">{{ $apLast->first()->namaSupp }}</td>
                       <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $apLast->first()->id_bm) }}" formmethod="POST" formtarget="_blank" class="btn btn-link btn-sm text-bold">{{ $apLast->first()->id_bm }}</button></td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($apLast->first()->bm[0]->tanggal)->format('d-M-y') }}
+                        {{ \Carbon\Carbon::parse($apLast->first()->tanggal)->format('d-M-y') }}
                       </td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($apLast->first()->bm[0]->tanggal)->add($apLast->first()->bm[0]->tempo, 'days')->format('d-M-y') }}
+                        {{ \Carbon\Carbon::parse($apLast->first()->tanggal)->add($apLast->first()->tempo, 'days')->format('d-M-y') }}
                       </td>
                       <td align="center" class="align-middle" @if($apLast->first()->bm->last()->diskon != 'F') style="background-color: lightgreen" @endif>
                         {{ $apLast->first()->bm->last()->diskon == 'T' ? 'INPUT' : 'KOSONG' }}
@@ -119,7 +119,6 @@
                       </td>
                       <td class="text-right align-middle">
                         {{ $total[0]->totTransfer != null ? number_format($total[0]->totTransfer, 0, "", ",") : 0 }}
-                        {{-- <input type="text" name="tr{{$apLast->first()->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif> --}}
                       </td>
                       <td class="align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
@@ -136,46 +135,43 @@
                   @php $i++; @endphp
                   @forelse($ap as $a)
                     @php 
-                      $totalBM = App\Models\BarangMasuk::select(DB::raw('sum(total) as totBM'))
-                              ->where('id_faktur', $a->id_bm)->where('status', '!=', 'BATAL')->get();
-                      $potBM = App\Models\BarangMasuk::select(DB::raw('sum(potongan) as potongan'))
+                      $totalBM = App\Models\BarangMasuk::selectRaw('sum(total) as totBM, sum(potongan) as potongan')
                               ->where('id_faktur', $a->id_bm)->get();
-                      $total = App\Models\DetilAP::select(DB::raw('sum(transfer) as 
-                              totTransfer'))->where('id_ap', $a->id)->get();
+                      // $potBM = App\Models\BarangMasuk::selectRaw('sum(potongan) as potongan')
+                      //         ->where('id_faktur', $a->id_bm)->get();
+                      $total = App\Models\DetilAP::selectRaw('sum(transfer) as totTransfer')
+                              ->where('id_ap', $a->id)->get();
                       $retur = App\Models\AP_Retur::selectRaw('sum(total) as total')
                               ->where('id_ap', $a->id)->get();
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="align-middle">{{ $a->bm[0]->supplier->nama }}</td>
+                      <td class="align-middle">{{ $a->namaSupp }}</td>
                       <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('ap-detail', $a->id_bm) }}" formmethod="POST" formtarget="_blank" class="btn btn-link btn-sm text-bold">{{ $a->id_bm }}</button></td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($a->bm[0]->tanggal)->format('d-M-y') }}
+                        {{ \Carbon\Carbon::parse($a->tanggal)->format('d-M-y') }}
                       </td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($a->bm[0]->tanggal)->add($a->bm[0]->tempo, 'days')
+                        {{ \Carbon\Carbon::parse($a->tanggal)->add($a->tempo, 'days')
                           ->format('d-M-y') }}
                       </td>
                       <td align="center" class="align-middle" @if($a->bm->last()->diskon != 'F') style="background-color: lightgreen" @endif>
                         {{ $a->bm->last()->diskon == 'T' ? 'INPUT' : 'KOSONG' }}
                       </td>
                       <td align="right" class="align-middle">
-                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $potBM[0]->potongan, 0, "", ",") : '' }}
+                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $totalBM[0]->potongan, 0, "", ",") : '' }}
                       </td>
                       <td class="text-right align-middle">
                         {{ $total[0]->totTransfer != null ? number_format($total[0]->totTransfer, 0, "", ",") : 0 }}
-                        {{-- <input type="text" name="tr{{$a->id_bm}}" id="transfer" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right transfer" @if($total[0]->totTransfer != null) value="{{ number_format($total[0]->totTransfer, 0, "", ",") }}" @endif> --}}
                       </td>
                       <td class="align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}">
-                        {{-- <a href="#Retur{{ $a->id_bm }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" data-toggle="modal" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a> --}}
                         <a href="{{ route('ap-retur-create', $a->id_bm) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
                       <td align="right" class="align-middle">
-                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total - $potBM[0]->potongan, 0, "", ",") : '' }}
+                        {{ $a->bm->last()->diskon == 'T' ? number_format($totalBM[0]->totBM - $total[0]->totTransfer - $retur[0]->total - $totalBM[0]->potongan, 0, "", ",") : '' }}
                       </td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        {{-- <a href="#Detail{{ $a->id_bm }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a> --}}
                         <a href="{{ route('ap-transfer-create', $a->id_bm) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$a->keterangan}}</a>
                       </td>
                     </tr>

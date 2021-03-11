@@ -25,16 +25,22 @@ use Illuminate\Support\Str;
 class AccPayableController extends Controller
 {
     public function index() {
-        $apLast = AccPayable::join('detilap', 'detilap.id_ap', 'ap.id')
-                    ->orderBy('detilap.updated_at', 'desc')->take(1)->get();
+        $apLast = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
+                ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')
+                ->orderBy('ap.updated_at', 'desc')->take(1)->get();
 
         if($apLast->count() != 0)
-            $ap = AccPayable::with(['bm'])->where('id', '!=', $apLast->first()->id)
-                        ->orderBy('created_at', 'desc')->get();
+            $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
+                ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')
+                ->where('ap.id', '!=', $apLast->first()->id)
+                ->orderBy('ap.created_at', 'desc')->get();
         else
-            $ap = AccPayable::with(['bm'])->orderBy('created_at', 'desc')->get();               
+            $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
+                ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')->orderBy('ap.created_at', 'desc')->get();               
 
-        // return response()->json($ap);
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
@@ -84,19 +90,20 @@ class AccPayableController extends Controller
         }
 
         if($isi == 1) {
-            $ap = AccPayable::with(['bm'])->whereIn('keterangan', [$status[0], $status[1]])
-                ->orderBy('created_at', 'desc')->get();
+            $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
+                ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')->whereIn('keterangan', [$status[0], $status[1]])
+                ->orderBy('ap.created_at', 'desc')->get();
         } else {
-            $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 
-                'ap.id_bm')->select('ap.*')
+            $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
+                ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('barangmasuk.tanggal', $month)
                     ->orWhereBetween('barangmasuk.tanggal', [$awal, $akhir]);
                 })->groupBy('ap.id')->orderBy('barangmasuk.created_at', 'desc')->get();
         }
-
-        // return response()->json($ap);
 
         $barang = Barang::All();
         $harga = HargaBarang::All();
