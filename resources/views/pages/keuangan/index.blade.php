@@ -272,14 +272,14 @@
               <!-- End Tabel Data Detil PO -->
 
               <!-- Button Submit dan Reset -->
-              {{-- <div class="form-row justify-content-center" style="margin-top: 30px">
+              <div class="form-row justify-content-center" style="margin-top: 30px">
                 <div class="col-2">
                   <button type="submit" class="btn btn-success btn-block text-bold" onclick="return checkRequired(event)" id="submitKeu" >Submit</button>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-secondary btn-block text-bold" >Reset</button>
                 </div>
-              </div> --}}
+              </div>
               <!-- End Button Submit dan Reset -->
 
             </form>
