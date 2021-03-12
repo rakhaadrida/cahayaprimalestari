@@ -583,7 +583,6 @@
 @endsection
 
 @push('addon-script')
-<script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script>
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
 

@@ -3,8 +3,6 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
-    {{-- <link href="backend/css/sb-admin-2.css" rel="stylesheet">
-    <link href="backend/css/main.css" rel="stylesheet"> --}}
     <style>
       body {
           /* margin: 0; */
@@ -19,48 +17,6 @@
           color: black;
           text-align: left;
           background-color: #fff;
-      }
-
-      /* @font-face {
-        font-family: "epson1regular";
-        font-weight: 900;
-        color: black;
-        src: url('{{ public_path('backend/fonts/epson1regular.ttf') }}');
-      } */
-
-      @font-face {
-        font-family: "epson1";
-        font-weight: 900;
-        color: black;
-        src: url('{{ public_path('backend/fonts/epson1.woff') }}');
-      }
-
-      /* @font-face {
-        font-family: "bpdots";
-        font-weight: 800;
-        color: black;
-        src: url('{{ public_path('backend/fonts/BPdots.otf') }}');
-      } */
-
-      @font-face {
-        font-family: "Dotrice";
-        font-weight: 800;
-        color: black;
-        src: url('{{ public_path('backend/fonts/Dotrice.ttf') }}');
-      } 
-
-      @font-face {
-        font-family: "Dotrice Bold";
-        font-weight: 800;
-        color: black;
-        src: url('{{ public_path('backend/fonts/Dotrice-Bold.otf') }}');
-      } 
-
-      @font-face {
-        font-family: "buenard";
-        font-weight: 800;
-        color: black;
-        src: url('{{ public_path('backend/fonts/Buenard-Regular.ttf') }}');
       }
 
       h1,
@@ -611,8 +567,8 @@
         
         @php 
         // sum(diskonRp) as diskonRp
-        $itemsDet = \App\Models\DetilSO::with(['barang'])
-                          ->select('id_barang', 'diskon', 'diskonRp')
+        $itemsDet = \App\Models\DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
+                          ->select('id_barang', 'nama', 'satuan', 'diskon', 'diskonRp')
                           ->selectRaw('avg(harga) as harga, sum(qty) as qty')
                           ->where('id_so', $items->first()->id)
                           ->whereNotIn('id_barang', $kode)
@@ -639,19 +595,14 @@
             @foreach($itemsDet as $itemDet)
               <tr class="baris-so">
                 <td align="center">{{ $no }}</td>
-                <td>{{ $itemDet->barang->nama }}</td>
-                @if($itemDet->barang->satuan == "Pcs / Dus")
-                  {{-- <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} PCS</span></td> --}}
+                <td>{{ $itemDet->nama }}</td>
+                @if($itemDet->satuan == "Pcs / Dus")
                   <td align="center">{{ $itemDet->qty }} PCS</td>
-                @elseif($itemDet->barang->satuan == "Set")
-                  {{-- <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} SET</span></td> --}}
+                @elseif($itemDet->satuan == "Set")
                   <td align="center">{{ $itemDet->qty }} SET</td>
-                @elseif($itemDet->barang->satuan == "Meter / Rol")
-                  {{-- <td align="center">{{ $itemDet->qty }} ROL</td>
-                  <td >{{ number_format($itemDet->qty * $itemDet->barang->ukuran, 0, "", ".") }} MTR</td> --}}
+                @elseif($itemDet->satuan == "Meter / Rol")
                   <td align="center">{{ $itemDet->qty }} ROL</td>
                 @else
-                  {{-- <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} MTR</span></td> --}}
                   <td align="center">{{ $itemDet->qty }} MTR</td>
                 @endif
                 <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
@@ -725,11 +676,6 @@
                       </tr>
                     </table>
                   </div>
-                  {{-- <div class="ttd-penerima text-center">
-                    <span>Penerima,</span>
-                    <br><br><br>
-                    <span class="form-ttd">(___________)</span>
-                  </div> --}}
                 </td>
                 <td style="border-right: 1px dotted; width: 273px">
                   <div class="info_bayar">
@@ -738,11 +684,6 @@
                     <span>Rekening Bank BCA</span>
                     <br>
                     <span>a/n Indah Ramadhon 5790416491</span>
-                    {{-- <span>Waktu Cetak : </span>
-                    <br>
-                    <span>{{ $today }} - {{ $waktu }}</span>
-                    <br>
-                    <span>Cetak ke : 1</span> --}}
                   </div>
                 </td>
                 <td style="width: 90px">
@@ -758,16 +699,10 @@
                         <td class="text-center">(___________)</td>
                       </tr>
                     </table>
-                    {{-- <center><span class="nama-gudang">Gudang,</span></center>
-                    <br><br>
-                    <span class="form-ttd">(___________)</span> --}}
                   </div>
                 </td>
                 <td style="border-right: 1px dotted; width: 88px">
                   <div class="ttd-mengetahui">
-                    {{-- <span class="tgl-ttd">
-                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
-                    </span> --}}
                     <table style="font-size: 15px !important">
                       <tr>
                         <td class="tgl-ttd">{{ \Carbon\Carbon::parse($items->first()->tgl_so)->format('d-M-y')}}</td>
@@ -782,12 +717,6 @@
                         <td class="text-center">(__________)</td>
                       </tr>
                     </table>
-                    {{-- <span class="tgl-ttd">
-                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
-                    </span>
-                    <span>Mengetahui,</span> 
-                    <br><br><br><br>
-                    <span class="form-ttd">(__________)</span>  --}}
                   </div>
                 </td>
                 <td>

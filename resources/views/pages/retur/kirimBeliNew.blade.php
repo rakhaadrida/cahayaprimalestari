@@ -55,7 +55,7 @@
                     <input type="text" tabindex="5" name="namaCust" readonly class="form-control form-control-sm text-bold text-dark" value="{{ $item->first()->supplier->nama }}" />
                     <input type="hidden" name="kodeCustomer" value="{{ $item->first()->id_supplier }}">
                   </div>
-                  <input type="text" name="jumRB" id="jumRB" value="{{ $retur->count() }}">
+                  <input type="hidden" name="jumRB" id="jumRB" value="{{ $retur->count() }}">
                 </div>
               </div>
               <hr>
@@ -183,7 +183,7 @@
                   </tr>
                 </tfoot>
               </table>
-              <input type="text" name="jumBaris" id="jumBaris" value="{{ $totalDRT + $retur->count() }}">
+              <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $totalDRT + $retur->count() }}">
               <hr>
               <!-- End Tabel Data Detil PO -->
 
