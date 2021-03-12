@@ -297,6 +297,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('tb-index');
         Route::post('/tb/detail/{id}', 'TransferBarangController@detail')
             ->name('tb-detail');
+        Route::post('/tb/change/status/{id}', 'TransferBarangController@status')->name('tb-status');
 
         // Cetak Transfer Barang
         Route::get('/cetak-tb/{status}/{awal}/{akhir}', 'CetakTBController@index')

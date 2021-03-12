@@ -183,5 +183,32 @@ class TransferBarangController extends Controller
         ];
 
         return view('pages.pembelian.transferbarang.detail', $data);
-    }    
+    }
+    
+    public function status(Request $request, $id) {
+        $detil = DetilTB::where('id_tb', $id)->get();
+        
+        foreach($detil as $item) {
+            $updateStokKurang = StokBarang::where('id_barang', $item->id_barang)
+                    ->where('id_gudang', $item->id_tujuan)->first();
+
+            $updateStokKurang->{'stok'} -= $item->qty;
+            $updateStokKurang->save();
+
+            $updateStokTambah = StokBarang::where('id_barang', $item->id_barang)
+                    ->where('id_gudang', $item->id_asal)->first();
+
+            $updateStokTambah->{'stok'} += $item->qty;
+            $updateStokTambah->save();
+        }
+
+        $tb = TransferBarang::where('id', $id)->first();
+        $tb->{'status'} = 'BATAL';
+        $tb->save();
+
+        // DetilTB::where('id_tb', $id)->delete();
+        // TransferBarang::where('id', $id)->delete();
+
+        return redirect()->route('tb-index');
+    }
 }

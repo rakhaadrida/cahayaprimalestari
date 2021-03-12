@@ -69,6 +69,15 @@
                             </div>
                           </div>
                         </div>
+                        <div class="col" style="margin-left: -450px">
+                          <div class="form-group row customer-detail">
+                            <label for="tanggal" class="col-3 form-control-sm text-bold text-right mt-1">Status</label>
+                            <span class="col-form-label text-bold">:</span>
+                            <div class="col-7">
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->status }}">
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -104,6 +113,11 @@
 
                     <!-- Button Submit dan Reset -->
                     <div class="form-row justify-content-center">
+                      @if($item->status != 'BATAL')
+                        <div class="col-2">
+                          <button type="submit" class="btn btn-danger btn-block text-bold" formaction="{{ route('tb-status', $item->id) }}" formmethod="POST">Batal</button>
+                        </div>
+                      @endif
                       <div class="col-2">
                         <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                       </div>
