@@ -1568,6 +1568,9 @@ for(let i = 0; i < harga.length; i++) {
 
     netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
     checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    ppn.value = 0;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
   });
 }
 

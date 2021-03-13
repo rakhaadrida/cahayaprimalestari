@@ -221,7 +221,7 @@
                         value="{{ $tipe }}">
                       </td>
                       <td align="right">
-                        <input type="text" name="harga[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" readonly>
+                        <input type="text" name="harga[]" class="@if(($item->barang->jenis->nama != 'NITTO') && ($item->barang->jenis->nama != 'BOSS')) form-control-plaintext @else form-control @endif form-control-sm text-bold text-dark text-right harga" value="{{ number_format($item->harga, 0, "", ".") }}" @if(($item->barang->jenis->nama != 'NITTO') && ($item->barang->jenis->nama != 'BOSS')) readonly @endif>
                       </td>
                       <td align="right">
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($item->qty * $item->harga, 0, "", ".") }}" >
@@ -480,6 +480,12 @@ for(let i = 0; i < brgNama.length; i++) {
         kodeBarang[i].value = '{{ $br->id }}';
         brgNama[i].value = '{{ $br->nama }}'.replace(/&quot;/g, '\"');
       }
+
+      if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}')) {
+        harga[i].removeAttribute('readonly');
+      } else {
+        harga[i].setAttribute('readonly', 'true');
+      }
     @endforeach
 
     @foreach($harga as $hb)
@@ -510,6 +516,27 @@ for(let i = 0; i < brgNama.length; i++) {
       namaBarangAwal[i].value = brgNama[i].value;
     }
   }
+}
+
+for(let i = 0; i < harga.length; i++) {
+  harga[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });
+
+    netPast = +netto[i].value.replace(/\./g, "");
+    jumlah[i].value = addCommas(harga[i].value.replace(/\./g, "") * qty[i].value);
+    if(diskon[i].value != "") {
+      var angkaDiskon = hitungDiskon(diskon[i].value)
+      diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
+    }
+
+    netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+    checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    ppn.value = 0;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
+  });
 }
 
 /** Tampil Jumlah Harga Otomatis **/
