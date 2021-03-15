@@ -44,8 +44,8 @@ class AccReceivableController extends Controller
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 // ->join('sales', 'sales.id', 'so.id_sales')
                 ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
-                // ->where('id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
-                ->where('so.id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
+                ->where('id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
+                // ->where('so.id_sales', 'SLS03')->orderBy('tgl_so', 'desc')->get();
 
         $data = [
             'ar' => $ar,
@@ -108,8 +108,8 @@ class AccReceivableController extends Controller
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 // ->join('sales', 'sales.id', 'so.id_sales')
                 ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
-                // ->where('id_sales', 'SLS03')
-                ->where('so.id_sales', 'SLS03')
+                ->where('id_sales', 'SLS03')
+                // ->where('so.id_sales', 'SLS03')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->orderBy('tgl_so', 'desc')->get();
         } else {
@@ -129,8 +129,8 @@ class AccReceivableController extends Controller
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 // ->join('sales', 'sales.id', 'so.id_sales')
                 ->select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
-                // ->where('id_sales', 'SLS03')
-                ->where('so.id_sales', 'SLS03')
+                ->where('id_sales', 'SLS03')
+                // ->where('so.id_sales', 'SLS03')
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
