@@ -107,15 +107,19 @@
                               $qty = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                                     ->join('customer', 'customer.id', 'so.id_customer')
                                     ->select('id_barang')->selectRaw('sum(qty) as qty')
+                                    // ->select('id_barang', 'id_customer','id_so')->selectRaw('sum(qty) as qty')
                                     ->where('id_customer', $c->id)->whereYear('tgl_so', $tahun)
+                                    // ->where('so.id_sales', $s->id)->whereYear('tgl_so', $tahun)
                                     ->whereMonth('tgl_so', $month)
                                     ->groupBy('id_barang')->orderBy('nama')->get();
+                                    // ->groupBy('id_customer', 'id_barang')->orderBy('nama')->get();
                               $cekQty += $qty->count();
                             @endphp
                             @foreach($qty as $q)
                               <tr class="text-dark text-bold collapse show" id="collapseSub{{$s->id}}">
                                 <td align="center">{{ $i }}</td>
                                 <td>{{ $c->nama }}</td>
+                                {{-- <td>{{ $q->so->customer->nama }}</td> --}}
                                 <td>{{ $q->barang->nama }}</td>
                                 <td align="center">{{ $q->barang->jenis->nama }}</td>
                                 <td align="right" style="width: 120px; background-color: yellow">{{ $q->qty }}</td>

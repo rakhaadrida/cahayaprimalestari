@@ -70,325 +70,324 @@
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($items as $item)
-                  <div class="carousel-item @if($item->id == $items[$items->count()-1]->id) active
-                    @endif "
-                  />
-                    <div class="container so-update-container text-dark">
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="form-group row">
-                            <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor SO</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($items->count() != 0)
-                                value="{{ $item->id }}"
-                              @endif
-                              >
-                            </div>
-                          </div>
-                        </div> 
-                        <div class="col" style="margin-left: -450px">
-                          <div class="form-group row">
-                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Customer</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                              @if($items->count() != 0)
-                                value="{{ $item->customer->nama }}"
-                              @endif
-                              >
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal SO</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-2">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($items->count() != 0)
-                                value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}"
-                              @endif
-                              >
-                            </div>
-                          </div>
-                        </div> 
-                        <div class="col" style="margin-left: -450px">
-                          <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                              @if($items->count() != 0)
-                                value="{{ $item->customer->sales->nama }}"
-                              @endif
-                              >
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-12">
-                          <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-3">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                              @if($item->need_approval->count() != 0)
-                                value="{{ $item->need_approval->last()->status }}"
-                                @php $status = $item->need_approval->last()->status; @endphp
-                              @else
-                                value="{{ $item->status }}"
-                                @php $status = $item->status; @endphp
-                              @endif
-                              >
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col" style="margin-left: -450px">
-                          <div class="form-group row customer-detail">
-                            <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
-                            <span class="col-form-label text-bold">:</span>
-                            <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
-                              @if($items->count() != 0)
-                                value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}"
-                              @endif
-                              >
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {{-- <table class="table table-sm table-responsive-sm table-hover" style="width: 40%">
-                      <thead class="text-center text-bold text-dark" style="border: dotted">
-                        <td style="border: dotted">Jatuh Tempo</td>
-                        <td>Sales</td>
-                      </thead>
-                      <tbody class="text-bold">
-                        <td align="center" style="border: dotted">
-                          @if($items->count() != 0) {{ $item->tempo }} @endif
-                        </td>
-                        <td align="center"> 
-                          @if($items->count() != 0) {{ $item->customer->sales->nama }} @endif
-                        </td>
-                      </tbody>
-                    </table> --}}
-
-                    @php 
-                      if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
-                        $itemsGudang = \App\Models\NeedAppDetil::with(['barang'])
-                                  ->select('id_gudang')->where('id_app', $item->need_approval->last()->id)
-                                  ->groupBy('id_gudang')->get();
-                      } else {
-                        $itemsGudang = \App\Models\DetilSO::with(['barang'])
-                                  ->select('id_gudang')->where('id_so', $item->id)
-                                  ->groupBy('id_gudang')->get();
-                      }
-                    @endphp
-
-                    <!-- Tabel Data Detil PO -->
-                    <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
-                      <thead class="text-center text-bold text-dark">
-                        <td style="width: 30px">No</td>
-                        <td style="width: 80px">Kode</td>
-                        <td>Nama Barang</td>
-                        <td style="width: 50px">Qty</td>
-                        @foreach($gudang as $g)
-                          <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
-                        @endforeach
-                        {{-- @foreach($itemsGudang as $g)
-                          <td style="width: 50px">{{ $g->gudang->nama }}</td>
-                        @endforeach --}}
-                        <td>Harga</td>
-                        <td>Jumlah</td>
-                        <td style="width: 100px">Diskon(%)</td>
-                        <td style="width: 110px">Diskon(Rp)</td>
-                        <td style="width: 120px">Netto (Rp)</td>
-                      </thead>
-                      <tbody>
-                        @if($items->count() != 0)
-                          @php 
-                            $i = 1; $subtotal = 0;
-                            if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
-                              $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
-                                        ->select('id_barang', 'diskon')
-                                        ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                                        ->where('id_app', $item->need_approval->last()->id)
-                                        ->groupBy('id_barang', 'diskon')
-                                        ->get();
-                            } else {
-                              $itemsDetail = \App\Models\DetilSO::with(['barang'])
-                                        ->select('id_barang', 'id_gudang', 'diskon')
-                                        ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
-                                        ->where('id_so', $item->id)
-                                        ->groupBy('id_barang', 'diskon')
-                                        ->get();
-                            }
-                          @endphp
-                          @foreach($itemsDetail as $itemDet)
-                            <tr class="text-dark">
-                              <td align="center">{{ $i }}</td>
-                              <td align="center">{{ $itemDet->id_barang }} </td>
-                              <td>{{ $itemDet->barang->nama }}</td>
-                              <td align="right">{{ $itemDet->qty }}</td>
-                              @foreach($gudang as $g)
-                                @php
-                                  if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
-                                    $itemGud = \App\Models\NeedAppDetil::where('id_app',
-                                            $item->need_approval->last()->id)
-                                            ->where('id_barang', $itemDet->id_barang)
-                                            ->where('id_gudang', $g->id)->get();
-                                  } else {
-                                    $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
-                                            ->where('id_barang', $itemDet->id_barang)
-                                            ->where('id_gudang', $g->id)->get();
-                                  }
-                                @endphp
-                                @if($itemGud->count() != 0)
-                                  <td align="right">{{ $itemGud[0]->qty }}</td>
-                                @else
-                                  <td></td>
-                                @endif
-                              @endforeach
-                              {{-- <td align="right">{{ $itemDet->qty }}</td> --}}
-                              <td align="right">
-                                {{ number_format($itemDet->harga, 0, "", ".") }}
-                              </td>
-                              <td align="right">
-                                {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
-                              </td>
-                              <td align="right">{{ $itemDet->diskon != NULL ? $itemDet->diskon : 0 }}</td>
-                              @php 
-                                $diskon = 100;
-                                $itemDet->diskon = ($itemDet->diskon != NULL ? str_replace(",", ".", $itemDet->diskon) : 0);
-                                $arrDiskon = explode("+", $itemDet->diskon);
-                                for($j = 0; $j < sizeof($arrDiskon); $j++) {
-                                  $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                                } 
-                                $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
-                              @endphp
-                              <td align="right">
-                                {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
-                              </td>
-                              <td align="right">
-                                {{ number_format(($itemDet->qty * $itemDet->harga) - 
-                                ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
-                              </td>
-                              @php $subtotal += ($itemDet->qty * $itemDet->harga) - 
-                                ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
-                              @endphp
-                            </tr>
-                            @php $i++; @endphp
-                          @endforeach
-                        @else
-                          <tr>
-                            <td colspan="9" class="text-center text-bold h4 p-2"><i>Belum ada Detail SO</i></td>
-                          </tr>
-                        @endif
-                      </tbody>
-                    </table>
-
-                    <div class="form-group row justify-content-end subtotal-so">
-                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
-                        {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}"
-                        /> --}}
-                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal, 0, "", ".") }}</span>
-                      </div>
-                    </div>
-                    <div class="form-group row justify-content-end total-so">
-                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
-                        {{-- <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->diskon, 0, "", ".") }}" /> --}}
-                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($item->diskon, 0, "", ".") }}</span>
-                      </div>
-                    </div>
-                    <div class="form-group row justify-content-end total-so">
-                      <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
-                        {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
-                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
-                      </div>
-                    </div>
-                    <div class="form-group row justify-content-end total-so">
-                      <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
-                        {{-- <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0"/> --}}
-                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">0</span>
-                      </div>
-                    </div>
-                    <div class="form-group row justify-content-end grandtotal-so">
-                      <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <div class="col-2 mr-1">
-                        {{-- <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
-                        <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-secondary text-lg text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
-                      </div>
-                    </div>
-                    <hr>
-                    <!-- End Tabel Data Detil PO -->
-
-                    @if((Auth::user()->roles != 'AR') && (($status != 'BATAL') && ($status != 'PENDING_BATAL') && ($status != 'LIMIT')))
-                      <!-- Button Submit dan Reset -->
-                      <div class="form-row justify-content-center">
-                        <div class="col-2">
-                          <a href="" tabindex="6" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold">Batal</a>
-                          {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
-                        </div>
-                        <div class="col-2">
-                          <button type="submit" tabindex="7" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah</button>
-                        </div>
-                      </div>
-                      <!-- End Button Submit dan Reset -->
-                    @endif
-                  </div>
-
-                  <!-- Modal Ganti Status -->
-                  <div class="modal" id="{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="{{$item->id}}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true" class="h2 text-bold">&times;</span>
-                          </button>
-                          <h4 class="modal-title">Ubah Status Faktur <b>{{$item->id}}</b></h4>
-                        </div>
-                        <div class="modal-body">
+                    <div class="carousel-item @if($item->id == $items[$items->count()-1]->id) active @endif "/>
+                      <div class="container so-update-container text-dark">
+                        <div class="row">
+                          <div class="col-12">
                             <div class="form-group row">
-                              <label for="kode" class="col-2 col-form-label text-bold">Status</label>
+                              <label for="kode" class="col-2 form-control-sm text-bold mt-1">Nomor SO</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-2">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="statusUbah" value="BATAL">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
+                                @if($items->count() != 0)
+                                  value="{{ $item->id }}"
+                                @endif
+                                >
                               </div>
                             </div>
-                            <div class="form-group subtotal-so">
-                              <label for="keterangan" class="col-form-label">Keterangan</label>
-                              <input type="text" class="form-control" name="ket{{$item->id}}" 
-                              id="ket{{$item->id}}" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
+                          </div> 
+                          <div class="col" style="margin-left: -450px">
+                            <div class="form-group row">
+                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Customer</label>
+                              <span class="col-form-label text-bold">:</span>
+                              <div class="col-7">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
+                                @if($items->count() != 0)
+                                  value="{{ $item->customer->nama }}"
+                                @endif
+                                >
+                              </div>
                             </div>
-                            <hr>
-                            <div class="form-row justify-content-center">
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="form-group row customer-detail">
+                              <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Tanggal SO</label>
+                              <span class="col-form-label text-bold">:</span>
+                              <div class="col-2">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
+                                @if($items->count() != 0)
+                                  value="{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') }}"
+                                @endif
+                                >
+                              </div>
+                            </div>
+                          </div> 
+                          <div class="col" style="margin-left: -450px">
+                            <div class="form-group row customer-detail">
+                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
+                              <span class="col-form-label text-bold">:</span>
+                              <div class="col-4">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
+                                @if($items->count() != 0)
+                                  value="{{ $item->customer->sales->nama }}"
+                                  {{-- value="{{ $item->sales->nama }}" --}}
+                                @endif
+                                >
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="form-group row customer-detail">
+                              <label for="tanggal" class="col-2 form-control-sm text-bold mt-1">Status</label>
+                              <span class="col-form-label text-bold">:</span>
                               <div class="col-3">
-                                <button type="submit" class="btn btn-success btn-block text-bold" id="btn{{$item->id}}" onclick="return checkEditable({{$item->id}})">Simpan</button>
-                                {{-- formaction="{{ route('so-status', $item->id) }}" formmethod="POST" --}}
-                              </div>
-                              <div class="col-3">
-                                <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
+                                @if($item->need_approval->count() != 0)
+                                  value="{{ $item->need_approval->last()->status }}"
+                                  @php $status = $item->need_approval->last()->status; @endphp
+                                @else
+                                  value="{{ $item->status }}"
+                                  @php $status = $item->status; @endphp
+                                @endif
+                                >
                               </div>
                             </div>
+                          </div>
+                          <div class="col" style="margin-left: -450px">
+                            <div class="form-group row customer-detail">
+                              <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Jatuh Tempo</label>
+                              <span class="col-form-label text-bold">:</span>
+                              <div class="col-4">
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
+                                @if($items->count() != 0)
+                                  value="{{ \Carbon\Carbon::parse($item->tgl_so)->add($item->tempo, 'days')->format('d-M-y') }}"
+                                @endif
+                                >
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {{-- <table class="table table-sm table-responsive-sm table-hover" style="width: 40%">
+                        <thead class="text-center text-bold text-dark" style="border: dotted">
+                          <td style="border: dotted">Jatuh Tempo</td>
+                          <td>Sales</td>
+                        </thead>
+                        <tbody class="text-bold">
+                          <td align="center" style="border: dotted">
+                            @if($items->count() != 0) {{ $item->tempo }} @endif
+                          </td>
+                          <td align="center"> 
+                            @if($items->count() != 0) {{ $item->customer->sales->nama }} @endif
+                          </td>
+                        </tbody>
+                      </table> --}}
+
+                      @php 
+                        if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
+                          $itemsGudang = \App\Models\NeedAppDetil::with(['barang'])
+                                    ->select('id_gudang')->where('id_app', $item->need_approval->last()->id)
+                                    ->groupBy('id_gudang')->get();
+                        } else {
+                          $itemsGudang = \App\Models\DetilSO::with(['barang'])
+                                    ->select('id_gudang')->where('id_so', $item->id)
+                                    ->groupBy('id_gudang')->get();
+                        }
+                      @endphp
+
+                      <!-- Tabel Data Detil PO -->
+                      <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
+                        <thead class="text-center text-bold text-dark">
+                          <td style="width: 30px">No</td>
+                          <td style="width: 80px">Kode</td>
+                          <td>Nama Barang</td>
+                          <td style="width: 50px">Qty</td>
+                          @foreach($gudang as $g)
+                            <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
+                          @endforeach
+                          {{-- @foreach($itemsGudang as $g)
+                            <td style="width: 50px">{{ $g->gudang->nama }}</td>
+                          @endforeach --}}
+                          <td>Harga</td>
+                          <td>Jumlah</td>
+                          <td style="width: 100px">Diskon(%)</td>
+                          <td style="width: 110px">Diskon(Rp)</td>
+                          <td style="width: 120px">Netto (Rp)</td>
+                        </thead>
+                        <tbody>
+                          @if($items->count() != 0)
+                            @php 
+                              $i = 1; $subtotal = 0;
+                              if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
+                                $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
+                                          ->select('id_barang', 'diskon')
+                                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                          ->where('id_app', $item->need_approval->last()->id)
+                                          ->groupBy('id_barang', 'diskon')
+                                          ->get();
+                              } else {
+                                $itemsDetail = \App\Models\DetilSO::with(['barang'])
+                                          ->select('id_barang', 'id_gudang', 'diskon')
+                                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
+                                          ->where('id_so', $item->id)
+                                          ->groupBy('id_barang', 'diskon')
+                                          ->get();
+                              }
+                            @endphp
+                            @foreach($itemsDetail as $itemDet)
+                              <tr class="text-dark">
+                                <td align="center">{{ $i }}</td>
+                                <td align="center">{{ $itemDet->id_barang }} </td>
+                                <td>{{ $itemDet->barang->nama }}</td>
+                                <td align="right">{{ $itemDet->qty }}</td>
+                                @foreach($gudang as $g)
+                                  @php
+                                    if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
+                                      $itemGud = \App\Models\NeedAppDetil::where('id_app',
+                                              $item->need_approval->last()->id)
+                                              ->where('id_barang', $itemDet->id_barang)
+                                              ->where('id_gudang', $g->id)->get();
+                                    } else {
+                                      $itemGud = \App\Models\DetilSO::where('id_so', $item->id)
+                                              ->where('id_barang', $itemDet->id_barang)
+                                              ->where('id_gudang', $g->id)->get();
+                                    }
+                                  @endphp
+                                  @if($itemGud->count() != 0)
+                                    <td align="right">{{ $itemGud[0]->qty }}</td>
+                                  @else
+                                    <td></td>
+                                  @endif
+                                @endforeach
+                                {{-- <td align="right">{{ $itemDet->qty }}</td> --}}
+                                <td align="right">
+                                  {{ number_format($itemDet->harga, 0, "", ".") }}
+                                </td>
+                                <td align="right">
+                                  {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
+                                </td>
+                                <td align="right">{{ $itemDet->diskon != NULL ? $itemDet->diskon : 0 }}</td>
+                                @php 
+                                  $diskon = 100;
+                                  $itemDet->diskon = ($itemDet->diskon != NULL ? str_replace(",", ".", $itemDet->diskon) : 0);
+                                  $arrDiskon = explode("+", $itemDet->diskon);
+                                  for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                                    $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                                  } 
+                                  $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                                @endphp
+                                <td align="right">
+                                  {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
+                                </td>
+                                <td align="right">
+                                  {{ number_format(($itemDet->qty * $itemDet->harga) - 
+                                  ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
+                                </td>
+                                @php $subtotal += ($itemDet->qty * $itemDet->harga) - 
+                                  ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
+                                @endphp
+                              </tr>
+                              @php $i++; @endphp
+                            @endforeach
+                          @else
+                            <tr>
+                              <td colspan="9" class="text-center text-bold h4 p-2"><i>Belum ada Detail SO</i></td>
+                            </tr>
+                          @endif
+                        </tbody>
+                      </table>
+
+                      <div class="form-group row justify-content-end subtotal-so">
+                        <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2 mr-1">
+                          {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}"
+                          /> --}}
+                          <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal, 0, "", ".") }}</span>
+                        </div>
+                      </div>
+                      <div class="form-group row justify-content-end total-so">
+                        <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2 mr-1">
+                          {{-- <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->diskon, 0, "", ".") }}" /> --}}
+                          <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($item->diskon, 0, "", ".") }}</span>
+                        </div>
+                      </div>
+                      <div class="form-group row justify-content-end total-so">
+                        <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2 mr-1">
+                          {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
+                          <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
+                        </div>
+                      </div>
+                      <div class="form-group row justify-content-end total-so">
+                        <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2 mr-1">
+                          {{-- <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0"/> --}}
+                          <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">0</span>
+                        </div>
+                      </div>
+                      <div class="form-group row justify-content-end grandtotal-so">
+                        <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2 mr-1">
+                          {{-- <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
+                          <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-secondary text-lg text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
+                        </div>
+                      </div>
+                      <hr>
+                      <!-- End Tabel Data Detil PO -->
+
+                      @if((Auth::user()->roles != 'AR') && (($status != 'BATAL') && ($status != 'PENDING_BATAL') && ($status != 'LIMIT')))
+                        <!-- Button Submit dan Reset -->
+                        <div class="form-row justify-content-center">
+                          <div class="col-2">
+                            <a href="" tabindex="6" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold">Batal</a>
+                            {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
+                          </div>
+                          <div class="col-2">
+                            <button type="submit" tabindex="7" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah</button>
+                          </div>
+                        </div>
+                        <!-- End Button Submit dan Reset -->
+                      @endif
+                    </div>
+
+                    <!-- Modal Ganti Status -->
+                    <div class="modal" id="{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="{{$item->id}}" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Ubah Status Faktur <b>{{$item->id}}</b></h4>
+                          </div>
+                          <div class="modal-body">
+                              <div class="form-group row">
+                                <label for="kode" class="col-2 col-form-label text-bold">Status</label>
+                                <span class="col-form-label text-bold">:</span>
+                                <div class="col-2">
+                                  <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="statusUbah" value="BATAL">
+                                </div>
+                              </div>
+                              <div class="form-group subtotal-so">
+                                <label for="keterangan" class="col-form-label">Keterangan</label>
+                                <input type="text" class="form-control" name="ket{{$item->id}}" 
+                                id="ket{{$item->id}}" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
+                              </div>
+                              <hr>
+                              <div class="form-row justify-content-center">
+                                <div class="col-3">
+                                  <button type="submit" class="btn btn-success btn-block text-bold" id="btn{{$item->id}}" onclick="return checkEditable({{$item->id}})">Simpan</button>
+                                  {{-- formaction="{{ route('so-status', $item->id) }}" formmethod="POST" --}}
+                                </div>
+                                <div class="col-3">
+                                  <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
+                                </div>
+                              </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
                   @endforeach
                 </div>
                 @if(($items->count() > 0) && ($items->count() != 1))

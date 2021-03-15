@@ -111,6 +111,7 @@
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->so->customer->nama }}</td>
                       <td class="align-middle">{{ $a->so->customer->sales->nama }}</td>
+                      {{-- <td class="align-middle">{{ $a->so->sales->nama }}</td> --}}
                       <td align="center" class="align-middle">{{ $a->so->kategori }}</td>
                       <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
                       <td align="center" class="align-middle">

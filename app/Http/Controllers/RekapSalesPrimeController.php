@@ -21,9 +21,11 @@ class RekapSalesPrimeController extends Controller
 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->select('id_sales', 'id_customer', 'id_barang')->selectRaw('sum(qty) as qty')
+                // ->select('customer.id_sales', 'id_customer', 'id_barang')->selectRaw('sum(qty) as qty')
+                ->select('so.id_sales', 'id_customer', 'id_barang')->selectRaw('sum(qty) as qty')
                 ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $month)
-                ->groupBy('id_sales', 'id_customer', 'id_barang')->orderBy('id_sales')->get();
+                // ->groupBy('customer.id_sales', 'id_customer', 'id_barang')->orderBy('id_sales')->get();
+                ->groupBy('so.id_sales', 'id_customer', 'id_barang')->orderBy('so.id_sales')->get();
         // return response()->json($items);
 
         $data = [

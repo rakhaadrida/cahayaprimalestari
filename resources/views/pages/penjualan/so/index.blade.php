@@ -37,7 +37,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly required autofocus>
+                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly required>
                         {{-- value="{{ $newcode }}" readonly --}}
                       </div>
                       <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
@@ -52,7 +52,7 @@
                   <label for="customer" class="col-2 col-form-label text-bold">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-3">
-                    <input type="text" tabindex="3" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required />
+                    <input type="text" tabindex="3" name="namaCustomer" id="namaCustomer" placeholder="Nama Customer" class="form-control form-control-sm mt-1" required autofocus/>
                     <input type="hidden" name="kodeCustomer" id="idCustomer">
                     <input type="hidden" name="limit" id="limit">
                     <input type="hidden" name="piutang" id="piutang">
@@ -67,12 +67,8 @@
                   <label for="alamat" class="col-2 col-form-label text-bold">Nama Sales</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly />
-                    <input type="hidden" name="kodeSales" id="idSales" 
-                      {{-- @if($itemsRow != 0) 
-                        value="{{ $items[0]->id_supplier }}"
-                      @endif --}}
-                    />
+                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" autocomplete="off" readonly required/>
+                    <input type="hidden" name="kodeSales" id="kodeSales"/>
                   </div>
                 </div>
                 <div class="row">
@@ -619,6 +615,7 @@ const kodeCust = document.getElementById('idCustomer');
 const limit = document.getElementById('limit');
 const piutang = document.getElementById('piutang');
 const namaSales = document.getElementById('namaSales');
+const kodeSales = document.getElementById('kodeSales');
 const npwp = document.getElementById('npwp');
 const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
@@ -681,6 +678,8 @@ var sisa; var stokJohar; var stokLain; var totStok;
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keyup', displayCust);
 namaCust.addEventListener('blur', displayCust);
+namaSales.addEventListener('keyup', displaySales);
+namaSales.addEventListener('blur', displaySales);
 tanggalKirim.addEventListener("keyup", formatTanggal);
 
 newRow.addEventListener("click", displayRow);
@@ -702,6 +701,7 @@ function displayCust(e) {
       kodeCust.value = '{{ $c->id }}';
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
+      kodeSales.value = '{{ $c->id_sales }}';
       npwp.value = '{{ $c->npwp }}';
       tempo.value = '{{ $c->tempo }}';
       tempTempo = '{{ $c->tempo }}';
@@ -712,6 +712,7 @@ function displayCust(e) {
       limit.value = '';
       piutang.value = '';
       namaSales.value = '';
+      kodeSales.value = '';
       npwp.value = '';
       tempo.value = '';
       tempTempo = '';
@@ -722,6 +723,18 @@ function displayCust(e) {
   @foreach($totalKredit as $t)
     if('{{ $t->id_customer }}' == kodeCust.value) {
       piutang.value = '{{ $t->total }}';
+    }
+  @endforeach
+}
+
+/** Tampil Id Sales **/
+function displaySales(e) {
+  @foreach($sales as $s)
+    if('{{ $s->nama }}' == e.target.value) {
+      kodeSales.value = '{{ $s->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeSales.value = '';
     }
   @endforeach
 }
@@ -2012,7 +2025,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  if((namaCust.value == "") || (tanggalKirim.value == "") || 
+  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || 
   (kategori.value == "") || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
   }
@@ -2067,6 +2080,11 @@ $(function() {
   @foreach($customer as $c)
     // customer.push('{{ $c->nama }}');
     customer.push('{{ $c->nama }} ({{ $c->alamat }})');
+  @endforeach
+
+  var sales = [];
+  @foreach($sales as $s)
+    sales.push('{{ $s->nama }}');
   @endforeach
     
   function split(val) {
@@ -2175,6 +2193,35 @@ $(function() {
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
       response($.ui.autocomplete.filter(customer, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  /*-- Autocomplete Input Sales --*/
+  $(namaSales).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(sales, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus

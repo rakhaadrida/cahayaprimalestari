@@ -62,8 +62,10 @@ class DashboardController extends Controller
                             ->whereYear('tgl_so', $tahun)->get();
             $retur = AR_Retur::selectRaw('sum(total) as total')
                     ->whereYear('tanggal', $tahun)->get();
-            $returMon = AR_Retur::selectRaw('sum(total) as total')
-                    ->whereYear('tanggal', $tahun)->whereMonth('tanggal', $bulan)->get();
+            $returMon = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                    ->join('so', 'so.id', 'ar.id_so')
+                    ->selectRaw('sum(ar_retur.total) as total')
+                    ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $bulan)->get();
             $cicil = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
                     ->join('so', 'so.id', 'ar.id_so')
                     ->selectRaw('sum(cicil) as total')
@@ -78,14 +80,19 @@ class DashboardController extends Controller
             $salesPerMonth = SalesOrder::selectRaw('sum(total) as sales, MONTH(tgl_so) month')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
                             ->groupBy('month')->get();
-            $returPerMonth = AR_Retur::selectRaw('sum(total) as total, MONTH(tanggal) month')
+            // return response()->json($salesPerMonth);
+            $returPerMonth = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                            ->join('so', 'so.id', 'ar.id_so')
+                            ->selectRaw('sum(ar_retur.total) as total, MONTH(tgl_so) month')
                             ->whereYear('tanggal', $tahun)->groupBy('month')->get();
+            // return response()->json($returPerMonth);
 
             $arrTotal = []; $j = 0;               
             for($i = 1; $i <= 12; $i++) {
                 if(($j < $salesPerMonth->count()) && ($salesPerMonth[$j]->month == $i)) {
                     if(($returPerMonth->count() != 0) && ($j < $returPerMonth->count()) && ($returPerMonth[$j] != NULL))
-                        $int = (int) $salesPerMonth[$j]->sales - $returPerMonth[$j]->total;
+                        // $int = (int) $salesPerMonth[$j]->sales - $returPerMonth[$j]->total;
+                        $int = (int) $salesPerMonth[$j]->sales;
                     else
                         $int = $salesPerMonth[$j]->sales;    
 

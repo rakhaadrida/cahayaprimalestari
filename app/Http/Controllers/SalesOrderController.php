@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\Customer;
+use App\Models\Sales;
 use App\Models\Barang;
 use App\Models\StokBarang;
 use App\Models\DetilSO;
@@ -29,6 +30,7 @@ class SalesOrderController extends Controller
     public function index($status) {
         $customer = Customer::with(['sales'])->get();
         $cust = Customer::pluck('nama')->toArray();
+        $sales = Sales::All();
         $barang = Barang::All();
         $harga = HargaBarang::All();
         // $hrg = Harga::All();
@@ -93,6 +95,7 @@ class SalesOrderController extends Controller
         $data = [
             'customer' => $customer,
             'cust' => $cust,
+            'sales' => $sales,
             'barang' => $barang,
             'kodeBarang' => $kodeBarang,
             'namaBarang' => $namaBarang,
@@ -168,6 +171,7 @@ class SalesOrderController extends Controller
             'pkp' => $pkp,
             'status' => $status,
             'id_customer' => $request->kodeCustomer,
+            // 'id_sales' => $request->kodeSales,
             'id_user' => Auth::user()->id
         ]);
 

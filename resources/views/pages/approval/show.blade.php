@@ -113,6 +113,7 @@
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-6 col-sm-5 col-md-7">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->so->customer->sales->nama }}" >
+                                {{-- value="{{ $item->so->sales->nama }}" --}}
                               </div>
                             </div>
                           </div>

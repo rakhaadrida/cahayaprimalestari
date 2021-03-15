@@ -34,41 +34,32 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
         $sejak = '2020';
 
         if($this->status == 'All') {
-            // $items = SalesOrder::with(['ar'])->join('customer', 'customer.id', 'so.id_customer')
-            //         ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-            //         ->where('tgl_so', $this->tanggal)->where('kategori', 'NOT LIKE', 'Extrana%')
-            //         ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')->orderBy('id')->get();
-
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('tgl_so', $this->tanggal)
                     ->where('kategori', 'NOT LIKE', 'Extrana%')
-                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('id_sales')
+                    ->where('kategori', 'NOT LIKE', 'Prime%')
+                    ->orderBy('id_sales')
+                    // ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
             
-            // $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-            //         ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-            //         ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Extrana%')
-            //         ->orderBy('id_sales')->orderBy('id')->get();
-
             $itemsEx = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('tgl_so', $this->tanggal)
-                    ->where('kategori', 'LIKE', 'Extrana%')->orderBy('id_sales')
+                    ->where('kategori', 'LIKE', 'Extrana%')
+                    ->orderBy('id_sales')
+                    // ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
         } else {
-            // $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-            //         ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-            //         ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Prime%')
-            //         ->orderBy('id_sales')->orderBy('id')->get();
-
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Prime%')
-                    ->orderBy('id_sales')->orderBy('customer.nama')->get();
+                    ->orderBy('id_sales')
+                    // ->orderBy('so.id_sales')
+                    ->orderBy('customer.nama')->get();
 
             $itemsEx = NULL;
         }

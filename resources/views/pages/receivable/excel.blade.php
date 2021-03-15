@@ -38,6 +38,7 @@
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
             <td align="center">{{ $item->so->customer->sales->nama }}</td>
+            {{-- <td align="center">{{ $item->so->sales->nama }}</td> --}}
             <td>{{ $item->so->customer->nama }}</td>
             <td align="center">{{ $item->so->kategori }}</td>
             <td align="center">{{ $item->id_so }}</td>
@@ -65,6 +66,7 @@
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $i }}</td>
               <td align="center" class="align-middle text-center">{{ $item->so->customer->sales->nama }}</td>
+              {{-- <td align="center" class="align-middle text-center">{{ $item->so->sales->nama }}</td> --}}
               <td class="align-middle">{{ $item->so->customer->nama }}</td>
               <td align="center" class="align-middle">{{ $item->so->kategori }}</td>
               <td align="center" class="align-middle">{{ $item->id_so }}</td>

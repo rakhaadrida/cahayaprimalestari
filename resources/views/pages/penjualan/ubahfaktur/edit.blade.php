@@ -60,8 +60,8 @@
                       <label for="namaSales" class="col-5 col-form-label text-bold text-right text-dark">Nama Sales</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSales"
-                        value="{{ $items[0]->customer->sales->nama }}">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSales" value="{{ $items[0]->customer->sales->nama }}">
+                        {{-- value="{{ $items->first()->sales->nama }}" --}}
                       </div>
                     </div>
                   </div>

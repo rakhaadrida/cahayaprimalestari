@@ -210,15 +210,17 @@ class LapKeuController extends Controller
     }
 
     public function getItems($bulan, $tahun) { 
-        $items = DetilSO::join('barang', 'barang.id', '=', 'detilso.id_barang')
-                    ->join('so', 'so.id', '=', 'detilso.id_so')
-                    ->join('customer', 'customer.id', '=', 'so.id_customer')
-                    ->join('sales', 'sales.id' , '=', 'customer.id_sales')
+        $items = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
+                    ->join('so', 'so.id', 'detilso.id_so')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->join('sales', 'sales.id', 'customer.id_sales')
                     ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
-                    ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])
+                    // ->select('so.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
+                    ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
                     ->groupBy('customer.id_sales', 'barang.id_kategori')
+                    // ->groupBy('so.id_sales', 'barang.id_kategori')
                     ->get();
 
         return $items;
@@ -231,21 +233,13 @@ class LapKeuController extends Controller
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->join('sales', 'sales.id' , 'customer.id_sales')
                     ->select('customer.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
+                    // ->select('so.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
                     ->groupBy('customer.id_sales', 'barang.id_kategori')
+                    // ->groupBy('so.id_sales', 'barang.id_kategori')
                     ->get();
-
-        // $retur = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
-        //             ->join('customer', 'customer.id', '=', 'so.id_customer')
-        //             ->join('sales', 'sales.id' , '=', 'customer.id_sales')
-        //             ->select('customer.id_sales', DB::raw('sum(retur) as total'))
-        //             ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
-        //             ->whereYear('so.tgl_so', $tahun)
-        //             ->whereMonth('so.tgl_so', $bulan)
-        //             ->groupBy('customer.id_sales')
-        //             ->get();
         
         return $retur;
     } 
