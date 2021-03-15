@@ -49,58 +49,6 @@
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier BM -->
-              
-              <!-- Inputan Detil BM -->
-              {{-- <div class="form-row">
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Gudang Asal</label>
-                  <input type="text" name="gudangAsal" id="gudangAsal" placeholder="Nama Gudang" class="form-control form-control-sm"
-                    @if($itemsRow != 0) 
-                      value="{{ $items[$itemsRow-1]->gudangAsal->nama }}"
-                    @endif
-                  >
-                  <input type="hidden" name="kodeAsal" id="kodeAsal">
-                </div>
-                @php $stokSisa = 0 @endphp
-                @if($itemsRow != 0) 
-                  @foreach($stok as $s)
-                    @if(($s->id_gudang == $items[$itemsRow-1]->id_asal) && ($s->id_barang == $items[$itemsRow-1]->id_barang))
-                      @php $stokSisa = $s->stok; @endphp
-                    @endif
-                  @endforeach
-                @endif
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Stok Asal</label>
-                  <input type="text" name="qtyAsal" id="qtyAsal" placeholder="Qty" class="form-control form-control-sm" readonly
-                    @if($itemsRow != 0) 
-                      @foreach($items as $item)
-                        @if(($item->id_asal == $items[$itemsRow-1]->id_asal) && ($item->id_barang == $items[$itemsRow-1]->id_barang))
-                          value="{{ $stokSisa -= $item->qty }}"
-                        @endif
-                      @endforeach
-                    @endif
-                  >
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Gudang Tujuan</label>
-                  <input type="text" name="gudangTujuan" id="gudangTujuan" placeholder="Nama Gudang" class="form-control form-control-sm">
-                  <input type="hidden" name="kodeTujuan" id="kodeTujuan">
-                </div>
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Stok</label>
-                  <input type="text" name="qtyTujuan" id="qtyTujuan" placeholder="Qty" class="form-control form-control-sm" readonly>
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Jumlah Transfer</label>
-                  <input type="text" name="qty" id="qty" placeholder="Qty Barang Transfer" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-auto">
-                  <label for="" class="col-form-label text-bold " ></label>
-                  <button type="submit" formaction="{{ route('tb-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
-                </div>
-              </div>          
-              <hr> --}}
-              <!-- End Inputan Detil BM -->
 
               <!-- Tabel Data Detil BM-->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
@@ -157,44 +105,6 @@
                       </td>
                     </tr>
                   @endfor
-
-                   <!-- Tabel Tampil Detil BM (Bukan Diinput di Tabel) -->
-                  {{-- @if($itemsRow != 0)
-                    @php $i = 1; @endphp
-                    @foreach($items as $item)
-                      <tr class="text-bold">
-                        <td align="center">{{ $i }}</td>
-                        <td align="center">{{ $item->barang->id }}</td>
-                        <td>{{ $item->barang->nama }}</td>
-                        <td align="right">{{ $item->gudangAsal->nama }}</td>
-                        <td align="right">{{ $item->stok_asal }}</td>
-                        <td align="right">{{ $item->gudangTujuan->nama }}</td>
-                        <td align="right">{{ $item->stok_tujuan }}</td>
-                        <td align="right">{{ $item->qty }}</td>
-                        <td align="center">
-                          <a href="" id="editButton{{$i}}" 
-                          onclick="return displayEditable({{$i}})">
-                            <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
-                          </a>
-                          <a href="" id="updateButton{{$i}}" class="ic-update" 
-                          onclick="return processEditable({{$i}})">
-                            <i class="fas fa-fw fa-save fa-lg mt-1"></i>
-                          </a>
-                        </td>
-                        <td align="center">
-                          <a href="{{ route('tb-remove', ['id' => $item->id_tb, 'barang' => $item->id_barang, 'asal' => $item->id_asal, 'tujuan' => $item->id_tujuan]) }}">
-                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      @php $i++; @endphp
-                    @endforeach
-                  @else
-                    <tr>
-                      <td colspan=10 class="text-center text-bold h4 p-2"><i>Silahkan Input Detil Transfer Barang</i></td>
-                    </tr>
-                  @endif --}}
-
                 </tbody>
               </table>
               <hr>
@@ -203,7 +113,7 @@
               <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" tabindex="{{ $tab++ }}" id="submitTB" onclick="return checkRequired(event)"  class="btn btn-success btn-block text-bold">Submit</>
+                  <button type="submit" tabindex="{{ $tab++ }}" id="submitTB" onclick="return checkUnique(event)"  class="btn btn-success btn-block text-bold">Submit</>
                   {{-- formaction="{{ route('tb-process', $newcode) }}" formmethod="POST" --}}
                 </div>
                 <div class="col-2">
@@ -238,6 +148,22 @@
                 </div>
               </div>
               <!-- End Modal Konfirmasi -->
+
+              <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title text-bold">Notifikasi Barang</h4>
+                    </div>
+                    <div class="modal-body text-dark">
+                      <h5>Terdapat <b>Kode Barang</b> dengan <b>Gudang Asal dan Gudang Tujuan</b> yang sama. Silahkan <b>ubah pilihan Gudang atau ubah kode barang</b>.</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
@@ -761,7 +687,6 @@ for(let i = 0; i < qtyTransfer.length; i++) {
 function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
-  console.log(charCode);
   if (charCode > 31 && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= qtyTransfer.length; i++) {
       if(inputan == i)
@@ -776,26 +701,92 @@ function angkaSaja(evt, inputan) {
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
-    qtyTransfer[i].value = qtyTransfer[i+1].value;
-    stokTujuan[i].value = stokTujuan[i+1].value;
-    gdgTujuan[i].value = gdgTujuan[i+1].value;
-    stokAsal[i].value = stokAsal[i+1].value;
-    gdgAsal[i].value = gdgAsal[i+1].value;
-    brgNama[i].value = brgNama[i+1].value;
-    kodeBarang[i].value = kodeBarang[i+1].value;
-    if(kodeBarang[i+1].value == "") {
-      gdgAsal[i].removeAttribute('required');
-      gdgTujuan[i].removeAttribute('required');
-      qtyTransfer[i].removeAttribute('required');
+    for(let j = i; j < hapusBaris.length; j++) {
+      if(j+1 != hapusBaris.length) {
+        qtyTransfer[j].value = qtyTransfer[j+1].value;
+        stokTujuan[j].value = stokTujuan[j+1].value;
+        gdgTujuan[j].value = gdgTujuan[j+1].value;
+        stokAsal[j].value = stokAsal[j+1].value;
+        gdgAsal[j].value = gdgAsal[j+1].value;
+        brgNama[j].value = brgNama[j+1].value;
+        kodeBarang[j].value = kodeBarang[j+1].value;
+        if(kodeBarang[j+1].value == "") {
+          gdgAsal[j].removeAttribute('required');
+          gdgTujuan[j].removeAttribute('required');
+          qtyTransfer[j].removeAttribute('required');
+        }
+        else {
+          gdgAsal[j+1].removeAttribute('required');
+          gdgTujuan[j+1].removeAttribute('required');
+          qtyTransfer[j+1].removeAttribute('required');
+        }
+      } else {
+        qtyTransfer[j].value = '';
+        stokTujuan[j].value = '';
+        gdgTujuan[j].value = '';
+        stokAsal[j].value = '';
+        gdgAsal[j].value = '';
+        brgNama[j].value = '';
+        kodeBarang[j].value = '';
+        gdgAsal[j].removeAttribute('required');
+        gdgTujuan[j].removeAttribute('required');
+        qtyTransfer[j].removeAttribute('required');
+      }
     }
-    else {
-      gdgAsal[i+1].removeAttribute('required');
-      gdgTujuan[i+1].removeAttribute('required');
-      qtyTransfer[i].removeAttribute('required');
+
+    // $(this).parents('tr').next().find('input').val('');
+    // kodeBarang[i].focus();
+    for(let j = 0; j < kodeBarang.length; j++) {
+      if(kodeBarang[j].value == '') {
+        kodeBarang[j].focus();
+        break;
+      }
     }
-    $(this).parents('tr').next().find('input').val('');
-    kodeBarang[i].focus();
   });
+}
+
+function checkUnique(e) {
+  const kdRow = document.querySelectorAll('.kdBrgRow');
+  const asalRow = document.querySelectorAll('.gdgAsalRow');
+  const tujuRow = document.querySelectorAll('.gdgTujuanRow');
+  document.getElementById("submitTB").removeAttribute('data-toggle');
+  document.getElementById("submitTB").removeAttribute('data-target');
+  cek = 0;
+  var kode = []; var asal = []; var tuju = [];
+  for(let i = 0; i < (jumBaris.value - kdRow.length); i++) {
+    if((kodeBarang[i].value != '') && (gdgAsal[i].value != '') && (gdgTujuan[i].value != '')) {
+      kode.push(kodeBarang[i].value);
+      asal.push(gdgAsal[i].value);
+      tuju.push(gdgTujuan[i].value);
+    }
+  }
+
+  for(let i = 0; i < kdRow.length; i++) {
+    if((kdRow[i].value != '') && (asalRow[i].value != '') && (tujuRow[i].value != '')) {
+      kode.push(kdRow[i].value);
+      asal.push(asalRow[i].value);
+      tuju.push(tujuRow[i].value);
+    }
+  }
+
+  for(let i = 0; i < kode.length; i++) {
+    for(let j = i+1; j < kode.length; j++) {
+      if((kode[i] == kode[j]) && (asal[i] == asal[j]) && (tuju[i] == tuju[j])) {
+        cek = 1;
+        break;
+      }
+    }
+  }
+
+  if(cek == 1) {
+    document.getElementById("submitTB").dataset.toggle = "modal";
+    document.getElementById("submitTB").dataset.target = "#modalNotif";
+    return false;
+  } 
+  else {
+    checkRequired();
+    return false;
+  }
 }
 
 function checkRequired(e) {
