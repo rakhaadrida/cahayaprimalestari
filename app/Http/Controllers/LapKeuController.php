@@ -89,7 +89,7 @@ class LapKeuController extends Controller
 
         $data = [
             'tahun' => $tahun,
-            'bulan' => $request->bulan,
+            'bulan' => ($mo == 'now' ? $request->bulan : $bulan[$mo-1]),
             'month' => $month,
             'jenis' => $jenis,
             'sales' => $sales,
@@ -120,7 +120,8 @@ class LapKeuController extends Controller
             $barang = Barang::where('id_kategori', $j->id)->get();
             foreach($barang as $b) {
                 $sisa = 0;
-                $totBM = DetilBM::selectRaw('sum(qty) as totQty')
+                $totBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                        ->selectRaw('sum(qty) as totQty')->where('status', '!=', 'BATAL')
                         ->where('id_barang', $b->id)->get();
                 $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
                         ->selectRaw('sum(qty) as totQty')
@@ -133,9 +134,13 @@ class LapKeuController extends Controller
                 }
 
                 if(($sisa == 0) && ($totSO[0]->totQty == null)) 
-                    $bmPerBrg = DetilBM::where('id_barang', $b->id)->get();
+                    $bmPerBrg = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                ->select('id_bm as id', 'detilbm.*')->where('status', '!=', 'BATAL')
+                                ->where('id_barang', $b->id)->get();
                 else {
-                    $lastBM = DetilBM::where('id_barang', $b->id)
+                    $lastBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                ->select('id_bm as id', 'detilbm.*')->where('status', '!=', 'BATAL')
+                                ->where('id_barang', $b->id)
                                 ->orderBy('id_bm', 'desc')->take(5)->get();
                     foreach($lastBM as $bm) {
                         if($sisa <= $bm->qty) {
@@ -146,7 +151,9 @@ class LapKeuController extends Controller
                             $sisa -= $bm->qty;
                     }
 
-                    $bmPerBrg = DetilBM::where('id_barang', $b->id)
+                    $bmPerBrg = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                ->select('id_bm as id', 'detilbm.*')->where('status', '!=', 'BATAL')
+                                ->where('id_barang', $b->id)
                                 ->where('id_bm', '>=', $kode)->get();
                 }
 

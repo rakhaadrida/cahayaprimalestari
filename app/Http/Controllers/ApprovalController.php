@@ -289,7 +289,8 @@ class ApprovalController extends Controller
                     'harga' => $item->harga,
                     'qty' => $item->qty,
                     'diskon' => $item->diskon,
-                    'diskonRp' => $diskonRp
+                    // 'diskonRp' => $diskonRp
+                    'diskonRp' => $item->diskonRp
                 ]);
             }
             elseif(($tipe == 'Dokumen') && ($statusApp == 'PENDING_UPDATE')) {

@@ -462,7 +462,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
         // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
         Route::get('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show');
-        // Route::post('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show');
+        Route::post('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show-post');
     });
 
     Route::group(['roles'=>'KENARI'], function() {

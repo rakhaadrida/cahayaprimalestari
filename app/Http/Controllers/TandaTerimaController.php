@@ -6,12 +6,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TandaTerima;
 use App\Models\SalesOrder;
+use App\Models\DetilSO;
 use Carbon\Carbon;
 use PDF;
 
 class TandaTerimaController extends Controller
 {
     public function index() {
+        /* $so = DetilSO::join('so', 'so.id', 'detilso.id_so')
+            ->select('id_so', 'tgl_so', 'id_barang', 'id_gudang', 'qty', 'detilso.diskon as diskon', 'diskonRp')
+            ->whereNotIn('id_gudang', ['GDG01', 'GDG06'])
+            ->where('tgl_so', '>', '2021-03-02')->whereNotIn('status', ['BATAL', 'LIMIT'])
+            ->orderBy('tgl_so', 'desc')->get();
+
+        // return response()->json($so);
+
+        foreach($so as $s) {
+            $item = DetilSO::where('id_so', $s->id_so)->where('id_barang', $s->id_barang)
+                    ->where('id_gudang', $s->id_gudang)->first();
+            $item->{'diskonRp'} = 0;
+            $item->save();
+        } */
+
         $items = TandaTerima::groupBy('id')->get();
         $data = [
             'items' => $items

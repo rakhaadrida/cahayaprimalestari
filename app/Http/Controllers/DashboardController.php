@@ -75,7 +75,7 @@ class DashboardController extends Controller
 
         if(Auth::user()->roles == 'SUPER') {
             $salesAnnual[0]->sales -= $retur[0]->total;
-            $salesMonthly[0]->sales -= $returMon[0]->total;
+            // $salesMonthly[0]->sales -= $returMon[0]->total;
 
             $salesPerMonth = SalesOrder::selectRaw('sum(total) as sales, MONTH(tgl_so) month')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)

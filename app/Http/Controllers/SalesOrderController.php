@@ -240,7 +240,7 @@ class SalesOrderController extends Controller
                         'qty' => $arrStok[$j],
                         'diskon' => ($request->diskon[$i] != '' ? $request->diskon[$i] : '0'),
                         // 'diskonRp' => $diskonRp
-                        'diskonRp' => ($request->diskonRp[$i] != '' ? str_replace(".", "", $request->diskonRp[$i]) : 0)
+                        'diskonRp' => ($request->diskonRp[$i] != '' ? ($j == 0 ? str_replace(".", "", $request->diskonRp[$i]) : 0) : 0)
                     ]);
 
                     /* if($status == 'LIMIT') {
@@ -555,7 +555,8 @@ class SalesOrderController extends Controller
                     'harga' => str_replace(".", "", $request->harga[$i]),
                     'qty' => $arrStok[$j],
                     'diskon' => $request->diskon[$i],
-                    'diskonRp' => $diskonRp
+                    // 'diskonRp' => $diskonRp
+                    'diskonRp' => ($request->diskonRp[$i] != '' ? ($j == 0 ? str_replace(".", "", $request->diskonRp[$i]) : 0) : 0)
                 ]);
 
                 if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
