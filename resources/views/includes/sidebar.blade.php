@@ -287,6 +287,7 @@
         <div class="py-2 collapse-inner rounded">
           <a class="collapse-item" href="{{ route('lap-keu') }}">Laporan Keuangan</a>
           <a class="collapse-item" href="{{ route('komisi') }}">Komisi Sales</a>
+          <a class="collapse-item" href="{{ route('prime') }}">Program Prime</a>
         </div>
       </div>
     </li>

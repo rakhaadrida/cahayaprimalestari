@@ -109,6 +109,7 @@
                                     ->select('id_barang')->selectRaw('sum(qty) as qty')
                                     // ->select('id_barang', 'id_customer','id_so')->selectRaw('sum(qty) as qty')
                                     ->where('id_customer', $c->id)->whereYear('tgl_so', $tahun)
+                                    ->whereNotIn('status', ['BATAL', 'LIMIT'])
                                     // ->where('so.id_sales', $s->id)->whereYear('tgl_so', $tahun)
                                     ->whereMonth('tgl_so', $month)
                                     ->groupBy('id_barang')->orderBy('nama')->get();

@@ -332,7 +332,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('user-hapusAll');
 
         // Sales Prime
-        Route::get('sales-prime', 'RekapSalesPrimeController@index')->name('prime');
+        // Route::get('sales-prime', 'RekapSalesPrimeController@index')->name('prime');
 
         // Komisi Sales
         Route::get('komisi', 'KomisiSalesController@index')->name('komisi');
@@ -340,6 +340,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('komisi/show', 'KomisiSalesController@show')->name('komisi-show');
         Route::post('komisi/excel', 'KomisiSalesController@excel')->name('komisi-excel');
         Route::post('komisi/excel-filter', 'KomisiSalesController@excelFilter')->name('komisi-excel-filter');
+
+        // Rekap Qty Penjualan
+        Route::get('prime', 'ProgramPrimeController@index')->name('prime');
+        Route::post('prime/show', 'ProgramPrimeController@show')->name('prime-show');
     });
 
     Route::group(['roles'=>['ADMIN', 'AR']], function() {
