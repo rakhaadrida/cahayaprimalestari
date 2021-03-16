@@ -18,10 +18,10 @@ class KomisiFilterExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    public function __construct(String $month, String $status, String $tanggal, String $lastTanggal)
+    public function __construct(String $month, String $kategori, String $tanggal, String $lastTanggal)
     {
         $this->month = $month;
-        $this->status = $status;
+        $this->kategori = $kategori;
         $this->tanggal = $tanggal;
         $this->lastTanggal = $lastTanggal;
     }
@@ -34,13 +34,13 @@ class KomisiFilterExport implements FromView, ShouldAutoSize, WithStyles
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
 
-        if($this->status == 'ALL')  {
-            $stat[0] = 'LUNAS';
-            $stat[1] = 'BELUM LUNAS';
+        if($this->kategori == 'ALL')  {
+            $stat[0] = 'EXTRANA';
+            $stat[1] = 'PRIME';
         }
         else {
-            $stat[0] = ($this->status == 'LUNAS' ? 'LUNAS' : '');
-            $stat[1] = ($this->status == 'BELUM LUNAS' ? 'BELUM LUNAS' : '');
+            $stat[0] = ($this->kategori == 'EXTRANA' ? 'EXTRANA' : '');
+            $stat[1] = ($this->kategori == 'PRIME' ? 'PRIME' : '');
         }
         
         $monthNow = Carbon::parse($this->tanggal)->format('Y-m-20');
@@ -48,27 +48,23 @@ class KomisiFilterExport implements FromView, ShouldAutoSize, WithStyles
         $lastMonth = Carbon::parse($this->lastTanggal)->format('Y-m-21');
         $bulanLast = Carbon::parse($this->lastTanggal)->isoFormat('MMMM');
         
-        if($bulNow != $this->month) {
+        if($this->kategori == 'ALL') {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->join('sales', 'sales.id', 'customer.id_sales')
                     ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                    ->where('keterangan', $stat[0])
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
+                    ->where('kategori', 'NOT LIKE', $stat[0].'%')
+                    ->where('kategori', 'NOT LIKE', $stat[1].'%')
                     ->where('id_sales', 'SLS12')
-                    ->orderBy('customer.nama', 'asc')->get();
+                    ->orderBy('tgl_so', 'desc')->orderBy('customer.nama', 'asc')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
                 ->where('id_sales', 'SLS12')
-                ->where('keterangan', $stat[1])
-                ->orWhere(function($q) use($monthNow, $lastMonth, $stat) {
-                    $q->where('keterangan', $stat[0])
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
-                    ->where('id_sales', 'SLS12');
-                })->orderBy('customer.nama', 'asc')->get();
+                ->where('kategori', 'LIKE', $this->kategori.'%')
+                ->orderBy('tgl_so', 'desc')->orderBy('customer.nama', 'asc')->get();
         }
 
         $data = [
@@ -102,36 +98,32 @@ class KomisiFilterExport implements FromView, ShouldAutoSize, WithStyles
         $monthNow = Carbon::parse($this->tanggal)->format('Y-m-20');
         $lastMonth = Carbon::parse($this->lastTanggal)->format('Y-m-21');
 
-        if($this->status == 'ALL')  {
-            $stat[0] = 'LUNAS';
-            $stat[1] = 'BELUM LUNAS';
+        if($this->kategori == 'ALL')  {
+            $stat[0] = 'EXTRANA';
+            $stat[1] = 'PRIME';
         }
         else {
-            $stat[0] = ($this->status == 'LUNAS' ? 'LUNAS' : '');
-            $stat[1] = ($this->status == 'BELUM LUNAS' ? 'BELUM LUNAS' : '');
+            $stat[0] = ($this->kategori == 'EXTRANA' ? 'EXTRANA' : '');
+            $stat[1] = ($this->kategori == 'PRIME' ? 'PRIME' : '');
         }
         
-        if($bulNow != $this->month) {
+        if($this->kategori == 'ALL') {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->join('sales', 'sales.id', 'customer.id_sales')
                     ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                    ->where('keterangan', $stat[0])
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
+                    ->where('kategori', 'NOT LIKE', $stat[0].'%')
+                    ->where('kategori', 'NOT LIKE', $stat[1].'%')
                     ->where('id_sales', 'SLS12')
-                    ->orderBy('ar.created_at', 'desc')->get();
+                    ->orderBy('customer.nama', 'asc')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
                 ->where('id_sales', 'SLS12')
-                ->where('keterangan', $stat[1])
-                ->orWhere(function($q) use($monthNow, $lastMonth, $stat) {
-                    $q->where('keterangan', $stat[0])
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
-                    ->where('id_sales', 'SLS12');
-                })->orderBy('ar.created_at', 'desc')->get();
+                ->where('kategori', 'LIKE', $this->kategori.'%')
+                ->orderBy('customer.nama', 'asc')->get();
         }
 
         $range = 6 + $items->count();

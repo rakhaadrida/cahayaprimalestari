@@ -21,7 +21,7 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
     public function view(): View
     {
         $waktu = Carbon::now('+07:00');
-        $waktu = $waktu->format('d F Y, H:i:s');
+        $waktu = $waktu->isoFormat('DD MMMM YYYY, HH:mm:ss');
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
         
@@ -36,12 +36,7 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
                 ->where('id_sales', 'SLS12')
-                ->where('keterangan', 'BELUM LUNAS')
-                ->orWhere(function($q) use($monthNow, $lastMonth) {
-                    $q->where('keterangan', 'LUNAS')
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
-                    ->where('id_sales', 'SLS12');
-                })->orderBy('customer.nama', 'asc')->get();
+                ->orderBy('tgl_so', 'desc')->orderBy('customer.nama')->get();
 
         $data = [
             'items' => $items,
@@ -78,12 +73,7 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
                 ->where('id_sales', 'SLS12')
-                ->where('keterangan', 'BELUM LUNAS')
-                ->orWhere(function($q) use($monthNow, $lastMonth) {
-                    $q->where('keterangan', 'LUNAS')
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
-                    ->where('id_sales', 'SLS12');
-                })->orderBy('customer.nama', 'desc')->get();
+                ->orderBy('customer.nama', 'desc')->get();
 
         $range = 6 + $items->count();
         $rangeStr = strval($range);

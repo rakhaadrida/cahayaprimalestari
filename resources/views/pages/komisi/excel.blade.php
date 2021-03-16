@@ -2,8 +2,10 @@
   <body>
     <center>
       <h2 class="text-bold text-dark">Data Komisi Sales Fadil</h2>
-      <h5 class="waktu-cetak">Periode : {{$bulanLast}} s/d {{$bulanNow}}</h5>
-      <h5 class="waktu-cetak">Tanggal : {{\Carbon\Carbon::parse($lastMonth)->format('d-M-y')}} s/d {{\Carbon\Carbon::parse($monthNow)->format('d-M-y')}}</h5>
+      {{-- <h5 class="waktu-cetak">Periode : {{$bulanLast}} s/d {{$bulanNow}}</h5> --}}
+      <h5 class="waktu-cetak">Bulan : {{$bulanNow}}</h5>
+      {{-- <h5 class="waktu-cetak">Tanggal : {{\Carbon\Carbon::parse($lastMonth)->format('d-M-y')}} s/d {{\Carbon\Carbon::parse($monthNow)->format('d-M-y')}}</h5> --}}
+      <h5 class="waktu-cetak">Tanggal : 1 - {{\Carbon\Carbon::parse($monthNow)->isoFormat('DD MMMM YYYY')}}</h5>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
     </center>

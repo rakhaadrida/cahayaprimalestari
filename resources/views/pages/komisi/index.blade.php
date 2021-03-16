@@ -32,8 +32,17 @@
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container"> 
-                <div class="form-group row" style="margin-top: -10px">
-                  <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
+                <div class="form-group row justify-content-center" style="margin-top: -10px">
+                  <label for="status" class="col-auto col-form-label text-right text-bold">Kategori</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-2">
+                    <select class="form-control form-control-sm mt-1" tabindex="2" name="kategori">
+                      <option value="ALL" selected>ALL</option>
+                      <option value="EXTRANA">EXTRANA</option>
+                      <option value="PRIME">PRIME</option>
+                    </select>
+                  </div>
+                  {{-- <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autocomplete="off" autofocus>
@@ -46,12 +55,16 @@
                       <option value="LUNAS">LUNAS</option>
                       <option value="BELUM LUNAS">BELUM LUNAS</option>
                     </select>
-                  </div>
+                  </div> --}}
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                  <div class="col-auto mt-1" style="margin-left: 165px">
+                  {{-- <div class="col-auto mt-1" style="margin-left: 165px"> --}}
+                  <div class="col-auto mt-1">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-excel') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="5" formaction="{{ route('komisi-excel') }}" formmethod="POST" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Upload File Komisi</button>
                   </div>
                   {{-- <div class="col-auto mt-1" style="margin-left: 215px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
@@ -67,11 +80,15 @@
               <div class="container" style="margin-bottom: -25px">
                 <div class="row justify-content-center">
                   <h5 class="text-bold text-dark">
-                    Periode : {{$bulanLast}} s / d {{$bulanNow}}
+                    {{-- Periode : {{$bulanLast}} s / d {{$bulanNow}} --}}
+                    Bulan : {{$bulanNow}}
                   </h5>
                 </div>
                 <div class="row justify-content-center" style="margin-top: -5px">
-                  <h5 class="text-dark">Tanggal : {{ \Carbon\Carbon::parse($lastMonth)->format('d-M-y') }} s / d {{ \Carbon\Carbon::parse($monthNow)->format('d-M-y') }}</h5>
+                  <h5 class="text-dark">
+                    {{-- Tanggal : {{ \Carbon\Carbon::parse($lastMonth)->format('d-M-y') }} s / d {{ \Carbon\Carbon::parse($monthNow)->format('d-M-y') }} --}}
+                    Tanggal : 1 - {{ \Carbon\Carbon::parse($monthNow)->isoFormat('DD MMMM YYYY') }}
+                  </h5>
                 </div>
               </div>
               <br>

@@ -32,8 +32,17 @@
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container"> 
-                <div class="form-group row" style="margin-top: -10px">
-                  <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
+                <div class="form-group row justify-content-center" style="margin-top: -10px">
+                  <label for="status" class="col-auto col-form-label text-right text-bold">Kategori</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-2">
+                    <select class="form-control form-control-sm mt-1" tabindex="2" name="kategori">
+                      <option value="ALL" @if($kat == 'ALL') selected @endif>ALL</option>
+                      <option value="EXTRANA" @if($kat == 'EXTRANA') selected @endif>EXTRANA</option>
+                      <option value="PRIME" @if($kat == 'PRIME') selected @endif>PRIME</option>
+                    </select>
+                  </div>
+                  {{-- <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autocomplete="off" autofocus>
@@ -46,14 +55,15 @@
                       <option value="LUNAS" @if($status == 'LUNAS') selected @endif>LUNAS</option>
                       <option value="BELUM LUNAS" @if($status == 'BELUM LUNAS') selected @endif>BELUM LUNAS</option>
                     </select>
-                  </div>
+                  </div> --}}
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('komisi-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
-                  <div class="col-auto mt-1" style="margin-left: 60px">
+                  {{-- <div class="col-auto mt-1" style="margin-left: 60px"> --}}
+                  <div class="col-auto mt-1">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-excel-filter') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
                   </div>
                   {{-- <div class="col-auto mt-1" style="margin-left: 215px">

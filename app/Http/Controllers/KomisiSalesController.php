@@ -23,12 +23,7 @@ class KomisiSalesController extends Controller
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
                 ->where('id_sales', 'SLS12')
-                ->where('keterangan', 'BELUM LUNAS')
-                ->orWhere(function($q) use($monthNow, $lastMonth) {
-                    $q->where('keterangan', 'LUNAS')
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
-                    ->where('id_sales', 'SLS12');
-                })->orderBy('ar.created_at', 'desc')->get();
+                ->orderBy('ar.created_at', 'desc')->get();
 
         // return response()->json($bulanLast);
 
@@ -44,13 +39,13 @@ class KomisiSalesController extends Controller
     }
 
     public function show(Request $request) {
-        if($request->status == 'ALL')  {
-            $status[0] = 'LUNAS';
-            $status[1] = 'BELUM LUNAS';
+        if($request->kategori == 'ALL')  {
+            $status[0] = 'EXTRANA';
+            $status[1] = 'PRIME';
         }
         else {
-            $status[0] = ($request->status == 'LUNAS' ? 'LUNAS' : '');
-            $status[1] = ($request->status == 'BELUM LUNAS' ? 'BELUM LUNAS' : '');
+            $status[0] = ($request->status == 'EXTRANA' ? 'EXTRANA' : '');
+            $status[1] = ($request->status == 'PRIME' ? 'PRIME' : '');
         }
 
         $date = Carbon::now('+07:00');
@@ -82,13 +77,13 @@ class KomisiSalesController extends Controller
         $lastMonth = Carbon::parse($lastTanggal)->format('Y-m-21');
         $bulanLast = Carbon::parse($lastTanggal)->isoFormat('MMMM');
 
-        if($bulNow != $month) {
+        if($request->kategori == 'ALL') {
             $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->join('sales', 'sales.id', 'customer.id_sales')
                     ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                    ->where('keterangan', $status[0])
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
+                    ->where('kategori', 'NOT LIKE', $status[0].'%')
+                    ->where('kategori', 'NOT LIKE', $status[1].'%')
                     ->where('id_sales', 'SLS12')
                     ->orderBy('ar.created_at', 'desc')->get();
         } else {
@@ -97,12 +92,8 @@ class KomisiSalesController extends Controller
                 ->join('sales', 'sales.id', 'customer.id_sales')
                 ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
                 ->where('id_sales', 'SLS12')
-                ->where('keterangan', $status[1])
-                ->orWhere(function($q) use($monthNow, $lastMonth, $status) {
-                    $q->where('keterangan', $status[0])
-                    ->whereBetween('ar.updated_at', [$lastMonth, $monthNow])
-                    ->where('id_sales', 'SLS12');
-                })->orderBy('ar.created_at', 'desc')->get();
+                ->where('kategori', 'LIKE', $request->kategori.'%')
+                ->orderBy('ar.created_at', 'desc')->get();
         }
                 
         $data = [
@@ -112,7 +103,8 @@ class KomisiSalesController extends Controller
             'monthNow' => $monthNow,
             'lastMonth' => $lastMonth,
             'bulanNow' => $bulanNow,
-            'bulanLast' => $bulanLast
+            'bulanLast' => $bulanLast,
+            'kat' => $request->kategori
         ];
 
         return view('pages.komisi.show', $data);
@@ -120,11 +112,11 @@ class KomisiSalesController extends Controller
 
     public function excel() {
         $date = Carbon::now('+07:00');
-        $bulanNow = Carbon::parse($date)->isoFormat('MMM'); 
+        $bulanNow = Carbon::parse($date)->isoFormat('MMMM'); 
         $lastMonth = $date->subMonths(1)->format('Y-m-21');
         $bulanLast = Carbon::parse($date)->isoFormat('MMM');
 
-        return Excel::download(new KomisiNowExport(), 'Komisi-Fadil-'.$bulanLast.'-'.$bulanNow.'.xlsx');
+        return Excel::download(new KomisiNowExport(), 'Komisi-Fadil-'.$bulanNow.'.xlsx');
     }
 
     public function excelFilter(Request $request) {
@@ -156,8 +148,8 @@ class KomisiSalesController extends Controller
         $lastMonth = Carbon::parse($lastTanggal)->format('Y-m-21');
         $bulanLast = Carbon::parse($lastTanggal)->isoFormat('MMM');
         
-        $status = $request->status;
+        $kategori = $request->kategori;
 
-        return Excel::download(new KomisiFilterExport($month, $status, $tanggal, $lastTanggal), 'Komisi-Fadil-'.$bulanLast.'-'.$bulanNow.'.xlsx');
+        return Excel::download(new KomisiFilterExport($month, $kategori, $tanggal, $lastTanggal), 'Komisi-Fadil-'.$bulanNow.'-'.$request->kategori.'.xlsx');
     }
 }
