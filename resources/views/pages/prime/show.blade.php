@@ -49,6 +49,9 @@
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('prime') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
+                  <div class="col-auto mt-1">
+                    <button type="submit" tabindex="5" formaction="{{ route('prime-excel-filter') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                  </div>
                 </div>  
               </div> 
               <hr> 
@@ -77,7 +80,8 @@
                   @foreach($sales as $s)
                     @php
                       $total = 0; $cekQty = 0;
-                      // $customer = \App\Models\Customer::where('id_sales', $s->id)->get();
+                      if($cust == '')
+                        $customer = \App\Models\Customer::where('id_sales', $s->id)->get();
                     @endphp
                     @foreach($customer as $c)
                       @php
@@ -96,7 +100,7 @@
                         $cekQty += $qty->count();
                       @endphp
                       @foreach($qty as $q)
-                        <tr class="text-dark text-bold collapse show" id="collapseSub{{$s->id}}">
+                        <tr class="text-dark text-bold">
                           <td align="center">{{ $i }}</td>
                           <td>{{ $c->sales->nama }}</td>
                           <td>{{ $c->nama }}</td>
@@ -109,14 +113,14 @@
                       @endforeach
                     @endforeach
                     @if($cekQty != 0)
-                      <tr class="text-white text-bold bg-primary collapse show">
+                      <tr class="text-white text-bold bg-primary">
                         <td align="right" colspan="5">Total Qty Penjualan</td>
                         <td align="right">{{ $total }}</td>
                       </tr>
                     @endif
                     @php $subtotal += $total; @endphp
                   @endforeach
-                  <tr class="text-white text-bold bg-danger collapse show">
+                  <tr class="text-white text-bold bg-danger">
                     <td align="right" colspan="5">Grand Total Qty Penjualan</td>
                     <td align="right">{{ number_format($subtotal, 0, "", ".") }}</td>
                   </tr>
@@ -170,9 +174,9 @@ function displayKode(e) {
     kode.value = '';
   }
 
-  @foreach($salesAll as $s)
-    if(e.target.value == '{{ $s->nama }}') {
-      kode.value = '{{ $s->id }}';
+  @foreach($customerAll as $c)
+    if(e.target.value == '{{ $c->nama }}') {
+      kode.value = '{{ $c->id }}';
     }
   @endforeach
 }
@@ -196,8 +200,8 @@ $(function() {
               'September', 'Oktober', 'November', 'Desember'];
   var nama = [];
 
-  @foreach($salesAll as $s)
-    nama.push('{{ $s->nama }}');
+  @foreach($customerAll as $c)
+    nama.push('{{ $c->nama }}');
   @endforeach
 
   function split(val) {

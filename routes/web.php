@@ -344,6 +344,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Rekap Qty Penjualan
         Route::get('prime', 'ProgramPrimeController@index')->name('prime');
         Route::post('prime/show', 'ProgramPrimeController@show')->name('prime-show');
+        Route::post('prime/excel', 'ProgramPrimeController@excel')->name('prime-excel');
+        Route::post('prime/excel-filter', 'ProgramPrimeController@excelFilter')->name('prime-excel-filter');
     });
 
     Route::group(['roles'=>['ADMIN', 'AR']], function() {

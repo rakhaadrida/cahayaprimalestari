@@ -1,64 +1,78 @@
 <html>
   <body>
     <center>
-      <h2 class="text-bold text-dark">REKAP STOK {{$nama}}</h2>
+      <h2 class="text-bold text-dark">Program Prime {{ $bulanNow == 'KOSONG' ? $customer->first()->nama : $bulanNow}}</h2>
+      <h5 class="waktu-cetak">Tanggal : 1 - {{ \Carbon\Carbon::parse($date)->isoFormat('DD MMMM YYYY') }}</h5>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
     </center>
     <br>
 
     <!-- Tabel Data Detil BM-->
-    <table class="table table-sm table-bordered table-cetak">
-      <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
+    <table class="table table-sm table-bordered table-responsive-sm table-hover">
+      <thead class="text-center text-dark text-bold">
         <tr>
-          <td>No</td>
-          <td>Nama Barang</td>
-          <td>Total Stok</td>
-          @foreach($gudang as $g)
-            <td>{{ $g->nama }}</td>
-          @endforeach
+          <th>No</th>
+          <th>Sales</th>
+          <th>Customer</th>
+          <th>Nama Barang</th>
+          <th>Kategori</th>
+          <th>Qty</th>
         </tr>
       </thead>
       <tbody id="tablePO">
-        @php $i = 1; @endphp
-        @foreach($sub as $s)
+        @php $i = 1; $subtotal = 0; @endphp
+        @foreach($sales as $s)
           @php
-            $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
-          @endphp 
-          <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-            <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
-          </tr>
-          @foreach($barang as $b)
+            $total = 0; $cekQty = 0;
+            if($cust == 'KOSONG')
+              $customer = \App\Models\Customer::where('id_sales', $s->id)->orderBy('nama')->get();
+          @endphp
+          @foreach($customer as $c)
             @php
-              $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
-                        DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
-                        ->groupBy('id_barang')->get();
+              $qty = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->join('barang', 'barang.id', 'detilso.id_barang')
+                    ->select('id_barang')->selectRaw('sum(qty) as qty')
+                    // ->select('id_barang', 'id_customer','id_so')->selectRaw('sum(qty) as qty')
+                    ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('id_kategori', 'KAT08')
+                    ->where('id_customer', $c->id)->whereYear('tgl_so', $tahun)
+                    // ->where('so.id_sales', $s->id)->whereYear('tgl_so', $tahun)
+                    ->whereIn(DB::raw('MONTH(tgl_so)'), $month)
+                    ->groupBy('id_barang')->orderBy('customer.nama')->get();
+                    // ->groupBy('id_customer', 'id_barang')->orderBy('nama')->get();
+              $cekQty += $qty->count();
             @endphp
-            <tr class="text-dark ">
-              <td align="center">{{ $i }}</td>
-              <td>{{ $b->nama }}</td>
-               <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
-              @foreach($gudang as $g)
-                @php
-                  if($g->tipe != 'RETUR') {
-                    $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
-                              ->where('id_gudang', $g->id)->get();
-                  } else {
-                    $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
-                              stok')->where('id_barang', $b->id)
-                              ->where('id_gudang', $g->id)->get();
-                  }
-                @endphp
-                <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
-              @endforeach
-            </tr>
-            @php $i++ @endphp
+            @foreach($qty as $q)
+              <tr class="text-dark text-bold">
+                <td align="center">{{ $i }}</td>
+                <td>{{ $c->sales->nama }}</td>
+                <td>{{ $c->nama }}</td>
+                {{-- <td>{{ $q->so->customer->nama }}</td> --}}
+                <td>{{ $q->barang->nama }}</td>
+                <td align="center">{{ $q->barang->jenis->nama }}</td>
+                <td align="right">{{ $q->qty }}</td>
+              </tr>
+              @php $i++; $total += $q->qty; @endphp
+            @endforeach
           @endforeach
+          @if($cekQty != 0)
+            <tr class="text-white text-bold bg-primary">
+              <td colspan="5" align="right">Total Qty Penjualan {{ $s->nama }}</td>
+              <td align="right">{{ $total }}</td>
+            </tr>
+          @endif
+          @php $subtotal += $total; @endphp
         @endforeach
+        <tr class="text-white text-bold bg-danger">
+          <td colspan="5" align="right" >Grand Total Qty Penjualan</td>
+          <td align="right">{{ $subtotal }}</td>
+        </tr>
       </tbody>
     </table>
     <br>
     <!-- End Tabel Data Detil PO -->
-    <h4>Copyright &copy; {{$sejak}} @if($tahun->year != $sejak) - {{$tahun->year}} @endif | rakhaadrida</h4>
+    <h4>Copyright &copy; {{$sejak}} @if($tahun != $sejak) - {{$tahun}} @endif | rakhaadrida</h4>
   </body>
 </html>

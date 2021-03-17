@@ -46,6 +46,9 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('prime-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
+                  <div class="col-auto mt-1">
+                    <button type="submit" tabindex="5" formaction="{{ route('prime-excel') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                  </div>
                 </div>  
               </div> 
               <hr> 
@@ -74,7 +77,7 @@
                   @foreach($sales as $s)
                     @php
                       $total = 0; $cekQty = 0;
-                      $customer = \App\Models\Customer::where('id_sales', $s->id)->get();
+                      $customer = \App\Models\Customer::where('id_sales', $s->id)->orderBy('nama')->get();
                     @endphp
                     @foreach($customer as $c)
                       @php
@@ -93,7 +96,7 @@
                         $cekQty += $qty->count();
                       @endphp
                       @foreach($qty as $q)
-                        <tr class="text-dark text-bold collapse show" id="collapseSub{{$s->id}}">
+                        <tr class="text-dark text-bold">
                           <td align="center">{{ $i }}</td>
                           <td>{{ $c->sales->nama }}</td>
                           <td>{{ $c->nama }}</td>
@@ -106,14 +109,14 @@
                       @endforeach
                     @endforeach
                     @if($cekQty != 0)
-                      <tr class="text-white text-bold bg-primary collapse show">
+                      <tr class="text-white text-bold bg-primary">
                         <td align="right" colspan="5">Total Qty Penjualan</td>
                         <td align="right">{{ number_format($total, 0, "", ".") }}</td>
                       </tr>
                     @endif
                     @php $subtotal += $total; @endphp
                   @endforeach
-                  <tr class="text-white text-bold bg-danger collapse show">
+                  <tr class="text-white text-bold bg-danger">
                     <td align="right" colspan="5">Grand Total Qty Penjualan</td>
                     <td align="right">{{ number_format($subtotal, 0, "", ".") }}</td>
                   </tr>
