@@ -8,6 +8,7 @@ use App\Models\Barang;
 use App\Models\StokBarang;
 use App\Models\TransferBarang;
 use App\Models\DetilTB;
+use App\Models\NeedApproval;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -177,6 +178,7 @@ class TransferBarangController extends Controller
 
     public function detail(Request $request, $id) {
         $items = TransferBarang::All();
+        // $items = TransferBarang::where('tgl_tb', '>', Carbon::now()->subMonths(1))->get();
         $data = [
             'items' => $items,
             'kode' => $id
@@ -186,6 +188,21 @@ class TransferBarangController extends Controller
     }
     
     public function status(Request $request, $id) {
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+        NeedApproval::create([
+            'id' => $newcode,
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => 'PENDING_BATAL',
+            'keterangan' => $request->input("ket".$id),
+            'id_dokumen' => $id,
+            'tipe' => 'Transfer',
+            'id_user' => Auth::user()->id
+        ]);
+
         $detil = DetilTB::where('id_tb', $id)->get();
         
         foreach($detil as $item) {
@@ -202,9 +219,9 @@ class TransferBarangController extends Controller
             $updateStokTambah->save();
         }
 
-        $tb = TransferBarang::where('id', $id)->first();
-        $tb->{'status'} = 'BATAL';
-        $tb->save();
+        // $tb = TransferBarang::where('id', $id)->first();
+        // $tb->{'status'} = 'BATAL';
+        // $tb->save();
 
         // DetilTB::where('id_tb', $id)->delete();
         // TransferBarang::where('id', $id)->delete();

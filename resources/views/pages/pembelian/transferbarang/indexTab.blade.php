@@ -35,7 +35,8 @@
                   <th style="width: 60px" class="align-middle">No</th>
                   <th style="width: 140px" class="align-middle">Nomor TB</th>
                   <th style="width: 180px" class="align-middle">Tgl TB</th>
-                  <th style="width: 160px" class="align-middle">User</th>
+                  <th style="width: 120px" class="align-middle">Status</th>
+                  <th style="width: 120px" class="align-middle">User</th>
                 </thead>
                 <tbody>
                   @php $i = 1; $tab = 0; @endphp
@@ -44,6 +45,7 @@
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="text-center"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('tb-detail', $item->id) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $item->id }}</button></td>
                       <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_tb)->format('d-M-y')  }}</td>
+                      <td class="text-center align-middle">{{ $item->status }}</td>
                       <td class="text-center align-middle">{{ $item->user->name }}</td>
                     </tr>
                     @php $i++; @endphp

@@ -115,7 +115,9 @@
                     <div class="form-row justify-content-center">
                       @if($item->status != 'BATAL')
                         <div class="col-2">
-                          <button type="submit" class="btn btn-danger btn-block text-bold" formaction="{{ route('tb-status', $item->id) }}" formmethod="POST">Batal</button>
+                          <a href="" class="btn btn-danger btn-block text-bold"  data-toggle="modal" 
+                          data-target="#{{$item->id}}">Batal</a>
+                          {{-- formaction="{{ route('tb-status', $item->id) }}" formmethod="POST" --}}
                         </div>
                       @endif
                       <div class="col-2">
@@ -123,6 +125,43 @@
                       </div>
                     </div>
                     <!-- End Button Submit dan Reset -->
+
+                    <!-- Modal Ganti Status -->
+                    <div class="modal" id="{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="{{$item->id}}" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Ubah Status Transfer <b>{{$item->id}}</b></h4>
+                          </div>
+                          <div class="modal-body">
+                              <div class="form-group row">
+                                <label for="kode" class="col-2 col-form-label text-bold">Status</label>
+                                <span class="col-form-label text-bold">:</span>
+                                <div class="col-2">
+                                  <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="statusUbah" value="BATAL">
+                                </div>
+                              </div>
+                              <div class="form-group subtotal-so">
+                                <label for="keterangan" class="col-form-label">Keterangan</label>
+                                <input type="text" class="form-control" name="ket{{$item->id}}" 
+                                id="ket{{$item->id}}" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
+                              </div>
+                              <hr>
+                              <div class="form-row justify-content-center">
+                                <div class="col-3">
+                                  <button type="submit" class="btn btn-success btn-block text-bold" id="btn{{$item->id}}" onclick="return checkEditable({{$item->id}})">Simpan</button>
+                                </div>
+                                <div class="col-3">
+                                  <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   @endforeach
                 </div>
@@ -153,6 +192,20 @@
 @push('addon-script')
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
-
+function checkEditable(kode) {
+  const ket = document.getElementById("ket"+kode.id);
+  if(ket.value == "") {
+    $(ket).tooltip('show');
+    return false;
+  }
+  else {
+    @foreach($items as $item)
+      if('{{ $item->id }}' == kode.id) {
+        document.getElementById("btn"+kode.id).formMethod = "POST";
+        document.getElementById("btn"+kode.id).formAction = '{{ route('tb-status', $item->id) }}';
+      }
+    @endforeach
+  }
+}
 </script>
 @endpush

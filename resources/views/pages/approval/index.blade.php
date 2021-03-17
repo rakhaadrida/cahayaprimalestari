@@ -44,6 +44,8 @@
                   <td class="align-middle" align="center">{{ $item->so != null ? $item->so->customer->nama : '' }}</td>
                 @elseif($item->tipe == 'Dokumen') 
                   <td class="align-middle" align="center">{{ $item->bm->supplier->nama }}</td>
+                @elseif($item->tipe == 'Transfer') 
+                  <td class="align-middle" align="center">TRANSFER BARANG</td>
                 @elseif($item->tipe == 'RJ') 
                   <td class="align-middle" align="center">{{ $item->rj->customer->nama }}</td>
                 @elseif($item->tipe == 'RB') 

@@ -46,6 +46,11 @@
 
                         $itemsUpdate = \App\Models\Approval::with(['bm'])->where('id_dokumen', $item->id_dokumen)->get();
                       }
+                      elseif($item->tipe == 'Transfer') {
+                        $items = \App\Models\DetilTB::where('id_tb', $item->id_dokumen)->get();
+
+                        $itemsUpdate = \App\Models\Approval::where('id_dokumen', $item->id_dokumen)->get();
+                      }
                       elseif($item->tipe == 'RJ') {
                         $items = \App\Models\DetilRJ::where('id_retur', $item->id_dokumen)->get();
                         $itemsUpdate = \App\Models\Approval::where('id_dokumen', $item->id_dokumen)->get();
@@ -77,6 +82,8 @@
                                 value="{{ $item->so->customer->nama }}" 
                               @elseif($item->tipe == 'Dokumen')
                                 value="{{ $item->bm->supplier->nama }}" 
+                              @elseif($item->tipe == 'Transfer')
+                                value="TRANSFER BARANG" 
                               @elseif($item->tipe == 'RJ')
                                 value="{{ $item->rj->customer->nama }}" 
                               @elseif($item->tipe == 'RB')
@@ -98,6 +105,8 @@
                                 value="{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}" 
                               @elseif($item->tipe == 'Dokumen')
                                 value="{{ \Carbon\Carbon::parse($item->bm->tanggal)->format('d-M-y') }}" 
+                              @elseif($item->tipe == 'Transfer')
+                                value="{{ \Carbon\Carbon::parse($item->tb->tgl_tb)->format('d-M-y') }}"
                               @elseif($item->tipe == 'RJ')
                                 value="{{ \Carbon\Carbon::parse($item->rj->tanggal)->format('d-M-y') }}" 
                               @elseif($item->tipe == 'RB')
@@ -118,7 +127,7 @@
                               </div>
                             </div>
                           </div>
-                        @else
+                        @elseif($item->tipe != 'Transfer')
                           <div class="col-12 col-lg-6">
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4  form-control-sm text-bold text-right mt-1">Nama Gudang</label>
@@ -175,7 +184,7 @@
                           @endif
                         </div>
                         @if(($item->status == 'APPROVE_LIMIT') || ($item->status == 'BATAL'))
-                          <div class="col-12 col-lg-6" style="@if($item->tipe == 'Faktur') margin-top: -10px @else margin-top: -40px @endif">
+                          <div class="col-12 col-lg-6" style="@if($item->tipe == 'Faktur') margin-top: -10px @elseif($item->tipe == 'Transfer') margin-top: -65px @else margin-top: -40px @endif">
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Keterangan</label>
                               <span class="col-form-label text-bold">:</span>
@@ -242,31 +251,40 @@
                         <!-- Tabel Data Awal SO -->
                         <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                           <thead class="text-center text-bold text-dark">
-                            <td style="width: 30px">No</td>
-                            <td style="width: 80px">Kode</td>
-                            <td>Nama Barang</td>
-                            <td style="width: 50px">Qty</td>
-                            @if($item->tipe == 'Faktur') 
-                              @foreach($gudang as $g)
-                                <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
-                              @endforeach
-                            @endif
-                            @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
-                              <td>Harga</td>
-                              <td>Jumlah</td>
-                              {{-- @if($item->tipe != 'Dokumen')  --}}
-                                <td style="width: 80px">Diskon(%)</td>
-                                <td style="width: 110px">Diskon(Rp)</td>
-                                <td style="width: 120px">Netto (Rp)</td>
-                              {{-- @endif --}}
-                            @else
-                              <td style="width: 110px">Tgl Kirim</td>
-                              <td style="width: 80px">Qty @if($item->tipe == 'RJ') Kirim @else Terima @endif</td>
-                              @if($item->tipe == 'RB')
-                                <td style="width: 80px">Qty Ditolak</td>
+                            @if($item->tipe != 'Transfer')
+                              <td style="width: 30px">No</td>
+                              <td style="width: 80px">Kode</td>
+                              <td>Nama Barang</td>
+                              <td style="width: 50px">Qty</td>
+                              @if($item->tipe == 'Faktur') 
+                                @foreach($gudang as $g)
+                                  <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
+                                @endforeach
                               @endif
-                              <td style="width: 80px">Potong Tagihan</td>
-                              <td style="width: 130px">Keterangan</td>
+                              @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                                <td>Harga</td>
+                                <td>Jumlah</td>
+                                {{-- @if($item->tipe != 'Dokumen')  --}}
+                                  <td style="width: 80px">Diskon(%)</td>
+                                  <td style="width: 110px">Diskon(Rp)</td>
+                                  <td style="width: 120px">Netto (Rp)</td>
+                                {{-- @endif --}}
+                              @else
+                                <td style="width: 110px">Tgl Kirim</td>
+                                <td style="width: 80px">Qty @if($item->tipe == 'RJ') Kirim @else Terima @endif</td>
+                                @if($item->tipe == 'RB')
+                                  <td style="width: 80px">Qty Ditolak</td>
+                                @endif
+                                <td style="width: 80px">Potong Tagihan</td>
+                                <td style="width: 130px">Keterangan</td>
+                              @endif
+                            @else
+                              <td style="width: 30px">No</td>
+                              <td style="width: 80px">Kode</td>
+                              <td>Nama Barang</td>
+                              <td style="width: 160px">Gudang Asal</td>
+                              <td style="width: 120px">Qty Transfer</td>
+                              <td style="width: 160px">Gudang Tujuan</td>
                             @endif
                           </thead>
                           <tbody>
@@ -274,89 +292,100 @@
                               $j = 1; $subtotal = 0; $totalKredit = 0;
                             @endphp
                             @foreach($detilUpdate as $i)
-                              <tr class="text-bold text-dark">
-                                <td align="center">{{ $j }}</td>
-                                <td align="center">{{ $i->id_barang }} </td>
-                                <td>{{ $i->barang->nama }}</td>
-                                @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
-                                  <td align="right">{{ $i->qty }}</td>
-                                @else
-                                  <td align="right">{{ $i->qty_retur }}</td>
-                                @endif
-                                @if($item->tipe == 'Faktur')
-                                  @foreach($gudang as $g)
-                                    @php
-                                      $itemGud = \App\Models\DetilSO::where('id_so',
-                                              $item->id_dokumen)
-                                              ->where('id_barang', $i->id_barang)
-                                              ->where('id_gudang', $g->id)->get();
-                                    @endphp
-                                    @if($itemGud->count() != 0)
-                                      <td align="right">{{ $itemGud[0]->qty }}</td>
-                                    @else
-                                      <td></td>
-                                    @endif
-                                  @endforeach
-                                @endif
-                                @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
-                                  <td align="right">
-                                    {{ number_format($i->harga, 0, "", ".") }}
-                                  </td>
-                                  <td align="right">
-                                    {{number_format(($i->qty * $i->harga), 0, "", ".")}}
-                                  </td>
-                                  {{-- @if($item->tipe != 'Dokumen')  --}}
-                                    <td align="right">{{ $i->diskon }}</td>
-                                    @php 
-                                      $diskon = 100;
-                                      if($i->diskon != NULL) {
-                                        $i->diskon = str_replace(",", ".", $i->diskon);
-                                        $arrDiskon = explode("+", $i->diskon);
-                                        for($k = 0; $k < sizeof($arrDiskon); $k++) {
-                                          $diskon -= ($arrDiskon[$k] * $diskon) / 100;
-                                        } 
-                                        $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
-                                      } else {
-                                        $diskon = 0;
-                                      }
-                                    @endphp
-                                    <td align="right">
-                                      {{ number_format((($i->qty * $i->harga) * $diskon) / 100, 0, "", ".") }}
-                                    </td>
-                                    <td align="right">
-                                      {{ number_format(($i->qty * $i->harga) - 
-                                      ((($i->qty * $i->harga) * $diskon) / 100), 0, "", ".") }}
-                                    </td>
-                                  {{-- @endif --}}
-                                  @php 
-                                    if($item->tipe == 'Faktur') {
-                                      $subtotal += ($i->qty * $i->harga) - 
-                                      ((($i->qty * $i->harga) * $diskon) / 100); 
-                                    }
-                                    else
-                                      $subtotal += $i->qty * $i->harga;
-                                  @endphp
-                                @else
-                                  @if($item->tipe == 'RJ')
-                                    <td align="center">{{ $i->tgl_kirim != NULL ? \Carbon\Carbon::parse($i->tgl_kirim)->format('d-M-y') : '' }}</td>
-                                    <td align="right">{{ $i->qty_kirim }}</td>
-                                    <td align="right">{{ $i->potong }}</td>
+                              @if($item->tipe != 'Transfer')
+                                <tr class="text-bold text-dark">
+                                  <td align="center">{{ $j }}</td>
+                                  <td align="center">{{ $i->id_barang }} </td>
+                                  <td>{{ $i->barang->nama }}</td>
+                                  @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                                    <td align="right">{{ $i->qty }}</td>
                                   @else
-                                    @php
-                                      $rt = App\Models\DetilRT::join('returterima', 'returterima.id', 
-                                          'detilrt.id_terima')->select('id', 'id_terima', 'id_retur', 'tanggal')
-                                          ->selectRaw('sum(qty_terima) as qt, sum(qty_batal) as qb, sum(potong) as qp')
-                                          ->where('id_retur', $item->id_dokumen)->where('id_barang', $i->id_barang)
-                                          ->groupBy('id_barang')->get();
+                                    <td align="right">{{ $i->qty_retur }}</td>
+                                  @endif
+                                  @if($item->tipe == 'Faktur')
+                                    @foreach($gudang as $g)
+                                      @php
+                                        $itemGud = \App\Models\DetilSO::where('id_so',
+                                                $item->id_dokumen)
+                                                ->where('id_barang', $i->id_barang)
+                                                ->where('id_gudang', $g->id)->get();
+                                      @endphp
+                                      @if($itemGud->count() != 0)
+                                        <td align="right">{{ $itemGud[0]->qty }}</td>
+                                      @else
+                                        <td></td>
+                                      @endif
+                                    @endforeach
+                                  @endif
+                                  @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
+                                    <td align="right">
+                                      {{ number_format($i->harga, 0, "", ".") }}
+                                    </td>
+                                    <td align="right">
+                                      {{number_format(($i->qty * $i->harga), 0, "", ".")}}
+                                    </td>
+                                    {{-- @if($item->tipe != 'Dokumen')  --}}
+                                      <td align="right">{{ $i->diskon }}</td>
+                                      @php 
+                                        $diskon = 100;
+                                        if($i->diskon != NULL) {
+                                          $i->diskon = str_replace(",", ".", $i->diskon);
+                                          $arrDiskon = explode("+", $i->diskon);
+                                          for($k = 0; $k < sizeof($arrDiskon); $k++) {
+                                            $diskon -= ($arrDiskon[$k] * $diskon) / 100;
+                                          } 
+                                          $diskon = number_format((($diskon - 100) * -1), 2, ".", "");
+                                        } else {
+                                          $diskon = 0;
+                                        }
+                                      @endphp
+                                      <td align="right">
+                                        {{ number_format((($i->qty * $i->harga) * $diskon) / 100, 0, "", ".") }}
+                                      </td>
+                                      <td align="right">
+                                        {{ number_format(($i->qty * $i->harga) - 
+                                        ((($i->qty * $i->harga) * $diskon) / 100), 0, "", ".") }}
+                                      </td>
+                                    {{-- @endif --}}
+                                    @php 
+                                      if($item->tipe == 'Faktur') {
+                                        $subtotal += ($i->qty * $i->harga) - 
+                                        ((($i->qty * $i->harga) * $diskon) / 100); 
+                                      }
+                                      else
+                                        $subtotal += $i->qty * $i->harga;
                                     @endphp
-                                    <td align="center">{{ $rt->count() != 0 ? \Carbon\Carbon::parse($rt->first()->tanggal)->format('d-M-y') : '' }}</td>
-                                    <td align="right">{{ $rt->count() != 0 ? $rt->first()->qt : '' }}</td>
-                                    <td align="right">{{ $rt->count() != 0 ? $rt->first()->qb : '' }}</td>
-                                    <td align="right">{{ $rt->count() != 0 ? $rt->first()->qp : '' }}</td>
-                                  @endif                      
-                                  <td align="center">Retur @if($item->tipe == 'RJ')Customer @else Supplier @endif</td>
-                                @endif
-                              </tr>
+                                  @else
+                                    @if($item->tipe == 'RJ')
+                                      <td align="center">{{ $i->tgl_kirim != NULL ? \Carbon\Carbon::parse($i->tgl_kirim)->format('d-M-y') : '' }}</td>
+                                      <td align="right">{{ $i->qty_kirim }}</td>
+                                      <td align="right">{{ $i->potong }}</td>
+                                    @else
+                                      @php
+                                        $rt = App\Models\DetilRT::join('returterima', 'returterima.id', 
+                                            'detilrt.id_terima')->select('id', 'id_terima', 'id_retur', 'tanggal')
+                                            ->selectRaw('sum(qty_terima) as qt, sum(qty_batal) as qb, sum(potong) as qp')
+                                            ->where('id_retur', $item->id_dokumen)->where('id_barang', $i->id_barang)
+                                            ->groupBy('id_barang')->get();
+                                      @endphp
+                                      <td align="center">{{ $rt->count() != 0 ? \Carbon\Carbon::parse($rt->first()->tanggal)->format('d-M-y') : '' }}</td>
+                                      <td align="right">{{ $rt->count() != 0 ? $rt->first()->qt : '' }}</td>
+                                      <td align="right">{{ $rt->count() != 0 ? $rt->first()->qb : '' }}</td>
+                                      <td align="right">{{ $rt->count() != 0 ? $rt->first()->qp : '' }}</td>
+                                    @endif                      
+                                    <td align="center">Retur @if($item->tipe == 'RJ')Customer @else Supplier @endif</td>
+                                  @endif
+                                </tr>
+                              @else
+                                <tr class="text-bold text-dark">
+                                  <td align="center">{{ $j }}</td>
+                                  <td align="center">{{ $i->id_barang }} </td>
+                                  <td>{{ $i->barang->nama }}</td>
+                                  <td align="center">{{ $i->gudangAsal->nama }}</td>
+                                  <td align="center">{{ $i->qty }}</td>
+                                  <td align="center">{{ $i->gudangTuju->nama }}</td>
+                                </tr>
+                              @endif
                               @php $j++; @endphp
                             @endforeach
                           </tbody>
@@ -485,7 +514,7 @@
                           @endif
                           <td>Harga</td>
                           <td>Jumlah</td>
-                          @if($item->tipe == 'Faktur') 
+                          @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
                             <td style="width: 80px">Diskon(%)</td>
                             <td style="width: 110px">Diskon(Rp)</td>
                             <td style="width: 120px">Netto (Rp)</td>
@@ -553,7 +582,7 @@
                                   $diskon = NULL;
                                 }
                               @endphp
-                              @if($item->tipe == 'Faktur') 
+                              @if(($item->tipe == 'Faktur') || ($item->tipe == 'Dokumen'))
                                 <td align="right"
                                 @if((($i <= $items->count()) && ($iu->diskon != $items[$i-1]->diskon)) || ($i > $items->count())) class="bg-warning text-danger" @endif>
                                   {{ str_replace(".", ",", $iu->diskon) }}

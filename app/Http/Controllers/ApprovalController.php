@@ -27,6 +27,8 @@ use App\Models\DetilRT;
 use App\Models\ReturJual;
 use App\Models\ReturBeli;
 use App\Models\ReturTerima;
+use App\Models\TransferBarang;
+use App\Models\DetilTB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
@@ -107,6 +109,8 @@ class ApprovalController extends Controller
             $item = SalesOrder::where('id', $id)->first();
         elseif($tipe == 'Dokumen')
             $item = BarangMasuk::where('id', $id)->first();
+        elseif($tipe == 'Transfer')
+            $item = TransferBarang::where('id', $id)->first();
         elseif($tipe == 'RJ')
             $item = ReturJual::where('id', $id)->first();
         elseif($tipe == 'RB')
@@ -207,6 +211,8 @@ class ApprovalController extends Controller
             $detil = DetilSO::where('id_so', $id)->get();
         elseif($tipe == 'Dokumen')
             $detil = DetilBM::with(['bm'])->where('id_bm', $id)->get();
+        elseif($tipe == 'Transfer')
+            $detil = DetilTB::where('id_tb', $id)->get();
         elseif($tipe == 'RJ')
             $detil = DetilRJ::where('id_retur', $id)->get();
         elseif($tipe == 'RB')
@@ -233,14 +239,16 @@ class ApprovalController extends Controller
                 $disk = NULL;
             }
 
-            DetilApproval::create([
-                'id_app' => $newcode,
-                'id_barang' => $d->id_barang,
-                'id_gudang' => $gudang,
-                'harga' => $harga,
-                'qty' => $qty,
-                'diskon' => $disk
-            ]);
+            if($tipe != 'Transfer') {
+                DetilApproval::create([
+                    'id_app' => $newcode,
+                    'id_barang' => $d->id_barang,
+                    'id_gudang' => $gudang,
+                    'harga' => $harga,
+                    'qty' => $qty,
+                    'diskon' => $disk
+                ]);
+            }
 
             if($tipe == 'Dokumen') {
                 array_push($disPersen, $d->disPersen);
@@ -448,6 +456,8 @@ class ApprovalController extends Controller
                 $items = DetilSO::where('id_so', $kode)->get();
             elseif($tipe == 'Dokumen')
                 $items = DetilBM::with(['bm'])->where('id_bm', $kode)->get();
+            elseif($tipe == 'Transfer')
+                $items = DetilTB::where('id_tb', $kode)->get();
             elseif($tipe == 'RJ')
                 $items = DetilRJ::where('id_retur', $kode)->get();
             elseif($tipe == 'RB') 
@@ -466,6 +476,11 @@ class ApprovalController extends Controller
                 if(($tipe == 'Faktur') || ($tipe == 'Dokumen')) {
                     $updateStok = StokBarang::where('id_barang', $item->id_barang)
                                 ->where('id_gudang', $gudang)->first();
+                } elseif($tipe == 'Transfer') {
+                    $updateStok = StokBarang::where('id_barang', $item->id_barang)
+                                ->where('id_gudang', $item->id_tujuan)->first();
+                    $updateStokTambah = StokBarang::where('id_barang', $item->id_barang)
+                                ->where('id_gudang', $item->id_asal)->first();
                 } else {
                     $updateStok = StokBarang::where('id_barang', $item->id_barang)
                                 ->where('id_gudang', $gudang)->where('status', 'F')->first();
@@ -477,6 +492,11 @@ class ApprovalController extends Controller
                     $updateStok->{'stok'} -= $item->qty;
                 elseif($tipe == 'Dokumen')
                     $updateStok->{'stok'} += $item->qty;
+                elseif($tipe == 'Transfer') {
+                    $updateStok->{'stok'} += $item->qty;
+                    $updateStokTambah->{'stok'} -= $item->qty;
+                    $updateStokTambah->save();
+                }
                 elseif($tipe == 'RJ') {
                     $updateStok->{'stok'} += $item->qty_retur;
                     $updateStokBagus->{'stok'} -= $item->qty_kirim;
