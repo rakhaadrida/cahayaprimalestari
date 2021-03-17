@@ -48,7 +48,8 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
                     ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
-                    ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->groupBy('id_barang', 'id_gudang')->get();
+                    ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->groupBy('id_barang', 'id_gudang')->get();
 
         $data = [
             'waktu' => $waktu,
