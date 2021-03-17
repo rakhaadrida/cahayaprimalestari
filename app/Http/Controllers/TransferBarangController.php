@@ -219,13 +219,6 @@ class TransferBarangController extends Controller
             $updateStokTambah->save();
         }
 
-        // $tb = TransferBarang::where('id', $id)->first();
-        // $tb->{'status'} = 'BATAL';
-        // $tb->save();
-
-        // DetilTB::where('id_tb', $id)->delete();
-        // TransferBarang::where('id', $id)->delete();
-
         return redirect()->route('tb-index');
     }
 }
