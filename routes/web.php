@@ -340,6 +340,9 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('komisi/show', 'KomisiSalesController@show')->name('komisi-show');
         Route::post('komisi/excel', 'KomisiSalesController@excel')->name('komisi-excel');
         Route::post('komisi/excel-filter', 'KomisiSalesController@excelFilter')->name('komisi-excel-filter');
+        Route::get('komisi/upload', 'KomisiSalesController@upload')->name('komisi-upload');
+        Route::post('komisi/upload/store', 'KomisiSalesController@storeUpload')->name('komisi-store-upload');
+        Route::get('komisi/download/{path}', 'KomisiSalesController@download')->name('komisi-download');
 
         // Rekap Qty Penjualan
         Route::get('prime', 'ProgramPrimeController@index')->name('prime');

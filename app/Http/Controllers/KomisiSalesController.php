@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\AccReceivable;
+use App\Models\Komisi;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KomisiNowExport;
 use App\Exports\KomisiFilterExport;
@@ -151,5 +153,47 @@ class KomisiSalesController extends Controller
         $kategori = $request->kategori;
 
         return Excel::download(new KomisiFilterExport($month, $kategori, $tanggal, $lastTanggal), 'Komisi-Fadil-'.$bulanNow.'-'.$request->kategori.'.xlsx');
+    }
+
+    public function upload() {
+        $date = Carbon::now('+07:00');
+        $tahun = $date->year;
+
+        $items = Komisi::All();
+
+        $data = [
+            'items' => $items,
+            'tahun' => $tahun
+        ];
+
+        return view('pages.komisi.upload', $data);
+    }
+
+    public function storeUpload(Request $request) {
+        for($i = 0; $i < 12; $i++) {
+            if($request->file($i) != '') {
+                $nama = $request->file($i)->getClientOriginalName();
+                $item = Komisi::where('bulan', $i+1)->first();
+                if($item == NULL) {
+                    Komisi::create([
+                        'bulan' => $i+1,
+                        'tanggal' => Carbon::now('+07:00')->toDateString(),
+                        'nama' => $nama,
+                        'file' => $request->file($i)->store('assets/komisi', 'public')
+                    ]);
+                    // Storage::disk('local')->put('assets/komisi/'.$nama.$request->file($i)->getClientOriginalExtension(),$request->file($i));
+                } else {
+                    $item->{'tanggal'} = Carbon::now('+07:00')->toDateString();
+                    $item->{'file'} = $request->file($i)->storeAs('assets/komisi', $nama);
+                    $item->save();
+                }
+            }
+        }
+
+        return redirect()->route('komisi-upload');
+    }
+
+    public function download($path) {
+        return Storage::download($path);
     }
 }

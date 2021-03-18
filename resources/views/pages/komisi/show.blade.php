@@ -66,6 +66,9 @@
                   <div class="col-auto mt-1">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-excel-filter') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
                   </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="5" formaction="{{ route('komisi-upload') }}" formmethod="GET" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Upload File Komisi</button>
+                  </div>
                   {{-- <div class="col-auto mt-1" style="margin-left: 215px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
                   </div>
