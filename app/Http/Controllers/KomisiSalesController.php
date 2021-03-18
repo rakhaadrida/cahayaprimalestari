@@ -159,10 +159,7 @@ class KomisiSalesController extends Controller
         $date = Carbon::now('+07:00');
         $tahun = $date->year;
 
-        $items = Komisi::All();
-
         $data = [
-            'items' => $items,
             'tahun' => $tahun
         ];
 
@@ -178,11 +175,10 @@ class KomisiSalesController extends Controller
                     Komisi::create([
                         'bulan' => $i+1,
                         'tanggal' => Carbon::now('+07:00')->toDateString(),
-                        'nama' => $nama,
-                        'file' => $request->file($i)->store('assets/komisi', 'public')
+                        'file' => $request->file($i)->storeAs('assets/komisi', $nama)
                     ]);
-                    // Storage::disk('local')->put('assets/komisi/'.$nama.$request->file($i)->getClientOriginalExtension(),$request->file($i));
                 } else {
+                    Storage::delete($item->{'file'});
                     $item->{'tanggal'} = Carbon::now('+07:00')->toDateString();
                     $item->{'file'} = $request->file($i)->storeAs('assets/komisi', $nama);
                     $item->save();
@@ -194,6 +190,7 @@ class KomisiSalesController extends Controller
     }
 
     public function download($path) {
-        return Storage::download($path);
+        $item = Komisi::where('bulan', $path)->first();
+        return response()->download(storage_path("app/".$item->{'file'}));
     }
 }

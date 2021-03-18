@@ -42,39 +42,18 @@
                       <option value="PRIME" @if($kat == 'PRIME') selected @endif>PRIME</option>
                     </select>
                   </div>
-                  {{-- <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" value="{{ $bulan }}" autocomplete="off" autofocus>
-                  </div>
-                  <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <select class="form-control form-control-sm mt-1" tabindex="2" name="status">
-                      <option value="ALL" @if($status == 'ALL') selected @endif>ALL</option>
-                      <option value="LUNAS" @if($status == 'LUNAS') selected @endif>LUNAS</option>
-                      <option value="BELUM LUNAS" @if($status == 'BELUM LUNAS') selected @endif>BELUM LUNAS</option>
-                    </select>
-                  </div> --}}
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('komisi-home') }}" formmethod="POST" class="btn btn-outline-secondary btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
-                  {{-- <div class="col-auto mt-1" style="margin-left: 60px"> --}}
                   <div class="col-auto mt-1">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-excel-filter') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-upload') }}" formmethod="GET" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Upload File Komisi</button>
                   </div>
-                  {{-- <div class="col-auto mt-1" style="margin-left: 215px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
-                  </div>
-                  <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
-                  </div> --}}
                 </div> 
               </div>
               <hr>

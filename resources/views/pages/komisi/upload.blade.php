@@ -33,13 +33,11 @@
                 </div>
               </div>
               <hr>
-              {{-- <br><br> --}}
               @for($i = 0; $i < 12; $i++)
                 @php
                   $j = $i + 1;
                   $tanggal = $tahun.'-'.$j.'-01';
                   $item = \App\Models\Komisi::where('bulan', $i+1)->get();
-                  $path = ($item->count() != 0 ? $item->first()->file : '');
                 @endphp
                 <div class="form-group row" style="margin-top: 0px">
                   <label for="komisi" class="col-2 col-form-label text-bold">{{ \Carbon\Carbon::parse($tanggal)->isoFormat('MMMM') }}</label>
@@ -48,7 +46,7 @@
                     <input type="file" name="{{$i}}" class="form-control col-form-label-sm @error('komisi') is-invalid @enderror">
                     @error('komisi') <div class="text-muted">{{ $message }}</div> @enderror
                   </div>
-                  <a href="{{ route('komisi-download', $path) }}" class="col-form-label text-primary">{{ $item->count() != 0 ? $item->first()->nama : '' }}</a>
+                  <a href="{{ route('komisi-download', $i+1) }}" class="col-form-label text-primary">{{ $item->count() != 0 ? substr($item->first()->file, 14) : '' }}</a>
                 </div>
               @endfor
               <hr>
@@ -60,7 +58,7 @@
                   <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
                 </div>
                 <div class="col-2">
-                  <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
+                  <a href="{{ route('komisi') }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
             </form>
