@@ -245,6 +245,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('price', 'RekapPriceController@index')->name('price');
         Route::post('price/pdf', 'RekapPriceController@cetak_pdf')->name('price-pdf');
         Route::post('price/excel', 'RekapPriceController@cetak_excel')->name('price-excel');
+
+        // Penjualan Extrana
+        Route::get('extrana', 'ExtranaController@index')->name('extrana');
+        // Route::post('bmk/show', 'RekapBMKController@show')->name('bmk-show');
+        // Route::post('bmk/excel', 'RekapBMKController@excel')->name('bmk-excel');
         
         // Barang Masuk
         Route::get('bmk', 'RekapBMKController@index')->name('bmk');
