@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Sales;
 use App\Models\JenisBarang;
 use App\Models\DetilSO;
+use App\Models\SalesOrder;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PrimeNowExport;
 use App\Exports\PrimeFilterExport;
@@ -48,8 +49,10 @@ class ProgramPrimeController extends Controller
             $sales = Sales::All();
         } else {
             $customer = Customer::where('id', $request->kode)->get();
-            $sales = Sales::join('customer', 'customer.id_sales', 'sales.id')
-                    ->select('id_sales as id')->where('customer.id', $request->kode)->get();
+            $sales = SalesOrder::select('id_sales as id')
+                    ->where('id_customer', $request->kode)->get();
+            // $sales = Sales::join('customer', 'customer.id_sales', 'sales.id')
+            //         ->select('id_sales as id')->where('customer.id', $request->kode)->get();
             // return response()->json($sales);
         }
 

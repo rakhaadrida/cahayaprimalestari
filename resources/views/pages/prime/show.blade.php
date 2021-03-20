@@ -83,35 +83,35 @@
                       if($cust == '')
                         $customer = \App\Models\Customer::where('id_sales', $s->id)->get();
                     @endphp
-                    @foreach($customer as $c)
+                    {{-- @foreach($customer as $c) --}}
                       @php
                         $qty = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                               ->join('customer', 'customer.id', 'so.id_customer')
                               ->join('barang', 'barang.id', 'detilso.id_barang')
-                              ->select('id_barang')->selectRaw('sum(qty) as qty')
+                              ->select('id_barang', 'so.id_sales', 'id_so')->selectRaw('sum(qty) as qty')
                               // ->select('id_barang', 'id_customer','id_so')->selectRaw('sum(qty) as qty')
                               ->where('id_kategori', 'KAT08')
                               ->whereNotIn('status', ['BATAL', 'LIMIT'])
-                              ->where('id_customer', $c->id)->whereYear('tgl_so', $tahun)
-                              // ->where('so.id_sales', $s->id)->whereYear('tgl_so', $tahun)
+                              // ->where('id_customer', $c->id)->whereYear('tgl_so', $tahun)
+                              ->where('so.id_sales', $s->id)->whereYear('tgl_so', $tahun)
                               ->whereIn(DB::raw('MONTH(tgl_so)'), $month)
-                              ->groupBy('id_barang')->orderBy('customer.nama')->get();
-                              // ->groupBy('id_customer', 'id_barang')->orderBy('customer.nama')->get();
+                              // ->groupBy('id_barang')->orderBy('customer.nama')->get();
+                              ->groupBy('id_customer', 'id_barang')->orderBy('customer.nama')->get();
                         $cekQty += $qty->count();
                       @endphp
                       @foreach($qty as $q)
                         <tr class="text-dark text-bold">
                           <td align="center">{{ $i }}</td>
-                          <td>{{ $c->sales->nama }}</td>
-                          <td>{{ $c->nama }}</td>
-                          {{-- <td>{{ $q->so->customer->nama }}</td> --}}
+                          <td>{{ $q->so->sales->nama }}</td>
+                          {{-- <td>{{ $c->nama }}</td> --}}
+                          <td>{{ $q->so->customer->nama }}</td>
                           <td>{{ $q->barang->nama }}</td>
                           <td align="center">{{ $q->barang->jenis->nama }}</td>
                           <td align="right" style="width: 120px; background-color: yellow">{{ $q->qty }}</td>
                         </tr>
                         @php $i++; $total += $q->qty; @endphp
                       @endforeach
-                    @endforeach
+                    {{-- @endforeach --}}
                     @if($cekQty != 0)
                       <tr class="text-white text-bold bg-primary">
                         <td align="right" colspan="5">Total Qty Penjualan</td>
