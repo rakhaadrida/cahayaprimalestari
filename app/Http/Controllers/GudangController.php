@@ -15,12 +15,12 @@ class GudangController extends Controller
 {
     public function index()
     {
-        $so = SalesOrder::whereNotIn('status', ['CETAK', 'BATAL', 'LIMIT'])
+        /* $so = SalesOrder::whereNotIn('status', ['CETAK', 'BATAL', 'LIMIT'])
                 ->where('tgl_so', '<', '2021-03-19')->get();
         foreach($so as $s) {
             $s->status = 'CETAK';
             $s->save();
-        }
+        } */
         
         $items = Gudang::All();
         $data = [

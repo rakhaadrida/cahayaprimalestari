@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class SalesController extends Controller
 {
     public function index() {
-        $barang = Barang::All();
+        /* $barang = Barang::All();
         $gudang = Gudang::All();
         foreach($barang as $b) {
             foreach($gudang as $g) {
@@ -44,7 +44,7 @@ class SalesController extends Controller
                     }
                 }
             }
-        }
+        } */
 
         $items = Sales::All();
         $data = [
