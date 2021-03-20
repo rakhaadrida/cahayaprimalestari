@@ -271,15 +271,23 @@
                                   } 
                                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                                 @endphp
-                                <td align="right">
+                                {{-- <td align="right">
                                   {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
+                                </td> --}}
+                                <td align="right">
+                                  {{ number_format($itemDet->diskonRp, 0, "", ".") }}
                                 </td>
                                 <td align="right">
+                                  {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}
+                                </td>
+                                {{-- <td align="right">
                                   {{ number_format(($itemDet->qty * $itemDet->harga) - 
                                   ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
-                                </td>
-                                @php $subtotal += ($itemDet->qty * $itemDet->harga) - 
-                                  ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
+                                </td> --}}
+                                @php 
+                                  // $subtotal += ($itemDet->qty * $itemDet->harga) - 
+                                  // ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
+                                  $subtotal += ($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp; 
                                 @endphp
                               </tr>
                               @php $i++; @endphp
