@@ -66,6 +66,25 @@ class BarangController extends Controller
             'ukuran' => $request->ukuran
         ]);
 
+        $gudang = Gudang::All();
+        foreach($gudang as $g) {
+            StokBarang::create([
+                'id_barang' => $request->kode,
+                'id_gudang' => $g->id,
+                'status' => 'T',
+                'stok' => 0
+            ]);
+
+            if($g->tipe == 'RETUR') {
+                StokBarang::create([
+                    'id_barang' => $request->kode,
+                    'id_gudang' => $g->id,
+                    'status' => 'F',
+                    'stok' => 0
+                ]);
+            }
+        }
+
         $harga = Harga::All();
         for($i = 0; $i < $harga->count(); $i++) {
             HargaBarang::create([
