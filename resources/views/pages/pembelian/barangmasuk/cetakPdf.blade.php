@@ -381,7 +381,7 @@
                 <td align="center">{{ $no }}</td>
                 <td align="center">{{ $itemDet->id_barang }}</td>
                 <td>{{ $itemDet->barang->nama }}</td>
-                <td align="center" style="width: 50px">{{ $itemDet->qty }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @elseif($itemDet->barang->satuan == "Set") Set @else Rol @endif</td>
+                <td align="center" style="width: 50px">{{ $itemDet->qty }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @elseif($itemDet->barang->satuan == "Set") Set @elseif($itemDet->barang->satuan == "Meter / Rol") Rol @else Meter @endif</td>
                 {{-- <td align="center" style="width: 1px">/</td>
                 <td style="width: 50px">
                   {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
