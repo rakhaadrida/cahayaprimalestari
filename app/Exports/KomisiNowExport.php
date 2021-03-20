@@ -33,9 +33,9 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
         
         $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->join('sales', 'sales.id', 'customer.id_sales')
-                ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                ->where('id_sales', 'SLS12')
+                // ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
+                ->where('so.id_sales', 'SLS12')
                 ->orderBy('tgl_so', 'desc')->orderBy('customer.nama')->get();
 
         $data = [
@@ -70,9 +70,9 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
         
         $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->join('sales', 'sales.id', 'customer.id_sales')
-                ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                ->where('id_sales', 'SLS12')
+                // ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
+                ->where('so.id_sales', 'SLS12')
                 ->orderBy('customer.nama', 'desc')->get();
 
         $range = 6 + $items->count();

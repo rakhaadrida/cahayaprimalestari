@@ -103,8 +103,8 @@
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->so->customer != NULL ? $a->so->customer->nama : $a->so->id_customer }}</td>
-                      <td class="align-middle">{{ $a->so->customer != NULL ? $a->so->customer->sales->nama : $a->so->id_customer }}</td>
-                      {{-- <td class="align-middle">{{ $a->so != NULL ? $a->so->sales->nama : $a->so->id_customer }}</td> --}}
+                      {{-- <td class="align-middle">{{ $a->so->customer != NULL ? $a->so->customer->sales->nama : $a->so->id_customer }}</td> --}}
+                      <td class="align-middle">{{ $a->so != NULL ? $a->so->sales->nama : $a->so->id_customer }}</td>
                       <td align="center" class="align-middle">{{ $a->so->kategori }}</td>
                       <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
                       <td align="center" class="align-middle">

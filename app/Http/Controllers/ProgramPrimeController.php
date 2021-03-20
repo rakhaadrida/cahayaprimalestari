@@ -82,7 +82,7 @@ class ProgramPrimeController extends Controller
                         ->select('customer.nama', 'customer.id as id')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
-                        ->groupBy('customer.nama')->get();
+                        ->groupBy('so.id_sales', 'customer.nama')->get();
 
         $data = [
             'tahun' => $tahun,

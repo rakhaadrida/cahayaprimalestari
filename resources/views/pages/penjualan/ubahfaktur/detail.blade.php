@@ -121,8 +121,8 @@
                               <div class="col-4">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                                 @if($items->count() != 0)
-                                  value="{{ $item->customer->sales->nama }}"
-                                  {{-- value="{{ $item->sales->nama }}" --}}
+                                  {{-- value="{{ $item->customer->sales->nama }}" --}}
+                                  value="{{ $item->sales->nama }}"
                                 @endif
                                 >
                               </div>

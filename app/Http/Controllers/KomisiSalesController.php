@@ -22,9 +22,9 @@ class KomisiSalesController extends Controller
         
         $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->join('sales', 'sales.id', 'customer.id_sales')
-                ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                ->where('id_sales', 'SLS12')
+                // ->join('sales', 'sales.id', 'so.id_sales')
+                ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
+                ->where('so.id_sales', 'SLS12')
                 ->orderBy('ar.created_at', 'desc')->get();
 
         // return response()->json($bulanLast);
@@ -82,18 +82,18 @@ class KomisiSalesController extends Controller
         if($request->kategori == 'ALL') {
             $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
-                    ->join('sales', 'sales.id', 'customer.id_sales')
-                    ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
+                    // ->join('sales', 'sales.id', 'so.id_sales')
+                    ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
                     ->where('kategori', 'NOT LIKE', $status[0].'%')
                     ->where('kategori', 'NOT LIKE', $status[1].'%')
-                    ->where('id_sales', 'SLS12')
+                    ->where('so.id_sales', 'SLS12')
                     ->orderBy('ar.created_at', 'desc')->get();
         } else {
             $ar = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->join('sales', 'sales.id', 'customer.id_sales')
-                ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                ->where('id_sales', 'SLS12')
+                // ->join('sales', 'sales.id', 'so.id_sales')
+                ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
+                ->where('so.id_sales', 'SLS12')
                 ->where('kategori', 'LIKE', $request->kategori.'%')
                 ->orderBy('ar.created_at', 'desc')->get();
         }

@@ -67,7 +67,7 @@
                   <label for="alamat" class="col-2 col-form-label text-bold">Nama Sales</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" autocomplete="off" readonly required/>
+                    <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" autocomplete="off" required/>
                     <input type="hidden" name="kodeSales" id="kodeSales"/>
                   </div>
                 </div>

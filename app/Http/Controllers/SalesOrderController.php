@@ -171,7 +171,7 @@ class SalesOrderController extends Controller
             'pkp' => $pkp,
             'status' => $status,
             'id_customer' => $request->kodeCustomer,
-            // 'id_sales' => $request->kodeSales,
+            'id_sales' => $request->kodeSales,
             'id_user' => Auth::user()->id
         ]);
 

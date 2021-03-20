@@ -192,8 +192,8 @@
           @foreach($items as $item)
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $i }}</td>
-              <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td>
-              {{-- <td class="align-middle text-center">{{ $item->sales->nama }}</td> --}}
+              {{-- <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td> --}}
+              <td class="align-middle text-center">{{ $item->sales->nama }}</td>
               <td class="align-middle">{{ $item->customer->nama }}</td>
               <td align="center" class="align-middle">{{ $item->kategori }}</td>
               <td align="center" class="align-middle">{{ $item->id }}</td>
@@ -215,8 +215,8 @@
             @foreach($itemsEx as $item)
               <tr class="text-dark">
                 <td align="center" class="align-middle">{{ $i }}</td>
-                <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td>
-                {{-- <td class="align-middle text-center">{{ $item->sales->nama }}</td> --}}
+                {{-- <td class="align-middle text-center">{{ $item->customer->sales->nama }}</td> --}}
+                <td class="align-middle text-center">{{ $item->sales->nama }}</td>
                 <td class="align-middle">{{ $item->customer->nama }}</td>
                 <td align="center" class="align-middle">{{ $item->kategori }}</td>
                 <td align="center" class="align-middle">{{ $item->id }}</td>

@@ -559,7 +559,8 @@
               <td align="center">
                 {{ \Carbon\Carbon::parse($items->first()->tgl_so)->add($items->first()->tempo, 'days')->format('d-M-y') }}
               </td>
-              <td align="center">{{ $items->first()->customer->sales->nama }}</td>
+              {{-- <td align="center">{{ $items->first()->customer->sales->nama }}</td> --}}
+              <td align="center">{{ $items->first()->sales->nama }}</td>
               <td align="center">{{ Auth::user()->name }}</td>
             </tr>
           </tbody>

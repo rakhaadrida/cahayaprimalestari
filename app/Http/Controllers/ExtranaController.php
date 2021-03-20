@@ -17,12 +17,12 @@ class ExtranaController extends Controller
 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->join('sales', 'sales.id', 'customer.id_sales')
-                ->select('sales.nama as sales', 'customer.nama as cust', 'id_barang')
-                ->selectRaw('sum(qty) as qty, avg(harga) as harga, sum(diskonRp) as diskonRp')
+                ->join('sales', 'sales.id', 'so.id_sales')
+                ->select('sales.nama as sales', 'customer.nama as cust', 'id_barang', 'harga')
+                ->selectRaw('sum(qty) as qty, sum(diskonRp) as diskonRp')
                 ->where('kategori', 'LIKE', 'Extrana%')->whereNotIn('status', ['BATAL', 'LIMIT'])
                 ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $month)
-                ->groupBy('id_customer', 'id_barang')->orderBy('id_sales')
+                ->groupBy('id_customer', 'id_barang', 'harga')->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->get();
 
         // $items = DetilSO::join('so', 'so.id', 'detilso.id_so')

@@ -40,8 +40,8 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                     ->where('tgl_so', $this->tanggal)
                     ->where('kategori', 'NOT LIKE', 'Extrana%')
                     ->where('kategori', 'NOT LIKE', 'Prime%')
-                    ->orderBy('id_sales')
-                    // ->orderBy('so.id_sales')
+                    // ->orderBy('id_sales')
+                    ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
             
             $itemsEx = AccReceivable::join('so', 'so.id', 'ar.id_so')
@@ -49,16 +49,16 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('tgl_so', $this->tanggal)
                     ->where('kategori', 'LIKE', 'Extrana%')
-                    ->orderBy('id_sales')
-                    // ->orderBy('so.id_sales')
+                    // ->orderBy('id_sales')
+                    ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Prime%')
-                    ->orderBy('id_sales')
-                    // ->orderBy('so.id_sales')
+                    // ->orderBy('id_sales')
+                    ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
 
             $itemsEx = NULL;

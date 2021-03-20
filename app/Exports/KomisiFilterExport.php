@@ -51,18 +51,18 @@ class KomisiFilterExport implements FromView, ShouldAutoSize, WithStyles
         if($this->kategori == 'ALL') {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
-                    ->join('sales', 'sales.id', 'customer.id_sales')
-                    ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
+                    // ->join('sales', 'sales.id', 'customer.id_sales')
+                    ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
                     ->where('kategori', 'NOT LIKE', $stat[0].'%')
                     ->where('kategori', 'NOT LIKE', $stat[1].'%')
-                    ->where('id_sales', 'SLS12')
+                    ->where('so.id_sales', 'SLS12')
                     ->orderBy('tgl_so', 'desc')->orderBy('customer.nama', 'asc')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->join('sales', 'sales.id', 'customer.id_sales')
-                ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                ->where('id_sales', 'SLS12')
+                // ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
+                ->where('so.id_sales', 'SLS12')
                 ->where('kategori', 'LIKE', $this->kategori.'%')
                 ->orderBy('tgl_so', 'desc')->orderBy('customer.nama', 'asc')->get();
         }
@@ -110,18 +110,18 @@ class KomisiFilterExport implements FromView, ShouldAutoSize, WithStyles
         if($this->kategori == 'ALL') {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
-                    ->join('sales', 'sales.id', 'customer.id_sales')
-                    ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
+                    // ->join('sales', 'sales.id', 'customer.id_sales')
+                    ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
                     ->where('kategori', 'NOT LIKE', $stat[0].'%')
                     ->where('kategori', 'NOT LIKE', $stat[1].'%')
-                    ->where('id_sales', 'SLS12')
+                    ->where('so.id_sales', 'SLS12')
                     ->orderBy('customer.nama', 'asc')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
-                ->join('sales', 'sales.id', 'customer.id_sales')
-                ->select('ar.id as id', 'ar.*', 'id_so', 'id_sales')
-                ->where('id_sales', 'SLS12')
+                // ->join('sales', 'sales.id', 'customer.id_sales')
+                ->select('ar.id as id', 'ar.*', 'id_so', 'so.id_sales')
+                ->where('so.id_sales', 'SLS12')
                 ->where('kategori', 'LIKE', $this->kategori.'%')
                 ->orderBy('customer.nama', 'asc')->get();
         }

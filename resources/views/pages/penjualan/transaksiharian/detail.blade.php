@@ -93,8 +93,8 @@
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->customer->sales->nama }}">
-                              {{-- value="{{ $item->sales->nama }}" --}}
+                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->sales->nama }}">
+                              {{-- value="{{ $item->customer->sales->nama }}"> --}}
                             </div>
                           </div>
                         </div>

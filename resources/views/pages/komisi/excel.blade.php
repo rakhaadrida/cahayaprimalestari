@@ -40,7 +40,8 @@
           @endphp
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
-            <td align="center">{{ $item->so->customer->sales->nama }}</td>
+            {{-- <td align="center">{{ $item->so->customer->sales->nama }}</td> --}}
+            <td align="center">{{ $item->so->sales->nama }}</td>
             <td>{{ $item->so->customer->nama }}</td>
             <td align="center">{{ $item->so->kategori }}</td>
             <td align="center">{{ $item->id_so }}</td>

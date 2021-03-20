@@ -90,8 +90,8 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'NOT LIKE', 'Extrana%')
                     ->where('kategori', 'NOT LIKE', 'Prime%')
-                    ->orderBy('id_sales')
-                    // ->orderBy('so.id_sales')
+                    // ->orderBy('id_sales')
+                    ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
 
             $itemsEx = AccReceivable::join('so', 'so.id', 'ar.id_so')
@@ -100,8 +100,8 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                     ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'LIKE', 'Extrana%')
-                    ->orderBy('id_sales')
-                    // ->orderBy('so.id_sales')
+                    // ->orderBy('id_sales')
+                    ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
@@ -110,8 +110,8 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                     ->whereIn('keterangan', [$status[0], $status[1]])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('kategori', 'LIKE', 'Prime%')
-                    ->orderBy('id_sales')
-                    // ->orderBy('so.id_sales')
+                    // ->orderBy('id_sales')
+                    ->orderBy('so.id_sales')
                     ->orderBy('customer.nama')->get();
 
             $itemsEx = NULL;
