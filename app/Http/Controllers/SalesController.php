@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SalesRequest;
 use App\Models\Sales;
 use App\Models\Customer;
+use App\Models\Barang;
+use App\Models\Gudang;
+use App\Models\StokBarang;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SalesExport;
 use Carbon\Carbon;
@@ -13,6 +16,36 @@ use Carbon\Carbon;
 class SalesController extends Controller
 {
     public function index() {
+        $barang = Barang::All();
+        $gudang = Gudang::All();
+        foreach($barang as $b) {
+            foreach($gudang as $g) {
+                $item = StokBarang::where('id_barang', $b->id)->where('id_gudang', $g->id)
+                        ->where('status', 'T')->get();
+                if($item->count() == 0) {
+                    StokBarang::create([
+                        'id_barang' => $b->id,
+                        'id_gudang' => $g->id,
+                        'status' => 'T',
+                        'stok' => 0
+                    ]);
+                }
+
+                if($g->tipe == 'RETUR') {
+                    $jelek = StokBarang::where('id_barang', $b->id)->where('id_gudang', $g->id)
+                        ->where('status', 'F')->get();
+                    if($jelek->count() == 0) {
+                        StokBarang::create([
+                            'id_barang' => $b->id,
+                            'id_gudang' => $g->id,
+                            'status' => 'F',
+                            'stok' => 0
+                        ]);
+                    }
+                }
+            }
+        }
+
         $items = Sales::All();
         $data = [
             'items' => $items
