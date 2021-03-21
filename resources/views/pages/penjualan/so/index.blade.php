@@ -754,10 +754,6 @@ function formatTanggal(e) {
 
 /** Tampil Input Tempo **/
 function displayJenis(e) {
-  // if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked)) {
-  //   tempo.removeAttribute('readonly');
-  //   tempo.setAttribute('required', 'true');
-  // }
   if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
     if((radios[4].checked) && (tempTempo == 0))
       tempTempo = '30';
@@ -987,7 +983,7 @@ function displayRow(e) {
           pcs.innerHTML = 'Pcs';
           teksSatRow.value = 'Pcs';
           teksSatUkRow.value = 'Dus';
-          satuanRow.value = '';
+          // satuanRow.value = '';
           satuanRow.removeAttribute('readonly');
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
@@ -997,6 +993,13 @@ function displayRow(e) {
           satuanUkuran.innerHTML = 'Meter';
           satuanRow.value = '{{ $br->ukuran }}';
           satuanRow.setAttribute('readonly', 'true');
+        }
+        else if(satuanUkuran.innerHTML == 'Set') {
+          pcs.innerHTML = 'Set';
+          satuanUkuran.innerHTML = 'Dus';
+          teksSatUkRow.value = 'Dus';
+          teksSatRow.value = 'Set';
+          // satuanRow.value = '';
         }
         else {
           pcs.innerHTML = 'Meter';
@@ -1031,7 +1034,17 @@ function displayRow(e) {
     // satuanRow.value = '';
   }
 
-  hargaRow.addEventListener("keyup", function(e) {
+  function resetQtyRow(e) {
+    kodeGudangRow.value = 'GDG01';
+    qtyGudangRow.value = '';
+    qtyRow.value = '';
+    satuanRow.value = '';
+  }
+
+  hargaRow.addEventListener("keyup", displayHargaCustomRow); 
+  hargaRow.addEventListener("blur", displayHargaCustomRow);
+  
+  function displayHargaCustomRow(e) {
     $(this).val(function(index, value) {
       return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
@@ -1045,12 +1058,6 @@ function displayRow(e) {
 
     nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
     checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
-  });
-
-  function resetQtyRow(e) {
-    kodeGudangRow.value = 'GDG01';
-    qtyGudangRow.value = '';
-    qtyRow.value = '';
   }
 
   /** Inputan hanya bisa angka **/
@@ -1223,7 +1230,7 @@ function displayRow(e) {
 
   function hitungQtyRow(kode, angka, teks, ukuran) {
     if(kode == `qtyRow${newNum}`) {
-      if(teks == 'Pcs')
+      if((teks == 'Pcs') || (teks == 'Set'))
         satuanRow.value = +angka / +ukuran;
       else if(teks == 'Rol')
         satuanRow.value = +angka * +ukuran;
@@ -1325,7 +1332,10 @@ function displayRow(e) {
   });
 
   /** Tampil Diskon Rp **/
-  diskonRow.addEventListener("keyup", function (e) {
+  diskonRow.addEventListener("keyup", displayDiskonRow);
+  diskonRow.addEventListener("blur", displayDiskonRow);
+  
+  function displayDiskonRow(e) {
     if(e.target.value == "") {
       netPast = nettoRow.value.replace(/\./g, "");
       nettoRow.value = addCommas(+nettoRow.value.replace(/\./g, "") + +diskonRpRow.value.replace(/\./g, ""))
@@ -1343,7 +1353,7 @@ function displayRow(e) {
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
-  });
+  }
   
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
@@ -1508,7 +1518,7 @@ for(let i = 0; i < brgNama.length; i++) {
           pcs.innerHTML = 'Pcs';
           teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Pcs';
-          satuan[i].value = '';
+          // satuan[i].value = '';
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
@@ -1523,7 +1533,7 @@ for(let i = 0; i < brgNama.length; i++) {
           satuanUkuran.innerHTML = 'Dus';
           teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Set';
-          satuan[i].value = '';
+          // satuan[i].value = '';
         }
         else {
           pcs.innerHTML = 'Meter';
@@ -1551,23 +1561,22 @@ for(let i = 0; i < brgNama.length; i++) {
         diskon[i].setAttribute('required', true);
       }
     @endforeach
-
-    // kodeGudang[i].value = 'GDG01';
-    // qtyGudang[i].value = '';
-    // qty[i].value = '';
-    // satuan[i].value = '';
   }
 
   function resetQty(e) {
     kodeGudang[i].value = 'GDG01';
     qtyGudang[i].value = '';
     qty[i].value = '';
+    satuan[i].value = '';
   }
 }
 
 // Pilih Tipe
 for(let i = 0; i < harga.length; i++) {
-  harga[i].addEventListener("keyup", function(e) {
+  harga[i].addEventListener("keyup", displayHargaCustom);
+  harga[i].addEventListener("blur", displayHargaCustom);
+  
+  function displayHargaCustom(e) {
     $(this).val(function(index, value) {
       return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
@@ -1584,7 +1593,7 @@ for(let i = 0; i < harga.length; i++) {
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
-  });
+  }
 }
 
 /** Tampil Jumlah Harga Otomatis **/
@@ -1774,7 +1783,10 @@ for(let i = 0; i < tipe.length; i++) {
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
-  diskon[i].addEventListener("keyup", function (e) {
+  diskon[i].addEventListener("keyup", displayDiskon);
+  diskon[i].addEventListener("blur", displayDiskon);
+
+  function displayDiskon(e) {
     if(e.target.value == "") {
       netPast = netto[i].value.replace(/\./g, "");
       netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
@@ -1791,7 +1803,7 @@ for(let i = 0; i < diskon.length; i++) {
     // total_ppn(subtotal.value.replace(/\./g, ""));
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
-  });
+  }
 }
 
 /** Tampil Kode Gudang Tambahan **/

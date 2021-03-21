@@ -324,10 +324,6 @@ class BarangMasukController extends Controller
     }
 
     public function status(Request $request, $id) {
-        // $item = BarangMasuk::where('id', $id)->first();
-        // $item->{'status'} = 'PENDING_BATAL';
-        // $item->save();
-
         $lastcode = NeedApproval::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
@@ -345,9 +341,6 @@ class BarangMasukController extends Controller
             'tipe' => 'Dokumen',
             'id_user' => Auth::user()->id
         ]);
-
-        // $items = NeedApproval::with(['need_appdetil'])->where('id_dokumen', $id)->get();
-        // return response()->json($items);
 
         if(($items->count() != 0) && ($items->first()->need_appdetil->count() != 0)) {
             $detil = NeedAppDetil::where('id_app', $items[0]->need_appdetil[0]->id_app)->get();
