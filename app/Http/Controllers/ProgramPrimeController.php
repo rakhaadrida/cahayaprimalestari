@@ -29,7 +29,7 @@ class ProgramPrimeController extends Controller
                 ->select('customer.nama', 'customer.id as id')
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])
                 ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
-                ->groupBy('customer.nama')->get();
+                ->groupBy('customer.nama')->orderBy('customer.nama')->get();
 
         $data = [
             'tahun' => $tahun,
@@ -50,15 +50,12 @@ class ProgramPrimeController extends Controller
         } else {
             $customer = Customer::where('id', $request->kode)->get();
             $sales = SalesOrder::select('id_sales as id')
-                    ->where('id_customer', $request->kode)->get();
-            // $sales = Sales::join('customer', 'customer.id_sales', 'sales.id')
-            //         ->select('id_sales as id')->where('customer.id', $request->kode)->get();
-            // return response()->json($sales);
+                    ->where('id_customer', $request->kode)
+                    ->groupBy('id_sales')->get();
         }
 
         $date = Carbon::now('+07:00');
         $tahun = $date->year;
-        // $month = $date->month;
         $bulNow = Carbon::parse($date)->isoFormat('MMMM');
         $year = Carbon::parse($date)->isoFormat('Y');
 
@@ -85,7 +82,7 @@ class ProgramPrimeController extends Controller
                         ->select('customer.nama', 'customer.id as id')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
                         ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
-                        ->groupBy('so.id_sales', 'customer.nama')->get();
+                        ->groupBy('customer.nama')->orderBy('customer.nama')->get();
 
         $data = [
             'tahun' => $tahun,

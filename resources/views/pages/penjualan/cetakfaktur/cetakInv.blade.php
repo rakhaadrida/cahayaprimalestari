@@ -606,7 +606,7 @@
                 {{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_so : $items[$urut-$kur]->tgl_so))->add(($det <= 12 ? $item->tempo : $items[$urut-$kur]->tempo), 'days')->format('d-M-y') }}
               </td>
               {{-- <td align="center">{{ $det <= 12 ? $item->customer->sales->nama : $items[$urut-$kur]->customer->sales->nama }}</td> --}}
-              <td align="center">{{ $det <= 12 ? $item->sales->nama : $items[$urut-$kur]->customer->sales->nama }}</td>
+              <td align="center">{{ $det <= 12 ? $item->sales->nama : $items[$urut-$kur]->sales->nama }}</td>
               <td align="center">{{ Auth::user()->name }}</td>
             </tr>
           </tbody>

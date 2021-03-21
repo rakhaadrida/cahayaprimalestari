@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\View;
 use App\Models\Customer;
 use App\Models\Sales;
 use App\Models\DetilSO;
+use App\Models\SalesOrder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -41,8 +42,8 @@ class PrimeFilterExport implements FromView, ShouldAutoSize, WithStyles
             $sales = Sales::All();
         } else {
             $customer = Customer::where('id', $this->kode)->get();
-            $sales = Sales::join('customer', 'customer.id_sales', 'sales.id')
-                    ->select('id_sales as id')->where('customer.id', $this->kode)->get();
+            $sales = SalesOrder::select('id_sales as id')->where('id_customer', $this->kode)
+                    ->groupBy('id_sales')->get();
         }
 
         $data = [
@@ -57,7 +58,7 @@ class PrimeFilterExport implements FromView, ShouldAutoSize, WithStyles
             'bulanNow' => $this->mo
         ];
         
-        return view('pages.prime.excel', $data);
+        return view('pages.prime.excelFilter', $data);
     }
 
     public function styles(Worksheet $sheet)
@@ -83,9 +84,8 @@ class PrimeFilterExport implements FromView, ShouldAutoSize, WithStyles
                     ->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
                     ->whereIn(DB::raw('MONTH(tgl_so)'), $this->month)
-                    ->groupBy('id_customer', 'id_barang')->get();
+                    ->groupBy('so.id_sales', 'id_customer', 'id_barang')->get();
             $sales = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->join('customer', 'customer.id', 'so.id_customer')
                     ->join('barang', 'barang.id', 'detilso.id_barang')
                     ->select('id_sales')
                     ->whereNotIn('status', ['BATAL', 'LIMIT'])
@@ -101,9 +101,15 @@ class PrimeFilterExport implements FromView, ShouldAutoSize, WithStyles
                     ->where('id_customer', $this->kode)
                     ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
                     ->whereIn(DB::raw('MONTH(tgl_so)'), $this->month)
-                    ->groupBy('id_customer', 'id_barang')->get();
-            $sales = Sales::join('customer', 'customer.id_sales', 'sales.id')
-                    ->where('customer.id', $this->kode)->get();
+                    ->groupBy('so.id_sales', 'id_customer', 'id_barang')->get();
+            $sales = DetilSO::join('so', 'so.id', 'detilso.id_so')
+                    ->join('barang', 'barang.id', 'detilso.id_barang')
+                    ->select('id_sales')
+                    ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('id_customer', $this->kode)
+                    ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
+                    ->whereIn(DB::raw('MONTH(tgl_so)'), $this->month)
+                    ->groupBy('id_sales')->get();
         }
 
         $range = 6 + $items->count() + $sales->count();
@@ -147,7 +153,6 @@ class PrimeFilterExport implements FromView, ShouldAutoSize, WithStyles
         foreach($sales as $s) {
             if($this->kode == 'KOSONG') {
                 $barang = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                        ->join('customer', 'customer.id', 'so.id_customer')
                         ->join('barang', 'barang.id', 'detilso.id_barang')
                         ->select('id_customer', 'id_barang')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
@@ -157,7 +162,6 @@ class PrimeFilterExport implements FromView, ShouldAutoSize, WithStyles
                         ->groupBy('id_customer', 'id_barang')->get();
             } else {
                 $barang = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                        ->join('customer', 'customer.id', 'so.id_customer')
                         ->join('barang', 'barang.id', 'detilso.id_barang')
                         ->select('id_customer', 'id_barang')
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])

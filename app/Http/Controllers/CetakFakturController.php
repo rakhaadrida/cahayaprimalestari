@@ -65,6 +65,7 @@ class CetakFakturController extends Controller
                         'kategori' => $item->first()->kategori,
                         'tempo' => $item->first()->tempo,
                         'id_customer' => $item->first()->id_customer,
+                        'id_sales' => $item->first()->id_sales,
                         'id_user' => $item->first()->id_user,
                     ]);
 

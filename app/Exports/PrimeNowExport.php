@@ -70,9 +70,8 @@ class PrimeNowExport implements FromView, ShouldAutoSize, WithStyles
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])
                 ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
                 ->whereMonth('tgl_so', $month)
-                ->groupBy('id_customer', 'id_barang')->get();
+                ->groupBy('so.id_sales', 'id_customer', 'id_barang')->get();
         $sales = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('barang', 'barang.id', 'detilso.id_barang')
                 ->select('id_sales')
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])
@@ -122,10 +121,10 @@ class PrimeNowExport implements FromView, ShouldAutoSize, WithStyles
             $barang = DetilSO::join('so', 'so.id', 'detilso.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->join('barang', 'barang.id', 'detilso.id_barang')
-                    ->select('id_customer', 'id_barang')
+                    ->select('id_barang')
                     ->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->where('id_sales', $s->id_sales)
-                    ->where('id_kategori', 'KAT08')->whereYear('tgl_so', $tahun)
+                    ->where('id_kategori', 'KAT08')
+                    ->where('so.id_sales', $s->id_sales)->whereYear('tgl_so', $tahun)
                     ->whereMonth('tgl_so', $month)
                     ->groupBy('id_customer', 'id_barang')->get();
             if($no != 0) 
@@ -133,7 +132,7 @@ class PrimeNowExport implements FromView, ShouldAutoSize, WithStyles
 
             $rangeSub += $barang->count();
             $rangeJen = strval($rangeSub);
-            $rangeBar = 'A'.$rangeSub.':F'.$rangeSub;
+            $rangeBar = 'A'.$rangeJen.':F'.$rangeJen;
 
             $sheet->getStyle($rangeBar)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($rangeBar)->getAlignment()->setHorizontal('right');
@@ -143,8 +142,6 @@ class PrimeNowExport implements FromView, ShouldAutoSize, WithStyles
             $no++;
         }
 
-        $tot = $range;
-        $totStr = strval($tot);
         $rangeGrandTot = 'A'.$rangeStr.':F'.$rangeStr;
         $sheet->getStyle($rangeGrandTot)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($rangeGrandTot)->getAlignment()->setHorizontal('right');

@@ -310,6 +310,7 @@ class SalesOrderController extends Controller
                     'pkp' => $items->first()->pkp,
                     'status' => $items->first()->status,
                     'id_customer' => $items->first()->id_customer,
+                    'id_sales' => $items->first()->id_sales,
                     'id_user' => $items->first()->id_user,
                     // 'detilso' => $items->first()->detilso
                 ]);

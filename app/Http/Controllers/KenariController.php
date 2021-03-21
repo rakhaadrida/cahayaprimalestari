@@ -179,6 +179,7 @@ class KenariController extends Controller
             'pkp' => $pkp,
             'status' => $status,
             'id_customer' => $request->kodeCustomer,
+            'id_sales' => $request->kodeSales,
             'id_user' => Auth::user()->id
         ]);
 
@@ -253,6 +254,7 @@ class KenariController extends Controller
                     'pkp' => $items->first()->pkp,
                     'status' => $items->first()->status,
                     'id_customer' => $items->first()->id_customer,
+                    'id_sales' => $items->first()->id_sales,
                     'id_user' => $items->first()->id_user
                 ]);
 
@@ -602,6 +604,7 @@ class KenariController extends Controller
                         'kategori' => $item->first()->kategori,
                         'tempo' => $item->first()->tempo,
                         'id_customer' => $item->first()->id_customer,
+                        'id_sales' => $item->first()->id_sales,
                         'id_user' => $item->first()->id_user,
                     ]);
 

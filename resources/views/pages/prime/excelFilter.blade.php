@@ -26,9 +26,10 @@
           @php
             $total = 0; $cekQty = 0;
             if($cust == 'KOSONG')
-              $customer = \App\Models\Customer::where('id_sales', $s->id)->orderBy('nama')->get();
+              $customer = \App\Models\SalesOrder::select('id_customer as id', 'id_sales')
+                          ->where('id_sales', $s->id)->groupBy('id_customer')->get();
           @endphp
-          {{-- @foreach($customer as $c) --}}
+          @foreach($customer as $c)
             @php
               $qty = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
@@ -37,7 +38,7 @@
                     ->select('id_barang', 'id_customer','id_so')->selectRaw('sum(qty) as qty')
                     ->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('id_kategori', 'KAT08')
-                    // ->where('id_customer', $c->id)->whereYear('tgl_so', $tahun)
+                    ->where('id_customer', $c->id)
                     ->where('so.id_sales', $s->id)->whereYear('tgl_so', $tahun)
                     ->whereIn(DB::raw('MONTH(tgl_so)'), $month)
                     // ->groupBy('id_barang')->orderBy('customer.nama')->get();
@@ -56,7 +57,7 @@
               </tr>
               @php $i++; $total += $q->qty; @endphp
             @endforeach
-          {{-- @endforeach --}}
+          @endforeach
           @if($cekQty != 0)
             <tr class="text-white text-bold bg-primary">
               <td colspan="5" align="right">Total Qty Penjualan {{ $s->nama }}</td>
