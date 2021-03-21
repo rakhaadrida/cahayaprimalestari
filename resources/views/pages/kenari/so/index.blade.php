@@ -67,7 +67,7 @@
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" name="namaSales" id="namaSales" placeholder="Nama Sales" class="form-control form-control-sm mt-1" readonly />
-                    <input type="hidden" name="kodeSales" id="idSales"
+                    <input type="hidden" name="kodeSales" id="kodeSales"
                     />
                   </div>
                 </div>
@@ -447,6 +447,7 @@ const kodeCust = document.getElementById('idCustomer');
 const limit = document.getElementById('limit');
 const piutang = document.getElementById('piutang');
 const namaSales = document.getElementById('namaSales');
+const kodeSales = document.getElementById('kodeSales');
 const npwp = document.getElementById('npwp');
 const tempo = document.getElementById('tempo');
 const tanggalKirim = document.getElementById('tanggalKirim');
@@ -517,6 +518,7 @@ function displayCust(e) {
       kodeCust.value = '{{ $c->id }}';
       limit.value = '{{ $c->limit }}';
       namaSales.value = '{{ $c->sales->nama }}';
+      kodeSales.value = '{{ $c->id_sales }}';
       npwp.value = '{{ $c->npwp }}';
       tempo.value = '{{ $c->tempo }}';
       tempTempo = '{{ $c->tempo }}';
@@ -527,6 +529,7 @@ function displayCust(e) {
       limit.value = '';
       piutang.value = '';
       namaSales.value = '';
+      kodeSales.value = '';
       npwp.value = '';
       tempo.value = '';
       tempTempo = '';

@@ -292,7 +292,8 @@ class KenariController extends Controller
 
     public function change() {
         $so = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.id as id', 'so.*')->where('roles', 'KENARI')->get();
+                ->select('so.id as id', 'so.*')->where('tgl_so', '>', Carbon::now()->subMonths(1))
+                ->where('roles', 'KENARI')->orderBy('created_at', 'desc')->get();
         $customer = Customer::All();
 
         $data = [
