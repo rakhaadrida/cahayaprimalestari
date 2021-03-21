@@ -22,6 +22,13 @@ class GudangController extends Controller
             $s->save();
         } */
         
+        $so = SalesOrder::where('id_sales', '')->get();
+        foreach($so as $s) {
+            $item = SalesOrder::where('id', $s->id)->first();
+            $item->{'id_sales'} = $item->customer->id_sales;
+            $item->save();
+        }
+        
         $items = Gudang::All();
         $data = [
             'items' => $items
