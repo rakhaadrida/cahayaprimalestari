@@ -312,7 +312,6 @@ class SalesOrderController extends Controller
                     'id_customer' => $items->first()->id_customer,
                     'id_sales' => $items->first()->id_sales,
                     'id_user' => $items->first()->id_user,
-                    // 'detilso' => $items->first()->detilso
                 ]);
 
                 $items->push($item);
@@ -332,7 +331,6 @@ class SalesOrderController extends Controller
         ];
 
         return view('pages.penjualan.so.cetakInv', $data);
-        // return view('pages.penjualan.so.cetakAwal', $data);
 
         // $paper = array(0,0,686,394);
         // $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);

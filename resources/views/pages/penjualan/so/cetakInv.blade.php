@@ -474,27 +474,19 @@
 
       @media print {
         @page {
-          /* size: 24.2cm 13.8cm; */
           width: 21.8cm;
           height: 13.8cm;
-          /* margin: -10cm -10cm 0cm 0cm; */
           margin-top: 0.4002cm;
           margin-left: 0.281cm;
           margin-bottom: 0.144cm;
-          /* margin-bottom: 0.4826cm;  0.19in */
           margin-right: 1.27cm;
         }
 
         body {
           margin: 0;
-          /* margin: 0.13in 0.13in 0.5in 0.15in; */
           zoom: 1.37;
         }
-
-        /* img {
-          display: none;
-        } */
-      }
+      } 
     </style>
   </head>
   <body>

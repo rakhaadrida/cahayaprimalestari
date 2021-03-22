@@ -253,7 +253,6 @@
 
       .table-cetak {
         font-size: 12px;
-        width: 84.18% !important;
         height: 227px;
         margin-left: 35px;
         margin-right: 34.5px;
@@ -358,19 +357,17 @@
       }
 
       .title-total {
-        /* width: 145px; */
+        width: 145px;
         font-size: 11px;
       }
 
       .angka-total {
-        width: 145px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-size: 13px;
         padding-right: 0.01rem !important;
       }
 
       .angka-total-akhir {
-        width: 145px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-size: 14px;
       }
@@ -391,15 +388,11 @@
         font-size: 9px !important;
       }
 
-      @media print {
-        /* @page {
+      /* @media print {
+        @page {
           size: 24.2cm 13.8cm;
-        } */
-
-        body {
-          margin: 0;
         }
-      }
+      } */
     </style>
   </head>
   <body>
@@ -479,11 +472,12 @@
           <thead class="text-center text-bold th-detail-cetak-so">
             <tr>
               <td style="width: 10px">No</td>
-              <td style="width: 285px">Nama Barang</td>
-              <td style="width: 65px" class="text-right">Qty</td>
-              <td style="width: 80px"></td>
-              <td style="width: 60px">Harga</td>
-              <td style="width: 70px">Total</td>
+              <td style="width: 60px">Kode</td>
+              <td style="width: 280px">Nama Barang</td>
+              <td colspan="2"><span style="margin-left: 10px !important">Qty</span> </td>
+              {{-- <td style="width: 30px">UOM</td> --}}
+              <td style="width: 55px">Harga</td>
+              <td style="width: 75px">Rupiah</td>
               <td colspan="2">Diskon</td>
               <td style="width: 75px; border-right: 2px dotted">Netto Rp</td>
             </tr>
@@ -491,16 +485,54 @@
           <tbody class="tr-detail-cetak-so">
             @php $i = 1; @endphp
             @foreach($itemsDet as $itemDet)
+              {{-- <tr class="baris-so">
+                <td style="border: solid black !important" rowspan="2" align="center">{{ $i }}</td>
+                <td style="border: solid black !important" rowspan="2">{{ $itemDet->id_barang }}</td>
+                <td style="border: solid black !important" rowspan="2">{{ $itemDet->barang->nama }}</td>
+                @if($itemDet->barang->satuan == "Pcs / Dus")
+                  <td rowspan="2" align="right" style="width: 60px">{{ $itemDet->qty }} PCS</td>
+                  <td rowspan="2" align="center" style="width: 60px">
+                    {{ $itemDet->qty / $itemDet->barang->ukuran }} Dus
+                  </td>
+                @else
+                  <td rowspan="2" align="right" style="width: 60px">{{ $itemDet->qty }} ROL</td>
+                  <td rowspan="2" align="center" style="width: 60px">
+                    {{ $itemDet->qty * $itemDet->barang->ukuran }} Mtr
+                  </td>
+                @endif
+                <td rowspan="2" align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
+                <td rowspan="2" align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
+                @php 
+                  $diskon = 100;
+                  $arrDiskon = explode("+", $itemDet->diskon);
+                  for($j = 0; $j < sizeof($arrDiskon); $j++) {
+                    $diskon -= ($arrDiskon[$j] * $diskon) / 100;
+                  } 
+                  $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
+                @endphp
+                <td style="width: 80px; height: 15px; border-bottom: none !important; border: solid black" align="right">
+                  {{ $itemDet->diskon }} 
+                </td>
+                <td rowspan="2" style="width: 70px" align="right">
+                  {{ number_format($itemDet->diskonRp, 0, "", ".") }}
+                </td>
+                <td rowspan="2" align="right">
+                  {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
+              </tr> --}}
               <tr class="baris-so">
                 <td align="center">{{ $i }}</td>
+                <td>{{ $itemDet->id_barang }}</td>
                 <td>{{ $itemDet->barang->nama }}</td>
                 @if($itemDet->barang->satuan == "Pcs / Dus")
-                  <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} PCS</span></td>
-                @elseif($itemDet->barang->satuan == "Meter / Rol")
-                  <td align="center">{{ $itemDet->qty }} ROL</td>
-                  <td >{{ number_format($itemDet->qty * $itemDet->barang->ukuran, 0, "", ".") }} MTR</td>
+                  <td align="right" style="width: 60px">{{ $itemDet->qty }} PCS</td>
+                  <td align="center" style="width: 60px">
+                    {{ $itemDet->qty / $itemDet->barang->ukuran }} Dus
+                  </td>
                 @else
-                  <td colspan="2" align="center"><span style="margin-left: -15px !important">{{ $itemDet->qty }} MTR</span></td>
+                  <td align="right" style="width: 65px">{{ $itemDet->qty }} ROL</td>
+                  <td align="center" style="width: 65px">
+                    {{ $itemDet->qty * $itemDet->barang->ukuran }} Mtr
+                  </td>
                 @endif
                 <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
@@ -515,14 +547,25 @@
                 <td style="width: 130px" align="right">
                   {{ $itemDet->diskon }} ({{ $diskon }}%)
                 </td>
-                <td style="width: 65px" align="right">
+                {{-- <td style="width: 55px;" align="right">({{ $diskon }}%)</td> --}}
+                <td style="width: 70px" align="right">
                   {{ number_format($itemDet->diskonRp, 0, "", ".") }}
                 </td>
                 <td align="right">
                   {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
               </tr>
+              {{-- <tr class="baris-so">
+                <td style="width: 70px; border: solid black" align="right">({{ $diskon }}%)</td>
+              </tr> --}}
               @php $i++ @endphp
             @endforeach
+            {{-- @for($j = $i; $j <= 10; $j++)
+              <tr class="text-center">
+                <td colspan="8">{{ $j }}</td>
+                <td>0</td>
+                <td colspan="2">0</td>
+              </tr>
+            @endfor --}}
             @if($i < 10)
               <tr class="text-center">
                 <td colspan="8"></td>
@@ -571,7 +614,7 @@
                     <br>
                     <span>Rekening Bank BCA</span>
                     <br>
-                    <span>a/n Indah Ramadhon 5790416491</span>
+                    <span>a/n Irianti Irawan 0911276444</span>
                     {{-- <span>Waktu Cetak : </span>
                     <br>
                     <span>{{ $today }} - {{ $waktu }}</span>
@@ -629,11 +672,11 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        <td class="text-right angka-total">{{ number_format($item->total + $item->diskon, 0, "", ".") }}</td>
+                        <td class="text-right angka-total">{{ number_format($item->total, 0, "", ".") }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Disc Faktur</td>
-                        <td class="text-right angka-total">{{ number_format($item->diskon, 0, "", ".") }}</td>
+                        <td class="text-right angka-total">0</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
@@ -667,6 +710,17 @@
         </div>
       </div>
     @endforeach
+
+    {{-- <script type="text/javascript">
+      // window.onafterprint = function(e) {
+      //   alert('ok');
+      // };
+
+      // window.print();
+      console.log('2');
+    </script> --}}
+
+    {{-- <script type="text/javascript"> try { this.print(); } catch (e) { window.onload = window.print; } </script> --}}
   </body>
   
 </html>
