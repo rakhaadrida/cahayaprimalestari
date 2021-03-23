@@ -267,6 +267,7 @@
                         </a>
                       </td>
                     </tr>
+                    
                     <div class="modal modalGudang" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -336,88 +337,9 @@
                       </div>
                     </div>
                   @endfor
-
-                  <!-- Tabel Tampil Detil SO (Bukan Diinput di Tabel) -->
-                  {{-- @if($itemsRow != 0)
-                    @php $i = 1; $subtotal = 0; @endphp
-                    @foreach($items as $item)
-                      <tr class="text-bold">
-                        <td align="center">{{ $i }}</td>
-                        <td align="center">{{ $item->barang->id }} </td>
-                        <td>{{ $item->barang->nama }}</td>
-                        <td align="right" class="editable{{$i}}" id="editableQty{{$i}}">
-                          {{ $item->qty }}
-                        </td>
-                        <td align="right" class="autoharga">{{ $item->harga }}</td>
-                        <td align="right" class="autoharga">{{ $item->harga * $item->qty }}</td>
-                        <td align="right" class="autodiskon">{{ $item->diskon }} %</td>
-                        @php 
-                          $total = $item->qty * $item->harga;
-                          $besarDiskon = $item->diskon * $total / 100;
-                          $total -= $besarDiskon;
-                          $subtotal += $total;
-                        @endphp
-                        <td align="right" class="autodiskon">{{ $besarDiskon }}</td>
-                        <td align="right" class="autototal">
-                          {{ $total }}
-                          <input type="hidden" id="totalBarang" value="{{ $total }}">
-                        </td>
-                        <td align="center">
-                          <a href="" id="editButton{{$i}}" 
-                          onclick="return displayEditable({{$i}})">
-                            <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
-                          </a>
-                          <a href="" id="updateButton{{$i}}" class="ic-update" 
-                          onclick="return processEditable({{$i}})">
-                            <i class="fas fa-fw fa-save fa-lg mt-1"></i>
-                          </a>
-                        </td>
-                        <td align="center">
-                          <a href="{{ route('so-remove', ['id' => $item->id_so, 'barang' => $item->id_barang]) }}">
-                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      @php $i++; @endphp
-                    @endforeach
-                  @else
-                    <tr>
-                      <td colspan=11 class="text-center text-bold h4 p-2"><i>Belum ada Detail SO</i></td>
-                    </tr>
-                  @endif  --}}
-
                 </tbody>
               </table>
-              {{-- <div class="form-group row justify-content-end subtotal-so">
-                <label for="subTotal" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger" 
-                  @if($itemsRow != 0) 
-                    value="{{ $subtotal }}"
-                  @endif
-                  />
-                </div>
-              </div> --}}
-              {{-- @if($itemsRow != 0) 
-                @php
-                  $diskonFaktur = ($items[0]->diskon_faktur * $subtotal) / 100;
-                  $totalNotPPN = $subtotal - $diskonFaktur;
-                  $ppn = $totalNotPPN * 10 / 100;
-                  $grandtotal = $totalNotPPN + $ppn;
-                @endphp
-              @endif --}}
-              {{-- <div class="form-group row justify-content-end total-so">
-                <label for="diskonFaktur" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
-                <span class="col-form-label text-bold">:</span>
-                <div class="col-2">
-                  <input type="text" name="angkaDF" id="angkaDF" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger"
-                  @if($itemsRow != 0) 
-                    value="{{ $diskonFaktur }}"
-                  @endif
-                  />
-                </div>
-              </div> --}}
+
               <div class="form-group row justify-content-end subtotal-so so-info-total">
                 <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Sub Total</label>
                 <span class="col-form-label text-bold">:</span>

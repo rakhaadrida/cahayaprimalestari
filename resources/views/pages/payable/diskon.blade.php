@@ -25,38 +25,6 @@
           <div class="card-body">
             <form action="" method="">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              {{-- <div class="container so-container"> 
-                <div class="form-group row" style="margin-top: -10px">
-                  <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan">
-                  </div>
-                  <label for="status" class="col-auto col-form-label text-right text-bold">Status</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
-                  </div>
-                </div>   
-                <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1" name="tglAwal" >
-                  </div>
-                  <label for="tanggal" class="col-auto col-form-label text-bold ml-3"> s / d </label>
-                  <div class="col-2">
-                    <input type="date" class="form-control form-control-sm text-bold mt-1 ml-1" name="tglAkhir" >
-                  </div>
-                  <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('ap-home') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
-                  </div>
-                </div>  
-              </div>
-              <hr> --}}
-              <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-
               @php $subtotal = 0; @endphp
               @foreach($items as $item)
                 @if($item->id == $items[0]->id)
@@ -184,12 +152,13 @@
                         <td align="center" class="align-middle">{{ $i }}</td>
                         <td align="center" class="align-middle">{{ $detil->id_barang }} </td>
                         <td class="align-middle">{{ $detil->barang->nama }}</td>
-                        <td align="right" class="align-middle">{{ $detil->qty }}</td>
+                        <td align="right" class="align-middle qty">{{ $detil->qty }}</td>
                         <td align="right" class="align-middle">
-                          {{ number_format($detil->harga, 0, "", ".") }}
+                          {{-- {{ number_format($detil->harga, 0, "", ".") }} --}}
+                          <input type="text" name="harga{{$item->id}}{{$detil->id_barang}}" id="harga" class="form-control form-control-sm text-bold text-dark text-right harga" value="{{ number_format(($detil->harga), 0, "", ".") }}" >
                         </td>
                         <td align="right" class="align-middle">
-                          <input type="text" name="jumlah[]" id="jumlah" class="form-control form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format(($detil->qty * $detil->harga), 0, "", ".") }}">
+                          <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format(($detil->qty * $detil->harga), 0, "", ".") }}">
                         </td>
                         <td align="right">
                           <input type="text" tabindex="{{ $tab++ }}" name="dis{{$item->id}}{{$detil->id_barang}}" id="diskon" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan koma" autocomplete="off" @if($detil->diskon != null) value="{{ str_replace(".", ",", $detil->diskon) }}" @endif required>
@@ -280,11 +249,6 @@
                       <a href="{{ url()->previous() }}" tabindex="{{$tab += 2 }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                     </div>
                   </div>
-                  {{-- <div class="form-row justify-content-center">
-                    <div class="col-2">
-                      <button type="submit" formaction="{{ route('ap') }}" formmethod="GET" class="btn btn-outline-primary btn-block text-bold">Kembali</button>
-                    </div>
-                  </div> --}}
                   <!-- End Button Submit dan Reset -->
                 @endif
               @endforeach
@@ -301,6 +265,8 @@
 @push('addon-script')
 <script type="text/javascript">
 const tempo = document.getElementById("tempo");
+const qty = document.querySelectorAll(".qty");
+const harga = document.querySelectorAll(".harga");
 const jumlah = document.querySelectorAll(".jumlah");
 const diskon = document.querySelectorAll(".diskon");
 const disAngka = document.querySelectorAll(".disAngka");
@@ -314,6 +280,30 @@ const grandtotal = document.getElementById('grandtotal');
 
 potongan.addEventListener('keyup', formatNominal);
 potongan.addEventListener('keyup', displayTotal);
+
+for(let i = 0; i < harga.length; i++) {
+  harga[i].addEventListener("keyup", displayHarga);
+  harga[i].addEventListener("blur", displayHarga);
+  
+  function displayHarga(e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });
+
+    netPast = +netto[i].value.replace(/\./g, "");
+    jumlah[i].value = addCommas(harga[i].value.replace(/\./g, "") * qty[i].textContent);
+    if(diskon[i].value != "") {
+      var angkaDiskon = hitungDiskon(diskon[i].value)
+      diskonRp[i].value = addCommas((angkaDiskon * jumlah[i].value.replace(/\./g, "") / 100).toFixed(0));
+    }
+
+    netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
+    checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
+    ppn.value = 0;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +potongan.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
+  }
+}
 
 /** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {

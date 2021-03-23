@@ -143,6 +143,7 @@ class AccPayableController extends Controller
             // $bm = BarangMasuk::where('id', $request->kode)->first();
 
             foreach($detil as $d) {
+                $d->harga = str_replace(".", "", $request->{"harga".$i->id.$d->id_barang});
                 $d->diskon = $request->{"dis".$i->id.$d->id_barang};
                 $d->disPersen = $request->{"diskon".$i->id.$d->id_barang};
                 $d->save();
