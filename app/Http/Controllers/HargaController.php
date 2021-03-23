@@ -6,11 +6,25 @@ use Illuminate\Http\Request;
 use App\Http\RequestS\HargaRequest;
 use App\Models\Harga;
 use App\Models\HargaBarang;
+use App\Models\Customer;
+use App\Models\SalesOrder;
 
 class HargaController extends Controller
 {
     public function index()
     {
+        $item = Customer::where('id', 'CUS0667')->first();
+        $item->{'id_sales'} = 'SLS12';
+        $item->save();
+
+        $so = SalesOrder::where('id_customer', 'CUS0667')
+                ->whereBetween('tgl_so', ['2021-03-01', '2021-03-31'])->get();
+
+        foreach($so as $s) {
+            $s->id_sales = 'SLS12';
+            $s->save();
+        }
+        
         $items = Harga::All();
         $data = [
             'items' => $items
