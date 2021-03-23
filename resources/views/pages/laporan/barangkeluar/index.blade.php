@@ -76,17 +76,19 @@
               <table class="table table-sm table-bordered table-responsive-sm table-hover">
                 <thead class="text-center text-dark text-bold">
                   <td style="width: 60px" class="align-middle">No</td>
-                  <td style="width: 130px">Kode Barang</td>
+                  {{-- <td style="width: 130px">Kode Barang</td> --}}
+                  <td style="width: 300px" class="align-middle">Customer</td>
                   <td class="align-middle">Nama Barang</td>
-                  <td style="width: 200px" class="align-middle">Nama Gudang</td>
-                  <td style="width: 150px; background-color: yellow" class="align-middle">Qty</td>
+                  <td style="width: 160px" class="align-middle">Gudang</td>
+                  <td style="width: 80px; background-color: yellow" class="align-middle">Qty</td>
                 </thead>
                 <tbody id="tablePO">
                   @php $i = 1; @endphp
                   @forelse($items as $item)
                     <tr class="text-dark text-bold">
                       <td align="center">{{ $i }}</td>
-                      <td align="center">{{ $item->id_barang }}</td>
+                      {{-- <td align="center">{{ $item->id_barang }}</td> --}}
+                      <td>{{ $item->so->customer->nama }}</td>
                       <td>{{ $item->barang->nama }}</td>
                       <td align="center">{{ $item->gudang->nama }}</td>
                       <td align="right" style="background-color: yellow">{{ $item->qty }}</td>

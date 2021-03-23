@@ -47,9 +47,10 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
         $tglAkhir = $this->tglAkhir;
 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_barang', 'id_gudang')->get();
+                    ->groupBy('id_customer', 'id_barang', 'id_gudang')->orderBy('nama')->get();
 
         $data = [
             'waktu' => $waktu,
@@ -88,9 +89,10 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
                 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_barang', 'id_gudang')->get();
+                    ->groupBy('id_customer', 'id_barang', 'id_gudang')->orderBy('nama')->get();
 
         $range = 5 + $items->count();
         $rangeStr = strval($range);

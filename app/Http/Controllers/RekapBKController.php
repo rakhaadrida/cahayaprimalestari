@@ -14,9 +14,11 @@ class RekapBKController extends Controller
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
         $tanggal = Carbon::now('+07:00')->toDateString();
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->where('tgl_so', $tanggal)->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_barang', 'id_gudang')->get();
+                    ->groupBy('id_customer', 'id_barang', 'id_gudang')
+                    ->orderBy('nama')->get();
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         
         $data = [
@@ -46,9 +48,11 @@ class RekapBKController extends Controller
         }
 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
+                    ->join('customer', 'customer.id', 'so.id_customer')
+                    ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_barang', 'id_gudang')->get();
+                    ->groupBy('id_customer', 'id_barang', 'id_gudang')
+                    ->orderBy('customer.nama')->get();
         
         $awal = $this->formatTanggal($tglAwal, 'd');
         $akhir = $this->formatTanggal($tglAkhir, 'd M y');

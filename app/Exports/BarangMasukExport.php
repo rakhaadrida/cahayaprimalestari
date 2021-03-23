@@ -47,8 +47,10 @@ class BarangMasukExport implements FromView, ShouldAutoSize, WithStyles
         $tglAkhir = $this->tglAkhir;
 
         $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
                     ->select('id_bm', 'id_barang')->selectRaw('sum(qty) as qty')
-                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])->groupBy('id_barang')->get();
+                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                    ->groupBy('id_supplier', 'id_barang', 'id_gudang')->orderBy('nama')->get();
 
         $data = [
             'waktu' => $waktu,
@@ -87,8 +89,10 @@ class BarangMasukExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
                 
         $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
                     ->select('id_bm', 'id_barang')->selectRaw('sum(qty) as qty')
-                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])->groupBy('id_barang')->get();
+                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                    ->groupBy('id_supplier', 'id_barang', 'id_gudang')->orderBy('nama')->get();
 
         $range = 5 + $items->count();
         $rangeStr = strval($range);

@@ -13,9 +13,10 @@
       <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
           <td>No</td>
-          <td>Kode Barang</td>
+          {{-- <td>Kode Barang</td> --}}
+          <td>Customer</td>
           <td>Nama Barang</td>
-          <td>Nama Gudang</td>
+          <td>Gudang</td>
           <td>Qty</td>
         </tr>
       </thead>
@@ -24,7 +25,8 @@
         @foreach($items as $item)
           <tr class="text-dark ">
             <td align="center">{{ $i }}</td>
-            <td align="center">{{ $item->id_barang }}</td>
+            {{-- <td align="center">{{ $item->id_barang }}</td> --}}
+            <td>{{ $item->so->customer->nama }}</td>
             <td>{{ $item->barang->nama }}</td>
             <td align="center">{{ $item->gudang->nama }}</td>
             <td align="right">{{ $item->qty }}</td>
