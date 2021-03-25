@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use PDF;
+// use PDF;
 
 class SalesOrderController extends Controller
 {
@@ -331,12 +331,6 @@ class SalesOrderController extends Controller
         ];
 
         return view('pages.penjualan.so.cetakInv', $data);
-
-        // $paper = array(0,0,686,394);
-        // $pdf = PDF::loadview('pages.penjualan.so.cetak', $data)->setPaper($paper);
-        // ob_end_clean();
-        
-        // return $pdf->stream('cetak-so.pdf');
     }
 
     public function tandaterima($id) {

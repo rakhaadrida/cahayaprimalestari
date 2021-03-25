@@ -13,6 +13,10 @@
       <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
           <td>No</td>
+          <td>Bulan</td>
+          <td>Tgl Faktur</td>
+          <td>No Faktur</td>
+          <td>Sales</td>
           {{-- <td>Kode Barang</td> --}}
           <td>Customer</td>
           <td>Nama Barang</td>
@@ -25,6 +29,10 @@
         @foreach($items as $item)
           <tr class="text-dark ">
             <td align="center">{{ $i }}</td>
+            <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('MMMM') }}</td>
+            <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('DD-MMM-YY') }}</td>
+            <td align="center">{{ $item->id_so }}</td>
+            <td align="center">{{ $item->so->sales->nama }}</td>
             {{-- <td align="center">{{ $item->id_barang }}</td> --}}
             <td>{{ $item->so->customer->nama }}</td>
             <td>{{ $item->barang->nama }}</td>

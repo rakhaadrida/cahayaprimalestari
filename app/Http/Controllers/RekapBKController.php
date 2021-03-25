@@ -17,7 +17,7 @@ class RekapBKController extends Controller
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->where('tgl_so', $tanggal)->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_customer', 'id_barang', 'id_gudang')
+                    ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')
                     ->orderBy('nama')->get();
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         
@@ -51,7 +51,7 @@ class RekapBKController extends Controller
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_customer', 'id_barang', 'id_gudang')
+                    ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')
                     ->orderBy('customer.nama')->get();
         
         $awal = $this->formatTanggal($tglAwal, 'd');

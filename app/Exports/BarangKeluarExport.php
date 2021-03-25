@@ -50,7 +50,8 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_customer', 'id_barang', 'id_gudang')->orderBy('nama')->get();
+                    ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')
+                    ->orderBy('tgl_so')->orderBy('id_so')->get();
 
         $data = [
             'waktu' => $waktu,
@@ -92,25 +93,25 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->groupBy('id_customer', 'id_barang', 'id_gudang')->orderBy('nama')->get();
+                    ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')->orderBy('nama')->get();
 
         $range = 5 + $items->count();
         $rangeStr = strval($range);
-        $rangeTab = 'E'.$rangeStr;
+        $rangeTab = 'I'.$rangeStr;
 
-        $header = 'A5:E5';
+        $header = 'A5:I5';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
         $sheet->getStyle($header)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
         
-        $sheet->mergeCells('A1:E1');
-        $sheet->mergeCells('A2:E2');
-        $sheet->mergeCells('A3:E3');
-        $title = 'A1:E3';
+        $sheet->mergeCells('A1:I1');
+        $sheet->mergeCells('A2:I2');
+        $sheet->mergeCells('A3:I3');
+        $title = 'A1:I3';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A3:E3')->getFont()->setBold(false)->setSize(12);
+        $sheet->getStyle('A3:I3')->getFont()->setBold(false)->setSize(12);
 
         $styleArray = [
             'borders' => [
