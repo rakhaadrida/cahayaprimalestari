@@ -45,7 +45,7 @@
                     <button type="submit" tabindex="6" formaction="{{ route('extrana') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                   <div class="col-auto mt-1">
-                    <button type="submit" tabindex="5" formaction="{{ route('komisi-excel') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('extrana-excel') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
                   </div>
                 </div>
               </div>

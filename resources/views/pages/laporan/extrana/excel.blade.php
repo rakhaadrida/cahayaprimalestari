@@ -1,11 +1,8 @@
 <html>
   <body>
     <center>
-      <h2 class="text-bold text-dark">Data Komisi Sales Fadil</h2>
-      {{-- <h5 class="waktu-cetak">Periode : {{$bulanLast}} s/d {{$bulanNow}}</h5> --}}
-      <h5 class="waktu-cetak">Bulan : {{$bulanNow}}</h5>
-      {{-- <h5 class="waktu-cetak">Tanggal : {{\Carbon\Carbon::parse($lastMonth)->format('d-M-y')}} s/d {{\Carbon\Carbon::parse($monthNow)->format('d-M-y')}}</h5> --}}
-      <h5 class="waktu-cetak">Tanggal : 1 - {{\Carbon\Carbon::parse($monthNow)->isoFormat('DD MMMM YYYY')}}</h5>
+      <h2 class="text-bold text-dark">Data Penjualan Extrana</h2>
+      <h3 class="waktu-cetak">Bulan : {{$bulan}}</h3>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
     </center>
@@ -15,45 +12,38 @@
     <table class="table table-sm table-bordered table-cetak">
       <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
-          <th>No</th>
-          <th>Sales</th>
-          <th>Customer</th>
-          <th>Kategori</th>
-          <th>No. Faktur</th>
-          <th>Tgl. Faktur</th>
-          <th>Tempo</th>
-          <th>Total</th>
-          <th>Cicil</th>
-          <th>Retur</th>
-          <th>Kurang Bayar</th>
-          <th>Keterangan</th>
+          <td>No</td>
+          <td>Sales</td>
+          <td>Customer</td>
+          <td>No Faktur</td>
+          <td>Tgl Faktur</td>
+          <td>Nama Barang</td>
+          <td>Qty</td>
+          <td>Harga</td>
+          <td>Total</td>
+          <td>Diskon</td>
+          <td>Netto</td>
         </tr>
       </thead>
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($items as $item)
           @php 
-            $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
-                      ->where('id_ar', $item->id)->get();
-            $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                    ->where('id_ar', $item->id)->get();
+            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so); 
           @endphp
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
-            <td align="center">{{ $item->so->customer->sales->nama }}</td>
-            <td>{{ $item->so->customer->nama }}</td>
-            <td align="center">{{ $item->so->kategori }}</td>
+            <td align="center">{{ $item->sales }}</td>
+            <td>{{ $item->cust }}</td>
             <td align="center">{{ $item->id_so }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}</td>
-            <td align="center">
-              {{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
-                ->format('d-M-y') }}
-            </td>
-            <td align="right">{{ $item->so->total }}</td>
-            <td align="right">{{ $total->first()->totCicil }}</td>
-            <td align="right">{{ $retur->first()->total }}</td>
-            <td align="right">{{ $item->so->total - $total->first()->totCicil - $retur->first()->total }}</td>
-            <td>{{ $item->keterangan }}</td>
+            {{-- <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('DD-MMM-YY') }}</td> --}}
+            <td align="center">{{ $awal->diffInDays($tanggal) }}</td>
+            <td>{{ $item->barang->nama }}</td>
+            <td align="right">{{ $item->qty }}</td>
+            <td align="right">{{ $item->harga }}</td>
+            <td align="right">{{ $item->qty * $item->harga }}</td>
+            <td align="right">{{ $item->diskon }}</td>
+            <td align="right">{{ $item->qty * $item->harga - $item->diskonRp }}</td>
           </tr> 
           @php $i++ @endphp
         @endforeach

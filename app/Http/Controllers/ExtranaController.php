@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DetilSO;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExtranaExport;
 
 class ExtranaController extends Controller
 {
@@ -94,5 +96,17 @@ class ExtranaController extends Controller
         ];
 
         return view('pages.laporan.extrana.index', $data);
+    }
+
+    public function excel(Request $request) {
+        $date = Carbon::now('+07:00');
+        
+        if($request->bulan != '') {
+            $bulan = $request->bulan;
+        } else {
+            $bulan = Carbon::parse($date)->isoFormat('MMMM');
+        }
+
+        return Excel::download(new ExtranaExport($bulan), 'Penjualan-Extrana-'.$bulan.'.xlsx');
     }
 }
