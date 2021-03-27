@@ -84,7 +84,7 @@
                 <thead class="text-center text-bold text-dark">
                   <tr class="text-center">
                     <th rowspan="2" class="align-middle" style="width: 30px">No</th>
-                    <th rowspan="2" class="align-middle"style="width: 100px">Kode</th>
+                    <th rowspan="2" class="align-middle"style="width: 90px">Kode</th>
                     <th rowspan="2" class="align-middle">Nama Barang</th>
                     <th rowspan="2" class="align-middle"style="width: 110px">Tgl. Retur</th>
                     <th rowspan="2" class="align-middle"style="width: 60px">Qty</th>
@@ -118,7 +118,7 @@
                     <tr class="table-modal-first-row text-dark retur-ar" id="{{ $i-1 }}">
                       <td class="text-center align-middle">{{ $i }}</td>
                       <td class="text-center">
-                        <input type="text" readonly class="form-control form-control-sm text-bold text-dark kodeBarang" name="kodeDetil[]" required value="{{ $d->id_barang }}">
+                        <input type="text" readonly class="form-control form-control-sm text-bold text-center text-dark kodeBarang" name="kodeDetil[]" required value="{{ $d->id_barang }}">
                       </td>
                       <td>
                          <input type="text" readonly class="form-control form-control-sm text-bold text-dark namaBarang" name="namaDetil[]" value="{{ $d->barang->nama }}">

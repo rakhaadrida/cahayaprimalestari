@@ -289,7 +289,7 @@ class AccReceivableController extends Controller
     public function createRetur($id) {
         $item = AccReceivable::where('id_so', $id)->get();
         $retur = DetilRAR::join('ar_retur', 'ar_retur.id', 'detilrar.id_retur')
-                ->where('id_ar', $item->first()->id)->orderBy('tgl_retur')->get();
+                ->where('id_ar', $item->first()->id)->orderBy('tgl_retur')->orderBy('id_barang')->get();
         $total = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $item->first()->id)->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
