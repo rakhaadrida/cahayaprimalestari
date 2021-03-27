@@ -81,7 +81,7 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
-        // $rangeTot = 'H5:H'.$rangeStr;
+        // $rangeTot = 'G5:G'.$rangeStr;
         // $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
 
         $rangeTable = 'A4:'.$rangeTab;

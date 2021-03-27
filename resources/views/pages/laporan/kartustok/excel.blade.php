@@ -61,7 +61,7 @@
               <td align="center">{{ $i }}</td>
               <td align="center">{{ \Carbon\Carbon::parse($it->tanggal)->format('d-M-y') }}</td>
               <td>
-                @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif(substr($it->id, 0, 2) == 'IN')Penjualan Barang @else Transfer Barang @endif
+                @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'TB'))Transfer @else Penjualan @endif
               </td>
               <td>{{ $it->id }}</td>
               @php
@@ -73,19 +73,19 @@
                   $total = $namaBM->first()->total;
                   $user = $namaBM->first()->user->name;
                 }
-                elseif(substr($it->id, 0, 2) == 'IN') {
-                  $namaSO = \App\Models\SalesOrder::where('id', $it->id)->get();
-                  $nama = $namaSO->first()->customer->nama;
-                  $total = $namaSO->first()->total;
-                  $user = $namaSO->first()->user->name;
-                } 
-                else {
+                elseif((substr($it->id, 0, 2) == 'TB')) {
                   $namaTB = \App\Models\DetilTB::where('id_tb', $it->id)
                             ->where('id_barang', $itemsBRG->first()->id)->get();
                   $nama = $namaTB->first()->gudangAsal->nama;
                   $namaGud = $namaTB->first()->gudangTuju->nama;
                   $user = $namaTB->first()->tb->user->name;
                 }
+                else {
+                  $namaSO = \App\Models\SalesOrder::where('id', $it->id)->get();
+                  $nama = $namaSO->first()->customer->nama;
+                  $total = $namaSO->first()->total;
+                  $user = $namaSO->first()->user->name;
+                } 
               @endphp
               <td>{{ $nama }}</td>
               <td align="right">{{ substr($it->id, 0, 2) == 'BM' ? $it->qty : '' }}</td>
@@ -105,7 +105,7 @@
                   <td></td>
                 @endif
               @endforeach
-              <td align="right">{{ substr($it->id, 0, 2) == 'IN' ? number_format($total, 0, "", ".") : '' }}</td>
+              <td align="right">{{ ((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB')) ? $total : '' }}</td>
               <td align="center">{{ $user }} - {{ \Carbon\Carbon::parse($it->updated_at)->format('H:i:s') }}</td>
               @php
                 if(substr($it->id, 0, 2) == 'BM') 

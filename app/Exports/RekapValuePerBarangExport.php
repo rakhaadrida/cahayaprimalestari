@@ -95,11 +95,8 @@ class RekapValuePerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
-        $rangeHarga = 'C6:'.$rangeTot;
+        $rangeHarga = 'C6:E'.$rangeStr;
         $sheet->getStyle($rangeHarga)->getNumberFormat()->setFormatCode('#,##0');
-
-        $rangeValue = 'E6:'.$rangeTab;
-        $sheet->getStyle($rangeValue)->getNumberFormat()->setFormatCode('#,##0');
         
         $namaJenis = 'A5:E5';
         $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);

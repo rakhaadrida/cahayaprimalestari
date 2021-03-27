@@ -207,5 +207,8 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('d6d7e2');
         }
+
+        $rangeTot = 'S11:S'.$rangeStr;
+        $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
     } 
 }

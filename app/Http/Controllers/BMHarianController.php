@@ -81,6 +81,6 @@ class BMHarianController extends Controller
             $tanggal = $namaAkhir;
         }
 
-        return Excel::download(new BMAllExport($tglAwal, $tglAkhir, $awal, $akhir), 'BM-Harian'.$tanggal.'.xlsx');
+        return Excel::download(new BMAllExport($tglAwal, $tglAkhir, $awal, $akhir), 'BM-Harian-'.$tanggal.'.xlsx');
     }
 }

@@ -105,6 +105,9 @@ class BMAllExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
+        $rangeTot = 'G6:G'.$rangeStr;
+        $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
+
         $rangeTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 

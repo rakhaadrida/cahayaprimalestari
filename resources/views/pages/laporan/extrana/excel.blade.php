@@ -42,7 +42,7 @@
             <td align="right">{{ $item->qty }}</td>
             <td align="right">{{ $item->harga }}</td>
             <td align="right">{{ $item->qty * $item->harga }}</td>
-            <td align="right">{{ $item->diskon }}</td>
+            <td align="right">{{ $item->diskonRp }}</td>
             <td align="right">{{ $item->qty * $item->harga - $item->diskonRp }}</td>
           </tr> 
           @php $i++ @endphp

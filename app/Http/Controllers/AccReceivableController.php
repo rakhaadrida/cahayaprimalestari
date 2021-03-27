@@ -639,7 +639,7 @@ class AccReceivableController extends Controller
             $tglAkhir = $request->tglAkhir;
 
         $fileAwal = $this->formatTanggal($request->tglAwal, 'd');
-        $fileAkhir = $this->formatTanggal($request->tglkhir, 'd M');
+        $fileAkhir = $this->formatTanggal($request->tglAkhir, 'd M');
 
         if($request->bulan == '')
             $tglFile = $fileAwal.'-'.$fileAkhir;

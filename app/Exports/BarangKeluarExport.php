@@ -45,6 +45,7 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
 
         $tglAwal = $this->tglAwal;
         $tglAkhir = $this->tglAkhir;
+        $awal = Carbon::createFromFormat('Y-m-d', '1899-12-30');
 
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
@@ -60,7 +61,8 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
             'tahun' => $tahun,
             'sejak' => $sejak,
             'items' => $items,
-            'tanggal' => $tanggal
+            'tanggal' => $tanggal,
+            'awal' => $awal
         ];
         
         return view('pages.laporan.barangkeluar.excel', $data);
@@ -121,6 +123,11 @@ class BarangKeluarExport implements FromView, ShouldAutoSize, WithStyles
                 ],
             ],
         ];
+
+        $sheet->getStyle('C6:C'.$rangeStr)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_XLSX15);
+
+        $rangeTot = 'I6:I'.$rangeStr;
+        $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
 
         $rangeTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);

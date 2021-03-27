@@ -27,10 +27,14 @@
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($items as $item)
+          @php 
+            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so); 
+          @endphp
           <tr class="text-dark ">
             <td align="center">{{ $i }}</td>
             <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('MMMM') }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('DD-MMM-YY') }}</td>
+            {{-- <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('DD-MMM-YY') }}</td> --}}
+            <td align="center">{{ $awal->diffInDays($tanggal) }}</td>
             <td align="center">{{ $item->id_so }}</td>
             <td align="center">{{ $item->so->sales->nama }}</td>
             {{-- <td align="center">{{ $item->id_barang }}</td> --}}

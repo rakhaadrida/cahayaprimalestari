@@ -30,6 +30,7 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
         $bulanNow = Carbon::parse($date)->isoFormat('MMMM'); 
         $lastMonth = $date->subMonths(1)->format('Y-m-21');
         $bulanLast = Carbon::parse($date)->isoFormat('MMMM');
+        $awal = Carbon::createFromFormat('Y-m-d', '1899-12-30');
         
         $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
@@ -47,6 +48,7 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
             'waktu' => $waktu,
             'tahun' => $tahun,
             'sejak' => $sejak,
+            'awal' => $awal,
         ];
         
         return view('pages.komisi.excel', $data);
@@ -102,6 +104,8 @@ class KomisiNowExport implements FromView, ShouldAutoSize, WithStyles
                 ],
             ],
         ];
+
+        $sheet->getStyle('F7:G'.$rangeStr)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_XLSX15);
 
         $rangeTot = 'H7:K'.$rangeStr;
         $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');

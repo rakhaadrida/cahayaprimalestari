@@ -34,6 +34,10 @@
                       ->where('id_ar', $item->id)->get();
             $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
                     ->where('id_ar', $item->id)->get();
+            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so);
+            $temp = \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
+                    ->format('Y-m-d'); 
+            $tempo = \Carbon\Carbon::createFromFormat('Y-m-d', $temp); 
           @endphp
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
@@ -42,11 +46,13 @@
             <td>{{ $item->so->customer->nama }}</td>
             <td align="center">{{ $item->so->kategori }}</td>
             <td align="center">{{ $item->id_so }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}</td>
+            {{-- <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}</td>
             <td align="center">
               {{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
                 ->format('d-M-y') }}
-            </td>
+            </td> --}}
+            <td align="center">{{ $aw->diffInDays($tanggal) }}</td>
+            <td align="center">{{ $aw->diffInDays($tempo) }}</td>
             <td align="right">{{ $item->so->total }}</td>
             <td align="right">{{ $total->first()->totCicil }}</td>
             <td align="right">{{ $retur->first()->total }}</td>
@@ -62,6 +68,10 @@
                         ->where('id_ar', $item->id)->get();
               $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
                       ->where('id_ar', $item->id)->get();
+              $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so);
+              $temp = \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
+                      ->format('Y-m-d'); 
+              $tempo = \Carbon\Carbon::createFromFormat('Y-m-d', $temp); 
             @endphp
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $i }}</td>
@@ -70,13 +80,15 @@
               <td class="align-middle">{{ $item->so->customer->nama }}</td>
               <td align="center" class="align-middle">{{ $item->so->kategori }}</td>
               <td align="center" class="align-middle">{{ $item->id_so }}</td>
-              <td align="center" class="align-middle">
+              {{-- <td align="center" class="align-middle">
                 {{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}
               </td>
               <td align="center" class="align-middle">
                 {{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
                   ->format('d-M-y') }}
-              </td>
+              </td> --}}
+              <td align="center">{{ $aw->diffInDays($tanggal) }}</td>
+              <td align="center">{{ $aw->diffInDays($tempo) }}</td>
               <td align="right">{{ $item->so->total }}</td>
               <td align="right">{{ $total->first()->totCicil }}</td>
               <td align="right">{{ $retur->first()->total }}</td>

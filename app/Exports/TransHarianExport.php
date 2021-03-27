@@ -32,6 +32,7 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
         $waktu = $waktu->format('d F Y, H:i:s');
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
+        $begin = Carbon::createFromFormat('Y-m-d', '1899-12-30');
 
         if($this->status == 'All') {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
@@ -42,7 +43,7 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                     ->where('kategori', 'NOT LIKE', 'Prime%')
                     // ->orderBy('id_sales')
                     ->orderBy('so.id_sales')
-                    ->orderBy('customer.nama')->get();
+                    ->orderBy('customer.nama')->orderBy('id_so')->get();
             
             $itemsEx = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
@@ -51,7 +52,7 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                     ->where('kategori', 'LIKE', 'Extrana%')
                     // ->orderBy('id_sales')
                     ->orderBy('so.id_sales')
-                    ->orderBy('customer.nama')->get();
+                    ->orderBy('customer.nama')->orderBy('id_so')->get();
         } else {
             $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
@@ -59,7 +60,7 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                     ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Prime%')
                     // ->orderBy('id_sales')
                     ->orderBy('so.id_sales')
-                    ->orderBy('customer.nama')->get();
+                    ->orderBy('customer.nama')->orderBy('id_so')->get();
 
             $itemsEx = NULL;
         }
@@ -71,7 +72,8 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
             'tahun' => $tahun,
             'sejak' => $sejak,
             'items' => $items,
-            'itemsEx' => $itemsEx
+            'itemsEx' => $itemsEx,
+            'aw' => $begin
         ];
         
         return view('pages.receivable.excel', $data);
@@ -126,6 +128,8 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                 ],
             ],
         ];
+
+        $sheet->getStyle('F6:G'.$rangeStr)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_XLSX15);
 
         $rangeTot = 'H6:K'.$rangeStr;
         $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');

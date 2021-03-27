@@ -124,6 +124,9 @@ class RekapFilterPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
 
+        $rangeTot = 'C6:K'.$rangeStr;
+        $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
+
         $no = 0;
         $rangeSub = 7;
         foreach($sub as $s) {

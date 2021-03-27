@@ -121,6 +121,9 @@ class BarangMasukExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
+        $rangeTot = 'E6:E'.$rangeStr;
+        $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
+
         $rangeTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 
