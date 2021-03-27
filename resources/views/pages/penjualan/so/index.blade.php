@@ -508,8 +508,8 @@
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
-    // window.location = "{{ route('so-after-print', $lastSO[0]->id) }}";
-    alert('ok');
+    window.location = "{{ route('so-after-print', $lastSO[0]->id) }}";
+    // alert('ok');
   }
   
   // window.print();
