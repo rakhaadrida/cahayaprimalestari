@@ -10,7 +10,7 @@ use PDF;
 class CetakBMController extends Controller
 {
     public function index($status, $awal, $akhir) {
-        $items = BarangMasuk::where('status', 'INPUT')->orderBy('tanggal', 'asc')->get();
+        $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])->orderBy('tanggal', 'asc')->get();
         $data = [
             'items' => $items,
             'status' => $status,
@@ -23,7 +23,7 @@ class CetakBMController extends Controller
 
     public function detail(Request $request, $id) {
         // $items = BarangMasuk::where('id', $id)->get();
-        $items = BarangMasuk::where('status', 'INPUT')->get();
+        $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])->get();
         
         $data = [
             'items' => $items,
@@ -44,7 +44,7 @@ class CetakBMController extends Controller
     }
 
     public function cetak($awal, $akhir) {
-        $items = BarangMasuk::where('status', 'INPUT')->whereBetween('id', [$awal, $akhir])
+        $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])->whereBetween('id', [$awal, $akhir])
                 ->orderBy('tanggal', 'asc')->get();
 
         foreach($items as $i) {

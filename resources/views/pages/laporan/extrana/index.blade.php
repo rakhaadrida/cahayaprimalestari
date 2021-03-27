@@ -33,23 +33,19 @@
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container"> 
                 <div class="form-group row justify-content-center" style="margin-top: -10px">
-                  <label for="status" class="col-auto col-form-label text-right text-bold">Kategori</label>
+                  <label for="status" class="col-auto col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
-                    <select class="form-control form-control-sm mt-1" tabindex="2" name="kategori">
-                      <option value="ALL" selected>ALL</option>
-                      <option value="EXTRANA">EXTRANA</option>
-                      <option value="PRIME">PRIME</option>
-                    </select>
+                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autocomplete="off" value="{{ $bul != NULL ? $bul : '' }}" autofocus>
                   </div>
                   <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('komisi-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                    <button type="submit" tabindex="5" formaction="{{ route('extrana-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: -10px">
+                    <button type="submit" tabindex="6" formaction="{{ route('extrana') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
                   <div class="col-auto mt-1">
                     <button type="submit" tabindex="5" formaction="{{ route('komisi-excel') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
-                  </div>
-                  <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('komisi-upload') }}" formmethod="GET" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Upload File Komisi</button>
                   </div>
                 </div>
               </div>
@@ -58,7 +54,7 @@
 
               <div class="container" style="margin-bottom: -15px">
                 <div class="row justify-content-center">
-                  <h4 class="text-bold text-dark">Penjualan Extran Bulan {{ $bulan }} {{ $tahun }}</h4>
+                  <h4 class="text-bold text-dark">Penjualan Extrana Bulan {{ $bulan }} {{ $tahun }}</h4>
                 </div>
                 <div class="row justify-content-center" style="margin-top: -5px">
                   <h6 class="text-dark ">Waktu : {{ $waktu }}</h6>
@@ -221,7 +217,6 @@ function addCommas(nStr) {
 $(function() {
   var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
               'September', 'Oktober', 'November', 'Desember'];
-  var status = ['LUNAS', 'BELUM LUNAS'];
 
   function split(val) {
     return val.split(/,\s*/);
@@ -242,35 +237,6 @@ $(function() {
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
       response($.ui.autocomplete.filter(bulan, extractLast(request.term)));
-    },
-    focus: function() {
-      // prevent value inserted on focus
-      return false;
-    },
-    select: function(event, ui) {
-      var terms = split(this.value);
-      // remove the current input
-      terms.pop();
-      // add the selected item
-      terms.push(ui.item.value);
-      // add placeholder to get the comma-and-space at the end
-      terms.push("");
-      this.value = terms.join("");
-      return false;
-    }
-  });
-
-  /*-- Autocomplete Input Status --*/
-  $("#status").on("keydown", function(event) {
-    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
-      event.preventDefault();
-    }
-  })
-  .autocomplete({
-    minLength: 0,
-    source: function(request, response) {
-      // delegate back to autocomplete, but extract the last term
-      response($.ui.autocomplete.filter(status, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus

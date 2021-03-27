@@ -248,7 +248,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
         // Penjualan Extrana
         Route::get('extrana', 'ExtranaController@index')->name('extrana');
-        // Route::post('bmk/show', 'RekapBMKController@show')->name('bmk-show');
+        Route::post('extrana/show', 'ExtranaController@show')->name('extrana-show');
         // Route::post('bmk/excel', 'RekapBMKController@excel')->name('bmk-excel');
         
         // Barang Masuk
