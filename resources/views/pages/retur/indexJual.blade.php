@@ -106,8 +106,8 @@
                       </td>
                       <td class="align-middle">{{ $r->customer->nama }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalKirim }}</td>
-                      <td class="align-middle text-right">{{ $qtyPotong[0]->totalPotong }}</td>
+                      <td class="align-middle text-right">{{ $qtyProses[0]->totalKirim != 0 ? $qtyProses[0]->totalKirim : '' }}</td>
+                      <td class="align-middle text-right">{{ $qtyPotong[0]->totalPotong != 0 ? $qtyPotong[0]->totalPotong : '' }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total - $qtyProses[0]->totalKirim - $qtyPotong[0]->totalPotong }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         {{-- <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}

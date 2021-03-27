@@ -116,12 +116,12 @@
                             <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tglDetil[]" id="tglDetil{{$dr->id_barang}}" autocomplete="off" @if($dr->tanggal != '') value ="{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-m-Y') }}" @endif>
                           </td>
                           <td class="text-right">
-                            <input type="text" name="terimaDetil[]" id="terimaDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right terimaDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_terima != '') value ="{{ $dr->qty_terima }}" @endif>
+                            <input type="text" name="terimaDetil[]" id="terimaDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right terimaDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_terima != 0) value ="{{ $dr->qty_terima }}" @endif>
                           </td>
                           <td class="text-right">
-                            <input type="text" name="batalDetil[]" id="batalDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_batal != '') value ="{{ $dr->qty_batal }}" @endif>
+                            <input type="text" name="batalDetil[]" id="batalDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_batal != 0) value ="{{ $dr->qty_batal }}" @endif>
                           </td>
-                          <td class="text-right align-middle">{{ $dr->potong }}</td>
+                          <td class="text-right align-middle">{{ $dr->potong != 0 ? $dr->potong : '' }}</td>
                           @php $kurang -= ($dr->qty_terima + $dr->qty_batal + $dr->potong); @endphp
                           <td class="text-right align-middle">{{ number_format($kurang, 0, "", ".") }}</td>
                           <td align="center" class="align-middle">

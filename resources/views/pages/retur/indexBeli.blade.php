@@ -1,4 +1,3 @@
-{{-- @extends('pages.retur.kirimBeli') --}}
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -107,9 +106,9 @@
                       </td>
                       <td class="align-middle">{{ $r->supplier->nama }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalTerima }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalPotong }}</td>
+                      <td class="align-middle text-right">{{ $qtyProses[0]->totalTerima != 0 ? $qtyProses[0]->totalTerima : '' }}</td>
+                      <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal != 0 ? $qtyProses[0]->totalBatal : '' }}</td>
+                      <td class="align-middle text-right">{{ $qtyProses[0]->totalPotong != 0 ? $qtyProses[0]->totalPotong : '' }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalTerima + $qtyProses[0]->totalBatal + $qtyProses[0]->totalPotong) }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         {{-- <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}

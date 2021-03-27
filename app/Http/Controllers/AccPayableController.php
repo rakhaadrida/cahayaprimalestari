@@ -401,8 +401,8 @@ class AccPayableController extends Controller
             DetilRT::create([
                 'id_terima' => $newcode,
                 'id_barang' => $request->kodeDetil[$i],
-                'qty_terima' => NULL,
-                'qty_batal' => NULL,
+                'qty_terima' => 0,
+                'qty_batal' => 0,
                 'potong' => $request->qtyDetil[$i]
             ]);
 

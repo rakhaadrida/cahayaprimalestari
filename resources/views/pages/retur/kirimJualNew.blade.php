@@ -108,9 +108,9 @@
                       </td>
                       <td class="text-right align-middle">
                         <input type="text" name="kirim[]" id="kirim{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" autocomplete="off"
-                        @if($dr->qty_kirim != '') value ="{{ $dr->qty_kirim }}" @endif>
+                        @if($dr->qty_kirim != 0) value ="{{ $dr->qty_kirim }}" @endif>
                       </td>
-                      <td class="align-middle text-right">{{ $dr->potong }}</td>
+                      <td class="align-middle text-right">{{ $dr->potong != 0 ? $dr->potong : '' }}</td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>

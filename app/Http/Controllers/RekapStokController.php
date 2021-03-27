@@ -10,6 +10,8 @@ use App\Models\JenisBarang;
 use App\Models\Subjenis;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
+use App\Models\DetilRT;
+use App\Models\DetilRB;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;

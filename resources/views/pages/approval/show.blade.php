@@ -327,8 +327,8 @@
                               @else
                                 @if($item->tipe == 'RJ')
                                   <td align="center">{{ $i->tgl_kirim != NULL ? \Carbon\Carbon::parse($i->tgl_kirim)->format('d-M-y') : '' }}</td>
-                                  <td align="right">{{ $i->qty_kirim }}</td>
-                                  <td align="right">{{ $i->potong }}</td>
+                                  <td align="right">{{ $i->qty_kirim != 0 ? $i->qty_kirim : '' }}</td>
+                                  <td align="right">{{ $i->potong != 0 ? $i->potong : '' }}</td>
                                 @else
                                   @php
                                     $rt = App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
@@ -338,9 +338,9 @@
                                           ->groupBy('id_barang')->get();
                                   @endphp
                                   <td align="center">{{ $rt->count() != 0 ? \Carbon\Carbon::parse($rt->first()->tanggal)->format('d-M-y') : '' }}</td>
-                                  <td align="right">{{ $rt->count() != 0 ? $rt->first()->qt : '' }}</td>
-                                  <td align="right">{{ $rt->count() != 0 ? $rt->first()->qb : '' }}</td>
-                                  <td align="right">{{ $rt->count() != 0 ? $rt->first()->qp : '' }}</td>
+                                  <td align="right">{{ (($rt->count() != 0) && ($rt->first()->qt != 0)) ? $rt->first()->qt : '' }}</td>
+                                  <td align="right">{{ (($rt->count() != 0) && ($rt->first()->qb != 0)) ? $rt->first()->qb : '' }}</td>
+                                  <td align="right">{{ (($rt->count() != 0) && ($rt->first()->qp != 0)) ? $rt->first()->qp : '' }}</td>
                                 @endif                      
                                 <td align="center">Retur @if($item->tipe == 'RJ')Customer @else Supplier @endif</td>
                               @endif

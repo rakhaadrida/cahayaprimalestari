@@ -453,7 +453,7 @@ class AccReceivableController extends Controller
                     'id_kirim' => $newcodeKRM,
                     'tgl_kirim' => $tglRetur,
                     'qty_retur' => $request->{"qty".$request->kode}[$i],
-                    'qty_kirim' => NULL,
+                    'qty_kirim' => 0,
                     'potong' => $request->{"qty".$request->kode}[$i]
                 ]);
 

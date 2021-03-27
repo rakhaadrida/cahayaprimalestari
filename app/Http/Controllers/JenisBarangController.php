@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\JenisBarang;
 use App\Models\Subjenis;
 use App\Models\Barang;
+use App\Models\DetilRT;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\JenisExport;
 use Carbon\Carbon;
@@ -13,6 +14,24 @@ use Carbon\Carbon;
 class JenisBarangController extends Controller
 {
     public function index() {
+        $terima = DetilRT::where('qty_terima', NULL)->get();
+        foreach($terima as $t) {
+            $t->qty_terima = 0;
+            $t->save();
+        }
+
+        $batal = DetilRT::where('qty_batal', NULL)->get();
+        foreach($batal as $b) {
+            $b->qty_batal = 0;
+            $b->save();
+        }
+
+        $potong = DetilRT::where('potong', NULL)->get();
+        foreach($potong as $p) {
+            $p->potong = 0;
+            $p->save();
+        }
+
         $items = JenisBarang::All();
         $data = [
             'items' => $items

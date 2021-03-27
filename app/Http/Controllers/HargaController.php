@@ -6,23 +6,22 @@ use Illuminate\Http\Request;
 use App\Http\RequestS\HargaRequest;
 use App\Models\Harga;
 use App\Models\HargaBarang;
-use App\Models\Customer;
-use App\Models\SalesOrder;
+use App\Models\DetilRJ;
 
 class HargaController extends Controller
 {
     public function index()
     {
-        $item = Customer::where('id', 'CUS0667')->first();
-        $item->{'id_sales'} = 'SLS12';
-        $item->save();
+        $kirim = DetilRJ::where('qty_kirim', NULL)->get();
+        foreach($kirim as $k) {
+            $k->qty_kirim = 0;
+            $k->save();
+        }
 
-        $so = SalesOrder::where('id_customer', 'CUS0667')
-                ->whereBetween('tgl_so', ['2021-03-01', '2021-03-31'])->get();
-
-        foreach($so as $s) {
-            $s->id_sales = 'SLS12';
-            $s->save();
+        $potong = DetilRJ::where('potong', NULL)->get();
+        foreach($potong as $p) {
+            $p->potong = 0;
+            $p->save();
         }
         
         $items = Harga::All();

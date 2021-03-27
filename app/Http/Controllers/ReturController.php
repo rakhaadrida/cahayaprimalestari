@@ -111,8 +111,8 @@ class ReturController extends Controller
                     'id_barang' => $request->kodeBarang[$i],
                     'tgl_kirim' => NULL,
                     'qty_retur' => $request->qty[$i],
-                    'qty_kirim' => NULL,
-                    'potong' => NULL
+                    'qty_kirim' => 0,
+                    'potong' => 0
                 ]);
 
                 $stok = StokBarang::where('id_barang', $request->kodeBarang[$i])
@@ -1012,9 +1012,9 @@ class ReturController extends Controller
                 DetilRT::create([
                     'id_terima' => $newcode,
                     'id_barang' => $i->id_barang,
-                    'qty_terima' => $request->terima[$t],
-                    'qty_batal' => $request->batal[$t],
-                    'potong' => NULL
+                    'qty_terima' => ($request->terima[$t] != '' ? $request->terima[$t] : 0),
+                    'qty_batal' => ($request->batal[$t] != '' ? $request->batal[$t] : 0),
+                    'potong' => 0
                 ]);
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
@@ -1112,8 +1112,8 @@ class ReturController extends Controller
                 DetilRT::create([
                     'id_terima' => $newcode,
                     'id_barang' => $i->id_barang,
-                    'qty_terima' => NULL,
-                    'qty_batal' => NULL,
+                    'qty_terima' => 0,
+                    'qty_batal' => 0,
                     'potong' => $qty
                 ]);
             }

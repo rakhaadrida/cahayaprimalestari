@@ -40,11 +40,28 @@
               $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                         ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
                         ->whereBetween('tanggal', [$awal, $kemarin])->get();
+              $kurangRet = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
+                          ->selectRaw('sum(qty_retur - qty_kirim - potong) as qty')
+                          ->where('status', 'INPUT')->where('id_barang', $b->id)
+                          ->whereBetween('tanggal', [$awal, $kemarin])->get();
+              $detiltr = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                          ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
+                          ->selectRaw('sum(qty_terima + qty_batal + potong) as qty')
+                          ->where('status', 'INPUT')->where('id_barang', $b->id)
+                          ->whereBetween('returbeli.tanggal', [$awal, $kemarin])
+                          ->get();
+              $tambahRet = \App\Models\DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
+                          ->selectRaw('sum(qty_retur) as retur')
+                          ->where('status', 'INPUT')->where('id_barang', $b->id)
+                          ->whereBetween('tanggal', [$awal, $kemarin])
+                          ->get();
+              if($tambahRet->count() != 0)
+                $tambahRet[0]['qty'] = $tambahRet->first()->retur - $detiltr->first()->qty;
             @endphp
             <tr class="text-dark ">
               <td align="center">{{ $i }}</td>
               <td>{{ $b->nama }}</td>
-               <td align="right">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : ''}}</td>
+               <td align="right">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty + $tambahRet->first()->qty - $kurang->first()->qty - $kurangRet->first()->qty : ''}}</td>
               @foreach($gudang as $g)
                 @php
                   if($g->tipe != 'RETUR') {
@@ -72,14 +89,24 @@
                     $stokGd = \App\Models\StokBarang::selectRaw('sum(stok) as
                               stok')->where('id_barang', $b->id)
                               ->where('id_gudang', $g->id)->get();
-                    $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                              ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
-                              ->where('id_gudang', $g->id)->whereBetween('tgl_so', [$awal, $kemarin])
+                    $detilRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                              ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
+                              ->selectRaw('sum(qty_terima + qty_batal + potong) as qty')
+                              ->where('status', 'INPUT')->where('id_barang', $b->id)
+                              ->whereBetween('returbeli.tanggal', [$awal, $kemarin])
                               ->get();
-                    $kurangGd = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                              ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
-                              ->where('id_gudang', $g->id)->whereBetween('tanggal', [$awal, $kemarin])
-                              ->get();
+                    $tambahGd = \App\Models\DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
+                                ->selectRaw('sum(qty_retur) as retur')
+                                ->where('status', 'INPUT')->where('id_barang', $b->id)
+                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                ->get();
+                    if($tambahGd->count() != 0)
+                      $tambahGd[0]['qty'] = $tambahGd->first()->retur - $detilRT->first()->qty; 
+
+                    $kurangGd = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
+                                ->selectRaw('sum(qty_retur - qty_kirim - potong) as qty')
+                                ->where('status', 'INPUT')->where('id_barang', $b->id)
+                                ->whereBetween('tanggal', [$awal, $kemarin])->get();
                     $tambahTb = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 
                                 'detiltb.id_tb')
                                 ->selectRaw('sum(qty) as qty')->where('id_barang', $b->id)
