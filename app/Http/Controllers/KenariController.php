@@ -233,7 +233,7 @@ class KenariController extends Controller
         }
 
         $item = SalesOrder::where('id', $kode)->first();
-        $item->{'total'} = $totNetto;
+        $item->{'total'} = $totNetto - str_replace(".", "", $diskon);
         $item->save();
 
         if($statusHal != 'CETAK')

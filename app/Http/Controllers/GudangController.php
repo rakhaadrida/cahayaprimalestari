@@ -14,21 +14,7 @@ use Carbon\Carbon;
 class GudangController extends Controller
 {
     public function index()
-    {
-        /* $so = SalesOrder::whereNotIn('status', ['CETAK', 'BATAL', 'LIMIT'])
-                ->where('tgl_so', '<', '2021-03-19')->get();
-        foreach($so as $s) {
-            $s->status = 'CETAK';
-            $s->save();
-        } */
-        
-        $so = SalesOrder::where('id_sales', '')->get();
-        foreach($so as $s) {
-            $item = SalesOrder::where('id', $s->id)->first();
-            $item->{'id_sales'} = $item->customer->id_sales;
-            $item->save();
-        }
-        
+    {   
         $items = Gudang::All();
         $data = [
             'items' => $items

@@ -31,17 +31,6 @@ class LapKeuController extends Controller
                     'September', 'Oktober', 'November', 'Desember'];
         $bulan = $arrBulan[$month-1];
 
-        $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                        ->selectRaw('sum(qty) as totQty')
-                        ->where('id_barang', 'BRG0157')->where('tgl_so', '<', $tahun.'-'.$month.'-01')
-                        // ->whereMonth('tgl_so', '<', $month)
-                        ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
-
-        $totBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                        ->selectRaw('sum(qty) as totQty')->where('status', '!=', 'BATAL')
-                        ->where('id_barang', 'BRG0157')->get();
-        // return response()->json($totBM);
-
         $jenis = JenisBarang::All();
         $sales = Sales::All();
         $salesOff = Sales::where('id', 'SLS03')->get();
@@ -51,6 +40,8 @@ class LapKeuController extends Controller
 
         $jenis = $this->getJenis($jenis, $sales);
         $hppPerKat = $this->getHpp($jenis, $month, $tahun);
+        $diskon = SalesOrder::selectRaw('sum(diskon) as diskon')->whereYear('tgl_so', $tahun)
+                ->whereMonth('tgl_so', $month)->get();
 
         $keu = Keuangan::where('tahun', $tahun)->where('bulan', $month)->get();
 
@@ -64,14 +55,16 @@ class LapKeuController extends Controller
             'items' => $items,
             'retur' => $retur,
             'hppPerKat' => $hppPerKat,
-            'keu' => $keu
+            'keu' => $keu,
+            'diskon' => $diskon
         ];
 
         return view('pages.keuangan.index', $data);
     }
 
     public function show(Request $request, $tah, $mo) {
-        $tahun = ($tah == 'now' ? $request->tahun : $tah);
+        $date = Carbon::now('+07:00');
+        $tahun = ($tah == 'now' ? $date->year : $tah);
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
         if($mo == 'now') {
@@ -88,6 +81,23 @@ class LapKeuController extends Controller
             $month = $mo;
         }
 
+        $tanggal = $tahun.'-'.$month.'-01';
+        $month = Carbon::parse($tanggal)->format('m'); 
+
+        $totBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                ->selectRaw('sum(qty) as totQty')->where('status', '!=', 'BATAL')
+                ->where('id_barang', 'BRG0081')->get();
+        $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
+                ->selectRaw('sum(qty) as totQty')
+                ->where('id_barang', 'BRG0081')->where('tgl_so', '<', $tahun.'-'.$month.'-01')
+                // ->whereMonth('tgl_so', '<', $month)
+                ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
+        
+        if($totSO[0]->totQty != null) {
+            $sisa = $totBM[0]->totQty - $totSO[0]->totQty;
+        }
+        // return response()->json($sisa);
+
         $jenis = JenisBarang::All();
         $sales = Sales::All();
         $salesOff = Sales::where('id', 'SLS03')->get();
@@ -96,7 +106,9 @@ class LapKeuController extends Controller
         $retur = $this->getRetur($month, $tahun);
 
         $jenis = $this->getJenis($jenis, $sales);
-        $hppPerKat = $this->getHpp($jenis, $month);
+        $hppPerKat = $this->getHpp($jenis, $month, $tahun);
+        $diskon = SalesOrder::selectRaw('sum(diskon) as diskon')->whereYear('tgl_so', $tahun)
+                ->whereMonth('tgl_so', $month)->get();
 
         $keu = Keuangan::where('tahun', $tahun)->where('bulan', $month)->get();
 
@@ -110,7 +122,8 @@ class LapKeuController extends Controller
             'items' => $items,
             'retur' => $retur,
             'hppPerKat' => $hppPerKat,
-            'keu' => $keu
+            'keu' => $keu,
+            'diskon' => $diskon
         ];
 
         return view('pages.keuangan.show', $data);
@@ -138,7 +151,7 @@ class LapKeuController extends Controller
                         ->where('id_barang', $b->id)->get();
                 $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
                         ->selectRaw('sum(qty) as totQty')
-                        ->where('id_barang', $b->id)->where('tgl_so', '<', $month)
+                        ->where('id_barang', $b->id)->where('tgl_so', '<', $tahun.'-'.$month.'-01')
                         // ->whereMonth('tgl_so', '<', $month)
                         ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
                 
@@ -179,7 +192,7 @@ class LapKeuController extends Controller
                 if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {
                     $k = 0;
                     for($i = 0; $i < $bmPerBrg->count(); $i++) {
-                        if(($i == 0) && ($sisa != 0))
+                        if(($i == 0) && ($sisa > 0))
                             $bmPerBrg[$i]->qty = $sisa;
                             
                         $qty = $bmPerBrg[$i]->qty;
@@ -214,7 +227,7 @@ class LapKeuController extends Controller
                             ]);
                             $h++;
 
-                            if($qty == 0)
+                            if($qty <= 0)
                                 break;
                         }
                     }

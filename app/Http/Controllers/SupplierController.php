@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Supplier;
 use App\Models\DetilBM;
+use App\Models\BarangMasuk;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SupplierExport;
 use Carbon\Carbon;
@@ -24,6 +25,12 @@ class SupplierController extends Controller
         // foreach($item as $i) {
         //     $i->diskon = 25;
         //     $i->disPersen = 25;
+        //     $i->save();
+        // }
+
+        // $item = BarangMasuk::where('diskon', 'F')->get();
+        // foreach($item as $i) {
+        //     $i->diskon = 'T';
         //     $i->save();
         // }
         

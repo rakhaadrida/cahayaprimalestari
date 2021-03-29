@@ -203,10 +203,11 @@
                       <td colspan=12 class="text-center text-bold h4 p-2"><i>Belum Ada Laporan Keuangan</i></td>
                     </tr>
                   @endforelse
+                  @php $subLaba -= $diskon->first()->diskon; @endphp
                   @if(Auth::user()->roles == 'SUPER')
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark" style="letter-spacing: 0.8px">Total Revenue</td>
-                      <td align="right" class="text-bold">{{ number_format($subRevenue, 0, "", ".") }}</td>
+                      <td align="right" class="text-bold">{{ number_format($subRevenue - $diskon->first()->diskon, 0, "", ".") }}</td>
                     </tr>
                     <tr class="text-dark text-bold" style="font-size: 15px">
                       <td colspan="{{ $jenis->count() + 3 }}" align="right" class="text-bold text-dark" style="letter-spacing: 0.8px">Total HPP</td>
