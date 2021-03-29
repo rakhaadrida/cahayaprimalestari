@@ -307,8 +307,10 @@ class AccPayableController extends Controller
         $barang = Barang::All();
         $harga = HargaBarang::All();
 
-        $returBeli = ReturBeli::where('id_supplier', $item->first()->bm->first()->id_supplier)
-                    ->where('status', 'INPUT')->get();
+        $returBeli = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                    ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
+                    ->where('id_supplier', $item->first()->bm->first()->id_supplier)
+                    ->where('potong', '!=', 0)->groupBy('id_retur')->get();
         $rt = ReturTerima::where('id', $total->first()->id)->get();
 
         $data = [
@@ -383,39 +385,44 @@ class AccPayableController extends Controller
             'tanggal' => Carbon::now('+07:00')->toDateString(),
         ]);
 
-        $total = 0;
+        $total = 0; $jum = 0;
         for($i = 0; $i < $jumBaris; $i++) {
             $tglRetur = $request->tglDetil[$i];
             $tglRetur = $this->formatTanggal($tglRetur, 'Y-m-d');
 
-            DetilRAP::create([
-                'id_retur' => $newcode,
-                'id_barang' => $request->kodeDetil[$i],
-                'tgl_retur' => $tglRetur,
-                'qty' => $request->qtyDetil[$i],
-                'harga' => str_replace(".", "", $request->hargaDetil[$i]),
-                'diskon' => $request->diskonDetil[$i],
-                'diskonRp' => str_replace(".", "", $request->diskonRpDetil[$i]),
-            ]);
+            if($request->diskonDetil[$i] != '') {
+                DetilRAP::create([
+                    'id_retur' => $newcode,
+                    'id_barang' => $request->kodeDetil[$i],
+                    'tgl_retur' => $tglRetur,
+                    'qty' => $request->qtyDetil[$i],
+                    'harga' => str_replace(".", "", $request->hargaDetil[$i]),
+                    'diskon' => $request->diskonDetil[$i],
+                    'diskonRp' => str_replace(".", "", $request->diskonRpDetil[$i]),
+                ]);
 
-            DetilRT::create([
-                'id_terima' => $newcode,
-                'id_barang' => $request->kodeDetil[$i],
-                'qty_terima' => 0,
-                'qty_batal' => 0,
-                'potong' => $request->qtyDetil[$i]
-            ]);
+                DetilRT::create([
+                    'id_terima' => $newcode,
+                    'id_barang' => $request->kodeDetil[$i],
+                    'qty_terima' => 0,
+                    'qty_batal' => 0,
+                    'potong' => $request->qtyDetil[$i]
+                ]);
 
-            $total += str_replace(".", "", $request->nettoDetil[$i]);
+                $total += str_replace(".", "", $request->nettoDetil[$i]);
+                $jum++;
+            }
         }
 
         $ret = AP_Retur::where('id', $newcode)->first();
         $ret->{'total'} = $total;
         $ret->save();
 
-        $rb = ReturBeli::where('id', $request->nomorRetur)->first();
-        $rb->{'status'} = 'LENGKAP';
-        $rb->save();
+        if($jum == $jumBaris) {
+            $rb = ReturBeli::where('id', $request->nomorRetur)->first();
+            $rb->{'status'} = 'LENGKAP';
+            $rb->save();
+        }
 
         return redirect()->route('ap');
     }

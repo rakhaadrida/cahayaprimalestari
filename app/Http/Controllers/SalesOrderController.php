@@ -164,7 +164,8 @@ class SalesOrderController extends Controller
             // 'id' => $request->kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
-            'total' => str_replace(".", "", $request->grandtotal),
+            // 'total' => str_replace(".", "", $request->grandtotal),
+            'total' => 0,
             'diskon' => str_replace(".", "", $diskon),
             'kategori' => $request->kategori.' '.$request->jenis,
             'tempo' => $tempo,
@@ -185,7 +186,6 @@ class SalesOrderController extends Controller
         if($status != 'LIMIT') {
             AccReceivable::create([
                 'id' => $newcode,
-                // 'id_so' => $id,
                 'id_so' => $kode,
                 'keterangan' => ($request->namaCustomer != 'REVISI' ? 'BELUM LUNAS' : 'LUNAS')
             ]);
@@ -217,19 +217,19 @@ class SalesOrderController extends Controller
                 'tanggal' => Carbon::now()->toDateString(),
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
-                // 'id_dokumen' => $id,
                 'id_dokumen' => $request->kode,
                 'tipe' => 'Faktur',
                 'id_user' => Auth::user()->id
             ]);
         }
 
+        $totNetto = 0;
         for($i = 0; $i < $jumlah; $i++) {
             if(($request->kodeBarang[$i] != "") && ($request->qty[$i] != "")) {
                 $arrGudang = explode(",", $request->kodeGudang[$i]);
                 $arrStok = explode(",", $request->qtyGudang[$i]);
                 $diskonRp = ($request->diskonRp[$i] != '' ? str_replace(".", "", $request->diskonRp[$i]) : 0) / sizeof($arrGudang);
-                // return response()->json($diskonRp);
+
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
                         'id_so' => $kode,
@@ -242,6 +242,8 @@ class SalesOrderController extends Controller
                         // 'diskonRp' => $diskonRp
                         'diskonRp' => ($request->diskonRp[$i] != '' ? ($j == 0 ? str_replace(".", "", $request->diskonRp[$i]) : 0) : 0)
                     ]);
+
+                    $totNetto += str_replace(".", "", $request->netto[$i]);
 
                     /* if($status == 'LIMIT') {
                         NeedAppDetil::create([
@@ -273,21 +275,14 @@ class SalesOrderController extends Controller
             }
         }
 
+        $item = SalesOrder::where('id', $kode)->first();
+        $item->{'total'} = $totNetto;
+        $item->save();
+
         if($statusHal != 'CETAK')
             $cetak = 'false';
         else {
             $cetak = 'true';
-            /* $lastcode = TandaTerima::max('id');
-            $lastnumber = (int) substr($lastcode, 3, 4);
-            $lastnumber++;
-            $newcode = 'TTR'.sprintf('%04s', $lastnumber);
-
-            TandaTerima::create([
-                'id' => $newcode,
-                'id_so' => $id,
-                'tanggal' => $tanggal,
-                'id_user' => Auth::user()->id
-            ]); */
         }
 
         return redirect()->route('so', $cetak);

@@ -23,11 +23,24 @@ class LapKeuController extends Controller
     public function index() {
         $date = Carbon::now('+07:00');
         $tahun = $date->year;
-        $month = $date->month;
+        // $bul = $date->month;
+        // $tanggal = $tahun.'-'.$bul.'-01';
+        $month = Carbon::parse($date)->format('m'); 
 
         $arrBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                     'September', 'Oktober', 'November', 'Desember'];
         $bulan = $arrBulan[$month-1];
+
+        $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
+                        ->selectRaw('sum(qty) as totQty')
+                        ->where('id_barang', 'BRG0157')->where('tgl_so', '<', $tahun.'-'.$month.'-01')
+                        // ->whereMonth('tgl_so', '<', $month)
+                        ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
+
+        $totBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                        ->selectRaw('sum(qty) as totQty')->where('status', '!=', 'BATAL')
+                        ->where('id_barang', 'BRG0157')->get();
+        // return response()->json($totBM);
 
         $jenis = JenisBarang::All();
         $sales = Sales::All();
@@ -37,7 +50,7 @@ class LapKeuController extends Controller
         $retur = $this->getRetur($month, $tahun);
 
         $jenis = $this->getJenis($jenis, $sales);
-        $hppPerKat = $this->getHpp($jenis, $month);
+        $hppPerKat = $this->getHpp($jenis, $month, $tahun);
 
         $keu = Keuangan::where('tahun', $tahun)->where('bulan', $month)->get();
 
@@ -113,7 +126,7 @@ class LapKeuController extends Controller
         return $jenis;
     }
 
-    public function getHpp($jenis, $month) {
+    public function getHpp($jenis, $month, $tahun) {
         $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $h = 0; $hpp = []; $kode = '';
         $hppPerKat = collect();
         foreach($jenis as $j) {
@@ -159,7 +172,8 @@ class LapKeuController extends Controller
 
                 $soPerBrg = DetilSO::join('so', 'so.id', 'detilso.id_so')
                             ->select('detilso.*')->where('id_barang', $b->id)
-                            ->whereMonth('tgl_so', $month)
+                            ->where('qty', '!=', 0)
+                            ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $month)
                             ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
                            
                 if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {
@@ -199,18 +213,13 @@ class LapKeuController extends Controller
                                 'hpp' => $hrg
                             ]);
                             $h++;
-                            
-                            // var_dump($b->id." - ".$bmPerBrg[$i]->id_bm." - ".$bmPerBrg[$i]->qty." - ".$soPerBrg[$m]->id_so." - ".$soPerBrg[$m]->qty." - ".$qty." - HPP - ".number_format($hrg, 0, "", ".")." - BULAN - ".Carbon::parse($soPerBrg[$m]->so->tgl_so)->format('m')." - SALES - ".$soPerBrg[$m]->so->customer->id_sales." - ".$soPerBrg[$m]->so->customer->sales->nama);
-                            // echo "<br>";
 
                             if($qty == 0)
                                 break;
                         }
                     }
-                    // echo "<br>";
                 }
             }
-            // echo "<br>";
         }
 
         return $hppPerKat;
@@ -220,7 +229,7 @@ class LapKeuController extends Controller
         $items = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
                     ->join('so', 'so.id', 'detilso.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
-                    ->join('sales', 'sales.id', 'customer.id_sales')
+                    ->join('sales', 'sales.id', 'so.id_sales')
                     // ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
                     ->select('so.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT'])

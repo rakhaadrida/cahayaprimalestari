@@ -362,8 +362,9 @@ function formatTanggal(e) {
 /** Tampil Id Supp **/
 function displayCust(e) {
   @foreach($customer as $c)
-    if('{{ $c->nama }}' == e.target.value) {
+    if('{{ $c->nama }} ({{ $c->alamat }})' == e.target.value) {
       kodeCustomer.value = '{{ $c->id }}';
+      namaCustomer.value = '{{ $c->nama }}';
     }
     else if(e.target.value == '') {
       kodeCustomer.value = '';
@@ -473,7 +474,8 @@ function checkRequired(e) {
 $(function() {
   var customer = [];
   @foreach($customer as $c)
-    customer.push('{{ $c->nama }}');
+    // customer.push('{{ $c->nama }}');
+    customer.push('{{ $c->nama }} ({{ $c->alamat }})');
   @endforeach
 
   var kode = [];

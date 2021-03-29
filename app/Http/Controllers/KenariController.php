@@ -172,7 +172,8 @@ class KenariController extends Controller
             'id' => $kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
-            'total' => str_replace(".", "", $request->grandtotal),
+            // 'total' => str_replace(".", "", $request->grandtotal),
+            'total' => 0,
             'diskon' => str_replace(".", "", $diskon),
             'kategori' => $request->kategori.' '.$request->jenis,
             'tempo' => $tempo,
@@ -209,6 +210,7 @@ class KenariController extends Controller
             ]);
         }
 
+        $totNetto = 0;
         for($i = 0; $i < $jumlah; $i++) {
             if(($request->kodeBarang[$i] != "") && ($request->qty[$i] != "")) {
                 DetilSO::create([
@@ -221,12 +223,18 @@ class KenariController extends Controller
                     'diskonRp' =>  str_replace(".", "", $request->diskonRp[$i])
                 ]);
 
+                $totNetto += str_replace(".", "", $request->netto[$i]);
+
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $request->kodeGudang[$i])->first();
                 $updateStok->{'stok'} -= $request->qty[$i];
                 $updateStok->save();
             }
         }
+
+        $item = SalesOrder::where('id', $kode)->first();
+        $item->{'total'} = $totNetto;
+        $item->save();
 
         if($statusHal != 'CETAK')
             $cetak = 'false';

@@ -193,7 +193,7 @@
                   </tr>
                 </thead>
                 <tbody id="tablePO">
-                  @php $tab = 5; @endphp
+                  @php $tab = 6; @endphp
                   @for($i=1; $i<=5; $i++)
                     <tr class="text-bold text-dark" id="{{ $i }}">
                       <td align="center" class="align-middle">{{ $i }}</td>

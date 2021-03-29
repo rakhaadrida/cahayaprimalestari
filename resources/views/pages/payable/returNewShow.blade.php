@@ -132,7 +132,7 @@
                         <input type="text" name="jumlahDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ number_format($d->qty_retur * $d->barang->hargaBarang->first()->harga_ppn, 0, "", ".") }}">
                       </td>
                       <td class="text-right">
-                        <input type="text" name="diskonDetil[]" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off" value="">
+                        <input type="text" name="diskonDetil[]" class="form-control form-control-sm text-bold text-dark text-right diskon" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off" value="" required>
                       </td>
                       <td class="text-right">
                         <input type="text" name="diskonRpDetil[]" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right diskonRp" value="">

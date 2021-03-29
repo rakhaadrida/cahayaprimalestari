@@ -315,9 +315,6 @@ class AccReceivableController extends Controller
         $tahun = substr($waktu->year, -2);
 
         $tanggal = Carbon::now()->toDateString();
-        // $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
-        //         $request->{"qty".$request->kode}) - str_replace(".", "", $request->{"diskonRp".$request->kode});
-
         $item = AR_Retur::where('id_ar', $request->kode)->get();
 
         if($item->count() == 0) {
@@ -346,19 +343,6 @@ class AccReceivableController extends Controller
         } else {
             $kodeAR = $item->first()->id;
         }
-
-        /* $lastcodeRJ = ReturJual::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
-                    ->whereMonth('tanggal', $month)->get();
-        $lastnumberRJ = (int) substr($lastcodeRJ->first()->id, 7, 4);
-        $lastnumberRJ++;
-        $newcodeRJ = 'RTJ'.$tahun.$bulan.sprintf('%04s', $lastnumberRJ);
-
-        ReturJual::create([
-            'id' => $newcodeRJ,
-            'tanggal' => Carbon::now('+07:00')->toDateString(),
-            'id_customer' => $request->kodeCustomer,
-            'status' => 'LENGKAP'
-        ]); */
 
         $lastcodeKRM = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('tgl_kirim', $waktu->year)
                     ->whereMonth('tgl_kirim', $month)->get();;
