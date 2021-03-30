@@ -243,8 +243,6 @@ class SalesOrderController extends Controller
                         'diskonRp' => ($request->diskonRp[$i] != '' ? ($j == 0 ? str_replace(".", "", $request->diskonRp[$i]) : 0) : 0)
                     ]);
 
-                    $totNetto += str_replace(".", "", $request->netto[$i]);
-
                     /* if($status == 'LIMIT') {
                         NeedAppDetil::create([
                             'id_app' => $newcode,
@@ -272,6 +270,8 @@ class SalesOrderController extends Controller
                         $us->save();
                     } */
                 }
+
+                $totNetto += str_replace(".", "", $request->netto[$i]);
             }
         }
 
