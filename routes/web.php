@@ -283,6 +283,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Laporan Keuangan
         // Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
         // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
+        Route::post('keuangan/excel', 'LapKeuController@excel')->name('lap-keu-excel');
         Route::post('keuangan/store-index', 'LapKeuController@storeIndex')->name('lap-keu-store-index');
         Route::post('keuangan/store-show/{tahun}/{bulan}', 'LapKeuController@storeShow')->name('lap-keu-store-show');
 

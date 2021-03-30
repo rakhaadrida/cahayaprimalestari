@@ -16,6 +16,8 @@ use App\Models\Keuangan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LapKeuanganExport;
 use Carbon\Carbon;
 
 class LapKeuController extends Controller
@@ -272,6 +274,30 @@ class LapKeuController extends Controller
         
         return $retur;
     } 
+
+    public function excel(Request $request) {
+        if($request->tahun != '') {
+            $tahun = $request->tahun;
+            $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                    'September', 'Oktober', 'November', 'Desember'];
+            for($i = 0; $i < sizeof($bulan); $i++) {
+                if($request->bulan == $bulan[$i]) {
+                    $month = $i+1;
+                    $bul = $bulan[$i];
+                    break;
+                }
+                else
+                    $month = '';
+            }
+        } else {
+            $date = Carbon::now('+07:00');
+            $tahun = $date->year;
+            $month = $date->month;
+            $bul = Carbon::parse($date)->isoFormat('MMMM');
+        }
+
+        return Excel::download(new LapKeuanganExport($tahun, $month), 'Lap-Keu-'.$tahun.'-'.$bul.'.xlsx');
+    }
 
     public function storeIndex(Request $request) {
         $date = Carbon::now('+07:00');
