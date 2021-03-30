@@ -27,13 +27,20 @@ class LapKeuanganExport implements WithMultipleSheets
         $sales = SalesOrder::whereYear('tgl_so', $this->tahun)->whereMonth('tgl_so', $this->month)
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])->groupBy('id_sales')->orderBy('id_sales')->get();
 
+        $urut = 6;
         for($i = 0; $i < ($sales->count() + 1); $i++) {
-            if($i == 0)
-                $id = 0;
-            else    
+            if($i == 0) {
+                $id = '0';
+                $nama = 'KOSONG';
+                $strUrut = '0';
+            } else {    
                 $id = $sales[$i-1]->id_sales;
+                $nama = $sales[$i-1]->sales->nama;
+                $urut += 4;
+                $strUrut = strval($urut);
+            }
 
-            $sheets[] = new LapKeuPerSalesExport($id, $this->tahun, $this->month);
+            $sheets[] = new LapKeuPerSalesExport($id, $nama, $strUrut, $this->tahun, $this->month);
         }
 
         return $sheets;
