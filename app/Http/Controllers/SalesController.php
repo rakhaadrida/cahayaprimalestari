@@ -7,6 +7,7 @@ use App\Http\Requests\SalesRequest;
 use App\Models\Sales;
 use App\Models\Customer;
 use App\Models\BarangMasuk;
+use App\Models\SalesOrder;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SalesExport;
 use Carbon\Carbon;
@@ -15,7 +16,14 @@ class SalesController extends Controller
 {
     public function index() {
         $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])
-                    ->where('tanggal', '<', '2021-03-01')->get();
+                    ->where('tanggal', '<', '2021-03-29')->get();
+        foreach($items as $i) {
+            $i->status = 'CETAK';
+            $i->save();
+        }
+
+        $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE'])
+                    ->where('tgl_so', '<', '2021-03-29')->get();
         foreach($items as $i) {
             $i->status = 'CETAK';
             $i->save();

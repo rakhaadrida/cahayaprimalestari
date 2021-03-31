@@ -52,7 +52,7 @@ class SalesOrderController extends Controller
                     ->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'IV'.$tahun.'00'.sprintf('%04s', $lastnumber);
+        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -151,7 +151,7 @@ class SalesOrderController extends Controller
                     ->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'IV'.$tahun.'00'.sprintf('%04s', $lastnumber);
+        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         $kode = $newcode;
 
         $statusHal = $status;

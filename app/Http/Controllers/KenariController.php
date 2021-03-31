@@ -61,7 +61,7 @@ class KenariController extends Controller
                     ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'IV'.$tahun.'00'.sprintf('%04s', $lastnumber);
+        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $lastcodeKen = SalesOrder::join('users', 'users.id', 'so.id_user')
                         ->selectRaw('max(so.id) as id')->where('roles', 'KENARI')
@@ -160,7 +160,7 @@ class KenariController extends Controller
                     ->whereMonth('tgl_so', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
-        $newcode = 'IV'.$tahun.'00'.sprintf('%04s', $lastnumber);
+        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         $kode = $newcode;
 
         $statusHal = $status;

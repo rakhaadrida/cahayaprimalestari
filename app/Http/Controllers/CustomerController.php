@@ -14,14 +14,7 @@ use Carbon\Carbon;
 class CustomerController extends Controller
 {
     public function index()
-    {
-        // $sj = SuratJalan::All();
-        // foreach($sj as $s) {
-        //     $item = Customer::withTrashed()->where('id', $s->id)->first();
-        //     $item->{'tempo'} = $s->tempo;
-        //     $item->save();
-        // }
-        
+    {   
         $items = Customer::with(['sales'])->get();
         $data = [
             'items' => $items
