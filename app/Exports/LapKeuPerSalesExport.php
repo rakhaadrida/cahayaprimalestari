@@ -212,7 +212,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                 $sheet->setCellValue($alpha[$lastAlpha].$i, '=SUM(D'.$i.':O'.$i.')');
 
                 $urut = range('D', 'Z');
-                for($j = 0; $j < $kat->count(); $j++) {
+                for($j = 0; $j < $jenis->count(); $j++) {
                     $sheet->setCellValue($urut[$j].$i, '='.$urut[$j].$revenue.'-'.$urut[$j].$hpp.'-'.$urut[$j].$retur);
                 }
             }
