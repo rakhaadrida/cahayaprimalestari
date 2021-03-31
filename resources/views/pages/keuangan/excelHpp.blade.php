@@ -1,19 +1,20 @@
 <html>
   <body>
     <center>
-      <h2 class="text-bold text-dark">Data HPP Sales {{ $nama }}</h2>
+      <h2 class="text-bold text-dark">Data HPP {{ $nama }} Bulan {{ $bul }}</h2>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
     </center>
     <br>
 
     <!-- Tabel Data Detil BM-->
-    @foreach($kategori as $k)
+    {{-- @foreach($kategori as $k) --}}
       <table class="table table-sm table-bordered table-cetak">
         <thead>
           <tr style="font-size: 14px">
             <th>No</th>
-            <th>Nama Barang {{ $k->barang->jenis->nama }}</th>
+            {{-- <th>Nama Barang {{ $k->barang->jenis->nama }}</th> --}}
+            <th>Nama Barang</th>
             <th>Qty Faktur</th>
             <th>Harga</th>
             <th>Total</th>
@@ -28,12 +29,14 @@
             $barang = \App\Models\DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
                       ->join('so', 'so.id', 'detilso.id_so')
                       ->select('id_so as id', 'detilso.*')->selectRaw('sum(qty) as qty')
-                      ->where('id_sales', $id)->where('qty', '!=', 0)
-                      ->where('id_kategori', $k->id_kategori)
+                      // ->where('id_sales', $id)->where('qty', '!=', 0)
+                      // ->where('id_kategori', $k->id_kategori)
+                      ->where('id_kategori', $id)->where('qty', '!=', 0)
                       ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
                       ->whereYear('so.tgl_so', $tah)
                       ->whereMonth('so.tgl_so', $bulan)
-                      ->groupBy('id_barang', 'harga', 'diskon')
+                      // ->groupBy('id_barang', 'harga', 'diskon')
+                      ->groupBy('id_barang', 'harga')
                       ->get();
           @endphp
           @foreach($barang as $i)
@@ -65,7 +68,7 @@
         </tbody>
       </table>
       <br>
-    @endforeach
+    {{-- @endforeach --}}
     <!-- End Tabel Data Detil PO -->
     <h4>Copyright &copy; {{$sejak}} @if($tahun->year != $sejak) - {{$tahun->year}} @endif | rakhaadrida</h4>
   </body>

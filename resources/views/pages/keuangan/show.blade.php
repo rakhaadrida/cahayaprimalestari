@@ -49,6 +49,10 @@
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('lap-keu') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
+                  <div class="col-auto mt-1">
+                    <button type="submit" tabindex="5" onclick="return checkRequiredExcel(event)" id="submitExcel" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                    {{-- formaction="{{ route('lap-keu-excel') }}" formmethod="POST"  --}}
+                  </div>
                 </div>   
               </div>
               <hr>
@@ -357,6 +361,14 @@ function checkRequired(e) {
 
   document.getElementById("submitKeu").formMethod = "POST";
   document.getElementById("submitKeu").formAction = "{{ route('lap-keu-store-show', ['tahun' => $tahun, 'bulan' => $month]) }}";
+}
+
+function checkRequiredExcel(e) {
+  tahun.removeAttribute('required');
+  bulan.removeAttribute('required');
+
+  document.getElementById("submitExcel").formMethod = "POST";
+  document.getElementById("submitExcel").formAction = "{{ route('lap-keu-excel') }}";
 }
 
 $(function() {

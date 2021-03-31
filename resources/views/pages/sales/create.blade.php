@@ -49,7 +49,7 @@
                 </div>
                 <div class="col-2">
                   <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
-                </div>s
+                </div>
               </div>
             </form>
           </div>

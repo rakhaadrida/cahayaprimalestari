@@ -9,6 +9,7 @@ use App\Models\StokBarang;
 use App\Models\SalesOrder;
 use App\Models\AccReceivable;
 use App\Models\Customer;
+use App\Models\Sales;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -22,12 +23,27 @@ class GudangController extends Controller
             'items' => $items
         ];
 
+        $newSales = ['Budi-02', 'Ega-02', 'Hendra-02', 'Yardi-02'];
+        $newId = [];
+        for($i = 0; $i < sizeof($newSales); $i++) {
+            $lastcode = Sales::selectRaw('max(id) as id')->get();
+            $lastnumber = (int) substr($lastcode[0]->id, 3, 2);
+            $lastnumber++;
+            $newcode = 'SLS'.sprintf('%02s', $lastnumber);
+            $newId[$i] = $newcode;
+
+            Sales::create([
+                'id' => $newcode,
+                'nama' => $newSales[$i]
+            ]);
+        }
+
         $budi = 'ABADI COOL,AGUNG JAYA 1,AGUNG LISTRIK,ANEKA ELEKTRONIK (BSD),BAHAN BANGUNGAN JAYARAYA,BARU JAYA 99 SERANG,BINTANG TERANG (L.A),TB. BOJONG BANGUNAN,DARWIN ELEKTRIK,TOKO DUA SAUDARA,ELECTRO,FIKA JAYA,INDAH ELEKTRIK,MATAHARI,MEGAH JAYA SERANG,PT. MENTARI TIMUR SENTOSA,MURA JAYA,NS TRADING,SAMUDERA CIBUBUR,SENTRAL LISTRIK (CILINCING),SETIA BUDI,SINAR PRATAMA,SINAR SAKTI,SIS ELEKTRIK,SUMBER CAHAYA LESTARI,SUPER BANGUNAN KARAWANG,SURYA AGUNG ELEKTRIK,SURYA JAYA MAS,USAHA E,WILIAM JAYA CIBUBUR';
         $arrBudi = explode(",", $budi);
 
         $items = Customer::whereIn('nama', $arrBudi)->get();
         foreach($items as $i) {
-            $i->id_sales = 'SLS18';
+            $i->id_sales = $newId[0];
             $i->save();
         }
 
@@ -36,7 +52,7 @@ class GudangController extends Controller
 
         $items = Customer::whereIn('nama', $arrEga)->get();
         foreach($items as $i) {
-            $i->id_sales = 'SLS19';
+            $i->id_sales = $newId[1];
             $i->save();
         }
 
@@ -45,7 +61,7 @@ class GudangController extends Controller
 
         $items = Customer::whereIn('nama', $arrHendra)->get();
         foreach($items as $i) {
-            $i->id_sales = 'SLS20';
+            $i->id_sales = $newId[2];
             $i->save();
         }
 
@@ -54,13 +70,13 @@ class GudangController extends Controller
 
         $items = Customer::whereIn('nama', $arrYardi)->get();
         foreach($items as $i) {
-            $i->id_sales = 'SLS21';
+            $i->id_sales = $newId[3];
             $i->save();
         }
 
         $items = Customer::whereIn('id', ['CUS0636', 'CUS0970'])->get();
         foreach($items as $i) {
-            $i->id_sales = 'SLS21';
+            $i->id_sales = $newId[3];
             $i->save();
         }
 

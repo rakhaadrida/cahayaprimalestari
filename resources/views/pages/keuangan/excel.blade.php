@@ -1,7 +1,7 @@
 <html>
   <body>
     <center>
-      <h2 class="text-bold text-dark">Laporan Keuangan</h2>
+      <h2 class="text-bold text-dark">Laporan Keuangan {{ $bul }}</h2>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
       
     </center>
@@ -107,17 +107,19 @@
           <td colspan="{{ $jenis->count() + 3 }}" align="right">Total Revenue</td>
           <td align="right">{{ $subRevenue - $diskon->first()->diskon }}</td>
         </tr>
-        <tr>
-          <td colspan="{{ $jenis->count() + 3 }}" align="right">Total HPP</td>
-          <td align="right">{{ $subHPP }}</td>
-        </tr>
+        @foreach($kat as $k)
+          <tr>
+            <td colspan="{{ $jenis->count() + 3 }}" align="right">Total HPP {{ $k->barang->jenis->nama }}</td>
+            <td align="right"></td>
+          </tr>
+        @endforeach
         <tr>
           <td colspan="{{ $jenis->count() + 3 }}" align="right">Total Retur</td>
-          <td align="right">{{ $subRetur }}</td>
+          <td align="right"></td>
         </tr>
         <tr>
           <td colspan="{{ $jenis->count() + 3 }}" align="right">Total Laba</td>
-          <td align="right">{{ $subLaba }}</td>
+          <td align="right"></td>
         </tr>
         <tr>
           <td colspan="{{ $jenis->count() + 3 }}" align="right">Pendapatan Lain-Lain</td>
@@ -125,7 +127,7 @@
         </tr>
         <tr>
           <td colspan="{{ $jenis->count() + 3 }}" align="right">Total Laba dan Pendapatan</td>
-          <td align="right">{{ $subLaba }}</td>
+          <td align="right"></td>
         </tr>
         <tr>
           <td colspan="{{ $jenis->count() + 3 }}" align="right">Beban Gaji</td>
@@ -145,7 +147,7 @@
         </tr>
         <tr>
           <td colspan="{{ $jenis->count() + 3 }}" align="right">Grand Total</td>
-          <td align="right">{{ $subLaba }}</td>
+          <td align="right"></td>
         </tr>
       </tbody>
     </table>
