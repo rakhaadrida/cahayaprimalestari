@@ -15,19 +15,19 @@ use Carbon\Carbon;
 class SalesController extends Controller
 {
     public function index() {
-        $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])
-                    ->where('tanggal', '<', '2021-03-29')->get();
-        foreach($items as $i) {
-            $i->status = 'CETAK';
-            $i->save();
-        }
+        // $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])
+        //             ->where('tanggal', '<', '2021-03-29')->get();
+        // foreach($items as $i) {
+        //     $i->status = 'CETAK';
+        //     $i->save();
+        // }
 
-        $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE'])
-                    ->where('tgl_so', '<', '2021-03-29')->get();
-        foreach($items as $i) {
-            $i->status = 'CETAK';
-            $i->save();
-        }
+        // $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE'])
+        //             ->where('tgl_so', '<', '2021-03-29')->get();
+        // foreach($items as $i) {
+        //     $i->status = 'CETAK';
+        //     $i->save();
+        // }
 
         $items = Sales::All();
         $data = [

@@ -11,19 +11,7 @@ use App\Models\DetilRJ;
 class HargaController extends Controller
 {
     public function index()
-    {
-        $kirim = DetilRJ::where('qty_kirim', NULL)->get();
-        foreach($kirim as $k) {
-            $k->qty_kirim = 0;
-            $k->save();
-        }
-
-        $potong = DetilRJ::where('potong', NULL)->get();
-        foreach($potong as $p) {
-            $p->potong = 0;
-            $p->save();
-        }
-        
+    {   
         $items = Harga::All();
         $data = [
             'items' => $items

@@ -542,10 +542,10 @@
     </style>
   </head>
   <body>
-    @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; @endphp
+    @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; $subtotal = 0; @endphp
     @foreach($items as $item)
       @if(($items->first()->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 12)) 
-        @php $i = 1; $no = 1; $kur = 0; $kode = []; @endphp
+        @php $i = 1; $no = 1; $kur = 0; $kode = []; $subtotal = 0; @endphp
       @endif
       <div class="cetak-all-container" style="margin-bottom: -55px; @if($items[$urut-$kur]->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) page-break-after: always; @endif">
         <div class="container-fluid header-cetak-so">
@@ -677,7 +677,7 @@
                 <td align="right">
                   {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}</td>
               </tr>
-              @php $no++; array_push($kode, $itemDet->id_barang); @endphp
+              @php $subtotal += ($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp; $no++; array_push($kode, $itemDet->id_barang); @endphp
               @if($no > (12 * $i))
                 @php $cek = 1; @endphp
                 @break
@@ -787,7 +787,8 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        <td class="text-right angka-total">{{ $det <= 12 ? number_format(($stat <= 12 ? $item->total + $item->diskon : $items[$urut-$kur]->total + $items[$urut-$kur]->diskon), 0, "", ".") : '' }}</td>
+                        {{-- <td class="text-right angka-total">{{ $det <= 12 ? number_format(($stat <= 12 ? $item->total + $item->diskon : $items[$urut-$kur]->total + $items[$urut-$kur]->diskon), 0, "", ".") : '' }}</td> --}}
+                        <td class="text-right angka-total">{{ $det <= 12 ? number_format(($stat <= 12 ? $subtotal + $item->diskon : $subtotal + $items[$urut-$kur]->diskon), 0, "", ".") : '' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Disc Faktur</td>
@@ -795,7 +796,8 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
-                        <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format(($stat <= 12 ? $item->total : $items[$urut-$kur]->total), 0, "", ".") : 'ke halaman' }}</td>
+                        {{-- <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format(($stat <= 12 ? $item->total : $items[$urut-$kur]->total), 0, "", ".") : 'ke halaman' }}</td> --}}
+                        <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">PPN</td>
@@ -810,7 +812,8 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>
-                        <td class="text-right angka-total-akhir">{{ $det <= 12 ? number_format(($stat <= 12 ?$item->total : $items[$urut-$kur]->total), 0, "", ".") : '' }}</td>
+                        {{-- <td class="text-right angka-total-akhir">{{ $det <= 12 ? number_format(($stat <= 12 ?$item->total : $items[$urut-$kur]->total), 0, "", ".") : '' }}</td> --}}
+                        <td class="text-right angka-total-akhir">{{ $det <= 12 ? number_format(($subtotal), 0, "", ".") : '' }}</td>
                       </tr>
                     </table>
                   </div>

@@ -23,14 +23,6 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $item = SalesOrder::where('id', 'IV21040009')->first();
-        $item->{'total'} = 36620147;
-        $item->save();
-
-        $item = SalesOrder::where('id', 'IV21040019')->first();
-        $item->{'total'} = 2423200;
-        $item->save();
-
         return view('pages.gudang.index', $data);
     }
 
