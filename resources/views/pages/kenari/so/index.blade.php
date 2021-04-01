@@ -789,6 +789,9 @@ function displayRow(e) {
 
     nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
     checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
+    ppn.value = 0;
+    totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+    grandtotal.value = totalNotPPN.value;
   }
 
   /** Inputan hanya bisa angka **/
@@ -1458,7 +1461,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       grandtotal.value = totalNotPPN.value;
-      total_ppn(totalNotPPN.value.replace(/\./g, ""));
+      // total_ppn(totalNotPPN.value.replace(/\./g, ""));
     }
 
     for(let j = i; j < hapusBaris.length; j++) {

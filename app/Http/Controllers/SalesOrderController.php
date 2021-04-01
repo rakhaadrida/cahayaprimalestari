@@ -158,6 +158,13 @@ class SalesOrderController extends Controller
 
         if($status != 'LIMIT')
             $status = 'INPUT';
+
+        $totNetto = 0;
+        for($i = 0; $i < $jumlah; $i++) {
+            if(($request->kodeBarang[$i] != "") && ($request->qty[$i] != "")) {
+                $totNetto += str_replace(".", "", $request->netto[$i]);
+            }
+        }
         
         SalesOrder::create([
             'id' => $kode,
@@ -165,7 +172,7 @@ class SalesOrderController extends Controller
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
             // 'total' => str_replace(".", "", $request->grandtotal),
-            'total' => 0,
+            'total' => $totNetto,
             'diskon' => str_replace(".", "", $diskon),
             'kategori' => $request->kategori.' '.$request->jenis,
             'tempo' => $tempo,
@@ -271,13 +278,13 @@ class SalesOrderController extends Controller
                     } */
                 }
 
-                $totNetto += str_replace(".", "", $request->netto[$i]);
+                // $totNetto += str_replace(".", "", $request->netto[$i]);
             }
         }
 
         $item = SalesOrder::where('id', $kode)->first();
         $item->{'total'} = $totNetto - str_replace(".", "", $diskon);
-        $item->save();
+        // $item->save();
 
         if($statusHal != 'CETAK')
             $cetak = 'false';
