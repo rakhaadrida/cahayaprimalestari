@@ -199,7 +199,7 @@ class LapKeuController extends Controller
                             
                         $qty = $bmPerBrg[$i]->qty;
                         for($m = $k; $m < $soPerBrg->count(); $m++) {
-                            $idSales = $soPerBrg[$k]->so->customer->id_sales;
+                            $idSales = $soPerBrg[$k]->so->id_sales;
                             if($soPerBrg[$k]->qty <= $qty) {
                                 $hrg = $bmPerBrg[$i]->harga * $soPerBrg[$k]->qty;
                                 $hrg = $hrg - ($hrg * number_format($bmPerBrg[$i]->disPersen, 2, ".", "") / 100);
@@ -219,7 +219,7 @@ class LapKeuController extends Controller
 
                             $hppPerKat[$h] = collect([
                                 'id_kat' => $j->id,
-                                'id_sales' => $soPerBrg[$m]->so->customer->id_sales,
+                                'id_sales' => $soPerBrg[$m]->so->id_sales,
                                 'nama' => $soPerBrg[$m]->barang->nama,
                                 'qty' => $qtyHpp,
                                 'harga' => $bmPerBrg[$i]->harga,
