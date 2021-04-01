@@ -23,89 +23,13 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $newSales = ['Budi-02', 'Ega-02', 'Hendra-02', 'Yardi-02'];
-        $newId = []; $cek = 0;
-        for($i = 0; $i < sizeof($newSales); $i++) {
-            $item = Sales::where('nama', $newSales[$i])->get();
-
-            if($item->count() == 0) {
-                $lastcode = Sales::selectRaw('max(id) as id')->get();
-                $lastnumber = (int) substr($lastcode[0]->id, 3, 2);
-                $lastnumber++;
-                $newcode = 'SLS'.sprintf('%02s', $lastnumber);
-                $newId[$i] = $newcode;
-
-                Sales::create([
-                    'id' => $newcode,
-                    'nama' => $newSales[$i]
-                ]);
-
-                $cek = 1;
-            }
-        }
-
-        if($cek == 1) {
-            $budi = 'ABADI COOL,AGUNG JAYA 1,AGUNG LISTRIK,ANEKA ELEKTRONIK (BSD),BAHAN BANGUNGAN JAYARAYA,BARU JAYA 99 SERANG,BINTANG TERANG (L.A),TB. BOJONG BANGUNAN,DARWIN ELEKTRIK,TOKO DUA SAUDARA,ELECTRO,FIKA JAYA,INDAH ELEKTRIK,MATAHARI,MEGAH JAYA SERANG,PT. MENTARI TIMUR SENTOSA,MURA JAYA,NS TRADING,SAMUDERA CIBUBUR,SENTRAL LISTRIK (CILINCING),SETIA BUDI,SINAR PRATAMA,SINAR SAKTI,SIS ELEKTRIK,SUMBER CAHAYA LESTARI,SUPER BANGUNAN KARAWANG,SURYA AGUNG ELEKTRIK,SURYA JAYA MAS,USAHA E,WILIAM JAYA CIBUBUR';
-            $arrBudi = explode(",", $budi);
-
-            $items = Customer::whereIn('nama', $arrBudi)->get();
-            foreach($items as $i) {
-                $i->id_sales = $newId[0];
-                $i->save();
-            }
-
-            $ega = 'TOKO BARU,JAYA ABADI,RIZKY ELECTRIK';
-            $arrEga = explode(",", $ega);
-
-            $items = Customer::whereIn('nama', $arrEga)->get();
-            foreach($items as $i) {
-                $i->id_sales = $newId[1];
-                $i->save();
-            }
-
-            $hendra = 'ARTHA JAYA SUKSES,TOKO BAHAGIA TEKNIK,CAHYO ELECTRIC,GUDANG ELEKTRIK,TOKO HARAPAN BARU,JAYA AGUNG,JUANDA ELEKTRONIK,LOTUS,MITRA ELEKTRONIK,NASA ELEKTRIK';
-            $arrHendra = explode(",", $hendra);
-
-            $items = Customer::whereIn('nama', $arrHendra)->get();
-            foreach($items as $i) {
-                $i->id_sales = $newId[2];
-                $i->save();
-            }
-
-            $yardi = 'AKSA REMPOA,AKUR JAYA,ARHENT ELETRIC,ARIES ELEKTRIK,TOKO ARINDA PONDOK AREN,BAROKAH ELEKTRIK,TB CAHAYA BELAWA,BENUA BARU,BENUA BARU,BERKAH (PASAR SANTA),BERKAH JAYA,BINTANG PRIMA ELEKTRIK,CAHAYA,CAHAYA ABADI (CIPAYUNG),TOKO CAHAYA ABADI CAMAN,TOKO CAHAYA BINTANG,CAHAYA ELEKTRIK (PONDOK PETIR),TOKO CAHAYA GINTUNG,CAHAYA RESTU CIKARET,CENTRAL ELEKTRONIK,TK. CHAMPION ELECTRIK,CHANDRA JAYA,CHASA JAYA ELEKTRIK,TOKO LISTRIK CIREMAI,DANIEL ELEKTRIK 2,DELTA ELEKTRIK,DIVI JAYA ELEKTRIK,TOKO DMS ONE,DMS ELEKTRIK,ERLANGGA / ALFA BAHAR,FADJAR LISTRIK,TOKO FAJAR BARU ELEKTRIK,TB FAJAR INDAH ABADI,FAMILY ELEKTRIK,GEMINI ELECTRICAL,GRIYA BARU,HARAPAN MURNI CAKUNG,TOKO INDAH MULIA,INDO CAHAYA PARUNG,INTI JAYA ELEKTRIK,JAFAR,JAYA AUDIO TEKNIK,TB JAYA LESTARI,JAYA MAKMUR MERUYA,TB KARYA ABADI KALIBATA,KEVINDO,MAHKOTA CEMERLANG,MELINDA,MILENIUM ELEKTRIK,MITRA SANJAYA,MULIA JAYA (CINERE),MULTI JAYA ELEKTRIK,MULTI REZEKI TEKNIK,NASIONAL UTAMA,OMEGA ELECTRIK,PANJI ELEKTRIK,PESONA ELEKTRONIK CIPUTAT,PRIMA ELEKTRIK,PRIMA JAYA,TB PUTRA JAYA CINANGKA,PUTRA TANJUNG ELEKTRIK,RAJA GIANT LISTRIK,RAM RAF ELEKTRIK,TOKO SABAR (PS. SANTA ),SAHABAT ELEKTRIK SERUA,SAHABAT ELEKTRIK CIRACAS,SEDERHANA,SINAR ABADI BOJONGSARI,SINAR AGUNG PAMULANG,SINAR ALAM,SINAR COMET 3,SINAR ELEKTRIK (MAMPANG),SINAR JAYA,TOKO SINAR JAYA (SANTA),SINAR JAYA ( CIKOKO),SINAR KLATEN MULIA,SINAR KOMODO,SINAR LESTARI GANDUL,SINAR LESTARI PAMULANG 2,SINAR RAYA JOMBANG,SINAR SAKTI ELEKTRIK,SINAR SURYA,SINAR TERANG (SERPONG),SINAR WAHANA AMPERA,STAR ELEKTRIK,SUARA BARU,TOKO SUKA HATI,SUMBER ALAM 5,SUMBER CAHAYA NUSANTARA,SUMBER MULIA SUKSES JOMBANG,TARUNA JAYA,TAWANG ELECTRIK,TOKO BANGUNAN 99,TB MUTIARA,TEGAR JAYA SAWANGAN,TEGUH ELEKTRIK,TERANG DUNIA DEPOK,TERANG INDAH,TERANG MAKMUR CILANDAK,TETAP JAYA ELEKTRIK,URIP JAYA,TOKO UU TEKNIK,VIOLEN JAYA ELECTRONIC,WAHANA KALIMULYA DEPOK,WENDY ELEKTRIK,WIJAYA CIBUBUR,YAYE ELEKTRIK';
-            $arrYardi = explode(",", $yardi);
-
-            $items = Customer::whereIn('nama', $arrYardi)->get();
-            foreach($items as $i) {
-                $i->id_sales = $newId[3];
-                $i->save();
-            }
-
-            $items = Customer::whereIn('id', ['CUS0636', 'CUS0970'])->get();
-            foreach($items as $i) {
-                $i->id_sales = $newId[3];
-                $i->save();
-            }
-        }
-
-        $items = SalesOrder::whereIn('id', ['IN21000256P', 'IN21000228P'])->get();
-        foreach($items as $i) {
-            $i->kategori = 'Prime T';
-            $i->tempo = '30';
-            $i->save();
-        }
-
-        $item = SalesOrder::where('id', 'IV21002723')->first();
-        $item->{'total'} = 6494066;
+        $item = SalesOrder::where('id', 'IV21040009')->first();
+        $item->{'total'} = 36620147;
         $item->save();
 
-        $items = AccReceivable::whereIn('id_so', ['IV21002323', 'IV21002197', 'IV21002157', 'IV21002059', 'IV21002034', 
-                'IV21002031', 'IV21002029', 'IV21002023', 'IV21001994', 'IV21002307', 'IV21002326', 'IV21002259',
-                'IV21002503', 'IV21002249', 'IV21002049', 'IV21002139', 'IV21002605', 'IN21000092P'])->get();
-        foreach($items as $i) {
-            $i->keterangan = 'LUNAS';
-            $i->save();
-        }
+        $item = SalesOrder::where('id', 'IV21040019')->first();
+        $item->{'total'} = 2423200;
+        $item->save();
 
         return view('pages.gudang.index', $data);
     }
