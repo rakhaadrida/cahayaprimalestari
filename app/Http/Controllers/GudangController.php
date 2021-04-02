@@ -7,9 +7,8 @@ use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
 use App\Models\SalesOrder;
-use App\Models\AccReceivable;
-use App\Models\Customer;
-use App\Models\Sales;
+use App\Models\NeedApproval;
+use App\Models\NeedAppDetil;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -22,6 +21,23 @@ class GudangController extends Controller
         $data = [
             'items' => $items
         ];
+
+        $items = NeedApproval::whereIn('id', ['AR21041103', 'APP1042'])->get();
+        foreach($items as $i) {
+            $lastcode = NeedApproval::selectRaw('max(id) as id')->where('id', 'LIKE', 'APP0%')->get();
+            $lastnumber = (int) substr($lastcode->first()->id, 3, 4);
+            $lastnumber++;
+            $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
+            $detil = NeedAppDetil::where('id_app', $i->id)->get();
+            foreach($detil as $d) {
+                $d->id_app = $newcode;
+                $d->save();
+            }
+
+            $i->id = $newcode;
+            $i->save();
+        } 
 
         return view('pages.gudang.index', $data);
     }

@@ -221,7 +221,7 @@ class SalesOrderController extends Controller
         if($status == 'LIMIT') {
             NeedApproval::create([
                 'id' => $newcode,
-                'tanggal' => Carbon::now()->toDateString(),
+                'tanggal' => Carbon::now('+07:00'),
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
                 'id_dokumen' => $request->kode,
@@ -529,7 +529,7 @@ class SalesOrderController extends Controller
 
         NeedApproval::create([
             'id' => $newcode,
-            'tanggal' => Carbon::now(),
+            'tanggal' => Carbon::now('+07:00'),
             'status' => 'PENDING_UPDATE',
             'keterangan' => $request->keterangan,
             'id_dokumen' => $request->kode,

@@ -205,10 +205,15 @@ class KenariController extends Controller
             ]);
         }
 
+        $lastcode = NeedApproval::max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'APP'.sprintf('%04s', $lastnumber);
+
         if($status == 'LIMIT') {
             NeedApproval::create([
                 'id' => $newcode,
-                'tanggal' => Carbon::now()->toDateString(),
+                'tanggal' => Carbon::now('+07:00'),
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
                 'id_dokumen' => $id,
@@ -459,7 +464,7 @@ class KenariController extends Controller
 
         NeedApproval::create([
             'id' => $newcode,
-            'tanggal' => Carbon::now(),
+            'tanggal' => Carbon::now('+07:00'),
             'status' => 'PENDING_UPDATE',
             'keterangan' => $request->keterangan,
             'id_dokumen' => $request->kode,
