@@ -208,10 +208,8 @@ class AccReceivableController extends Controller
         else 
             $status = 'BELUM LUNAS';
 
-        // $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
-        $ar->{'keterangan'} = $status;
-        // $ar->{'updated_at'} = Carbon::now('+07:00');
-        $ar->save();
+        // $ar->{'keterangan'} = $status;
+        // $ar->save();
 
         $items = DetilAR::where('id_ar', $request->kodeAR)->get();
         $j = 0;
@@ -238,7 +236,7 @@ class AccReceivableController extends Controller
         $lastnumber++;
         $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
-        if(($request->{"cicil".$request->kode} != '') && ($request->{"tgl".$request->kode} != '')) {
+        if($request->{"cicil".$request->kode} != '') {
             DetilAR::create([
                 'id_ar' => $ar->{'id'},
                 'id_cicil' => $newcode,
@@ -246,6 +244,9 @@ class AccReceivableController extends Controller
                 'cicil' => (int) str_replace(".", "", $request->{"cicil".$request->kode})
             ]);
         }
+
+        $ar->{'keterangan'} = $status;
+        $ar->save();
 
         /*
         if($request->kodeSO != "") {

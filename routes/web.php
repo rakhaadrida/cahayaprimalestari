@@ -294,6 +294,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'KENARI']], function() {
         Route::get('/transfer/{status}', 'TransferBarangController@index')->name('tb');
+        Route::post('/transfer/stok', 'TransferBarangController@cekStok')->name('tb-stok');
         Route::post('/transfer/process/{id}/{status}', 'TransferBarangController@process')
             ->name('tb-process');
         Route::get('/transfer/cetak/{id}', 'TransferBarangController@cetak')->name('tb-cetak');

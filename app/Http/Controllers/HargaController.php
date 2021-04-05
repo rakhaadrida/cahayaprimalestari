@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\RequestS\HargaRequest;
 use App\Models\Harga;
 use App\Models\HargaBarang;
-use App\Models\DetilRJ;
+use App\Models\AccReceivable;
+use App\Models\DetilAR;
+use App\Models\AR_Retur;
 
 class HargaController extends Controller
 {
@@ -16,6 +18,48 @@ class HargaController extends Controller
         $data = [
             'items' => $items
         ];
+
+        $kodeCicil = ['AR21020493', 'AR21020438', 'AR21020875', 'AR21020997', 'AR21020409', 'AR21020763', 'AR21020894',
+                    'AR21020287', 'AR21020580', 'AR21020817'];
+        $totCicil = [312821460, 362952, 3711456, 897169, 2055876, 2974590, 1142127, 3159216, 1207710, 18705603];
+
+        for($i = 0; $i < sizeof($kodeCicil); $i++) {
+            $item = DetilAR::where('id_ar', $kodeCicil[$i])->first();
+            $item->{'cicil'} = $totCicil[$i];
+            $item->save();
+        }
+
+        $items = AccReceivable::join('so', 'so.id', 'ar.id_so')
+                ->select('ar.id as id', 'total')->where('keterangan', 'LUNAS')->get();
+        $no = 1;
+        foreach($items as $i) {
+            $det = DetilAR::where('id_ar', $i->id)->first();
+            $detil = DetilAR::selectRaw('sum(cicil) as cicil')->where('id_ar', $i->id)->get();
+            $retur = AR_Retur::selectRaw('sum(total) as total')->where('id_ar', $i->id)->get();
+            if($det == NULL) {
+                DetilAR::create([
+                    'id_ar' => $i->id,
+                    'id_cicil' => 'CIC2000000'.$no,
+                    'tgl_bayar' => '2021-02-28',
+                    'cicil' => $i->total - $retur->first()->total
+                ]);
+                $no++;
+            } else {
+                if($i->total != ($detil->first()->cicil + $retur->first()->total)) {
+                    if($i->total > ($detil->first()->cicil + $retur->first()->total)) 
+                        $total = $detil->first()->cicil + ($i->total - $detil->first()->cicil - $retur->first()->total);
+                    else
+                        $total = $detil->first()->cicil - ($detil->first()->cicil - $retur->first()->total - $i->total);
+
+                    $det->{'cicil'} = $total;
+                    $det->save();
+                }
+            }
+        }
+
+        $cicil = ['CIC20120014', 'CIC20120015'];
+        $items = DetilAR::whereIn('id_cicil', $cicil)->delete();
+        $item = DetilAR::where('id_cicil', 'CIC21020001')->where('id_ar', 'AR20000086')->delete();
 
         return view('pages.harga.index', $data);
     }

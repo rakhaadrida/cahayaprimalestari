@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
-use App\Models\SalesOrder;
-use App\Models\NeedApproval;
-use App\Models\NeedAppDetil;
+use App\Models\DetilAR;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -22,22 +20,29 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $items = NeedApproval::whereIn('id', ['AR21041103', 'APP1042'])->get();
-        foreach($items as $i) {
-            $lastcode = NeedApproval::selectRaw('max(id) as id')->where('id', 'LIKE', 'APP0%')->get();
-            $lastnumber = (int) substr($lastcode->first()->id, 3, 4);
-            $lastnumber++;
-            $newcode = 'APP'.sprintf('%04s', $lastnumber);
+        $kode = ['AR21031449', 'AR21030940', 'AR21030849', 'AR21031091', 'AR21030233'];
+        $cicil = [5228873, 857610, 386835, 203202, 138165];
+        $items = DetilAR::where('id_cicil', 'CIC21000001')->get();
 
-            $detil = NeedAppDetil::where('id_app', $i->id)->get();
-            foreach($detil as $d) {
-                $d->id_app = $newcode;
-                $d->save();
-            }
+        if($items->count() == 0) {
+            for($i = 1; $i <= sizeof($kode); $i++) {
+                DetilAR::create([
+                    'id_ar' => $kode[$i-1],
+                    'id_cicil' => 'CIC2100000'.$i,
+                    'tgl_bayar' => '2021-04-01',
+                    'cicil' => $cicil[$i-1]
+                ]);
+            }   
+        }
 
-            $i->id = $newcode;
-            $i->save();
-        } 
+        $kodeCicil = ['AR21030430', 'AR21030434', 'AR21030261', 'AR21030131'];
+        $totCicil = [0, 2767620, 7052092, 1707952];
+        
+        for($i = 0; $i < sizeof($kodeCicil); $i++) {
+            $item = DetilAR::where('id_ar', $kodeCicil[$i])->first();
+            $item->{'cicil'} = $totCicil[$i];
+            $item->save();
+        }
 
         return view('pages.gudang.index', $data);
     }

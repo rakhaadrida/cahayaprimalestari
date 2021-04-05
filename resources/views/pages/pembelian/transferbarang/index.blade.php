@@ -635,6 +635,9 @@ for(let i = 0; i < gdgAsal.length; i++) {
       }
     @endforeach
     displayStok(kodeAsal[i].value, statusAsal[i].value, stokAsal[i]);
+
+    /* if(e.target.value != '')
+      displayStok(e.target.value, kodeBarang[i].value, stokAsal[i], kodeAsal[i], statusAsal[i]); */
   }
 
   gdgTujuan[i].addEventListener("keyup", displayTujuan);
@@ -660,8 +663,44 @@ for(let i = 0; i < gdgAsal.length; i++) {
         statusTujuan[i].value = 'F';
       }
     @endforeach
-    displayStok(kodeTujuan[i].value, statusTujuan[i].value, stokTujuan[i]);
+    displayStok(kodeTujuan[i].value, statusTujuan[i].value, stokTujuan[i]); 
+
+    /* if(e.target.value != '')
+      displayStok(e.target.value, kodeBarang[i].value, stokTujuan[i], kodeTujuan[i], statusTujuan[i]); */
   }
+
+  /* function displayStok(gudang, kode, stok, kodeGudang, statusGudang) {
+    var status; var namaGudang; 
+    if(gudang == 'Retur Jelek') {
+      namaGudang = 'Retur';
+      status = 'F';
+    } else if(gudang == 'Retur Bagus') {
+      namaGudang = 'Retur';
+      status = 'T';
+    } else {
+      namaGudang = gudang;
+      status = 'T';
+    }
+
+    statusGudang.value = status;
+
+    if(gudang != "") {
+      $.ajax({
+        type: 'POST',
+        url: '/transfer/stok',
+        data: {
+          _token: '{{ csrf_token() }}', 
+          barang: kode,
+          name: namaGudang,
+          status: status,
+        },
+        success:function(data) {
+          stok.value = data.stok;
+          kodeGudang.value = data.kode;
+        }
+      });
+    }
+  } */
 
   function displayStok(kode, status, stok) {
     @foreach($stok as $s)
@@ -794,6 +833,17 @@ function checkRequired(e) {
     e.stopPropagation();
   }
   else {
+    /* for(let i = 0; i < brgNama.length; i++) {
+      if((gdgAsal[i].value != '') && (gdgTujuan[i].value != '') && (qtyTransfer[i].value != '')) {
+        displayStok(gdgAsal[i].value, kodeBarang[i].value, stokAsal[i], kodeAsal[i], statusAsal[i]);
+        displayStok(gdgTujuan[i].value, kodeBarang[i].value, stokTujuan[i], kodeTujuan[i], statusTujuan[i]);
+        if(+qtyTransfer[i].value > +stokAsal[i].value) {
+          qtyTransfer[i].value = '';
+          $(qtyTransfer[i]).tooltip('show');
+        }
+      }
+    } */
+
     document.getElementById("submitTB").dataset.toggle = "modal";
     document.getElementById("submitTB").dataset.target = "#modalKonfirm";
     return false;

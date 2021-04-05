@@ -51,6 +51,19 @@ class TransferBarangController extends Controller
         return view('pages.pembelian.transferbarang.index', $data);
     }
 
+    public function cekStok(Request $request) {
+        $gudang = Gudang::where('nama', $request->name)->get();
+
+        $item = StokBarang::where('id_barang', $request->barang)->where('id_gudang', $gudang->first()->id)
+                ->where('status', $request->status)->first();
+        $data = [
+            'stok' => $item->{'stok'},
+            'kode' => $item->{'id_gudang'}
+        ];
+
+        return response()->json($data);
+    }
+
     public function formatTanggal($tanggal, $format) {
         $formatTanggal = Carbon::parse($tanggal)->format($format);
         return $formatTanggal;
