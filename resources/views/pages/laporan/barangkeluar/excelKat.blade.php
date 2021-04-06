@@ -33,6 +33,7 @@
                       ->selectRaw('sum(qty) as qty, sum(diskonRp) as diskonRp')
                       ->where('id_kategori', $id)
                       ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
+                      ->where('id_customer', '!=', 'CUS1071')
                       ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
                       ->groupBy('id_so', 'id_barang')->orderBy('id_barang')->orderBy('id_so')->get();
           @endphp

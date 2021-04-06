@@ -32,7 +32,8 @@ class LapKeuanganExport implements WithMultipleSheets
         $sls = Sales::All();
         $sales = DetilSO::join('so', 'so.id', 'detilso.id_so')->join('barang', 'barang.id', 'detilso.id_barang')
                 ->whereYear('tgl_so', $this->tahun)->whereMonth('tgl_so', $this->month)
-                ->whereNotIn('status', ['BATAL', 'LIMIT'])->groupBy('id_kategori')->orderBy('id_kategori')->get();
+                ->where('id_customer', '!=', 'CUS1071')->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->groupBy('id_kategori')->orderBy('id_kategori')->get();
 
         // $urut = 6;
         $urut = 4 + ($sls->count() * 4) + 2;

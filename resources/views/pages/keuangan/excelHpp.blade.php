@@ -33,6 +33,7 @@
                       // ->where('id_kategori', $k->id_kategori)
                       ->where('id_kategori', $id)->where('qty', '!=', 0)
                       ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
+                      ->where('id_customer', '!=', 'CUS1071')
                       ->whereYear('so.tgl_so', $tah)
                       ->whereMonth('so.tgl_so', $bulan)
                       // ->groupBy('id_barang', 'harga', 'diskon')

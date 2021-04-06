@@ -276,6 +276,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                     ->join('barang', 'barang.id', 'detilso.id_barang')
                     ->where('id_sales', $this->id)
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
+                    ->where('id_customer', '!=', 'CUS1071')
                     ->whereYear('so.tgl_so', $this->tahun)->whereMonth('so.tgl_so', $this->month)
                     ->groupBy('id_kategori')->orderBy('id_kategori')->get();
             $barang = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
@@ -285,6 +286,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                     // ->where('id_kategori', $k->id_kategori)
                     ->where('id_kategori', $this->id)->where('qty', '!=', 0)
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
+                    ->where('id_customer', '!=', 'CUS1071')
                     ->whereYear('so.tgl_so', $this->tahun)
                     ->whereMonth('so.tgl_so', $this->month)
                     // ->groupBy('id_barang', 'harga', 'diskon')

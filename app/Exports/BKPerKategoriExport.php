@@ -159,6 +159,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
                     ->selectRaw('sum(qty) as qty, sum(diskonRp) as diskonRp')
                     ->where('id_kategori', $this->id)
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
+                    ->where('id_customer', '!=', 'CUS1071')
                     ->whereBetween('tgl_so', [$this->tglAwal, $this->tglAkhir])
                     ->groupBy('id_so', 'id_barang')->get();
 
