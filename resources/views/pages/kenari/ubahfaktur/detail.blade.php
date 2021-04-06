@@ -202,7 +202,8 @@
                                 ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
                               </td>
                             </tr>
-                            @php $i++; @endphp
+                            @php $i++; $subtotal += (($itemDet->qty * $itemDet->harga) - 
+                                ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100)); @endphp
                           @endforeach
                         @else
                           <tr>
@@ -216,7 +217,7 @@
                       <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->total + $item->diskon, 0, "", ".") }}"
+                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}"
                         />
                       </div>
                     </div>
@@ -231,7 +232,7 @@
                       <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->total, 0, "", ".") }}" />
+                        <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->diskon, 0, "", ".") }}" />
                       </div>
                     </div>
                     <div class="form-group row justify-content-end total-so">
@@ -246,7 +247,7 @@
                       <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mr-1">
-                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($item->total, 0, "", ".") }}"
+                        <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($subtotal - $item->diskon, 0, "", ".") }}"
                         />
                       </div>
                     </div>

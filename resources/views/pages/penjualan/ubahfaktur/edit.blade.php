@@ -1012,8 +1012,8 @@ for(let i = 0; i < hapusBaris.length; i++) {
       grandtotal.value = totalNotPPN.value;
     }
 
-    for(let j = i; j < hapusBaris.length; j++) {
-      if(j == hapusBaris.length - 1) {
+    for(let j = i; j < jumBaris.value; j++) {
+      if(j == jumBaris.value - 1) {
         $(tablePO).find('tr:last-child').remove();  
       }
       else {

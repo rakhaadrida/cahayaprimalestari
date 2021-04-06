@@ -19,7 +19,7 @@ class HargaController extends Controller
             'items' => $items
         ];
 
-        $kodeCicil = ['AR21020493', 'AR21020438', 'AR21020875', 'AR21020997', 'AR21020409', 'AR21020763', 'AR21020894',
+        /* $kodeCicil = ['AR21020493', 'AR21020438', 'AR21020875', 'AR21020997', 'AR21020409', 'AR21020763', 'AR21020894',
                     'AR21020287', 'AR21020580', 'AR21020817'];
         $totCicil = [312821460, 362952, 3711456, 897169, 2055876, 2974590, 1142127, 3159216, 1207710, 18705603];
 
@@ -59,7 +59,7 @@ class HargaController extends Controller
 
         $cicil = ['CIC20120014', 'CIC20120015'];
         $items = DetilAR::whereIn('id_cicil', $cicil)->delete();
-        $item = DetilAR::where('id_cicil', 'CIC21020001')->where('id_ar', 'AR20000086')->delete();
+        $item = DetilAR::where('id_cicil', 'CIC21020001')->where('id_ar', 'AR20000086')->delete(); */
 
         return view('pages.harga.index', $data);
     }

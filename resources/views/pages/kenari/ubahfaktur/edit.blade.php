@@ -550,23 +550,22 @@ for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
-      grandtotal.value = subtotal.value;
+      totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
     }
 
-    for(let j = i; j < hapusBaris.length; j++) {
-      if(j == hapusBaris.length - 1) {
+    for(let j = i; j < jumBaris.value; j++) {
+      if(j == jumBaris.value - 1) {
         $(tablePO).find('tr:last-child').remove();  
       }
       else {
+        console.log(kodeBarang[j+1].value)
         netto[j].value = netto[j+1].value;
         diskonRp[j].value = diskonRp[j+1].value;
         diskon[j].value = diskon[j+1].value;
         jumlah[j].value = jumlah[j+1].value;
         harga[j].value = harga[j+1].value;
-        qtyGudang[j].value = qtyGudang[j+1].value;
         kodeGudang[j].value = kodeGudang[j+1].value;
-        qtyAwalArr[j].value = qtyAwalArr[j+1].value;
-        kodeGudangArr[j].value = kodeGudangArr[j+1].value;
         qty[j].value = qty[j+1].value;
         qtyAwal[j].value = qtyAwal[j+1].value;
         brgNama[j].value = brgNama[j+1].value;

@@ -20,7 +20,7 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $kode = ['AR21031449', 'AR21030940', 'AR21030849', 'AR21031091', 'AR21030233'];
+        /* $kode = ['AR21031449', 'AR21030940', 'AR21030849', 'AR21031091', 'AR21030233'];
         $cicil = [5228873, 857610, 386835, 203202, 138165];
         $items = DetilAR::where('id_cicil', 'CIC21000001')->get();
 
@@ -42,7 +42,7 @@ class GudangController extends Controller
             $item = DetilAR::where('id_ar', $kodeCicil[$i])->first();
             $item->{'cicil'} = $totCicil[$i];
             $item->save();
-        }
+        } */
 
         return view('pages.gudang.index', $data);
     }
