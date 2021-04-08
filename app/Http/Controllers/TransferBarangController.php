@@ -190,8 +190,10 @@ class TransferBarangController extends Controller
     }
 
     public function detail(Request $request, $id) {
-        $items = TransferBarang::All();
-        // $items = TransferBarang::where('tgl_tb', '>', Carbon::now()->subMonths(1))->get();
+        $item = TransferBarang::where('id', $id)->get();
+        $items = TransferBarang::whereBetween('tgl_tb', [Carbon::parse($item->first()->tgl_tb)->subDays(3), 
+                Carbon::parse($item->first()->tgl_tb)->addDays(3)])->get();
+
         $data = [
             'items' => $items,
             'kode' => $id
