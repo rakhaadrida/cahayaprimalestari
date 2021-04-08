@@ -83,6 +83,32 @@ class KartuStokController extends Controller
                 $stokAwal[$i] += $so->qty;
             }
 
+            $itemsRJ = \App\Models\DetilRJ::selectRaw('sum(qty_retur - qty_kirim - potong) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
+                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                            ->where('status', '!=', 'BATAL');
+                        })->get();
+            foreach($itemsRJ as $rj) {
+                $stokAwal[$i] -= $rj->qty;
+            }
+
+            $itemsRB = \App\Models\DetilRB::selectRaw('sum(qty_retur) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereHas('returbeli', function($q) use($tglAwal, $tglAkhir) {
+                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                            ->where('status', '!=', 'BATAL');
+                        })->get();
+            foreach($itemsRB as $rb) {
+                $itemsRT = \App\Models\DetilRT::selectRaw('sum(qty_terima + qty_batal + potong) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereHas('returterima', function($q) use($tglAwal, $tglAkhir) {
+                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir]);
+                        })->get();
+
+                $stokAwal[$i] += ($rb->qty - $itemsRT->first()->qty);
+            }
+
             $i++;
         }
 
