@@ -574,11 +574,9 @@ class ApprovalController extends Controller
     }
 
     public function detail($id) {
-        $approval = Approval::with(['so', 'bm'])
-                    ->select(DB::raw('max(id) as id'), 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
-                    ->orderBy('created_at', 'asc')->groupBy('id_dokumen')->get();
+        $approval = Approval::select('id', 'id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
+                    ->where('id_dokumen', $id)->groupBy('id_dokumen')->get();
 
-        // return response()->json($items);
         $gudang = Gudang::where('tipe', 'BIASA')->get();
         $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
