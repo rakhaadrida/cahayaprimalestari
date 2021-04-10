@@ -224,7 +224,7 @@ class SalesOrderController extends Controller
                 'tanggal' => Carbon::now('+07:00'),
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
-                'id_dokumen' => $request->kode,
+                'id_dokumen' => $kode,
                 'tipe' => 'Faktur',
                 'id_user' => Auth::user()->id
             ]);
@@ -281,10 +281,6 @@ class SalesOrderController extends Controller
                 // $totNetto += str_replace(".", "", $request->netto[$i]);
             }
         }
-
-        $item = SalesOrder::where('id', $kode)->first();
-        $item->{'total'} = $totNetto - str_replace(".", "", $diskon);
-        // $item->save();
 
         if($statusHal != 'CETAK')
             $cetak = 'false';

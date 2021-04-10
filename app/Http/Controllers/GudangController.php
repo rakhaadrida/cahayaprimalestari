@@ -21,8 +21,10 @@ class GudangController extends Controller
         ];
 
         $item = SalesOrder::where('id', 'IV21040419')->first();
-        $item->{'status'} = 'INPUT';
-        $item->save();
+        if($item->{'status'} == 'LIMIT') { 
+            $item->{'status'} = 'INPUT';
+            $item->save();
+        }
 
         return view('pages.gudang.index', $data);
     }
