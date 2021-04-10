@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
-use App\Models\DetilAR;
+use App\Models\NeedApproval;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -20,29 +20,15 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        /* $kode = ['AR21031449', 'AR21030940', 'AR21030849', 'AR21031091', 'AR21030233'];
-        $cicil = [5228873, 857610, 386835, 203202, 138165];
-        $items = DetilAR::where('id_cicil', 'CIC21000001')->get();
-
-        if($items->count() == 0) {
-            for($i = 1; $i <= sizeof($kode); $i++) {
-                DetilAR::create([
-                    'id_ar' => $kode[$i-1],
-                    'id_cicil' => 'CIC2100000'.$i,
-                    'tgl_bayar' => '2021-04-01',
-                    'cicil' => $cicil[$i-1]
-                ]);
-            }   
-        }
-
-        $kodeCicil = ['AR21030430', 'AR21030434', 'AR21030261', 'AR21030131'];
-        $totCicil = [0, 2767620, 7052092, 1707952];
-        
-        for($i = 0; $i < sizeof($kodeCicil); $i++) {
-            $item = DetilAR::where('id_ar', $kodeCicil[$i])->first();
-            $item->{'cicil'} = $totCicil[$i];
-            $item->save();
-        } */
+        NeedApproval::create([
+            'id' => 'APC0001',
+            'tanggal' => Carbon::now('+07:00'),
+            'status' => 'LIMIT',
+            'keterangan' => 'Melebihi limit',
+            'id_dokumen' => 'IV21040401',
+            'tipe' => 'Faktur',
+            'id_user' => '2'
+        ]);
 
         return view('pages.gudang.index', $data);
     }
