@@ -20,16 +20,6 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        NeedApproval::create([
-            'id' => 'APC0001',
-            'tanggal' => Carbon::now('+07:00'),
-            'status' => 'LIMIT',
-            'keterangan' => 'Melebihi limit',
-            'id_dokumen' => 'IV21040401',
-            'tipe' => 'Faktur',
-            'id_user' => '2'
-        ]);
-
         return view('pages.gudang.index', $data);
     }
 
