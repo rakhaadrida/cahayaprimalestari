@@ -250,17 +250,6 @@ class SalesOrderController extends Controller
                         'diskonRp' => ($request->diskonRp[$i] != '' ? ($j == 0 ? str_replace(".", "", $request->diskonRp[$i]) : 0) : 0)
                     ]);
 
-                    /* if($status == 'LIMIT') {
-                        NeedAppDetil::create([
-                            'id_app' => $newcode,
-                            'id_barang' => $request->kodeBarang[$i],
-                            'id_gudang' => $arrGudang[$j],
-                            'harga' => str_replace(".", "", $request->harga[$i]),
-                            'qty' => $arrStok[$j],
-                            'diskon' => $request->diskon[$i],
-                        ]);
-                    } */
-
                     $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                                 ->where('id_gudang', $arrGudang[$j])->first();
                     $updateStok->{'stok'} -= $arrStok[$j];
