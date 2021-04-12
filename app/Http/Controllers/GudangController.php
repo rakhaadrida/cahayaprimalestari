@@ -7,6 +7,7 @@ use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
 use App\Models\SalesOrder;
+use App\Models\AccReceivable;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -19,6 +20,15 @@ class GudangController extends Controller
         $data = [
             'items' => $items
         ];
+
+        $item = SalesOrder::where('id', 'IV21040419')->get();
+        if($item->first()->status == 'INPUT') {
+            AccReceivable::create([
+                'id' => 'AR20040001',
+                'id_so' => $item->first()->id,
+                'keterangan' => 'BELUM LUNAS'
+            ]);
+        }
 
         return view('pages.gudang.index', $data);
     }
