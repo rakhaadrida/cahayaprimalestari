@@ -21,6 +21,10 @@ class GudangController extends Controller
             'items' => $items
         ];
 
+        $item = SalesOrder::where('id', 'IV21040419')->first();
+        $item->{'status'} = 'INPUT';
+        $item->save();
+
         $item = SalesOrder::where('id', 'IV21040419')->get();
         if($item->first()->status == 'INPUT') {
             AccReceivable::create([
