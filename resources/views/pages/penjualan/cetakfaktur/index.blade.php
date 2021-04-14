@@ -108,6 +108,10 @@
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
 {{-- <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script> --}}
 <script type="text/javascript">
+$('#dataTable').dataTable({
+  "pageLength": 25
+});
+
 const kodeAwal = document.getElementById('kodeAwal');
 const kodeAkhir = document.getElementById('kodeAkhir');
 const btnCetak = document.getElementById('btnCetak');

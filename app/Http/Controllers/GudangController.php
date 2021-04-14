@@ -21,19 +21,6 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        /* $item = SalesOrder::where('id', 'IV21040419')->first();
-        $item->{'status'} = 'INPUT';
-        $item->save();
-
-        $item = SalesOrder::where('id', 'IV21040419')->get();
-        if($item->first()->status == 'INPUT') {
-            AccReceivable::create([
-                'id' => 'AR20040001',
-                'id_so' => $item->first()->id,
-                'keterangan' => 'BELUM LUNAS'
-            ]);
-        } */
-
         return view('pages.gudang.index', $data);
     }
 

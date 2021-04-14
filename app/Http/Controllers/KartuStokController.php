@@ -35,6 +35,7 @@ class KartuStokController extends Controller
     }
 
     public function show(Request $request) {
+        $now = Carbon::now('+07:00')->toDateString();
         $tglAwal = $request->tglAwal;
         $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
         $tglAkhir = $request->tglAkhir;
@@ -56,7 +57,7 @@ class KartuStokController extends Controller
                     })->count();
         $itemsBRG = Barang::whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])
                         ->get();
-        $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
+        $stok = StokBarang::select('id_barang', DB::raw('sum(stok) as total'))
                         ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
                         ->groupBy('id_barang')->get();
 
@@ -64,29 +65,30 @@ class KartuStokController extends Controller
         $stokAwal = [];
         foreach($stok as $s) {
             $stokAwal[$i] = $s->total;
-            $itemsBM = \App\Models\DetilBM::with(['bm', 'barang'])
+            $itemsBM = \App\Models\DetilBM::selectRaw('sum(qty) as qty')
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir]);
+                        ->whereHas('bm', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tanggal', [$tglAwal, $now])
+                            ->where('status', '!=', 'BATAL');
                         })->get();
             foreach($itemsBM as $bm) {
                 $stokAwal[$i] -= $bm->qty;
             }
 
-            $itemsSO = \App\Models\DetilSO::with(['so', 'barang'])
+            $itemsSO = \App\Models\DetilSO::selectRaw('sum(qty) as qty')
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
-                            ->where('status', '!=', 'BATAL');
+                        ->whereHas('so', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tgl_so', [$tglAwal, $now])
+                            ->whereNotIn('status', ['BATAL', 'LIMIT']);
                         })->get();
             foreach($itemsSO as $so) {
                 $stokAwal[$i] += $so->qty;
             }
-
-            $itemsRJ = \App\Models\DetilRJ::selectRaw('sum(qty_retur - qty_kirim - potong) as qty')
+            
+            $itemsRJ = \App\Models\DetilRJ::selectRaw('sum(qty_retur - qty_kirim) as qty')
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                        ->whereHas('retur', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tanggal', [$tglAwal, $now])
                             ->where('status', '!=', 'BATAL');
                         })->get();
             foreach($itemsRJ as $rj) {
@@ -95,16 +97,16 @@ class KartuStokController extends Controller
 
             $itemsRB = \App\Models\DetilRB::selectRaw('sum(qty_retur) as qty')
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('returbeli', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                        ->whereHas('returbeli', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tanggal', [$tglAwal, $now])
                             ->where('status', '!=', 'BATAL');
                         })->get();
             foreach($itemsRB as $rb) {
-                $itemsRT = \App\Models\DetilRT::selectRaw('sum(qty_terima + qty_batal + potong) as qty')
+                $itemsRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                        ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
+                        ->selectRaw('sum(qty_terima + qty_batal) as qty')
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('returterima', function($q) use($tglAwal, $tglAkhir) {
-                            $q->whereBetween('tanggal', [$tglAwal, $tglAkhir]);
-                        })->get();
+                        ->whereBetween('returbeli.tanggal', [$tglAwal, $now])->get();
 
                 $stokAwal[$i] += ($rb->qty - $itemsRT->first()->qty);
             }

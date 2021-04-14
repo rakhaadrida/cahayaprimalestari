@@ -91,12 +91,7 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-6">
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
-                        @if($rowBM != 0)
-                          value="{{ $item->id }} - {{ $item->nama }}"
-                        @elseif($rowSO != 0)
-                          value="{{ $item->id }} - {{ $item->nama }}"
-                        @endif 
-                        >
+                        value="{{ $item->id }} - {{ $item->nama }}" >
                       </div>
                     </div>
                   </div>
@@ -178,7 +173,7 @@
                                         ->where('status', '!=', 'BATAL');
                                     });
                         $itemsTRB = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
-                                    ->select('id_terima as id', 'id_retur', 'id_barang', 'tanggal', 'returterima.created_at', 'qty_batal as id_asal', 'potong as id_tujuan', 'qty_terima as qty')->where('id_barang', $item->id)
+                                    ->select('id_terima as id', 'id_retur', 'id_barang', 'tanggal', 'returterima.created_at', 'qty_batal as id_asal', 'potong as id_tujuan', 'qty_terima as qty')->where('id_barang', $item->id)->where('qty_terima', '!=', 0)
                                     ->whereHas('returterima', function($q) use($awal, $akhir) {
                                         $q->whereBetween('tanggal', [$awal, $akhir]);
                                     });
@@ -191,17 +186,17 @@
 
                         $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                                     ->selectRaw('sum(qty) as qty')->where('id_barang', $item->id)
-                                    ->where('tgl_so', '>', $akhir)->get();
+                                    ->where('tgl_so', '>', $akhir)->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
                         $kurangGd = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                                     ->selectRaw('sum(qty) as qty')->where('id_barang', $item->id)
-                                    ->where('tanggal', '>', $akhir)->get();
+                                    ->where('tanggal', '>', $akhir)->where('status', '!=', 'BATAL')->get();
                         $kurangRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
-                                    ->selectRaw('sum(qty_retur - qty_kirim - potong) as qty')
+                                    ->selectRaw('sum(qty_retur - qty_kirim) as qty')
                                     ->where('status', 'INPUT')->where('id_barang', $item->id)
                                     ->where('tanggal', '>', $akhir)->get();
                         $detilRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
                                     ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
-                                    ->selectRaw('sum(qty_terima + qty_batal + potong) as qty')
+                                    ->selectRaw('sum(qty_terima + qty_batal) as qty')
                                     ->where('status', 'INPUT')->where('id_barang', $item->id)
                                     ->where('returbeli.tanggal', '>', $akhir)->get();
                         $detilRB = \App\Models\DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
@@ -319,7 +314,7 @@
                               {{ $user }} <br> {{ \Carbon\Carbon::parse($it->created_at)->format('H:i:s') }}
                             </td>
                             @php
-                              if(substr($it->id, 0, 2) == 'BM') 
+                              if((substr($it->id, 0, 2) == 'BM') || (substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT') || (substr($it->id, 0, 3) == 'TRM')) 
                                 $totalBM += $it->qty; 
                               elseif((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB') && (substr($it->id, 0, 3) != 'RTJ') && (substr($it->id, 0, 3) != 'RTT') && (substr($it->id, 0, 3) != 'TRM'))
                                 $totalSO += $it->qty;

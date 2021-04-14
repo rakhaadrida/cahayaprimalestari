@@ -127,6 +127,10 @@ $('.datepicker').datepicker({
   language: 'id',
 });
 
+$('#dataTable').dataTable({
+  "pageLength": 50
+});
+
 const tglAwal = document.getElementById('tglAwal');
 const tglAkhir = document.getElementById('tglAkhir');
 

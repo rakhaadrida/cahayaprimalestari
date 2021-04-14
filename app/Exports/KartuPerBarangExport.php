@@ -17,6 +17,9 @@ use App\Models\Gudang;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
 use App\Models\DetilTB;
+use App\Models\DetilRJ;
+use App\Models\DetilRB;
+use App\Models\DetilRT;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +36,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
     }
     
     public function view(): View {
+        $now = Carbon::now('+07:00')->toDateString();
         $barang = Barang::All();
         $gudang = Gudang::All();
         $tglAwal = $this->awal;
@@ -49,18 +53,42 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                         ->where('status', '!=', 'BATAL');
                     });
         $itemsSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan',)->selectRaw('sum(qty) as qty')->where('id_barang', $this->kode)
+                    ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan')->selectRaw('sum(qty) as qty')->where('id_barang', $this->kode)
                     ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                        ->where('status', '!=', 'BATAL');
+                        ->whereNotIn('status', ['BATAL', 'LIMIT']);
                     })->groupBy('id_so', 'id_barang');
+        $itemsRJ = DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
+                    ->select('id', 'id_retur', 'id_barang', 'tanggal', 'returjual.created_at', 'tgl_kirim as id_asal', 'id_kirim as id_tujuan', 'qty_retur as qty')
+                    ->where('id_barang', $this->kode)
+                    ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $itemsKRJ = DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
+                    ->select('id_kirim as id', 'id_retur', 'id_barang', 'tgl_kirim as tanggal', 'returjual.created_at', 'tanggal as id_asal', 'potong as id_tujuan', 'qty_kirim as qty')->where('id_barang', $this->kode)->where('qty_kirim', '!=', 0)
+                    ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $itemsRB = DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
+                    ->select('id', 'id_retur', 'id_barang', 'tanggal', 'returbeli.created_at', 'detilrb.created_at as id_asal', 'returbeli.updated_at as id_tujuan', 'qty_retur as qty')
+                    ->where('id_barang', $this->kode)
+                    ->whereHas('returbeli', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $itemsTRB = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                    ->select('id_terima as id', 'id_retur', 'id_barang', 'tanggal', 'returterima.created_at', 'qty_batal as id_asal', 'potong as id_tujuan', 'qty_terima as qty')->where('id_barang', $this->kode)
+                    ->whereHas('returterima', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
+                    });
         $items = DetilTB::join('transferbarang', 'transferbarang.id', 'detiltb.id_tb')
                     ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', $this->kode)
                     ->whereHas('tb', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_tb', [$this->awal, $this->akhir]);
-                    })->union($itemsBM)->union($itemsSO)->orderBy('created_at')->get();
-
-         
+                    })->union($itemsBM)->union($itemsSO)->union($itemsRJ)->union($itemsKRJ)
+                    ->union($itemsRB)->union($itemsTRB)->orderBy('created_at')->get();
 
         $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
                         ->where('id_barang', $this->kode)
@@ -70,12 +98,50 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $stokAwal = 0;
         foreach($stok as $s) {
             $stokAwal = $s->total;
-            foreach($itemsBM->get() as $bm) {
+            $itemsBM = DetilBM::selectRaw('sum(qty) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereHas('bm', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tanggal', [$tglAwal, $now])
+                            ->where('status', '!=', 'BATAL');
+                        })->get();
+            foreach($itemsBM as $bm) {
                 $stokAwal -= $bm->qty;
             }
 
-            foreach($itemsSO->get() as $so) {
+            $itemsSO = DetilSO::selectRaw('sum(qty) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereHas('so', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tgl_so', [$tglAwal, $now])
+                            ->whereNotIn('status', ['BATAL', 'LIMIT']);
+                        })->get();
+            foreach($itemsSO as $so) {
                 $stokAwal += $so->qty;
+            }
+
+            $itemsRJ = DetilRJ::selectRaw('sum(qty_retur - qty_kirim) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereHas('retur', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tanggal', [$tglAwal, $now])
+                            ->where('status', '!=', 'BATAL');
+                        })->get();
+            foreach($itemsRJ as $rj) {
+                $stokAwal -= $rj->qty;
+            }
+
+            $itemsRB = DetilRB::selectRaw('sum(qty_retur) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereHas('returbeli', function($q) use($tglAwal, $now) {
+                            $q->whereBetween('tanggal', [$tglAwal, $now])
+                            ->where('status', '!=', 'BATAL');
+                        })->get();
+            foreach($itemsRB as $rb) {
+                $itemsRT = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                        ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
+                        ->selectRaw('sum(qty_terima + qty_batal) as qty')
+                        ->where('id_barang', $s->id_barang)
+                        ->whereBetween('returbeli.tanggal', [$tglAwal, $now])->get();
+
+                $stokAwal += ($rb->qty - $itemsRT->first()->qty);
             }
 
             $i++;
@@ -155,8 +221,27 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                     ->whereHas('tb', function($q) use($tglAwal, $tglAkhir) {
                         $q->whereBetween('tgl_tb', [$this->awal, $this->akhir]);
                     })->get();
+        $rowRJ = DetilRJ::where('id_barang', $this->kode)
+                    ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $rowKRJ = DetilRJ::where('id_barang', $this->kode)->where('qty_kirim', '!=', 0)
+                    ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $rowRB = DetilRB::where('id_barang', $this->kode)
+                    ->whereHas('returbeli', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir])
+                        ->where('status', '!=', 'BATAL');
+                    });
+        $rowTRB = DetilRT::where('id_barang', $this->kode)
+                    ->whereHas('returterima', function($q) use($tglAwal, $tglAkhir) {
+                        $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
+                    });
 
-        $range = 10 + $rowBM + $rowSO->count() + $rowTB->count() + 2;
+        $range = 10 + $rowBM + $rowSO->count() + $rowTB->count() + $rowRJ->count() + $rowKRJ->count() + $rowRB->count() + $rowTRB->count() + 2;
         $rangeStr = strval($range);
         $rangeMinOne = strval($range-1);
         $rangeTab = $huruf.$rangeStr;

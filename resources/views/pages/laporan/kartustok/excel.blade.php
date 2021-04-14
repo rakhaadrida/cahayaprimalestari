@@ -27,15 +27,15 @@
         </tr>
         <tr>
           <td rowspan="2">
-            @if($itemsBRG->first()->satuan == "Pcs / Dus") Pcs @else Meter @endif
+            @if($itemsBRG->first()->satuan == "Pcs / Dus") Pcs @elseif($itemsBRG->first()->satuan == "Set") Set @elseif($itemsBRG->first()->satuan == "Meter / Rol") Rol @else Meter @endif
           </td>
           <td rowspan="2">
-            @if($itemsBRG->first()->satuan == "Pcs / Dus") Pcs @else Meter @endif TB
+            @if($itemsBRG->first()->satuan == "Pcs / Dus") Pcs @elseif($itemsBRG->first()->satuan == "Set") Set @elseif($itemsBRG->first()->satuan == "Meter / Rol") Rol @else Meter @endif TB
           </td>
           <td rowspan="2">Gudang</td>
           <td rowspan="2">Rupiah</td>
           <td rowspan="2">
-            @if($itemsBRG->first()->satuan == "Pcs / Dus") Pcs @else Meter @endif
+            @if($itemsBRG->first()->satuan == "Pcs / Dus") Pcs @elseif($itemsBRG->first()->satuan == "Set") Set @elseif($itemsBRG->first()->satuan == "Meter / Rol") Rol @else Meter @endif
           </td>
           <td colspan="{{ $gudang->count() }}">Dari Gudang</td>
           <td rowspan="2">Rupiah</td>
@@ -55,13 +55,33 @@
           </tr>
           @php 
             $i = 1; $totalBM = 0; $totalSO = 0;
+            $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                        ->selectRaw('sum(qty) as qty')->where('id_barang', $itemsBRG->first()->id)
+                        ->where('tgl_so', '>', $akhir)->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
+            $kurangGd = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                        ->selectRaw('sum(qty) as qty')->where('id_barang', $itemsBRG->first()->id)
+                        ->where('tanggal', '>', $akhir)->where('status', '!=', 'BATAL')->get();
+            $kurangRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
+                        ->selectRaw('sum(qty_retur - qty_kirim - potong) as qty')
+                        ->where('status', 'INPUT')->where('id_barang', $itemsBRG->first()->id)
+                        ->where('tanggal', '>', $akhir)->get();
+            $detilRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
+                        ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
+                        ->selectRaw('sum(qty_terima + qty_batal + potong) as qty')
+                        ->where('status', 'INPUT')->where('id_barang', $itemsBRG->first()->id)
+                        ->where('returbeli.tanggal', '>', $akhir)->get();
+            $detilRB = \App\Models\DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
+                        ->selectRaw('sum(qty_retur) as retur')
+                        ->where('status', 'INPUT')->where('id_barang', $itemsBRG->first()->id)
+                        ->where('tanggal', '>', $akhir)->get();
+            $tambahRB = $detilRB->first()->retur - $detilRT->first()->qty;
           @endphp
           @foreach($items as $it)
             <tr class="text-bold">
               <td align="center">{{ $i }}</td>
               <td align="center">{{ \Carbon\Carbon::parse($it->tanggal)->format('d-M-y') }}</td>
               <td>
-                @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'TB'))Transfer @else Penjualan @endif
+                @if(substr($it->id, 0, 2) == 'BM')Barang Masuk @elseif((substr($it->id, 0, 2) == 'TB'))Transfer @elseif(((substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT')))Retur Customer @elseif((substr($it->id, 0, 3) == 'KRM'))Kirim Retur @elseif(substr($it->id, 0, 3) == 'RTB') Retur Supplier @elseif(substr($it->id, 0, 3) == 'TRM') Terima Barang Retur @else Penjualan @endif
               </td>
               <td>{{ $it->id }}</td>
               @php
@@ -80,6 +100,30 @@
                   $namaGud = $namaTB->first()->gudangTuju->nama;
                   $user = $namaTB->first()->tb->user->name;
                 }
+                elseif(((substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT'))) {
+                  $namaRJ = \App\Models\ReturJual::where('id', $it->id)->get();
+                  $nama = ($namaRJ->count() != 0 ? $namaRJ->first()->customer->nama : '0');
+                  $namaGud = 'Retur Jelek';
+                  $user = '';
+                }
+                elseif((substr($it->id, 0, 3) == 'KRM')) {
+                  $namaRJ = \App\Models\ReturJual::where('id', $it->id_tb)->get();
+                  $nama = ($namaRJ->count() != 0 ? $namaRJ->first()->customer->nama : '0');
+                  $total = 0;
+                  $user = '';
+                }
+                elseif(substr($it->id, 0, 3) == 'RTB') {
+                  $namaRJ = \App\Models\ReturBeli::where('id', $it->id)->get();
+                  $nama = ($namaRJ->count() != 0 ? $namaRJ->first()->supplier->nama : '0');
+                  $total = 0;
+                  $user = '';
+                }
+                elseif(substr($it->id, 0, 3) == 'TRM') {
+                  $namaRJ = \App\Models\ReturBeli::where('id', $it->id_tb)->get();
+                  $nama = ($namaRJ->count() != 0 ? $namaRJ->first()->supplier->nama : '0');
+                  $namaGud = 'Retur Bagus';
+                  $user = '';
+                }
                 else {
                   $namaSO = \App\Models\SalesOrder::where('id', $it->id)->get();
                   $nama = $namaSO->first()->customer->nama;
@@ -88,16 +132,26 @@
                 } 
               @endphp
               <td>{{ $nama }}</td>
-              <td align="right">{{ substr($it->id, 0, 2) == 'BM' ? $it->qty : '' }}</td>
+              <td align="right">{{ ((substr($it->id, 0, 2) == 'BM') || (substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT') || (substr($it->id, 0, 3) == 'TRM')) ? $it->qty : '' }}</td>
               <td align="right">{{ substr($it->id, 0, 2) == 'TB' ? $it->qty : '' }}</td>
               <td>{{ $namaGud }}</td>
               <td align="right">{{ substr($it->id, 0, 2) == 'BM' ? number_format($total, 0, "", ".") : '' }}</td>
-              <td align="right">{{ substr($it->id, 0, 2) == 'IN' ? $it->qty : '' }}</td>
+              <td align="right">{{ ((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB') && (substr($it->id, 0, 3) != 'RTJ') && (substr($it->id, 0, 3) != 'RTT') && (substr($it->id, 0, 3) != 'TRM')) ? $it->qty : '' }}</td>
               @foreach($gudang as $g)
                 @php
-                  $itemGud = \App\Models\DetilSO::where('id_so', $it->id)
+                  if(($g->tipe == 'RETUR') && (substr($it->id, 0, 3) == 'KRM')) {
+                    $itemGud = \App\Models\DetilRJ::select('qty_kirim as qty')
+                            ->where('id_retur', $it->id_tb)
+                            ->where('id_barang', $it->id_barang)->get();
+                  } elseif(($g->tipe == 'RETUR') && (substr($it->id, 0, 3) == 'RTB')) {
+                    $itemGud = \App\Models\DetilRB::select('qty_retur as qty')
+                            ->where('id_retur', $it->id_tb)
+                            ->where('id_barang', $it->id_barang)->get();
+                  } else {
+                    $itemGud = \App\Models\DetilSO::where('id_so', $it->id)
                             ->where('id_barang', $it->id_barang)
                             ->where('id_gudang', $g->id)->get();
+                  }
                 @endphp
                 @if($itemGud->count() != 0)
                   <td align="right">{{ $itemGud->first()->qty }}</td>
@@ -105,12 +159,12 @@
                   <td></td>
                 @endif
               @endforeach
-              <td align="right">{{ ((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB')) ? $total : '' }}</td>
-              <td align="center">{{ $user }} - {{ \Carbon\Carbon::parse($it->updated_at)->format('H:i:s') }}</td>
+              <td align="right">{{ ((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB') && (substr($it->id, 0, 3) != 'RTJ') && (substr($it->id, 0, 3) != 'RTT') && (substr($it->id, 0, 3) != 'TRM')) ? $total : '' }}</td>
+              <td align="center">{{ $user }} - {{ \Carbon\Carbon::parse($it->created_at)->format('H:i:s') }}</td>
               @php
-                if(substr($it->id, 0, 2) == 'BM') 
+                if((substr($it->id, 0, 2) == 'BM') || (substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT') || (substr($it->id, 0, 3) == 'TRM')) 
                   $totalBM += $it->qty; 
-                elseif(substr($it->id, 0, 2) == 'IN')
+                elseif((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB') && (substr($it->id, 0, 3) != 'RTJ') && (substr($it->id, 0, 3) != 'RTT') && (substr($it->id, 0, 3) != 'TRM'))
                   $totalSO += $it->qty;
               @endphp
             </tr>
@@ -127,7 +181,7 @@
           </tr>
           <tr style="background-color: yellow">
             <td colspan="5" class="text-bold text-dark text-center">Stok Akhir</td>
-            <td class="text-bold text-dark text-right">{{ $stok[0]->total }}</td>
+            <td class="text-bold text-dark text-right">{{ $stok[0]->total + $tambahGd->first()->qty - $kurangGd->first()->qty - $kurangRJ->first()->qty + $tambahRB }}</td>
             <td colspan="{{ $gudang->count() + 6 }}"></td>
           </tr>
         @else 
