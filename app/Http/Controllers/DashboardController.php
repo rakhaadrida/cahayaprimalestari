@@ -285,39 +285,32 @@ class DashboardController extends Controller
         }
 
         if(Auth::user()->roles == 'OFFICE02') {
-            $salesAnnOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                            ->selectRaw('sum(total) as sales')
-                            ->where('customer.id_sales', 'SLS03')
+            $salesAnnOff = SalesOrder::selectRaw('sum(total) as sales')
+                            ->where('id_sales', 'SLS03')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
                             ->whereYear('tgl_so', $tahun)->get();
-            $salesMonOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                            ->selectRaw('sum(total) as sales')
-                            ->where('customer.id_sales', 'SLS03')
+            $salesMonOff = SalesOrder::selectRaw('sum(total) as sales')
+                            ->where('id_sales', 'SLS03')
                             ->whereMonth('tgl_so', $bulan)
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])->get();
-            $transAnnOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                            ->where('customer.id_sales', 'SLS03')
+            $transAnnOff = SalesOrder::where('id_sales', 'SLS03')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
                             ->whereYear('tgl_so', $tahun)->count();
-            $transMonOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                            ->where('customer.id_sales', 'SLS03')
+            $transMonOff = SalesOrder::where('id_sales', 'SLS03')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
                             ->whereMonth('tgl_so', $bulan)->count();
             $returOff = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
                         ->join('so', 'so.id', 'ar.id_so')
-                        ->join('customer', 'customer.id', 'so.id_customer')
                         ->selectRaw('sum(ar_retur.total) as total')
                         ->where('id_sales', 'SLS03')
                         ->whereYear('tanggal', $tahun)->get();
             $returMonOff = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
                         ->join('so', 'so.id', 'ar.id_so')
-                        ->join('customer', 'customer.id', 'so.id_customer')
                         ->selectRaw('sum(ar_retur.total) as total')
                         ->where('id_sales', 'SLS03')
                         ->whereMonth('tgl_so', $bulan)->get();
             $cicilOff = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
                         ->join('so', 'so.id', 'ar.id_so')
-                        ->join('customer', 'customer.id', 'so.id_customer')
                         ->selectRaw('sum(cicil) as total')
                         ->where('id_sales', 'SLS03')
                         ->whereYear('tgl_so', $tahun)->get();
@@ -406,7 +399,7 @@ class DashboardController extends Controller
                 'fakturPerStatusKen' => $fakturCountKen,
                 'lastTransKen' => $lastTransKen,
             ];
-        } else {
+        } elseif(Auth::user()->roles == 'OFFICE02') {
             $data = [  
                 'salesAnnOff' => $salesAnnOff,
                 'salesMonOff' => $salesMonOff,
@@ -416,7 +409,9 @@ class DashboardController extends Controller
                 'arrTotalOff' => $arrTotalOff,
                 'salesPerTypeOff' => $tipeCountOff,
             ];
-        } 
+        } else {
+            $data = [];
+        }
 
         return view('pages.dashboard', $data);
     }
