@@ -7,7 +7,7 @@ use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
 use App\Models\SalesOrder;
-use App\Models\AccReceivable;
+use App\Models\DetilRJ;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -20,6 +20,18 @@ class GudangController extends Controller
         $data = [
             'items' => $items
         ];
+
+        $lastcodeKRM = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('created_at', '2021')
+                    ->whereMonth('created_at', '04')->get();;
+        $lastnumberKRM = (int) substr($lastcodeKRM->first()->id, 7, 4);
+        $lastnumberKRM++;
+        $newcodeKRM = 'KRM2104'.sprintf("%04s", $lastnumberKRM);
+
+        $item = DetilRJ::where('id_retur', 'RTT21030018')->get();
+        foreach($item as $i) {
+            $i->id_kirim = $newcodeKRM;
+            $i->save();
+        }
 
         return view('pages.gudang.index', $data);
     }

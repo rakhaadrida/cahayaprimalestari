@@ -367,14 +367,14 @@ class AccPayableController extends Controller
         $lastnumber++;
         $newcode = 'RTP'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
-        $tanggal = Carbon::now()->toDateString();
+        // $tanggal = Carbon::now('+07:00')->toDateString();
         // $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
         //         $request->{"qty".$request->kode}) - str_replace(".", "", $request->{"diskonRp".$request->kode});
 
         AP_Retur::create([
             'id' => $newcode,
             'id_ap' => $request->kode,
-            'tanggal' => $tanggal,
+            'tanggal' => Carbon::now('+07:00')->toDateString(),
             'total' => 0,
             'id_user' => Auth::user()->id
         ]);

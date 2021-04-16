@@ -604,8 +604,7 @@
         </table>
         
         @php 
-        $itemsDet = \App\Models\DetilRJ::with(['barang'])
-                      ->select('id_barang')->selectRaw('sum(qty_kirim) as qty_kirim')
+        $itemsDet = \App\Models\DetilRJ::select('id_barang')->selectRaw('sum(qty_kirim) as qty_kirim')
                       ->where('id_kirim', $items->first()->id_kirim)
                       ->whereNotIn('id_barang', $kode)
                       ->groupBy('id_barang')

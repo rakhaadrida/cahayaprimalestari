@@ -345,12 +345,6 @@ class AccReceivableController extends Controller
             $kodeAR = $item->first()->id;
         }
 
-        $lastcodeKRM = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('tgl_kirim', $waktu->year)
-                    ->whereMonth('tgl_kirim', $month)->get();;
-        $lastnumberKRM = (int) substr($lastcodeKRM->first()->id, 7, 4);
-        $lastnumberKRM++;
-        $newcodeKRM = 'KRM'.$tahun.$bulan.sprintf("%04s", $lastnumberKRM);
-
         $items = DetilRAR::where('id_retur', $request->kodeRet)->orderBy('tgl_retur')->get();
         $returJual = DetilRJ::where('id_retur', $request->kodeRet)->orderBy('tgl_kirim')->get();
         $totalAwal = 0; $kodeBarang = []; 
@@ -415,6 +409,12 @@ class AccReceivableController extends Controller
             $totalAwal += str_replace(".", "", $request->nettoDetil[$j]);
             $j++;
         } 
+
+        $lastcodeKRM = DetilRJ::selectRaw('max(id_kirim) as id')->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();;
+        $lastnumberKRM = (int) substr($lastcodeKRM->first()->id, 7, 4);
+        $lastnumberKRM++;
+        $newcodeKRM = 'KRM'.$tahun.$bulan.sprintf("%04s", $lastnumberKRM);
         
         $total = 0;
         for($i = 0; $i < $jumBaris; $i++) {
