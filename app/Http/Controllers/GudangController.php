@@ -7,7 +7,7 @@ use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
 use App\Models\SalesOrder;
-use App\Models\DetilRJ;
+use App\Models\DetilBM;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -19,7 +19,12 @@ class GudangController extends Controller
         $items = Gudang::All();
         $data = [
             'items' => $items
-        ];        
+        ];   
+
+        $item = DetilBM::where('id_bm', 'BM21010018')->first();
+        $item->{'id_barang'} = 'BRG0309';
+        $item->{'harga'} = 328000;
+        $item->save();    
 
         return view('pages.gudang.index', $data);
     }
