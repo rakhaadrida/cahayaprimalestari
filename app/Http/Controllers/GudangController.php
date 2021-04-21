@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
-use App\Models\SalesOrder;
-use App\Models\DetilBM;
+use App\Models\AccPayable;
+use App\Models\DetilAP;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -21,9 +21,9 @@ class GudangController extends Controller
             'items' => $items
         ];   
 
-        $item = DetilBM::where('id_bm', 'BM21010018')->first();
-        $item->{'id_barang'} = 'BRG0309';
-        $item->{'harga'} = 328000;
+        DetilAP::where('id_ap', 'AP21030040')->where('id_bayar', 'TRS21030059')->delete();
+        $item = AccPayable::where('id', 'AP21030040')->first();
+        $item->{'keterangan'} = 'LUNAS';
         $item->save();    
 
         return view('pages.gudang.index', $data);
