@@ -21,10 +21,10 @@ class GudangController extends Controller
             'items' => $items
         ];   
 
-        DetilAP::where('id_ap', 'AP21030040')->where('id_bayar', 'TRS21030059')->delete();
-        $item = AccPayable::where('id', 'AP21030040')->first();
-        $item->{'keterangan'} = 'LUNAS';
-        $item->save();    
+        // DetilAP::where('id_ap', 'AP21030040')->where('id_bayar', 'TRS21030059')->delete();
+        // $item = AccPayable::where('id', 'AP21030040')->first();
+        // $item->{'keterangan'} = 'LUNAS';
+        // $item->save();    
 
         return view('pages.gudang.index', $data);
     }
