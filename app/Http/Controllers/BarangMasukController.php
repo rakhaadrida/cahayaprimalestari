@@ -59,6 +59,7 @@ class BarangMasukController extends Controller
         ];
 
         return view('pages.pembelian.barangmasuk.index', $data);
+        // return view('pages.pembelian.barangmasuk.indexAlter', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
@@ -227,7 +228,7 @@ class BarangMasukController extends Controller
         return view('pages.pembelian.barangmasuk.cetakPdf', $data);
 
         // $paper = array(0,0,612,394);
-        // $pdf = PDF::loadview('pages.pembelian.barangmasuk.cetak', $data)->setPaper($paper);
+        // $pdf = PDF::loadview('pages.pembelian.barangmasuk.cetakPdf', $data)->setPaper($paper);
         // ob_end_clean();
         // return $pdf->stream('cetak-bm.pdf');
     }

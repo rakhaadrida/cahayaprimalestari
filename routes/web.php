@@ -134,7 +134,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('bm-create');
         Route::post('/barangmasuk/process/{id}/{status}','BarangMasukController@process')
             ->name('bm-process');
-        // Route::post('/barangmasuk/process/{id}', 'BarangMasukController@process')->name('bm-process');
         Route::get('/barangmasuk/cetak/{id}', 'BarangMasukController@cetak')->name('bm-cetak');
         Route::get('/barangmasuk/afterPrint/{id}', 'BarangMasukController@afterPrint')
             ->name('bm-after-print');
