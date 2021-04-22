@@ -58,27 +58,14 @@ class BarangMasukController extends Controller
             'status' => $status
         ];
 
-        // return view('pages.pembelian.barangmasuk.index', $data);
-        return view('pages.pembelian.barangmasuk.indexAlter', $data);
+        return view('pages.pembelian.barangmasuk.index', $data);
+        // return view('pages.pembelian.barangmasuk.indexAlter', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
         $formatTanggal = Carbon::parse($tanggal)->format($format);
         return $formatTanggal;
     }
-
-    /* public function create(Request $request, $id) {
-        TempDetilBM::create([
-            'id_bm' => $id,
-            'id_barang' => $request->kodeBarang,
-            'harga' => $request->harga,
-            'qty' => $request->pcs,
-            'keterangan' => $request->ket,
-            'id_supplier' => $request->kodeSupplier
-        ]);
-
-        return redirect()->route('barangMasuk');
-    } */
 
     public function process (Request $request, $id, $status) {
         $tanggal = $request->tanggal;

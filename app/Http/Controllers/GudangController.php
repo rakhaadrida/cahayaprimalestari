@@ -23,13 +23,13 @@ class GudangController extends Controller
             'items' => $items
         ];   
 
-        $items = AccReceivable::whereIn('id_so', 'IN21000717')->get();
+        $items = AccReceivable::where('id_so', 'IN21000717')->get();
         foreach($items as $i) {
             $i->keterangan = 'LUNAS';
             $i->save();
         }
         
-        $item = BarangMasuk::where('id_bm', 'BM21030064')->first();
+        $item = BarangMasuk::where('id', 'BM21030064')->first();
         $item->{'total'} = 143325000;
         $item->save();
 

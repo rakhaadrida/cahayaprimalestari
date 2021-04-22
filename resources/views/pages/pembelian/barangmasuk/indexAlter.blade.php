@@ -223,7 +223,7 @@
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" frameborder="0" hidden></iframe>
               @endif
             </form>
           </div>
@@ -239,11 +239,13 @@
 <script type="text/javascript">
 @if($status == 'true')
   const printFrame = document.getElementById("frameCetak").contentWindow;
+  // document.getElementById("frameCetak").contentWindow.print();
+  // console.log(printFrame.document.getElementsByTagName("body")[0]);
 
   printFrame.window.onafterprint = function(e) {
     window.location = "{{ route('bm-after-print', $lastcode[0]->id) }}";
   }
-  
+
   printFrame.window.print();
 @endif
 
