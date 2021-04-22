@@ -175,13 +175,15 @@ class AccReceivableController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $tglBayar = $request->{"tgl".$request->kode};
+        $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
         $ar = AccReceivable::where('id_so', $request->kode)->first();
-        $total = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+        $ar->{'keterangan'} = 'Belum Lunas';
+        $ar->save();
+        $total = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
                     ->select('ar.id', DB::raw('sum(cicil) as totCicil'))
-                    ->where('ar.id_so', $request->kode)
+                    ->where('id_so', $request->kode)
                     ->groupBy('ar.id')->get();
         $so = SalesOrder::where('id', $request->kode)->get();
         $retur = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
@@ -198,18 +200,15 @@ class AccReceivableController extends Controller
         else 
             $totRetur = $retur[0]->totRetur;
         
-        if($request->{"cicil".$request->kode} == '') 
+        if($request->cicil == '') 
             $cicil = 0;
         else 
-            $cicil = $request->{"cicil".$request->kode};
+            $cicil = $request->cicil;
 
-        if($so[0]->total == str_replace(".", "", $cicil) + $totCicil + $totRetur)
+        if($so[0]->total == (str_replace(".", "", $cicil) + $totCicil + $totRetur))
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
-
-        // $ar->{'keterangan'} = $status;
-        // $ar->save();
 
         $items = DetilAR::where('id_ar', $request->kodeAR)->get();
         $j = 0;
@@ -236,53 +235,18 @@ class AccReceivableController extends Controller
         $lastnumber++;
         $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
-        if($request->{"cicil".$request->kode} != '') {
+        if($request->cicil != '') {
             DetilAR::create([
                 'id_ar' => $ar->{'id'},
                 'id_cicil' => $newcode,
                 'tgl_bayar' => $tglBayar,
-                'cicil' => (int) str_replace(".", "", $request->{"cicil".$request->kode})
+                'cicil' => (int) str_replace(".", "", $request->cicil)
             ]);
         }
 
+        $ar = AccReceivable::where('id_so', $request->kode)->first();
         $ar->{'keterangan'} = $status;
         $ar->save();
-
-        /*
-        if($request->kodeSO != "") {
-            $arrKode = explode(",", $request->kodeSO);
-            $arrKode = array_unique($arrKode);
-            sort($arrKode);
-            for($i = 0; $i < sizeof($arrKode); $i++) {
-                $ar = AccReceivable::where('id_so', $arrKode[$i])->first();
-                $total = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
-                            ->select('ar.id', DB::raw('sum(cicil) as totCicil'))
-                            ->where('ar.id_so', $arrKode[$i])
-                            ->groupBy('ar.id')->get();
-                $so = SalesOrder::where('id', $arrKode[$i])->get();
-
-                if($total->count() == 0) 
-                    $totCicil = 0;
-                else 
-                    $totCicil = $total[$i]->totCicil;
-
-                if($so[0]->total == str_replace(",", "", $request->{"cic".$arrKode[$i]}))
-                        $status = 'LUNAS';
-                    else 
-                        $status = 'BELUM LUNAS';
-
-                $ar->{'retur'} = (int) str_replace(",", "", $request->{"ret".$arrKode[$i]});
-                $ar->{'keterangan'} = $status;
-                $ar->save();
-
-                DetilAR::create([
-                    'id_ar' => $ar->{'id'},
-                    'id_cicil' => $newcode,
-                    'tgl_bayar' => Carbon::now()->toDateString(),
-                    'cicil' => (int) str_replace(",", "", $request->{"cic".$arrKode[$i]}) - $totCicil
-                ]);
-            }
-        }*/
 
         return redirect()->route('ar');
     }

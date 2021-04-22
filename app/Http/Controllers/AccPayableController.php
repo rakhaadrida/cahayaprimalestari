@@ -196,14 +196,16 @@ class AccPayableController extends Controller
         $lastnumber++;
         $newcode = 'TRS'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
-        $tglBayar = $request->{"tgl".$request->kode};
+        $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
         $ap = AccPayable::where('id_bm', $request->kode)->first();
+        
         $total = DetilAP::join('ap', 'ap.id', '=', 'detilap.id_ap')
                     ->select('ap.id', DB::raw('sum(transfer) as totTransfer'))
                     ->where('ap.id_bm', $request->kode)
                     ->groupBy('ap.id')->get();
+                    
         $bm = BarangMasuk::selectRaw('sum(total) as totBM')
                 ->where('id_faktur', $request->kode)
                 ->groupBy('id_faktur')->get();
@@ -213,18 +215,15 @@ class AccPayableController extends Controller
         else 
             $totTransfer = $total[0]->totTransfer;
 
-        if($request->{"bayar".$request->kode} == '') 
+        if($request->bayar == '') 
             $bayar = 0;
         else 
-            $bayar = $request->{"bayar".$request->kode};
+            $bayar = $request->bayar;
 
         if($bm[0]->totBM == str_replace(".", "", $bayar) + $totTransfer) 
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
-
-        $ap->{'keterangan'} = $status;
-        $ap->save();
 
         $items = DetilAP::where('id_ap', $request->kodeAP)->get();
         $j = 0;
@@ -245,55 +244,18 @@ class AccPayableController extends Controller
             $j++;
         }
 
-        if(($request->{"bayar".$request->kode} != '') && ($request->{"tgl".$request->kode} != '')) {
+        if(($request->bayar != '') && ($request->tgl != '')) {
             DetilAP::create([
                 'id_ap' => $ap->{'id'},
                 'id_bayar' => $newcode,
                 'tgl_bayar' => $tglBayar,
-                'transfer' => (int) str_replace(".", "", $request->{"bayar".$request->kode})
+                'transfer' => (int) str_replace(".", "", $request->bayar)
             ]);
         }
 
-        /* DetilAP::create([
-            'id_ap' => $ap->{'id'},
-            'id_bayar' => $newcode,
-            'tgl_bayar' => $tglBayar,
-            'transfer' => (int) str_replace(",", "", $request->{"bayar".$request->kode})
-        ]); */
-
-        /* if($request->kodeBM != "") {
-            $arrKode = explode(",", $request->kodeBM);
-            $arrKode = array_unique($arrKode);
-            sort($arrKode);
-            for($i = 0; $i < sizeof($arrKode); $i++) {
-                $ap = AccPayable::where('id_bm', $arrKode[$i])->first();
-                $total = DetilAP::join('ap', 'ap.id', '=', 'detilap.id_ap')
-                            ->select('ap.id', DB::raw('sum(transfer) as totTransfer'))
-                            ->where('ap.id_bm', $arrKode[$i])
-                            ->groupBy('ap.id')->get();
-                $bm = BarangMasuk::where('id', $arrKode[$i])->get();
-
-                if($total->count() == 0) 
-                    $totTransfer = 0;
-                else 
-                    $totTransfer = $total[0]->totTransfer;
-
-                if($bm[0]->total == str_replace(",", "", $request->{"tr".$arrKode[$i]})) 
-                        $status = 'LUNAS';
-                    else 
-                        $status = 'BELUM LUNAS';
-
-                $ap->{'keterangan'} = $status;
-                $ap->save();
-
-                DetilAP::create([
-                    'id_ap' => $ap->{'id'},
-                    'id_bayar' => $newcode,
-                    'tgl_bayar' => Carbon::now()->toDateString(),
-                    'transfer' => (int) str_replace(",", "", $request->{"tr".$arrKode[$i]}) - $totTransfer
-                ]);
-            }
-        } */
+        $ap = AccPayable::where('id_bm', $request->kode)->first();
+        $ap->{'keterangan'} = $status;
+        $ap->save();
 
         return redirect()->route('ap');
     }

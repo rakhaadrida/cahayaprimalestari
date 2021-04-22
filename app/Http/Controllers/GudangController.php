@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
+use App\Models\AccReceivable;
 use App\Models\AccPayable;
+use App\Models\DetilBM;
 use App\Models\DetilAP;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
@@ -21,10 +23,34 @@ class GudangController extends Controller
             'items' => $items
         ];   
 
-        // DetilAP::where('id_ap', 'AP21030040')->where('id_bayar', 'TRS21030059')->delete();
-        // $item = AccPayable::where('id', 'AP21030040')->first();
-        // $item->{'keterangan'} = 'LUNAS';
-        // $item->save();    
+        $item = DetilAP::where('id_ap', 'AP21040067')->delete();
+        $item = DetilAP::where('id_ap', 'AP21030118')->delete();
+
+        $kode = ['IV21040940', 'IV21040933', 'IV21040873', 'IV21040815', 'IV21040767', 'IV21040735', 'IV21040718', 'IV21040575', 'IV21040170', 'IV21002765', 'IV21001938', 'IV21000717'];
+        $items = AccReceivable::whereIn('id_so', $kode)->get();
+        foreach($items as $i) {
+            $i->keterangan = 'LUNAS';
+            $i->save();
+        }
+
+        $kode = ['OOBCC', 'OOACA', 'OOAGH', 'OOBDH', 'OOBBI'];
+        $items = AccPayable::whereIn('id_bm', $kode)->get();
+        foreach($items as $i) {
+            $i->keterangan = 'LUNAS';
+            $i->save();
+        }
+        
+        $item = DetilBM::where('id_bm', 'BM21030064')->where('id_barang', 'BRG0415')->first();
+        $item->{'diskon'} = '51';
+        $item->{'disPersen'} = 51;
+        $item->save();
+
+        $items = AccReceivable::where('created_at', '2021-11-01 18:10:02')->get();
+        foreach($items as $i) {
+            $i->created_at = '2020-11-01 18:10:02';
+            $i->updated_at = '2020-11-01 18:10:02';
+            $i->save();
+        }
 
         return view('pages.gudang.index', $data);
     }

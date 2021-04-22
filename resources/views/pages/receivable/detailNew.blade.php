@@ -126,14 +126,14 @@
                     <tr class="text-dark">
                       <td class="text-center align-middle">{{ $i }}</td>
                       <td class="text-center align-middle">
-                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl{{$item->first()->id_so}}" id="tglBayar{{$item->first()->id_so}}" placeholder="DD-MM-YYYY" autocomplete="off" style="font-size: 16px">
+                        <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl" id="tglBayar{{$item->first()->id_so}}" placeholder="DD-MM-YYYY" autocomplete="off" style="font-size: 16px">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="cicil{{$item->first()->id_so}}" id="cicil{{$item->first()->id_so}}" class="form-control form-control-sm text-bold text-dark text-right cicilModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 16px">
+                        <input type="text" name="cicil" id="cicil{{$item->first()->id_so}}" class="form-control form-control-sm text-bold text-dark text-right cicilModal" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" style="font-size: 16px">
                         <input type="hidden" name="modalAwal" class="modalAwal" value="0">
                       </td>
                       <td class="text-right align-middle">
-                        <input type="text" name="kurang{{$item->first()->id_so}}" id="kurang{{$item->first()->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang" style="font-size: 16px">
+                        <input type="text" name="kurang" id="kurang{{$item->first()->id_so}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang" style="font-size: 16px">
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">

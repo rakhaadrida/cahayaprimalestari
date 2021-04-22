@@ -58,8 +58,8 @@ class BarangMasukController extends Controller
             'status' => $status
         ];
 
-        return view('pages.pembelian.barangmasuk.index', $data);
-        // return view('pages.pembelian.barangmasuk.indexAlter', $data);
+        // return view('pages.pembelian.barangmasuk.index', $data);
+        return view('pages.pembelian.barangmasuk.indexAlter', $data);
     }
 
     public function formatTanggal($tanggal, $format) {
