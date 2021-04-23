@@ -21,17 +21,7 @@ class GudangController extends Controller
         $items = Gudang::All();
         $data = [
             'items' => $items
-        ];   
-
-        $items = AccReceivable::where('id_so', 'IN21000717')->get();
-        foreach($items as $i) {
-            $i->keterangan = 'LUNAS';
-            $i->save();
-        }
-        
-        $item = BarangMasuk::where('id', 'BM21030064')->first();
-        $item->{'total'} = 143325000;
-        $item->save();
+        ];
 
         return view('pages.gudang.index', $data);
     }
