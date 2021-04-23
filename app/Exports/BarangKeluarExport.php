@@ -26,6 +26,8 @@ class BarangKeluarExport implements WithMultipleSheets
     {
         $sheets = [];
 
+        set_time_limit(300);
+
         $sales = DetilSO::join('so', 'so.id', 'detilso.id_so')->join('barang', 'barang.id', 'detilso.id_barang')
                 ->whereBetween('tgl_so', [$this->tglAwal, $this->tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
                 ->groupBy('id_kategori')->orderBy('id_kategori')->get();
