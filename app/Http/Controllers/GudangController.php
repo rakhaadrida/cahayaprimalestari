@@ -23,7 +23,14 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $item = DetilAR::where('id_ar', 'AR21041328')->where('cicil', 364230)->delete();
+        $kode = ['IV21040411', 'IV21040398'];
+        $items = AccReceivable::whereIn('id_so', $kode)->get();
+        foreach($items as $i) {
+            $item = DetilAR::where('id_ar', $i->id)->get();
+            if($item->count() == 0) {
+                $i->delete();
+            }
+        }
 
         return view('pages.gudang.index', $data);
     }
