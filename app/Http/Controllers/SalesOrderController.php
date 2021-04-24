@@ -474,6 +474,8 @@ class SalesOrderController extends Controller
         $barang = Barang::All();
         $harga = HargaBarang::All();
         $hrg = Harga::All();
+        $sales = Sales::All();
+        $customer = Customer::All();
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'BIASA')->get();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
@@ -486,6 +488,8 @@ class SalesOrderController extends Controller
             'barang' => $barang,
             'harga' => $harga,
             'hrg' => $hrg,
+            'sales' => $sales,
+            'customer' => $customer,
             'gudang' => $gudang,
             'stok' => $stok,
             'id' => $request->id,
@@ -502,15 +506,22 @@ class SalesOrderController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
         $jumlah = $request->jumBaris;
 
+        $tgl_so = $request->tglSO;
+        $tgl_so = $this->formatTanggal($tgl_so, 'Y-m-d');
+
+        $items = SalesOrder::with(['customer', 'need_approval'])->where('id', $request->kode)->get();
+        $items->first()->tgl_so = $tgl_so;
+        $items->first()->id_customer = $request->kodeCust;
+        $items->first()->id_sales = $request->kodeSales;
+        $items->first()->save();
+
+        if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE'))
+            $kode = $items[0]->need_approval->last()->id;
+
         $lastcode = NeedApproval::max('id');
         $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
         $newcode = 'APP'.sprintf('%04s', $lastnumber);
-
-        $items = SalesOrder::with(['customer', 'need_approval'])
-                ->where('id', $request->kode)->get();
-        if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE'))
-            $kode = $items[0]->need_approval->last()->id;
 
         NeedApproval::create([
             'id' => $newcode,

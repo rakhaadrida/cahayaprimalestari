@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@push('addon-style')
+  <link href="{{ url('backend/vendor/datepicker/css/bootstrap-datepicker3.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -30,40 +34,47 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group row">
-                      <label for="kode" class="col-2 col-form-label text-bold text-dark">Nomor SO</label>
+                      <label for="kode" class="col-2 col-form-label text-bold text-dark">Nomor Faktur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
                         <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id }}">
                       </div>
                     </div>  
                   </div>
-                  <div class="col" style="margin-left: -380px">
+                  <div class="col" @if(Auth::user()->roles == 'SUPER') style="margin-left: -660px" @else style="margin-left: -380px" @endif>
                     <div class="form-group row sj-first-line">
-                      <label for="tglSO" class="col-5 col-form-label text-bold text-right text-dark">Tanggal SO</label>
+                      <label for="tglSO" class="col-5 col-form-label text-bold text-right text-dark">Tanggal Faktur</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-4">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tglSO" 
-                        value="{{ \Carbon\Carbon::parse($items[0]->tgl_so)->format('d-M-y') }}">
+                      @if(Auth::user()->roles == 'SUPER') <div class="col-3"> @else <div class="col-4"> @endif
+                        @if(Auth::user()->roles != 'SUPER')
+                          <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="tglSO" value="{{ \Carbon\Carbon::parse($items[0]->tgl_so)->format('d-M-y') }}">
+                        @else
+                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark mt-1" name="tglSO" value="{{ \Carbon\Carbon::parse($items[0]->tgl_so)->format('d-m-Y') }}">
+                        @endif
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
                       <label for="namaCust" class="col-5 col-form-label text-bold text-right text-dark">Nama Customer</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-6">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaCust"
-                        value="{{ $items[0]->customer->nama }}">
-                        <input type="hidden" name="kodeCust" 
-                        value="{{ $items[0]->id_customer }}">
+                        @if(Auth::user()->roles != 'SUPER')
+                          <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaCust" id="namaCust" value="{{ $items[0]->customer->nama }}">
+                        @else
+                          <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="namaCust" id="namaCust" value="{{ $items[0]->customer->nama }}">
+                        @endif
+                        <input type="hidden" name="kodeCust" id="kodeCust" value="{{ $items[0]->id_customer }}">
                       </div>
                     </div>
                     <div class="form-group row sj-after-first">
                       <label for="namaSales" class="col-5 col-form-label text-bold text-right text-dark">Nama Sales</label>
                       <span class="col-form-label text-bold">:</span>
-                      <div class="col-5">
-                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSales" 
-                        {{-- value="{{ $items[0]->customer->sales->nama }}" --}}
-                        value="{{ $items->first()->sales->nama }}"
-                        />
+                      @if(Auth::user()->roles == 'SUPER') <div class="col-3"> @else <div class="col-5"> @endif
+                        @if(Auth::user()->roles != 'SUPER')
+                          <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="namaSales" id="namaSales" value="{{ $items->first()->sales->nama }}" />
+                        @else
+                          <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="namaSales" id="namaSales" value="{{ $items->first()->sales->nama }}" />
+                        @endif
+                        <input type="hidden" name="kodeSales" id="kodeSales" value="{{ $items[0]->id_sales }}">
                       </div>
                     </div>
                   </div>
@@ -78,7 +89,7 @@
                 <div class="form-group row so-update-input">
                   <label for="alamat" class="col-2 col-form-label text-bold text-dark">Keterangan</label>
                   <span class="col-form-label text-bold">:</span>
-                  <div class="col-5">
+                  <div class="col-4">
                     <input type="text" tabindex="1" name="keterangan" id="keterangan" class="form-control form-control-sm mt-1 text-dark" required autofocus>
                     @php
                       if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
@@ -402,7 +413,29 @@
 @endsection
 
 @push('addon-script')
+<script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
+$.fn.datepicker.dates['id'] = {
+  days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
+  daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
+  daysMin:["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months:["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  monthsShort:["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Ags","Sep","Okt","Nov","Des"],
+  today:"Hari Ini",
+  clear:"Kosongkan"
+};
+
+$('.datepicker').datepicker({
+  format: 'dd-mm-yyyy',
+  autoclose: true,
+  todayHighlight: true,
+  language: 'id',
+});
+
+const namaCust = document.getElementById("namaCust");
+const kodeCust = document.getElementById("kodeCust");
+const namaSales = document.getElementById("namaSales");
+const kodeSales = document.getElementById("kodeSales");
 const editSO = document.getElementById("editSO");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const kodeBarangAwal = document.querySelectorAll('.kodeBarangAwal');
@@ -450,7 +483,41 @@ var kodeModal; var arrKodeGud; var arrQtyAwal; var arrQtyGud;
 var totTemp; var qtyJohar; var qtyLebih; var stokAwal; var kodeAwal;
 var sisa; var stokJohar; var stokLain; var kodeLain; var totStok; var kg;
 
+namaCust.addEventListener('keyup', displayCust);
+namaCust.addEventListener('blur', displayCust);
+namaSales.addEventListener('keyup', displaySales);
+namaSales.addEventListener('blur', displaySales);
 editSO.addEventListener("keypress", checkEnter);
+
+/** Tampil Id Supplier **/
+function displayCust(e) {
+  @foreach($customer as $c)
+    if('{{ $c->nama }} ({{ $c->alamat }})' == e.target.value) {
+      kodeCust.value = '{{ $c->id }}';
+      namaSales.value = '{{ $c->sales->nama }}';
+      kodeSales.value = '{{ $c->id_sales }}';
+      namaCust.value = '{{ $c->nama }}';
+    }
+    else if(e.target.value == '') {
+      kodeCust.value = '';
+      namaSales.value = '';
+      kodeSales.value = '';
+      namaCust.value = '';
+    }
+  @endforeach
+}
+
+/** Tampil Id Sales **/
+function displaySales(e) {
+  @foreach($sales as $s)
+    if('{{ $s->nama }}' == e.target.value) {
+      kodeSales.value = '{{ $s->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeSales.value = '';
+    }
+  @endforeach
+}
 
 function checkEnter(e) {
   var key = e.charCode || e.keyCode || 0;     
@@ -1047,6 +1114,16 @@ for(let i = 0; i < hapusBaris.length; i++) {
 
 /** Autocomplete Input Text **/
 $(function() {
+  var customer = [];
+  @foreach($customer as $c)
+    customer.push('{{ $c->nama }} ({{ $c->alamat }})');
+  @endforeach
+
+  var sales = [];
+  @foreach($sales as $s)
+    sales.push('{{ $s->nama }}');
+  @endforeach
+
   var kodeBrg = [];
   var namaBrg = [];
   @foreach($barang as $b)
@@ -1066,6 +1143,62 @@ $(function() {
   function extractLast(term) {
     return split(term).pop();
   }
+
+  $(namaCust).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(customer, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  $(namaSales).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(sales, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
 
   /*-- Autocomplete Input Barang --*/
   for(let i = 0; i < brgNama.length; i++) {

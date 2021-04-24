@@ -39,7 +39,6 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" class="form-control form-control-sm text-bold" name="kode" id="kode" value="" autofocus autocomplete="off" required >
                       </div>
-                      {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
@@ -96,15 +95,6 @@
                     <input type="hidden" name="kodeSupplier" id="kodeSupplier" />
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="5">
-
-                  <!-- Button Reset Supplier -->
-                  {{-- @if($itemsRow != 0)
-                    <div class="col-auto mt-1" style="margin-left: -15px">
-                      <button type="submit" onclick="return resetSupplier()" 
-                      id="resetSupp" class="btn btn-info btn-sm btn-block text-bold form-control form-control-sm">Reset</button>
-                    </div>
-                  @endif --}}
-
                 </div>
               </div>
               <hr>
@@ -223,7 +213,7 @@
 
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
-                <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" frameborder="0" hidden></iframe>
+                <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
               @endif
             </form>
           </div>
@@ -247,6 +237,10 @@
   }
 
   printFrame.window.print();
+
+  // var newWin = window.frames["frameCetak"];
+  // newWin.document.write('<body onload="window.print()"></body>');
+  // newWin.document.close();
 @endif
 
 $.fn.datepicker.dates['id'] = {
