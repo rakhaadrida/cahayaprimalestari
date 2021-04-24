@@ -23,23 +23,7 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $kode = ['IV21040052', 'IV21002699', 'IV21002447', 'IV21002232'];
-        $items = AccReceivable::whereIn('id_so', $kode)->get();
-        foreach($items as $i) {
-            $i->keterangan = 'LUNAS';
-            $i->save();
-        }
-
-        $item = SalesOrder::where('id', 'IV21040279')->first();
-        $item->{'total'} = 3191366;
-        $item->save();
-
-        $item = DetilAR::where('id_ar', 'AR21041328')->get();
-        foreach($items as $i) {
-            if($i->cicil == 364230) {
-                $i->delete();
-            }
-        }
+        $item = DetilAR::where('id_ar', 'AR21041328')->where('cicil', 364230)->delete();
 
         return view('pages.gudang.index', $data);
     }
