@@ -483,6 +483,22 @@
               </div>
               <!-- End Modal Konfirmasi -->
 
+              <div class="modal" id="modalDuplikat" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                      </button>
+                      <h4 class="modal-title text-bold">Notifikasi Barang</h4>
+                    </div>
+                    <div class="modal-body text-dark">
+                      <h5>Terdapat <b>Kode Barang</b> yang sama. Silahkan <b>Jumlahkan Qty pada Kode Barang yang Sama </b>atau ubah kode barang.</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
                 <iframe src="{{url('so/cetak/'.$lastSO[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
@@ -2002,9 +2018,34 @@ function checkRequired(e) {
       return false;
     } 
     else {
-      document.getElementById("submitSO").dataset.toggle = "modal";
-      document.getElementById("submitSO").dataset.target = "#modalKonfirm";
-      return false;
+      const kdRow = document.querySelectorAll('.kdBrgRow');
+      document.getElementById("submitSO").removeAttribute('data-toggle');
+      document.getElementById("submitSO").removeAttribute('data-target');
+      cek = 0;
+      var kode = [];
+      for(let i = 0; i < (jumBaris.value - kdRow.length); i++) {
+        if(kodeBarang[i].value != '') {
+          kode.push(kodeBarang[i].value);
+        }
+      }
+
+      for(let i = 0; i < kdRow.length; i++) {
+        if(kdRow[i].value != '') {
+          kode.push(kdRow[i].value);
+        }
+      }
+
+      cek = new Set(kode).size !== kode.length;
+
+      if(cek === true) {
+        document.getElementById("submitSO").dataset.toggle = "modal";
+        document.getElementById("submitSO").dataset.target = "#modalDuplikat";
+        return false;
+      } else {
+        document.getElementById("submitSO").dataset.toggle = "modal";
+        document.getElementById("submitSO").dataset.target = "#modalKonfirm";
+        return false;
+      }
     } 
     /* document.getElementById("submitSO").dataset.toggle = "modal";
     document.getElementById("submitSO").dataset.target = "#modalKonfirm";
