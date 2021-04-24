@@ -1069,6 +1069,11 @@ function displayRow(e) {
       else
         totalsatuanRow.textContent = ``;
 
+      checkSubtotal(+nettoRow.value.replace(/\./g, ""), 0);
+      ppn.value = 0;
+      totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
+
       qtyRow.value = "";
       satuanRow.value = "";
       jumlahRow.value = "";
@@ -1585,6 +1590,11 @@ for(let i = 0; i < qty.length; i++) {
         totalsatuan[i].textContent = ` atau ${totStok / ukuran[i].value} ${teksSatUk[i].value}`;
       else
         totalsatuan[i].textContent = ``;
+
+      checkSubtotal(+netto[i].value.replace(/\./g, ""), 0);
+      ppn.value = 0;
+      totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
 
       qty[i].value = "";
       satuan[i].value = "";

@@ -708,6 +708,7 @@ function displayRow(e) {
       grandtotal.value = totalNotPPN.value;
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
+      diskonRow.removeAttribute('required');
     } 
 
     @foreach($barang as $br)
@@ -757,6 +758,7 @@ function displayRow(e) {
         tipeRow.value = '{{ $hb->hargaBarang->tipe }}';
         hargaRow.value = addCommas('{{ $hb->harga_ppn }}');
         qtyRow.setAttribute('required', true);
+        diskonRow.setAttribute('required', true);
       }
     @endforeach
 
@@ -854,6 +856,11 @@ function displayRow(e) {
         totalsatuanRow.textContent = ` atau ${totStok / ukuranRow} ${satuanUkuran.innerHTML}`;
       else
         totalsatuanRow.textContent = ``;
+
+      checkSubtotal(+nettoRow.value.replace(/\./g, ""), 0);
+      ppn.value = 0;
+      totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
 
       qtyRow.value = "";
       satuanRow.value = "";
@@ -1116,6 +1123,7 @@ for(let i = 0; i < brgNama.length; i++) {
       grandtotal.value = totalNotPPN.value;
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
+      diskon[i].removeAttribute('required');
     }
 
     @foreach($barang as $br)
@@ -1244,6 +1252,12 @@ for(let i = 0; i < qty.length; i++) {
         totalsatuan[i].textContent = ` atau ${totStok / ukuran[i].value} ${satuanUkuran.innerHTML}`;
       else
         totalsatuan[i].textContent = ``;
+
+      // netPast = +netto[i].value.replace(/\./g, "");
+      checkSubtotal(+netto[i].value.replace(/\./g, ""), 0);
+      ppn.value = 0;
+      totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
+      grandtotal.value = totalNotPPN.value;
 
       qty[i].value = "";
       satuan[i].value = "";
