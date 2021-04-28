@@ -16,6 +16,7 @@ use App\Models\Keuangan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LapKeuanganExport;
 use Carbon\Carbon;
@@ -41,7 +42,11 @@ class LapKeuController extends Controller
         $retur = $this->getRetur($month, $tahun);
 
         $jenis = $this->getJenis($jenis, $sales);
-        $hppPerKat = $this->getHpp($jenis, $month, $tahun);
+        if(Auth::user()->roles == 'SUPER') 
+            $hppPerKat = $this->getHpp($jenis, $month, $tahun);
+        else
+            $hppPerKat = NULL;
+
         $diskon = SalesOrder::selectRaw('sum(diskon) as diskon')->whereYear('tgl_so', $tahun)
                 ->whereMonth('tgl_so', $month)->get();
 
@@ -71,7 +76,7 @@ class LapKeuController extends Controller
                 'September', 'Oktober', 'November', 'Desember'];
         if($mo == 'now') {
             for($i = 0; $i < sizeof($bulan); $i++) {
-                if($request->bulan == $bulan[$i]) {
+                if(ucfirst($request->bulan) == $bulan[$i]) {
                     $month = $i+1;
                     break;
                 }
@@ -108,7 +113,11 @@ class LapKeuController extends Controller
         $retur = $this->getRetur($month, $tahun);
 
         $jenis = $this->getJenis($jenis, $sales);
-        $hppPerKat = $this->getHpp($jenis, $month, $tahun);
+        if(Auth::user()->roles == 'SUPER') 
+            $hppPerKat = $this->getHpp($jenis, $month, $tahun);
+        else
+            $hppPerKat = NULL;
+
         $diskon = SalesOrder::selectRaw('sum(diskon) as diskon')->whereYear('tgl_so', $tahun)
                 ->whereMonth('tgl_so', $month)->get();
 
@@ -116,7 +125,7 @@ class LapKeuController extends Controller
 
         $data = [
             'tahun' => $tahun,
-            'bulan' => ($mo == 'now' ? $request->bulan : $bulan[$mo-1]),
+            'bulan' => ($mo == 'now' ? ucfirst($request->bulan) : $bulan[$mo-1]),
             'month' => $month,
             'jenis' => $jenis,
             'sales' => $sales,
@@ -129,6 +138,26 @@ class LapKeuController extends Controller
         ];
 
         return view('pages.keuangan.show', $data);
+    }
+
+    public function indexHpp($jenis, $sales) {
+        $date = Carbon::now('+07:00');
+        $tahun = $date->year;
+        $month = $date->month;
+        $bulan = Carbon::parse($date)->isoFormat('MMMM');
+        $jen = JenisBarang::where('id', $jenis)->get();
+        $sal = Sales::where('id', $jenis)->get();
+
+        $hppPerKat = $this->getHpp($jen, $month, $tahun);
+        $data = [
+            'hppPerKat' => $hppPerKat,
+            'jenis' => $jen,
+            'sales' => $sal,
+            'tahun' => $tahun,
+            'bulan' => $bulan,
+        ];
+
+        return view('pages.keuangan.detailNew', $data);
     }
 
     public function getJenis($jenis, $sales) {
@@ -219,6 +248,7 @@ class LapKeuController extends Controller
 
                             $hppPerKat[$h] = collect([
                                 'id_kat' => $j->id,
+                                // 'id_kat' => $jenis,
                                 'id_sales' => $soPerBrg[$m]->so->id_sales,
                                 'nama' => $soPerBrg[$m]->barang->nama,
                                 'qty' => $qtyHpp,

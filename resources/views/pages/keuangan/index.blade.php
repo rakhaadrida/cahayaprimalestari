@@ -42,10 +42,12 @@
                   <div class="col-2 col-xl-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('lap-keu-show-post', ['tah' => 'now', 'mo' => 'now']) }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                  <div class="col-auto mt-1">
-                    <button type="submit" tabindex="5" onclick="return checkRequiredExcel(event)" id="submitExcel" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
-                    {{-- formaction="{{ route('lap-keu-excel') }}" formmethod="POST"  --}}
-                  </div>
+                  @if(Auth::user()->roles == 'SUPER')
+                    <div class="col-auto mt-1">
+                      <button type="submit" tabindex="5" onclick="return checkRequiredExcel(event)" id="submitExcel" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
+                      {{-- formaction="{{ route('lap-keu-excel') }}" formmethod="POST"  --}}
+                    </div>
+                  @endif
                 </div>   
               </div>
               <hr>
@@ -130,9 +132,11 @@
                       @foreach($jenis as $j)
                         <td align="right" class="align-middle">
                           <a href="#Detail{{ $j->id }}{{ $s->id }}" class="btn btn-link btn-sm text-bold" data-toggle="modal" style="font-size: 14px; padding: 0px 0px;">
+                          {{-- <button type="submit" formaction="{{ route('lap-keu-index-hpp', ['jenis' => $j->id, 'sales' => $s->id]) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold text-right"> --}}
                             @if($j->$kode != 0)
                               {{ number_format($j->$kode, 0, "", ",") }}
                             @endif
+                          {{-- </button> --}}
                           </a>
                           @php $hpp += $j->$kode @endphp
                         </td>
@@ -276,16 +280,18 @@
               </table>
               <!-- End Tabel Data Detil PO -->
 
-              <!-- Button Submit dan Reset -->
-              <div class="form-row justify-content-center" style="margin-top: 30px">
-                <div class="col-2">
-                  <button type="submit" class="btn btn-success btn-block text-bold" onclick="return checkRequired(event)" id="submitKeu" >Submit</button>
+              @if(Auth::user()->roles == 'SUPER')
+                <!-- Button Submit dan Reset -->
+                <div class="form-row justify-content-center" style="margin-top: 30px">
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-success btn-block text-bold" onclick="return checkRequired(event)" id="submitKeu" >Submit</button>
+                  </div>
+                  <div class="col-2">
+                    <button type="reset" class="btn btn-outline-secondary btn-block text-bold" >Reset</button>
+                  </div>
                 </div>
-                <div class="col-2">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold" >Reset</button>
-                </div>
-              </div>
-              <!-- End Button Submit dan Reset -->
+                <!-- End Button Submit dan Reset -->
+              @endif
 
             </form>
           </div>
@@ -310,11 +316,13 @@ const lain = document.getElementById('lain');
 const petty = document.getElementById('petty');
 const subLaba = document.getElementById('subLaba');
 
-pendapatan.addEventListener("keyup", getTotal);
-gaji.addEventListener("keyup", getTotal);
-jual.addEventListener("keyup", getTotal);
-lain.addEventListener("keyup", getTotal);
-petty.addEventListener("keyup", getTotal);
+@if(Auth::user()->roles == 'SUPER')
+  pendapatan.addEventListener("keyup", getTotal);
+  gaji.addEventListener("keyup", getTotal);
+  jual.addEventListener("keyup", getTotal);
+  lain.addEventListener("keyup", getTotal);
+  petty.addEventListener("keyup", getTotal);
+@endif
 
 function getTotal(e) {
   $(this).val(function(index, value) {

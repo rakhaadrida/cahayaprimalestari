@@ -479,6 +479,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
         Route::get('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show');
         Route::post('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show-post');
+        Route::post('keuangan/detailHpp/{jenis}/{sales}', 'LapKeuController@indexHpp')
+            ->name('lap-keu-index-hpp');
     });
 
     Route::group(['roles'=>'KENARI'], function() {

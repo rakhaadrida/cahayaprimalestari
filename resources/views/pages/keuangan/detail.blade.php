@@ -33,28 +33,30 @@
               @php 
                 $j = 1; $totalQty = 0; $totalHpp = 0; $subtotal = 0; $totalDiskon = 0;
               @endphp
-              @foreach($hppPerKat as $h)
-                @if(($h->get('id_sales') == $i->id_sales) && ($h->get('id_kat') == $i->id_kategori))
-                  <tr class="table-modal-first-row text-dark text-bold">
-                    <td class="text-center">{{ $j }}</td>
-                    <td>{{ $h->get('nama') }}</td>
-                    <td class="text-right">{{ $h->get('qty') }}</td>
-                    <td class="text-right">{{ number_format($h->get('harga'), 0, "", ".") }}</td>
-                    @php 
-                      $total = $h->get('qty') * $h->get('harga');
-                      $diskon = $total * $h->get('disPersen') / 100;
-                    @endphp
-                    <td class="text-right">{{ number_format($total, 0, "",".") }}</td>
-                    <td class="text-right" style="width: 100px" class="text-center">{{ $h->get('diskon') }}</td>
-                    <td style="width: 95px" class="text-right">{{ number_format($h->get('disPersen'), 2, ",", "") }} %</td>
-                    <td class="text-right">{{ number_format($diskon, 0, "", ".") }}</td>
-                    @php $totalQty += $h->get('qty'); @endphp
-                    <td class="text-right">{{ number_format($h->get('hpp'), 0, "", ".") }}</td>
-                  </tr>
-                  @php $j++; $totalHpp += $h->get('hpp'); $subtotal += $total; 
-                    $totalDiskon += $diskon; @endphp
-                @endif
-              @endforeach
+              @if(Auth::user()->roles == 'SUPER')
+                @foreach($hppPerKat as $h)
+                  @if(($h->get('id_sales') == $i->id_sales) && ($h->get('id_kat') == $i->id_kategori))
+                    <tr class="table-modal-first-row text-dark text-bold">
+                      <td class="text-center">{{ $j }}</td>
+                      <td>{{ $h->get('nama') }}</td>
+                      <td class="text-right">{{ $h->get('qty') }}</td>
+                      <td class="text-right">{{ number_format($h->get('harga'), 0, "", ".") }}</td>
+                      @php 
+                        $total = $h->get('qty') * $h->get('harga');
+                        $diskon = $total * $h->get('disPersen') / 100;
+                      @endphp
+                      <td class="text-right">{{ number_format($total, 0, "",".") }}</td>
+                      <td class="text-right" style="width: 100px" class="text-center">{{ $h->get('diskon') }}</td>
+                      <td style="width: 95px" class="text-right">{{ number_format($h->get('disPersen'), 2, ",", "") }} %</td>
+                      <td class="text-right">{{ number_format($diskon, 0, "", ".") }}</td>
+                      @php $totalQty += $h->get('qty'); @endphp
+                      <td class="text-right">{{ number_format($h->get('hpp'), 0, "", ".") }}</td>
+                    </tr>
+                    @php $j++; $totalHpp += $h->get('hpp'); $subtotal += $total; 
+                      $totalDiskon += $diskon; @endphp
+                  @endif
+                @endforeach
+              @endif
               <tr class="bg-gradient-danger text-white">
                 <td colspan="2" class="text-center text-bold">Total</td>
                 <td class="text-right text-bold">{{ number_format($totalQty, 0, "", ".") }}</td>
