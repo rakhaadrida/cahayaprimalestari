@@ -81,6 +81,7 @@ class BarangMasukController extends Controller
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcodeBM = 'BM'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $kodeBM = $newcodeBM;
         
         BarangMasuk::create([
             'id' => $newcodeBM,
@@ -180,6 +181,7 @@ class BarangMasukController extends Controller
         */
 
         return redirect()->route('barangMasuk', $cetak);
+        // return redirect()->route('bm-cetak', $newcodeBM);
     }
 
     public function cetak(Request $request, $id) {
@@ -209,7 +211,8 @@ class BarangMasukController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'id' => $id
         ];
 
         return view('pages.pembelian.barangmasuk.cetakPdf', $data);

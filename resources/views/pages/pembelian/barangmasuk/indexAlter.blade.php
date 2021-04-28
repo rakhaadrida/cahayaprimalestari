@@ -210,12 +210,11 @@
                 </div>
               </div>
               <!-- End Modal Konfirmasi -->
-
-              @if($status == 'true')
-                <!-- Tampilan Cetak -->
-                <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-              @endif
             </form>
+            {{-- @if($status == 'true') --}}
+              <!-- Tampilan Cetak -->
+              <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" ></iframe>
+            {{-- @endif --}}
           </div>
         </div>
       </div>
@@ -228,19 +227,13 @@
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
 @if($status == 'true')
-  const printFrame = document.getElementById("frameCetak").contentWindow;
-  // document.getElementById("frameCetak").contentWindow.print();
-  // console.log(printFrame.document.getElementsByTagName("body")[0]);
+  var printFrame = document.getElementById("frameCetak").contentWindow;
 
-  printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('bm-after-print', $lastcode[0]->id) }}";
-  }
+  // printFrame.onafterprint = function(e) {
+  //   window.location = "{{ route('bm-after-print', $lastcode[0]->id) }}";
+  // }
 
-  printFrame.window.print();
-
-  // var newWin = window.frames["frameCetak"];
-  // newWin.document.write('<body onload="window.print()"></body>');
-  // newWin.document.close();
+  // printFrame.print();
 @endif
 
 $.fn.datepicker.dates['id'] = {

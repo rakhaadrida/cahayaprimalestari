@@ -273,7 +273,6 @@
       }
 
       .footer-cetak-so {
-        
         margin-top: -13px;
         margin-bottom: -50px;
         margin-left: 90px;
@@ -419,5 +418,16 @@
         </div>
       </div>
     @endforeach
+
+    {{-- <script>
+      parent.frameCetak.onload =  () => {
+        // window.onafterprint = function() {
+        parent.frameCetak.addEventListener('afterprint', (evt) => {
+          // window.location = "{{ route('bm-after-print', $id) }}";
+          alert('ok');
+        });
+        parent.frameCetak.print();
+      }
+    </script> --}}
   </body>
 </html>

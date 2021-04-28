@@ -86,7 +86,7 @@ class AccReceivableController extends Controller
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
         for($i = 0; $i < sizeof($bulan); $i++) {
-            if($request->bulan == $bulan[$i]) {
+            if(ucfirst($request->bulan) == $bulan[$i]) {
                 $month = $i+1;
                 break;
             }
@@ -144,7 +144,7 @@ class AccReceivableController extends Controller
         $data = [
             'ar' => $ar,
             'arOffice' => $arOffice,
-            'bulan' => $request->bulan,
+            'bulan' => ucfirst($request->bulan),
             'tglAwal' => $request->tglAwal,
             'tglAkhir' => $request->tglAkhir,
             'status' => $request->status,
@@ -452,7 +452,7 @@ class AccReceivableController extends Controller
             $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
             for($i = 0; $i < sizeof($bulan); $i++) {
-                if($request->bulan == $bulan[$i]) {
+                if(ucfirst($request->bulan) == $bulan[$i]) {
                     $month = $i+1;
                     $angkaMonth = $i+1;
                     break;
@@ -571,7 +571,7 @@ class AccReceivableController extends Controller
         if($request->bulan == '')
             $bul = 'KOSONG';
         else
-            $bul = $request->bulan;
+            $bul = ucfirst($request->bulan);
 
         if(($request->tglAwal == '') && ($request->bulan == ''))
             $tglAwal = '2015-01-01';
@@ -593,7 +593,7 @@ class AccReceivableController extends Controller
         if($request->bulan == '')
             $tglFile = $fileAwal.'-'.$fileAkhir;
         else
-            $tglFile = $request->bulan;
+            $tglFile = ucfirst($request->bulan);
 
         return Excel::download(new TransAllExport($tglAwal, $tglAkhir, $awal, $akhir, $bul, $status, $stat), 'TH-'.$status.'-'.$tglFile.'.xlsx');
     }
