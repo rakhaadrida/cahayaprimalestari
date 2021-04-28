@@ -158,15 +158,18 @@
               <!-- End Tabel Data Detil PO -->
 
               <!-- Button Submit dan Reset -->
-              @if(($item->first()->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
+              {{-- @if(($item->first()->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02')) --}}
+              @if(Auth::user()->roles != 'OFFICE02')
                 <div class="form-row justify-content-center">
                   <div class="col-2">
-                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitAR" onclick="return checkLimit(event)">Submit</button>
+                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitAR" @if($item->first()->keterangan == 'BELUM LUNAS') onclick="return checkLimit(event)" @else formaction="{{ route('ar-batal-cicil') }}" formmethod="POST" @endif>Submit</button>
                     {{-- formaction="{{ route('ar-process') }}" formmethod="POST" --}}
                   </div>
-                  <div class="col-2">
-                    <button type="reset" data-dismiss="modal" class="btn btn-outline-danger btn-block text-bold">Reset</button>
-                  </div>
+                  @if($item->first()->keterangan == 'BELUM LUNAS')
+                    <div class="col-2">
+                      <button type="reset" data-dismiss="modal" class="btn btn-outline-danger btn-block text-bold">Reset</button>
+                    </div>
+                  @endif
                   <div class="col-2">
                     <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                   </div>

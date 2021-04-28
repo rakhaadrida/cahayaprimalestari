@@ -371,6 +371,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ar', 'AccReceivableController@index')->name('ar-home');
         Route::get('ar/show', 'AccReceivableController@show')->name('ar-show');
         Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
+        Route::post('ar/batal', 'AccReceivableController@batalCicil')->name('ar-batal-cicil');
         Route::post('ar/retur', 'AccReceivableController@retur')->name('ar-retur');
     });
 

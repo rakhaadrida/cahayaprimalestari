@@ -251,6 +251,33 @@ class AccReceivableController extends Controller
         return redirect()->route('ar');
     }
 
+    public function batalCicil(Request $request) {
+        $items = DetilAR::where('id_ar', $request->kodeAR)->get();
+        $j = 0;
+        foreach($items as $i) {
+            if($j < $request->jumBaris) {
+                $tglDetil = $request->tgldetil[$j];
+                $tglDetil = $this->formatTanggal($tglDetil, 'Y-m-d');
+
+                if(($tglDetil != $i->tgl_bayar) || ($request->cicildetil[$j] != $i->cicil)) {
+                    $i->tgl_bayar = $tglDetil;
+                    $i->cicil = str_replace(".", "", $request->cicildetil[$j]);
+                    $i->save();
+                }
+            } else {
+                $i->delete();
+            }
+
+            $j++;
+        }
+
+        $ar = AccReceivable::where('id_so', $request->kode)->first();
+        $ar->{'keterangan'} = 'BELUM LUNAS';
+        $ar->save();
+
+        return redirect()->route('ar');
+    }
+
     public function createRetur($id) {
         $item = AccReceivable::where('id_so', $id)->get();
         $retur = DetilRAR::join('ar_retur', 'ar_retur.id', 'detilrar.id_retur')
