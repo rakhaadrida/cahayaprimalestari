@@ -35,7 +35,8 @@ class CetakFakturController extends Controller
             'status' => 'true'
         ];
 
-        return redirect()->route('cetak-faktur', $data);
+        // return redirect()->route('cetak-faktur', $data);
+        return redirect()->route('cetak-all', ['awal' => $request->kodeAwal, 'akhir' => $request->kodeAkhir]);
     }
 
     public function cetak($awal, $akhir) {
@@ -88,7 +89,9 @@ class CetakFakturController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'awal' => $awal,
+            'akhir' => $akhir
         ];
 
         return view('pages.penjualan.cetakfaktur.cetakInv', $data);
@@ -99,6 +102,31 @@ class CetakFakturController extends Controller
         // ob_end_clean();
         // return $pdf->stream('cetak-all.pdf');
     } 
+
+     public function update($awal, $akhir) {
+        $items = SalesOrder::whereBetween('id', [$awal, $akhir])->get();
+
+        foreach($items as $item) {
+            $item->status = 'CETAK';
+            $item->save();
+
+            $app = Approval::where('id_dokumen', $item->id)->latest()->get();
+            if($app->count() != 0) {
+                foreach($app as $a) {
+                    $a->baca = 'T';
+                    $a->save();
+                }
+            }
+        }
+
+        $data = [
+            'status' => 'false',
+            'awal' => 0,
+            'akhir' => 0
+        ];
+
+        return redirect()->route('cetak-faktur', $data);
+    }
 
     public function tandaterima($awal, $akhir) {
         $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
@@ -124,44 +152,5 @@ class CetakFakturController extends Controller
         $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
         ob_end_clean();
         return $pdf->stream('cetak-ttr.pdf');
-    }
-
-    /* public function cetak(Request $request) {
-        $items = SalesOrder::with(['customer'])->where('status', 'INPUT')
-                    ->whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])->get();
-
-        $data = [
-            'items' => $items
-        ];
-
-        $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.penjualan.cetakAll', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-all.pdf');
-    } */
-
-    public function update($awal, $akhir) {
-        $items = SalesOrder::whereBetween('id', [$awal, $akhir])->get();
-
-        foreach($items as $item) {
-            $item->status = 'CETAK';
-            $item->save();
-
-            $app = Approval::where('id_dokumen', $item->id)->latest()->get();
-            if($app->count() != 0) {
-                foreach($app as $a) {
-                    $a->baca = 'T';
-                    $a->save();
-                }
-            }
-        }
-
-        $data = [
-            'status' => 'false',
-            'awal' => 0,
-            'akhir' => 0
-        ];
-
-        return redirect()->route('cetak-faktur', $data);
     }
 }
