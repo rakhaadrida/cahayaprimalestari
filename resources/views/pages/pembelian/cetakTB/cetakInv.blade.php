@@ -767,6 +767,14 @@
         </div>
       </div>
     @endforeach
+
+    <script type="text/javascript">
+      window.onafterprint = function() {
+        window.location = "{{ route('cetak-tb-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
+      }
+
+      window.print();
+    </script>
   </body>
   
 </html>

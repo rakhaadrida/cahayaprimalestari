@@ -767,6 +767,13 @@
         </div>
       </div>
     @endforeach
+
+    <script type="text/javascript">
+      window.onafterprint = function() {
+        window.location = "{{ route('tb-after-print', $id) }}";
+      }
+
+      window.print();
+    </script>
   </body>
-  
 </html>

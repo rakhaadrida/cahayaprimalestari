@@ -27,7 +27,8 @@ class CetakTBController extends Controller
             'status' => 'true'
         ];
 
-        return redirect()->route('cetak-tb', $data);
+        // return redirect()->route('cetak-tb', $data);
+        return redirect()->route('cetak-tb-all', ['awal' => $request->kodeAwal, 'akhir' => $request->kodeAkhir]);
     }
 
     public function cetak($awal, $akhir) {
@@ -64,7 +65,9 @@ class CetakTBController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'awal' => $awal,
+            'akhir' => $akhir
         ];
 
         return view('pages.pembelian.cetakTB.cetakInv', $data);

@@ -42,8 +42,8 @@
                     <input type="text" tabindex="2" class="form-control form-control-sm mt-1 kodeAkhir" name="kodeAkhir" id="kodeAkhir" placeholder="Kode Akhir" data-toogle="tooltip" data-placement="top" title="Kolom ini harus diisi">
                   </div>
                   <div class="col-2 mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="3" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" formaction="{{ route('cetak-bm-process') }}" formmethod="POST">Cetak</button>
-                    {{-- formaction="{{ route('cetak-process') }}" formmethod="POST" 
+                    <button type="submit" tabindex="3" id="btnCetak" class="btn btn-success btn-sm btn-block text-bold btnCetak" onclick="return checkRequired(event)">Cetak</button>
+                    {{-- formaction="{{ route('cetak-bm-process') }}" formmethod="POST" 
                     onclick="return checkRequired(event)"--}}
                   </div>
                 </div>  
@@ -128,7 +128,7 @@ function checkRequired(e) {
     return false;
   } else {
     document.getElementById('btnCetak').formMethod = "POST";
-    document.getElementById('btnCetak').formAction = "{{ route('cetak-process') }}";
+    document.getElementById('btnCetak').formAction = "{{ route('cetak-bm-process') }}";
   }
 }
 

@@ -133,7 +133,10 @@ class TransferBarangController extends Controller
             $cetak = 'true';
         }
 
-        return redirect()->route('tb', $cetak);
+        if($status != 'CETAK')
+            return redirect()->route('tb', 'false');
+        else
+            return redirect()->route('tb-cetak', $newcode);
     }
 
     public function cetak(Request $request, $id) {
@@ -162,7 +165,8 @@ class TransferBarangController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'id' => $id
         ];
 
         return view('pages.pembelian.transferbarang.cetakInv', $data);
