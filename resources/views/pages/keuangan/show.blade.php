@@ -49,7 +49,7 @@
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('lap-keu') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
-                  @if(Auth::user()->roles == 'SUPER')
+                  @if(Auth::user()->roles != 'OFFICE02')
                     <div class="col-auto mt-1">
                       <button type="submit" tabindex="5" onclick="return checkRequiredExcel(event)" id="submitExcel" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Download Excel</button>
                       {{-- formaction="{{ route('lap-keu-excel') }}" formmethod="POST"  --}}
