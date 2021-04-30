@@ -90,10 +90,10 @@
     </div>
   </div>
 </div>
-@if($status == "true")
+{{-- @if($status == "true")
   <!-- Tampilan Cetak -->
   <iframe src="{{url('kenari/cetak/'.$awal.'/'.$akhir)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-@endif
+@endif --}}
 <!-- /.container-fluid -->
 @endsection
 
@@ -110,7 +110,7 @@ const kodeAwal = document.getElementById('kodeAwal');
 const kodeAkhir = document.getElementById('kodeAkhir');
 const btnCetak = document.getElementById('btnCetak');
 
-@if($status == "true")
+/* @if($status == "true")
   const printFrame = document.getElementById("frameCetak").contentWindow;
   
   printFrame.window.onafterprint = function(e) {
@@ -119,7 +119,7 @@ const btnCetak = document.getElementById('btnCetak');
 
   printFrame.window.print();
 
-@endif
+@endif */
 
 function checkRequired(e) {
   if((kodeAwal.value == '') || (kodeAkhir.value == '')) {

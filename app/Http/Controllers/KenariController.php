@@ -602,7 +602,8 @@ class KenariController extends Controller
             'status' => 'true'
         ];
 
-        return redirect()->route('cetak-faktur-kenari', $data);
+        // return redirect()->route('cetak-faktur-kenari', $data);
+        return redirect()->route('cetak-all-kenari', ['awal' => $request->kodeAwal, 'akhir' => $request->kodeAkhir]);
     }
 
     public function cetakFaktur($awal, $akhir) {
@@ -647,7 +648,9 @@ class KenariController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'awal' => $awal,
+            'akhir' => $akhir
         ];
 
         return view('pages.kenari.cetakfaktur.cetakInv', $data);
