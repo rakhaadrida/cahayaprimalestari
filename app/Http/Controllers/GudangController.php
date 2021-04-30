@@ -23,6 +23,13 @@ class GudangController extends Controller
             'items' => $items
         ];
 
+        $kode = ['IV21041267', 'IV21041000', 'IV21040686', 'IV21040194', 'IV21002231', 'IN21000272P', 'IN21000885'];
+        $items = AccReceivable::whereIn('id_so', $kode)->get();
+        foreach($items as $i) {
+            $i->keterangan = 'LUNAS';
+            $i->save();
+        }
+
         return view('pages.gudang.index', $data);
     }
 
