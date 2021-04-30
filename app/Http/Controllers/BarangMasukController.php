@@ -39,10 +39,6 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcode = 'BM'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
-        // $items = TempDetilBM::with(['barang', 'supplier'])->where('id_bm', $newcode)
-        //             ->orderBy('created_at','asc')->get();
-        // $itemsRow = TempDetilBM::where('id_bm', $newcode)->count();
-
         // date now
         $tanggal = Carbon::now('+07:00')->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -180,8 +176,10 @@ class BarangMasukController extends Controller
         }
         */
 
-        return redirect()->route('barangMasuk', $cetak);
-        // return redirect()->route('bm-cetak', $newcodeBM);
+        if($status != 'CETAK')
+            return redirect()->route('barangMasuk', 'false');
+        else
+            return redirect()->route('bm-cetak', $newcodeBM);
     }
 
     public function cetak(Request $request, $id) {
@@ -232,6 +230,7 @@ class BarangMasukController extends Controller
             'status' => 'false'
         ];
 
+        // return $this->index('false');
         return redirect()->route('barangMasuk', $data);
     }
 

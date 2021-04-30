@@ -322,13 +322,10 @@
               </div>
               <!-- End Modal Konfirmasi -->
 
-              @if($status == 'true')
+              {{-- @if($status == 'true')
                 <!-- Tampilan Cetak -->
                 <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-                {{-- <div class="col-2">
-                  <button type="reset" onclick="printPage('{{url('barangmasuk/cetak/'.$lastcode)}}')" tabindex="{{ $tab++ }}" id="resetBM" class="btn btn-outline-danger btn-block text-bold">Reset All </button>
-                </div> --}}
-              @endif
+              @endif --}}
 
             </form>
           </div>
@@ -340,15 +337,10 @@
 @endsection
 
 @push('addon-script')
-{{-- <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script> --}}
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 
 <script type="text/javascript">
-@if($status == 'true')
-  // $(document).ready(function() {
-  //   $("#frameCetak").printPage();
-  // });
-
+/* @if($status == 'true')
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
@@ -356,7 +348,7 @@
   }
   
   printFrame.window.print();
-@endif
+@endif */
 
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],

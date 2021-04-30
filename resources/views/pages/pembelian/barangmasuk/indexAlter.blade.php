@@ -211,10 +211,11 @@
               </div>
               <!-- End Modal Konfirmasi -->
             </form>
-            {{-- @if($status == 'true') --}}
+            @if($status == 'true')
               <!-- Tampilan Cetak -->
-              <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" ></iframe>
-            {{-- @endif --}}
+              <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak"></iframe>
+              {{-- sandbox="allow-same-origin allow-scripts allow-modals allow-top-navigation" --}}
+            @endif
           </div>
         </div>
       </div>
@@ -227,7 +228,7 @@
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
 @if($status == 'true')
-  var printFrame = document.getElementById("frameCetak").contentWindow;
+  var printFrame = document.getElementById("frameCetak");
 
   // printFrame.onafterprint = function(e) {
   //   window.location = "{{ route('bm-after-print', $lastcode[0]->id) }}";
