@@ -91,10 +91,10 @@
     </div>
   </div>
 </div>
-@if($status == "true")
+{{-- @if($status == "true")
   <!-- Tampilan Cetak -->
   <iframe src="{{url('cetak-bm-all/'.$awal.'/'.$akhir)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-@endif
+@endif --}}
 <!-- /.container-fluid -->
 @endsection
 
@@ -102,7 +102,6 @@
 <script src="{{ url('backend/vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ url('backend/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ url('backend/js/demo/datatables-demo.js') }}"></script>
-{{-- <script src="{{ url('backend/vendor/jquery/jquery.printPageSO.js') }}"></script> --}}
 <script type="text/javascript">
 $('#dataTable').dataTable({
   "pageLength": 25
@@ -112,7 +111,7 @@ const kodeAwal = document.getElementById('kodeAwal');
 const kodeAkhir = document.getElementById('kodeAkhir');
 const btnCetak = document.getElementById('btnCetak');
 
-@if($status == "true")
+/* @if($status == "true")
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
@@ -120,7 +119,7 @@ const btnCetak = document.getElementById('btnCetak');
   }
   
   printFrame.window.print();
-@endif
+@endif */
 
 function checkRequired(e) {
   if((kodeAwal.value == '') || (kodeAkhir.value == '')) {

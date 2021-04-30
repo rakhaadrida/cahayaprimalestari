@@ -40,7 +40,8 @@ class CetakBMController extends Controller
             'status' => 'true'
         ];
 
-        return redirect()->route('cetak-bm', $data);
+        // return redirect()->route('cetak-bm', $data);
+        return redirect()->route('cetak-bm-all', ['awal' => $request->kodeAwal, 'akhir' => $request->kodeAkhir]);
     }
 
     public function cetak($awal, $akhir) {
@@ -79,7 +80,9 @@ class CetakBMController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'awal' => $awal,
+            'akhir' => $akhir
         ];
 
         return view('pages.pembelian.cetakBM.cetakPdf', $data);
@@ -90,20 +93,6 @@ class CetakBMController extends Controller
         // ob_end_clean();
         // return $pdf->stream('cetak-all.pdf');
     } 
-
-    /* public function cetak(Request $request) {
-        $items = SalesOrder::with(['customer'])->where('status', 'INPUT')
-                    ->whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])->get();
-
-        $data = [
-            'items' => $items
-        ];
-
-        $paper = array(0,0,686,394);
-        $pdf = PDF::loadview('pages.penjualan.cetakAll', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-all.pdf');
-    } */
 
     public function update($awal, $akhir) {
         $items = BarangMasuk::whereBetween('id', [$awal, $akhir])->get();
