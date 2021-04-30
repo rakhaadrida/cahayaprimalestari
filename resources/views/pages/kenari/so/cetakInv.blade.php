@@ -837,6 +837,14 @@
         </div>
       </div>
     @endforeach
+
+    <script type="text/javascript">
+      window.onafterprint = function() {
+        window.location = "{{ route('so-after-print-kenari', $id) }}";
+      }
+
+      window.print();
+    </script>
   </body>
   
 </html>

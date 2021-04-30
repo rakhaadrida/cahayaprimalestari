@@ -244,17 +244,17 @@ class KenariController extends Controller
             }
         }
 
-        $item = SalesOrder::where('id', $kode)->first();
-        $item->{'total'} = $totNetto - str_replace(".", "", $diskon);
-        // $item->save();
-
         if($statusHal != 'CETAK')
             $cetak = 'false';
         else {
             $cetak = 'true';
         }
 
-        return redirect()->route('so-kenari', $cetak);
+        if($statusHal != 'CETAK')
+            return redirect()->route('so-kenari', 'false');
+        else
+            return redirect()->route('so-cetak-kenari', $kode);
+        // return redirect()->route('so-kenari', $cetak);
     }
 
     public function cetak(Request $request, $id) {
@@ -291,7 +291,8 @@ class KenariController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'id' => $id
         ];
 
         return view('pages.kenari.so.cetakInv', $data);
