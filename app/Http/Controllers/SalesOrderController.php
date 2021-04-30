@@ -277,7 +277,11 @@ class SalesOrderController extends Controller
             $cetak = 'true';
         }
 
-        return redirect()->route('so', $cetak);
+        if($statusHal != 'CETAK')
+            return redirect()->route('so', 'false');
+        else
+            return redirect()->route('so-cetak', $kode);
+        // return redirect()->route('so', $cetak);
     }
 
     public function cetak(Request $request, $id) {
@@ -314,7 +318,8 @@ class SalesOrderController extends Controller
         $data = [
             'items' => $items,
             'today' => $today,
-            'waktu' => $waktu
+            'waktu' => $waktu,
+            'id' => $id
         ];
 
         return view('pages.penjualan.so.cetakInv', $data);

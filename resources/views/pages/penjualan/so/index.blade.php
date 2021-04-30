@@ -499,11 +499,10 @@
                 </div>
               </div>
 
-              @if($status == 'true')
+              {{-- @if($status == 'true')
                 <!-- Tampilan Cetak -->
                 <iframe src="{{url('so/cetak/'.$lastSO[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-                {{-- <iframe src="{{url('so/cetak-ttr/'.$lastcode)}}" id="frameTTR" frameborder="0" hidden></iframe> --}}
-              @endif
+              @endif --}}
 
             </form>
           </div>
@@ -519,18 +518,16 @@
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
 
-@if($status == 'true')
+/* @if($status == 'true')
   const printFrame = document.getElementById("frameCetak").contentWindow;
 
   printFrame.window.onafterprint = function(e) {
     window.location = "{{ route('so-after-print', $lastSO[0]->id) }}";
-    // alert('ok');
   }
   
-  // window.print();
   printFrame.window.focus();
   printFrame.window.print();
-@endif 
+@endif */ 
 
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
