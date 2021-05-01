@@ -373,8 +373,13 @@ function checkRequiredExcel(e) {
   tahun.removeAttribute('required');
   bulan.removeAttribute('required');
 
-  document.getElementById("submitExcel").formMethod = "POST";
-  document.getElementById("submitExcel").formAction = "{{ route('lap-keu-excel') }}";
+  @if(Auth::user()->roles == 'SUPER') {
+    document.getElementById("submitExcel").formMethod = "POST";
+    document.getElementById("submitExcel").formAction = "{{ route('lap-keu-excel') }}";
+  } @else {
+    document.getElementById("submitExcel").formMethod = "POST";
+    document.getElementById("submitExcel").formAction = "{{ route('lap-keu-excel-admin') }}";
+  } @endif
 }
 
 $(function() {

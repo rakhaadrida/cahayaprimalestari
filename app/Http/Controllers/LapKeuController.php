@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LapKeuanganExport;
+use App\Exports\LapKeuAdminExport;
 use Carbon\Carbon;
 
 class LapKeuController extends Controller
@@ -311,7 +312,7 @@ class LapKeuController extends Controller
             $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                     'September', 'Oktober', 'November', 'Desember'];
             for($i = 0; $i < sizeof($bulan); $i++) {
-                if($request->bulan == $bulan[$i]) {
+                if(ucfirst($request->bulan) == $bulan[$i]) {
                     $month = $i+1;
                     $bul = $bulan[$i];
                     break;
@@ -327,6 +328,30 @@ class LapKeuController extends Controller
         }
 
         return Excel::download(new LapKeuanganExport($tahun, $month), 'Lap-Keu-'.$tahun.'-'.$bul.'.xlsx');
+    }
+
+    public function excelAdmin(Request $request) {
+        if($request->tahun != '') {
+            $tahun = $request->tahun;
+            $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+                    'September', 'Oktober', 'November', 'Desember'];
+            for($i = 0; $i < sizeof($bulan); $i++) {
+                if(ucfirst($request->bulan) == $bulan[$i]) {
+                    $month = $i+1;
+                    $bul = $bulan[$i];
+                    break;
+                }
+                else
+                    $month = '';
+            }
+        } else {
+            $date = Carbon::now('+07:00');
+            $tahun = $date->year;
+            $month = $date->month;
+            $bul = Carbon::parse($date)->isoFormat('MMMM');
+        }
+
+        return Excel::download(new LapKeuAdminExport($tahun, $month), 'Rekap-Penjualan-'.$tahun.'-'.$bul.'.xlsx');
     }
 
     public function storeIndex(Request $request) {
