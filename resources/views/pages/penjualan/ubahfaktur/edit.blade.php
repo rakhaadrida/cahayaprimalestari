@@ -41,7 +41,7 @@
                       </div>
                     </div>  
                   </div>
-                  <div class="col" @if(Auth::user()->roles == 'SUPER') style="margin-left: -660px" @else style="margin-left: -380px" @endif>
+                  <div class="col" @if(Auth::user()->roles == 'SUPER') style="margin-left: -660px" @else style="margin-left: -480px" @endif>
                     <div class="form-group row sj-first-line">
                       <label for="tglSO" class="col-5 col-form-label text-bold text-right text-dark">Tanggal Faktur</label>
                       <span class="col-form-label text-bold">:</span>
@@ -77,9 +77,29 @@
                         <input type="hidden" name="kodeSales" id="kodeSales" value="{{ $items[0]->id_sales }}">
                       </div>
                     </div>
+                     @if(Auth::user()->roles == 'SUPER')
+                      <div class="form-group row sj-after-first">
+                        <label for="kategori" class="col-5 col-form-label text-bold text-right text-dark">Kategori</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-3">
+                          @if(Auth::user()->roles != 'SUPER')
+                            <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="kategori" id="kategori" value="{{ $items->first()->kategori }}" />
+                          @else
+                            <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="kategori" id="kategori" value="{{$items->first()->kategori}}" />
+                          @endif
+                        </div>
+                        <label for="tempo" class="col-2 col-form-label text-bold text-right text-dark" style="margin-left: -45px">Tempo</label>
+                        <span class="col-form-label text-bold">:</span>
+                        <div class="col-2">
+                            <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="tempo" id="tempo" value="{{ $items->first()->tempo }}"  onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off"/>
+                        </div>
+                        <span class="col-form-label text-bold">Hari</span>
+                      </div>
+                    @endif
                   </div>
                 </div>
-                <div class="form-group row so-update-left">
+                {{-- <div class="form-group row so-update-left"> --}}
+                <div class="form-group row @if(Auth::user()->roles != 'SUPER') so-update-left @endif" @if(Auth::user()->roles == 'SUPER') style="margin-top: -120px" @endif>
                   <label for="nama" class="col-2 col-form-label text-bold text-dark">Tanggal Update</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2 mt-1">
@@ -106,6 +126,9 @@
                     <input type="hidden" name="tglAwal" value="{{ $tglAwal }}">
                     <input type="hidden" name="tglAkhir" value="{{ $tglAkhir }}">
                   </div>
+                </div>
+                <div class="form-group row so-update-input" @if(Auth::user()->roles == 'SUPER') style="margin-bottom: 35px" @endif>
+                  <label for="alamat" class="col-2 col-form-label text-bold text-dark"></label>
                 </div>
               </div>
               <hr>
@@ -436,6 +459,8 @@ const namaCust = document.getElementById("namaCust");
 const kodeCust = document.getElementById("kodeCust");
 const namaSales = document.getElementById("namaSales");
 const kodeSales = document.getElementById("kodeSales");
+const kategori = document.getElementById("kategori");
+const tempo = document.getElementById("tempo");
 const editSO = document.getElementById("editSO");
 const kodeBarang = document.querySelectorAll('.kodeBarang');
 const kodeBarangAwal = document.querySelectorAll('.kodeBarangAwal');
@@ -997,6 +1022,18 @@ for(let i = 0; i < diskon.length; i++) {
   });
 }
 
+/** Inputan hanya bisa angka **/
+function angkaSaja(evt) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    $(tempo).tooltip('show');
+    
+    return false;
+  }
+  return true;
+}
+
 function getSum(total, num) {
   return +total + +num;
 }
@@ -1124,6 +1161,9 @@ $(function() {
     sales.push('{{ $s->nama }}');
   @endforeach
 
+  var kat = ['CPL', 'Extrana C', 'Extrana T', 'Maspion C', 'Maspion T', 'MCB C', 'MCB T', 'Nitto C', 'Nitto T',
+                  'Panasonic C', 'Panasonic T', 'Phillips C', 'Phillips T', 'Pipa C', 'Pipa T', 'Prime C', 'Prime T'];
+
   var kodeBrg = [];
   var namaBrg = [];
   @foreach($barang as $b)
@@ -1182,6 +1222,34 @@ $(function() {
     source: function(request, response) {
       // delegate back to autocomplete, but extract the last term
       response($.ui.autocomplete.filter(sales, extractLast(request.term)));
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function(event, ui) {
+      var terms = split(this.value);
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push(ui.item.value);
+      // add placeholder to get the comma-and-space at the end
+      terms.push("");
+      this.value = terms.join("");
+      return false;
+    }
+  });
+
+  $(kategori).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function(request, response) {
+      // delegate back to autocomplete, but extract the last term
+      response($.ui.autocomplete.filter(kat, extractLast(request.term)));
     },
     focus: function() {
       // prevent value inserted on focus

@@ -518,6 +518,8 @@ class SalesOrderController extends Controller
         $items->first()->tgl_so = $tgl_so;
         $items->first()->id_customer = $request->kodeCust;
         $items->first()->id_sales = $request->kodeSales;
+        $items->first()->kategori = $request->kategori;
+        $items->first()->tempo = $request->tempo;
         $items->first()->save();
 
         if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE'))
