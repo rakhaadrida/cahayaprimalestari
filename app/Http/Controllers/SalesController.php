@@ -16,26 +16,26 @@ use Carbon\Carbon;
 class SalesController extends Controller
 {
     public function index() {
-        /* $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])
-                    ->where('tanggal', '<', '2021-04-12')->get();
+        $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])
+                    ->where('tanggal', '<', '2021-05-01')->get();
         foreach($items as $i) {
             $i->status = 'CETAK';
             $i->save();
         }
 
         $items = SalesOrder::whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                    ->where('tgl_so', '<', '2021-04-12')->get();
+                    ->where('tgl_so', '<', '2021-05-01')->get();
         foreach($items as $i) {
             $i->status = 'CETAK';
             $i->save();
         }
 
         $items = TransferBarang::where('status', 'INPUT')
-                    ->where('tgl_tb', '<', '2021-04-10')->get();
+                    ->where('tgl_tb', '<', '2021-05-01')->get();
         foreach($items as $i) {
             $i->status = 'CETAK';
             $i->save();
-        } */
+        } 
 
         $items = Sales::All();
         $data = [
