@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class SalesController extends Controller
 {
     public function index() {
-        $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])
+        /* $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])
                     ->where('tanggal', '<', '2021-05-01')->get();
         foreach($items as $i) {
             $i->status = 'CETAK';
@@ -35,7 +35,7 @@ class SalesController extends Controller
         foreach($items as $i) {
             $i->status = 'CETAK';
             $i->save();
-        } 
+        } */
 
         $items = Sales::All();
         $data = [

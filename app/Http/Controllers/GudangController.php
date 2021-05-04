@@ -7,7 +7,7 @@ use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
 use App\Models\AccReceivable;
-use App\Models\SalesOrder;
+use App\Models\AccPayable;
 use App\Models\DetilAR;
 use App\Models\DetilAP;
 use Maatwebsite\Excel\Facades\Excel;
@@ -23,8 +23,15 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $kode = ['IV21041267', 'IV21041000', 'IV21040686', 'IV21040194', 'IV21002231', 'IN21000272P', 'IN21000885'];
+        $kode = ['IV21050059', 'IV21041408', 'IV21041220', 'IV21041089', 'IV21040543', 'IV21001000', 'IV21000675', 'IN20000509'];
         $items = AccReceivable::whereIn('id_so', $kode)->get();
+        foreach($items as $i) {
+            $i->keterangan = 'LUNAS';
+            $i->save();
+        }
+
+        $kode = ['AP21020017', 'AP21020042', 'AP21020039', 'AP21020067'];
+        $items = AccPayable::whereIn('id', $kode)->get();
         foreach($items as $i) {
             $i->keterangan = 'LUNAS';
             $i->save();

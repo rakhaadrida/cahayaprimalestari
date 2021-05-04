@@ -190,20 +190,16 @@ class AccPayableController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = DetilAP::selectRaw('max(id_bayar) as id')->whereYear('tgl_bayar', $waktu->year)
-                    ->whereMonth('tgl_bayar', $month)->get();
-        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
-        $lastnumber++;
-        $newcode = 'TRS'.$tahun.$bulan.sprintf("%04s", $lastnumber);
-
         $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
         $ap = AccPayable::where('id_bm', $request->kode)->first();
+        $ap->{'keterangan'} = 'Belum Lunas';
+        $ap->save();
         
-        $total = DetilAP::join('ap', 'ap.id', '=', 'detilap.id_ap')
+        $total = DetilAP::join('ap', 'ap.id', 'detilap.id_ap')
                     ->select('ap.id', DB::raw('sum(transfer) as totTransfer'))
-                    ->where('ap.id_bm', $request->kode)
+                    ->where('id_bm', $request->kode)
                     ->groupBy('ap.id')->get();
                     
         $bm = BarangMasuk::selectRaw('sum(total) as totBM')
@@ -243,6 +239,12 @@ class AccPayableController extends Controller
 
             $j++;
         }
+
+        $lastcode = DetilAP::selectRaw('max(id_bayar) as id')->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
+        $lastnumber++;
+        $newcode = 'TRS'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
         if(($request->bayar != '') && ($request->tgl != '')) {
             DetilAP::create([
