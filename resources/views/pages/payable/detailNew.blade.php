@@ -148,7 +148,7 @@
                       <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right totalAkhir" id="totalAkhir" style="font-size: 16px" value="{{ number_format($total, 0, "", ".") }}">
                     </td>
                     <td class="text-right text-bold text-dark">
-                      <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurangAkhir" id="kurangAkhir" style="font-size: 16px" value="{{ number_format($kurang, 0, "", ".") }}">
+                      <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurangAkhir" name="kurangAkhir" id="kurangAkhir" style="font-size: 16px" value="{{ number_format($kurang, 0, "", ".") }}">
                     </td>
                     <td></td>
                   </tr>
@@ -314,6 +314,16 @@ for(let i = 0; i < bayarDetil.length; i++) {
 /** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
+    kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + +bayarDetil[i].value.replace(/\./g, ""));
+    totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") - +bayarDetil[i].value.replace(/\./g, ""));
+
+    for(let j = i+1; j < hapusBaris.length; j++) {
+      kurangDetil[j].value = addCommas(+kurangDetil[j].value.replace(/\./g, "") + +bayarDetil[i].value.replace(/\./g, ""));
+    }
+
+    if(kurang[0].value != '')
+      kurang[0].value = addCommas(+kurang[0].value.replace(/\./g, "") + +bayarDetil[i].value.replace(/\./g, ""));
+
     const delRow = document.getElementById(i);
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $('table tr:last').prev().prev().prev().find('td:first-child').text();
@@ -332,6 +342,9 @@ for(let i = 0; i < hapusBaris.length; i++) {
 
 for(let i = 0; i < hapusBiasa.length; i++) {
   hapusBiasa[i].addEventListener("click", function (e) {
+    kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + +bayarModal[i].value.replace(/\./g, ""));
+    totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") - +bayarModal[i].value.replace(/\./g, ""));
+
     $(this).parents('tr').find('input').val('');
   });
 }

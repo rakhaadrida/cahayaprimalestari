@@ -178,34 +178,11 @@ class AccReceivableController extends Controller
         $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
-        $ar = AccReceivable::where('id_so', $request->kode)->first();
-        $ar->{'keterangan'} = 'Belum Lunas';
-        $ar->save();
-        $total = DetilAR::join('ar', 'ar.id', 'detilar.id_ar')
-                    ->select('ar.id', DB::raw('sum(cicil) as totCicil'))
-                    ->where('id_so', $request->kode)
-                    ->groupBy('ar.id')->get();
-        $so = SalesOrder::where('id', $request->kode)->get();
-        $retur = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
-                ->selectRaw('sum(total) as totRetur')
-                ->where('id_so', $request->kode)->get();
+        // $ar = AccReceivable::where('id_so', $request->kode)->first();
+        // $ar->{'keterangan'} = 'Belum Lunas';
+        // $ar->save();
 
-        if($total->count() == 0) 
-            $totCicil = 0;
-        else 
-            $totCicil = $total[0]->totCicil;
-
-        if($retur->count() == 0) 
-            $totRetur = 0;
-        else 
-            $totRetur = $retur[0]->totRetur;
-        
-        if($request->cicil == '') 
-            $cicil = 0;
-        else 
-            $cicil = $request->cicil;
-
-        if($so[0]->total == (str_replace(".", "", $cicil) + $totCicil + $totRetur))
+        if($request->kurangAkhir == 0)
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
@@ -237,16 +214,16 @@ class AccReceivableController extends Controller
 
         if($request->cicil != '') {
             DetilAR::create([
-                'id_ar' => $ar->{'id'},
+                'id_ar' => $request->kodeAR,
                 'id_cicil' => $newcode,
                 'tgl_bayar' => $tglBayar,
                 'cicil' => (int) str_replace(".", "", $request->cicil)
             ]);
         }
 
-        $ar = AccReceivable::where('id_so', $request->kode)->first();
-        $ar->{'keterangan'} = $status;
-        $ar->save();
+        $arUpdate = AccReceivable::where('id', $request->kodeAR)->first();
+        $arUpdate->{'keterangan'} = $status;
+        $arUpdate->save();
 
         return redirect()->route('ar');
     }
