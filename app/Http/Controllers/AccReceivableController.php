@@ -178,11 +178,11 @@ class AccReceivableController extends Controller
         $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
-        // $ar = AccReceivable::where('id_so', $request->kode)->first();
-        // $ar->{'keterangan'} = 'Belum Lunas';
-        // $ar->save();
+        $ar = AccReceivable::where('id_so', $request->kode)->first();
+        $ar->{'keterangan'} = 'Belum Lunas';
+        $ar->save();
 
-        if($request->kurangAkhir == 0)
+        if(str_replace(".", "", $request->kurangAkhir) - str_replace(".", "", $request->cicil) == 0)
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
@@ -221,9 +221,9 @@ class AccReceivableController extends Controller
             ]);
         }
 
-        $arUpdate = AccReceivable::where('id', $request->kodeAR)->first();
-        $arUpdate->{'keterangan'} = $status;
-        $arUpdate->save();
+        $arUpdate = AccReceivable::where('id', $request->kodeAR)->get();
+        $arUpdate->first()->keterangan = $status;
+        $arUpdate->first()->save();
 
         return redirect()->route('ar');
     }

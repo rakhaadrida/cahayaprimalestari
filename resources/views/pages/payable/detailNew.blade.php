@@ -231,60 +231,17 @@ const hapusBaris = document.querySelectorAll(".icRemoveDetil");
 const hapusBiasa = document.querySelectorAll(".icRemove");
 const totalAkhir = document.getElementById('totalAkhir');
 const kurangAkhir = document.getElementById('kurangAkhir');
+const subtotal = document.getElementById('subtotal');
 
-cicilAP.addEventListener("keypress", checkEnter);
+// cicilAP.addEventListener("keypress", checkEnter);
 
-function checkEnter(e) {
+/* function checkEnter(e) {
   var key = e.charCode || e.keyCode || 0;     
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
   }
-}
-
-for(let i = 0; i < tglBayar.length; i++) {
-  tglBayar[i].addEventListener("keyup", function(e) {
-    var value = e.target.value.replaceAll("-","");
-    var arrValue = value.split("", 3);
-    var kode = arrValue.join("");
-
-    if(value.length > 2 && value.length <= 4) 
-      value = value.slice(0,2) + "-" + value.slice(2);
-    else if(value.length > 4 && value.length <= 8)
-      value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
-    tglBayar[i].value = value;
-  });
-}
-
-for(let i = 0; i < bayarModal.length; i++) {
-  bayarModal[i].addEventListener("keyup", function(e) {
-    $(this).val(function(index, value) {
-      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    });
-  });
-
-  bayarModal[i].addEventListener("blur", function(e) {
-    if(+e.target.value.replace(/\./g, "") > +modalAwal[i].value) {
-      if(kurangDetil.length != 0) 
-        kurang[i].value = addCommas(kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
-      else
-        kurang[i].value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
-
-      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") + (+e.target.value.replace(/\./g, "") - +modalAwal[i].value));
-      kurangAkhir.value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
-    } else {
-      if(kurangDetil.length != 0) 
-        kurang[i].value = addCommas(+kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
-      else
-        kurang[i].value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
-
-      totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
-      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
-    }
-    modalAwal[i].value = e.target.value.replace(/\./g, "");
-  });
-}
+} */
 
 for(let i = 0; i < bayarDetil.length; i++) {
   bayarDetil[i].addEventListener("keyup", function(e) {
@@ -309,6 +266,64 @@ for(let i = 0; i < bayarDetil.length; i++) {
       kurangDetil[j].value = addCommas(+kurangDetil[j-1].value.replace(/\./g, "") - +bayarAwal[j].value);
     }
   });
+}
+
+for(let i = 0; i < tglBayar.length; i++) {
+  tglBayar[i].addEventListener("keyup", function(e) {
+    var value = e.target.value.replaceAll("-","");
+    var arrValue = value.split("", 3);
+    var kode = arrValue.join("");
+
+    if(value.length > 2 && value.length <= 4) 
+      value = value.slice(0,2) + "-" + value.slice(2);
+    else if(value.length > 4 && value.length <= 8)
+      value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
+    
+    tglBayar[i].value = value;
+  });
+}
+
+for(let i = 0; i < bayarModal.length; i++) {
+  bayarModal[i].addEventListener("keyup", function(e) {
+    $(this).val(function(index, value) {
+      return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    });
+
+    if (e.keyCode === 13) {
+      displayTotalAkhir(e);
+    }
+  });
+
+  bayarModal[i].addEventListener("blur", displayTotalAkhir) 
+
+  function displayTotalAkhir(e) {
+    if(+e.target.value.replace(/\./g, "") > +modalAwal[i].value) {
+      if(kurangDetil.length != 0) 
+        kurang[i].value = addCommas(kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      else
+        kurang[i].value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+
+      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") + (+e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+      kurangAkhir.value = addCommas(kurangAkhir.value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
+    } else {
+      if(kurangDetil.length != 0) 
+        kurang[i].value = addCommas(+kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      else
+        kurang[i].value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+
+      totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+    }
+
+    console.log(+e.target.value.replace(/\./g, "") > +kurangAkhir.value.replace(/\./g, ""));
+    if(+e.target.value.replace(/\./g, "") > +kurangAkhir.value.replace(/\./g, "")) {
+      modalAwal[i].value = '0';
+      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + +bayarModal[0].value.replace(/\./g, ""));
+      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") - +bayarModal[0].value.replace(/\./g, ""));
+    } else {
+      modalAwal[i].value = e.target.value.replace(/\./g, "");
+    }
+  }
 }
 
 /** Delete Baris Pada Tabel **/
@@ -377,12 +392,14 @@ function addCommas(nStr) {
 }
 
 function checkLimit(e) {
-  if(+bayarModal[0].value.replace(/\,/g, "") > '{{ $kurang }}') {
-    // alert('Jumlah Cicil Melebihi Jumlah Kurang Bayar');
+  if(+bayarModal[0].value.replace(/\./g, "") > '{{ $kurang }}') {
     document.getElementById("submitAP").dataset.toggle = "modal";
     document.getElementById("submitAP").dataset.target = "#modalNotif";
     return false;
   } else {
+    document.getElementById("submitAP").removeAttribute('data-toggle');
+    document.getElementById("submitAP").removeAttribute('data-target');
+
     document.getElementById("submitAP").formMethod = "POST";
     document.getElementById("submitAP").formAction = "{{ route('ap-transfer') }}";
   }

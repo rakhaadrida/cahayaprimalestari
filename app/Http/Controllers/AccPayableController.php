@@ -193,7 +193,7 @@ class AccPayableController extends Controller
         $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
-        if($request->kurangAkhir == 0)
+        if(str_replace(".", "", $request->kurangAkhir) - str_replace(".", "", $request->bayar) == 0)
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
@@ -232,9 +232,9 @@ class AccPayableController extends Controller
             ]);
         }
 
-        $ap = AccPayable::where('id', $request->kodeAP)->first();
-        $ap->{'keterangan'} = $status;
-        $ap->save();
+        $ap = AccPayable::where('id', $request->kodeAP)->get();
+        $ap->first()->keterangan = $status;
+        $ap->first()->save();
 
         return redirect()->route('ap');
     }

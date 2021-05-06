@@ -235,6 +235,7 @@ const hapusBiasa = document.querySelectorAll(".icRemove");
 const totalAkhir = document.getElementById('totalAkhir');
 const kurangAkhir = document.getElementById('kurangAkhir');
 const jumBaris = document.getElementById('jumBaris');
+const subtotal = document.getElementById('subtotal');
 
 // cicilAR.addEventListener("keypress", checkEnter);
 
@@ -291,9 +292,15 @@ for(let i = 0; i < cicilModal.length; i++) {
     $(this).val(function(index, value) {
       return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     });
+
+    if (e.keyCode === 13) {
+      displayTotalAkhir(e);
+    }
   });
 
-  cicilModal[i].addEventListener("blur", function(e) {
+  cicilModal[i].addEventListener("blur", displayTotalAkhir);
+    
+  function displayTotalAkhir(e) {
     if(+e.target.value.replace(/\./g, "") > +modalAwal[i].value) {
       if(kurangDetil.length != 0) 
         kurang[i].value = addCommas(kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") - (e.target.value.replace(/\./g, "") - +modalAwal[i].value));
@@ -306,13 +313,20 @@ for(let i = 0; i < cicilModal.length; i++) {
       if(kurangDetil.length != 0) 
         kurang[i].value = addCommas(+kurangDetil[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
       else
-        kurang[i].value = addCommas(+kurangAkhir[kurangDetil.length - 1].value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
+        kurang[i].value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
 
       totalAkhir.value = addCommas(totalAkhir.value.replace(/\./g, "") - (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
       kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
     }
-    modalAwal[i].value = e.target.value.replace(/\./g, "");
-  });
+
+    if(+e.target.value.replace(/\./g, "") > +kurangAkhir.value.replace(/\./g, "")) {
+      modalAwal[i].value = '0';
+      kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + +cicilModal[0].value.replace(/\./g, ""));
+      totalAkhir.value = addCommas(+totalAkhir.value.replace(/\./g, "") - +cicilModal[0].value.replace(/\./g, ""));
+    } else {
+      modalAwal[i].value = e.target.value.replace(/\./g, "");
+    }
+  }
 }
 
 /** Delete Baris Pada Tabel **/
@@ -382,11 +396,14 @@ function addCommas(nStr) {
 
 function checkLimit(e) {
   if(+cicilModal[0].value.replace(/\./g, "") > '{{ $kurang }}') {
-    // alert('Jumlah Cicil Melebihi Jumlah Kurang Bayar');
     document.getElementById("submitAR").dataset.toggle = "modal";
     document.getElementById("submitAR").dataset.target = "#modalNotif";
+
     return false;
   } else {
+    document.getElementById("submitAR").removeAttribute('data-toggle');
+    document.getElementById("submitAR").removeAttribute('data-target');
+
     document.getElementById("submitAR").formMethod = "POST";
     document.getElementById("submitAR").formAction = "{{ route('ar-process') }}";
   }
