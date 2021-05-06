@@ -182,7 +182,7 @@ class AccReceivableController extends Controller
         $ar->{'keterangan'} = 'Belum Lunas';
         $ar->save();
 
-        if(str_replace(".", "", $request->kurangAkhir) - str_replace(".", "", $request->cicil) == 0)
+        if(str_replace(".", "", $request->kurangAkhir) - (int) str_replace(".", "", $request->cicil) == 0)
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';

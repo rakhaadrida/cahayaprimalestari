@@ -23,17 +23,16 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $kode = ['IV21050065', 'IV21050063', 'IV21050058', 'IV21050054', 'IV21041394', 'IV21041362', 'IV21041337', 'IV21041330', 'IV21041324', 'IV21041250', 'IV21040133', 'IV21040061', 'IV21002710', 'IV21002595', 'IV21002111', 'IV21001601', 'IV21001463', 'IV21001348', 'IV21000098', 'IV21000071', 'IN21000177P'];
+        /* $kode = ['IV21050065', 'IV21050063', 'IV21050058', 'IV21050054', 'IV21041394', 'IV21041362', 'IV21041337', 'IV21041330', 'IV21041324', 'IV21041250', 'IV21040133', 'IV21040061', 'IV21002710', 'IV21002595', 'IV21002111', 'IV21001601', 'IV21001463', 'IV21001348', 'IV21000098', 'IV21000071', 'IN21000177P'];
         $items = AccReceivable::whereIn('id_so', $kode)->get();
         foreach($items as $i) {
             $i->keterangan = 'LUNAS';
             $i->save();
-        }
+        } */
 
         $item = AccReceivable::where('id_so', 'IV21040789')->get();
-        $items = DetilAR::where('id_ar', $item->first()->id)->get();
-        $items->first()->cicil = 49123165;
-        $items->first()->save();
+        $item->first()->keterangan = 'LUNAS';
+        $item->first()->save();
 
         return view('pages.gudang.index', $data);
     }

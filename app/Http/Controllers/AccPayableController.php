@@ -193,7 +193,7 @@ class AccPayableController extends Controller
         $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
 
-        if(str_replace(".", "", $request->kurangAkhir) - str_replace(".", "", $request->bayar) == 0)
+        if(str_replace(".", "", $request->kurangAkhir) - (int) str_replace(".", "", $request->bayar) == 0)
             $status = 'LUNAS';
         else 
             $status = 'BELUM LUNAS';
