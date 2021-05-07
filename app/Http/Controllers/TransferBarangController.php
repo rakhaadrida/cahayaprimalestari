@@ -11,6 +11,7 @@ use App\Models\DetilTB;
 use App\Models\NeedApproval;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Input;
 
 class TransferBarangController extends Controller
 {
@@ -55,10 +56,10 @@ class TransferBarangController extends Controller
         $gudang = Gudang::where('nama', $request->name)->get();
 
         $item = StokBarang::where('id_barang', $request->barang)->where('id_gudang', $gudang->first()->id)
-                ->where('status', $request->status)->first();
+                ->where('status', $request->status)->get();
         $data = [
-            'stok' => $item->{'stok'},
-            'kode' => $item->{'id_gudang'}
+            'stok' => $item->first()->stok,
+            'kode' => $item->first()->id_gudang
         ];
 
         return response()->json($data);
@@ -78,6 +79,8 @@ class TransferBarangController extends Controller
         $bulan = $waktu->format('m');
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
+
+        // return redirect()->back()->withInput($request->all());
 
         $lastcode = TransferBarang::selectRaw('max(id) as id')->whereMonth('tgl_tb', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);

@@ -1,4 +1,4 @@
-@extends('pages.retur.kirimBeli')
+{{-- @extends('pages.retur.kirimBeli') --}}
 @extends('layouts.admin')
 
 @push('addon-style')
@@ -113,7 +113,9 @@
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalTerima + $qtyProses[0]->totalBatal) }}</td>
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
+                        {{-- <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
+                        </a> --}}
+                        <a href="{{ route('retur-beli-create', $r->id) }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$r->status}}
                         </a>
                       </td>
                     </tr>
