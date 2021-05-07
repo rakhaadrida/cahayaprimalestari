@@ -30,10 +30,6 @@ class GudangController extends Controller
             $i->save();
         } */
 
-        $item = AccReceivable::where('id_so', 'IV21040789')->get();
-        $item->first()->keterangan = 'LUNAS';
-        $item->first()->save();
-
         return view('pages.gudang.index', $data);
     }
 
