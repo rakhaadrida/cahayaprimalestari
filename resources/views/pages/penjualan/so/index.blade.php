@@ -731,7 +731,7 @@ function displayRow(e) {
   var newNo = +lastNo + 1;
   const newTr = `
     <tr class="text-bold text-dark" id="${newNum}">
-      <td align="center" class="align-middle">${newNo}</td>
+      <td align="center" class="align-middle nomor">${newNo}</td>
       <td>
         <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
       </td>
@@ -852,7 +852,8 @@ function displayRow(e) {
 
   $(tablePO).append(newTr);
   $(tablePO).append(newModal);
-  jumBaris.value = newNum;
+  // jumBaris.value = newNum;
+  jumBaris.value = +jumBaris.value + 1;
   const newRow = document.getElementById(newNum);
   const newMod = document.getElementById("gud"+newNum);
   const newModNotif = document.getElementById("notif"+newNum);
@@ -1159,7 +1160,7 @@ function displayRow(e) {
 
       if(diskonRow.value != "") {
         var angkaDiskon = hitungDiskon(diskonRow.value)
-        diskonRpRow.value = addCommas(angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100);
+        diskonRpRow.value = addCommas((angkaDiskon * jumlahRow.value.replace(/\./g, "") / 100).toFixed(0));
       }
 
       nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
@@ -1252,7 +1253,7 @@ function displayRow(e) {
         netPast = +nettoRow.value.replace(/\./g, "");
         if(diskonRow.value != "") {
           var angkaDiskon = hitungDiskon(diskonRow.value)
-          diskonRpRow.value = addCommas(angkaDiskon * jumlahRow.value.replace(/\./g,"") / 100);
+          diskonRpRow.value = addCommas((angkaDiskon * jumlahRow.value.replace(/\./g,"") / 100).toFixed(0));
         }
 
         nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
@@ -1309,17 +1310,19 @@ function displayRow(e) {
     }
     
     const curNum = $(this).closest('tr').find('td:first-child').text();
-    const lastNum = $(tablePO).find('tr:last').attr("id");
+    // const lastNum = $(tablePO).find('tr:last').attr("id");
+    const lastNum = $(tablePO).find('tr:last td:first-child').text();
     var numRow;
     if(+curNum < +lastNum) {
       $(newRow).remove();
       $(newMod).remove();
       $(newModNotif).remove();
       var j = curNum;
-      console.log(tablePO);
       var selisih = +lastNum - +curNum;
+      var nomor = document.querySelectorAll('.nomor');
       for(let i = +curNum; i < +lastNum; i++) {
-        $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+        // $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
+        nomor[i-6].innerHTML = i;
       }
       numRow = lastNum;
     }
@@ -1328,8 +1331,10 @@ function displayRow(e) {
       numRow = +curNum - 1;
     }
     jumBaris.value -= 1;
+    var kdBrg = document.querySelectorAll('.kdBrgRow');
     if(jumBaris.value > 5)
-      document.getElementById("kdBrgRow"+numRow).focus();
+      // document.getElementById("kdBrgRow"+numRow).focus();
+      kdBrg[lastNum-7].focus();
     else
       kodeBarang[4].focus();
   })
@@ -1992,6 +1997,8 @@ function checkRequired(e) {
   }
   else {
     if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
+      const kdRow = document.querySelectorAll('.kdBrgRow');
+      console.log(kdRow[3].value);
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalLimit";
       limitTitle.textContent = namaCust.value;

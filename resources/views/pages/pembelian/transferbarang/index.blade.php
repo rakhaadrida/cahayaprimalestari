@@ -225,7 +225,8 @@ const qtyTransfer = document.querySelectorAll(".qtyTransfer");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
-var tab = '{{ $tab }}';
+var tab = '{{ $tab }}'; 
+// var cek; var qtyAsalNow = [];
 
 newRow.addEventListener('click', displayRow);
 tanggal.addEventListener("keyup", formatTanggal);
@@ -827,6 +828,44 @@ function checkUnique(e) {
     return false;
   }
 }
+
+/* function checkStock() {
+  var kodeBrg = $('.kodeBarang').serialize();
+  var kodeAs = $('.kodeAsal').serialize();
+  var statusAs = $('.statusAsal').serialize();
+  var qtyTrans = $('.qtyTransfer').serialize();
+
+  $.ajax({
+    type: 'POST',
+    url: '/transfer/stok',
+    data: {
+      _token: '{{ csrf_token() }}', 
+      kodeBarang: kodeBrg,
+      kodeAsal: kodeAs,
+      statusAsal: statusAs,
+      qtyTransfer: qtyTrans,
+      jumBrs: jumBaris.value,
+    },
+    success:function(data) {
+      cek = data.cek;
+      qtyAsalNow = data.qtyAsal;
+      // console.log(cek);
+    }
+  });
+
+  if(cek == 1) {
+    for(let i = 0; i < kodeBarang.length; i++) {
+      if(kodeBarang[i].value != '') {
+        stokAsal[i].value = qtyAsalNow[i];     
+      }          
+    }
+    
+    return false;
+  } else {
+    checkRequired();
+    return false;
+  }
+} */
 
 function checkRequired(e) {
   if((tanggal.value == "") || (kodeBarang[0].value == "") || (qtyTransfer[0].value == "")) {

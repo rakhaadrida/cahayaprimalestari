@@ -30,9 +30,6 @@ class TransferBarangController extends Controller
         $lastnumber++;
         $newcode = 'TB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
-        // $items = TempDetilTB::with(['barang', 'gudangAsal', 'gudangTujuan'])->where('id_tb', $newcode)->orderBy('created_at', 'asc')->get();
-        // $itemsRow = TempDetilTB::where('id_tb', $newcode)->count();
-
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
         $lastTB = TransferBarang::where('created_at', '!=', NULL)->latest()->take(1)->get();
@@ -45,14 +42,12 @@ class TransferBarangController extends Controller
             'tanggal' => $tanggal,
             'lastTB' => $lastTB,
             'status' => $status
-            // 'items' => $items,
-            // 'itemsRow' => $itemsRow
         ];
 
         return view('pages.pembelian.transferbarang.index', $data);
     }
 
-    public function cekStok(Request $request) {
+    /* public function cekStok(Request $request) {
         $gudang = Gudang::where('nama', $request->name)->get();
 
         $item = StokBarang::where('id_barang', $request->barang)->where('id_gudang', $gudang->first()->id)
@@ -60,6 +55,30 @@ class TransferBarangController extends Controller
         $data = [
             'stok' => $item->first()->stok,
             'kode' => $item->first()->id_gudang
+        ];
+
+        return response()->json($data);
+    } */
+
+    public function cekStok(Request $request) {
+        $jumlah = $request->jumBrs;
+        $cek = $jumlah; $qtyAsal = [];
+        for($i = 0; $i < $jumlah; $i++) {
+            if($request->kodeBarang[$i] != "") {
+                $stokAsal = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                        ->where('id_gudang', $request->kodeAsal[$i])
+                        ->where('status', $request->statusAsal[$i])->get();
+                array_push($qtyAsal, $stokAsal->first()->stok);
+                
+                if($request->qtyTransfer[$i] > $stokAsal->first()->stok) {
+                    $cek = 1;
+                }
+            }
+        }
+
+        $data = [
+            'cek' => $cek,
+            'qtyAsal' => $qtyAsal
         ];
 
         return response()->json($data);
@@ -125,8 +144,6 @@ class TransferBarangController extends Controller
                     $updateStok->{'stok'} += $request->qtyTransfer[$i];
                     $updateStok->save();
                 }
-                
-                // $deleteTemp = TempDetilTB::where('id_tb', $id)->where('id_barang', $request->kodeBarang[$i])->where('id_asal', $request->kodeAsal[$i])->where('id_tujuan', $request->kodeTujuan[$i])->delete();
             }
         }
 
