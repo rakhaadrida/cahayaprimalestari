@@ -1544,8 +1544,8 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  if((namaCust.value == "") || (tanggalKirim.value == "") || 
-  (kategori.value == "") || (kodeBarang[0].value == "") || (qty[0].value == "")) {
+  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || 
+  (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
   }
   else {

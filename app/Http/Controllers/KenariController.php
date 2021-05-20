@@ -196,12 +196,29 @@ class KenariController extends Controller
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $arKode = $newcode;
 
         if($status != 'LIMIT') {
             AccReceivable::create([
                 'id' => $newcode,
                 'id_so' => $kode,
-                'keterangan' => 'BELUM LUNAS'
+                // 'keterangan' => 'BELUM LUNAS'
+                'keterangan' => ($request->namaCustomer != 'REVISI' ? 'BELUM LUNAS' : 'LUNAS')
+            ]);
+        }
+
+        $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('tgl_bayar', $waktu->year)
+                    ->whereMonth('tgl_bayar', $month)->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
+        $lastnumber++;
+        $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
+
+        if($request->namaCustomer == 'REVISI') {
+            DetilAR::create([
+                'id_ar' => $arKode,
+                'id_cicil' => $newcode,
+                'tgl_bayar' => Carbon::now()->toDateString(),
+                'cicil' => $totNetto
             ]);
         }
 

@@ -209,7 +209,7 @@ class SalesOrderController extends Controller
                 'id_ar' => $arKode,
                 'id_cicil' => $newcode,
                 'tgl_bayar' => Carbon::now()->toDateString(),
-                'cicil' => 0
+                'cicil' => $totNetto
             ]);
         }
 
