@@ -1996,7 +1996,31 @@ function checkRequired(e) {
     e.stopPropagation();
   }
   else {
-    if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
+    const kdRow = document.querySelectorAll('.kdBrgRow');
+    document.getElementById("submitSO").removeAttribute('data-toggle');
+    document.getElementById("submitSO").removeAttribute('data-target');
+    cek = 0;
+    var kode = [];
+    for(let i = 0; i < (jumBaris.value - kdRow.length); i++) {
+      if(kodeBarang[i].value != '') {
+        kode.push(kodeBarang[i].value);
+      }
+    }
+
+    for(let i = 0; i < kdRow.length; i++) {
+      if(kdRow[i].value != '') {
+        kode.push(kdRow[i].value);
+      }
+    }
+
+    cek = new Set(kode).size !== kode.length;
+
+    if(cek === true) {
+      document.getElementById("submitSO").dataset.toggle = "modal";
+      document.getElementById("submitSO").dataset.target = "#modalDuplikat";
+      return false;
+    }
+    else if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalLimit";
       limitTitle.textContent = namaCust.value;
@@ -2020,38 +2044,10 @@ function checkRequired(e) {
       return false;
     } 
     else {
-      const kdRow = document.querySelectorAll('.kdBrgRow');
-      document.getElementById("submitSO").removeAttribute('data-toggle');
-      document.getElementById("submitSO").removeAttribute('data-target');
-      cek = 0;
-      var kode = [];
-      for(let i = 0; i < (jumBaris.value - kdRow.length); i++) {
-        if(kodeBarang[i].value != '') {
-          kode.push(kodeBarang[i].value);
-        }
-      }
-
-      for(let i = 0; i < kdRow.length; i++) {
-        if(kdRow[i].value != '') {
-          kode.push(kdRow[i].value);
-        }
-      }
-
-      cek = new Set(kode).size !== kode.length;
-
-      if(cek === true) {
-        document.getElementById("submitSO").dataset.toggle = "modal";
-        document.getElementById("submitSO").dataset.target = "#modalDuplikat";
-        return false;
-      } else {
-        document.getElementById("submitSO").dataset.toggle = "modal";
-        document.getElementById("submitSO").dataset.target = "#modalKonfirm";
-        return false;
-      }
+      document.getElementById("submitSO").dataset.toggle = "modal";
+      document.getElementById("submitSO").dataset.target = "#modalKonfirm";
+      return false;
     } 
-    /* document.getElementById("submitSO").dataset.toggle = "modal";
-    document.getElementById("submitSO").dataset.target = "#modalKonfirm";
-    return false; */
   }
 }
 
