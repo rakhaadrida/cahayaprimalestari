@@ -1991,14 +1991,12 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) ||
+  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || 
   (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
   }
   else {
     if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
-      const kdRow = document.querySelectorAll('.kdBrgRow');
-      console.log(kdRow[3].value);
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalLimit";
       limitTitle.textContent = namaCust.value;
