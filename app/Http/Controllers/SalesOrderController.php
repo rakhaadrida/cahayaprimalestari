@@ -515,12 +515,14 @@ class SalesOrderController extends Controller
         $tgl_so = $this->formatTanggal($tgl_so, 'Y-m-d');
 
         $items = SalesOrder::with(['customer', 'need_approval'])->where('id', $request->kode)->get();
-        $items->first()->tgl_so = $tgl_so;
-        $items->first()->id_customer = $request->kodeCust;
-        $items->first()->id_sales = $request->kodeSales;
-        $items->first()->kategori = $request->kategori;
-        $items->first()->tempo = $request->tempo;
-        $items->first()->save();
+        if(Auth::user()->roles == 'SUPER') {
+            $items->first()->tgl_so = $tgl_so;
+            $items->first()->id_customer = $request->kodeCust;
+            $items->first()->id_sales = $request->kodeSales;
+            $items->first()->kategori = $request->kategori;
+            $items->first()->tempo = $request->tempo;
+            $items->first()->save();
+        }
 
         if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE'))
             $kode = $items[0]->need_approval->last()->id;

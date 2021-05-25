@@ -77,21 +77,17 @@
                         <input type="hidden" name="kodeSales" id="kodeSales" value="{{ $items[0]->id_sales }}">
                       </div>
                     </div>
-                     @if(Auth::user()->roles == 'SUPER')
+                    @if(Auth::user()->roles == 'SUPER')
                       <div class="form-group row sj-after-first">
                         <label for="kategori" class="col-5 col-form-label text-bold text-right text-dark">Kategori</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-3">
-                          @if(Auth::user()->roles != 'SUPER')
-                            <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" name="kategori" id="kategori" value="{{ $items->first()->kategori }}" />
-                          @else
-                            <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="kategori" id="kategori" value="{{$items->first()->kategori}}" />
-                          @endif
+                          <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="kategori" id="kategori" value="{{ $items->first()->kategori }}" />
                         </div>
                         <label for="tempo" class="col-2 col-form-label text-bold text-right text-dark" style="margin-left: -45px">Tempo</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2">
-                            <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="tempo" id="tempo" value="{{ $items->first()->tempo }}"  onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off"/>
+                          <input type="text" class="form-control form-control-sm text-bold text-dark mt-1" name="tempo" id="tempo" value="{{ $items->first()->tempo }}"  onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off"/>
                         </div>
                         <span class="col-form-label text-bold">Hari</span>
                       </div>
