@@ -304,10 +304,9 @@
                               @if($item->tipe == 'Faktur')
                                 @foreach($gudang as $g)
                                   @php
-                                    $itemGud = \App\Models\DetilSO::where('id_so',
-                                            $item->id_dokumen)
-                                            ->where('id_barang', $i->id_barang)
-                                            ->where('id_gudang', $g->id)->get();
+                                    $itemGud = \App\Models\DetilApproval::where('id_app', $item->id)
+                                              ->where('id_barang', $i->id_barang)
+                                              ->where('id_gudang', $g->id)->get();
                                   @endphp
                                   @if($itemGud->count() != 0)
                                     <td align="right">{{ $itemGud[0]->qty }}</td>
@@ -540,20 +539,18 @@
                           @if($item->tipe == 'Faktur')
                             @foreach($gudang as $g)
                               @php
-                                $itemGud = \App\Models\DetilApproval::where('id_app',
-                                        $item->id)
-                                        ->where('id_barang', $iu->id_barang)
-                                        ->where('id_gudang', $g->id)->get();
+                                $itemGud = \App\Models\DetilApproval::where('id_app', $item->id)
+                                          ->where('id_barang', $iu->id_barang)
+                                          ->where('id_gudang', $g->id)->get();
                                 
-                                $qtyGud = \App\Models\DetilSO::where('id_so',
-                                        $item->id_dokumen)
-                                        ->where('id_barang', $iu->id_barang)
-                                        ->where('id_gudang', $g->id)->get();
+                                $qtyGud = \App\Models\DetilSO::where('id_so', $item->id_dokumen)
+                                          ->where('id_barang', $iu->id_barang)
+                                          ->where('id_gudang', $g->id)->get();
                               @endphp
                               @if($itemGud->count() != 0)
                                 <td align="right" 
                                 @if(($qtyGud->count() == 0) || ($itemGud[0]->qty != $qtyGud[0]->qty)) class="bg-warning text-danger" @endif>
-                                  {{ $itemGud[0]->qty }}
+                                  {{ $qtyGud[0]->qty }}
                                 </td>
                               @else
                                 <td></td>
