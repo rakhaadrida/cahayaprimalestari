@@ -172,12 +172,28 @@ class ApprovalController extends Controller
             $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
             $lastnumber++;
             $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+            $arKode = $newcode;
 
             AccReceivable::create([
                 'id' => $newcode,
                 'id_so' => $id,
-                'keterangan' => 'BELUM LUNAS'
+                'keterangan' => ($request->input("namaCustomer".$id) != 'REVISI' ? 'BELUM LUNAS' : 'LUNAS')
             ]);
+
+            $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();
+            $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
+            $lastnumber++;
+            $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
+
+            if($request->input("namaCustomer".$id) == 'REVISI') {
+                DetilAR::create([
+                    'id_ar' => $arKode,
+                    'id_cicil' => $newcode,
+                    'tgl_bayar' => Carbon::now()->toDateString(),
+                    'cicil' => $item->{'total'}
+                ]);
+            }
         }
 
         $waktu = Carbon::now('+07:00');

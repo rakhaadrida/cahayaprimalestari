@@ -198,13 +198,13 @@ class SalesOrderController extends Controller
             ]);
         }
 
-        $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('tgl_bayar', $waktu->year)
-                    ->whereMonth('tgl_bayar', $month)->get();
+        $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
-        if($request->namaCustomer == 'REVISI') {
+        if(($request->namaCustomer == 'REVISI') && ($status != 'LIMIT')) {
             DetilAR::create([
                 'id_ar' => $arKode,
                 'id_cicil' => $newcode,

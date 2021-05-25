@@ -76,7 +76,7 @@
                             <label for="tanggal" class="col-5 col-sm-4 col-md-3 col-lg-4 form-control-sm text-bold text-right mt-1">Nama @if(($item->tipe == 'Faktur') || ($item->tipe == 'RJ')) Customer @else Supplier @endif</label>
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-6 col-sm-5 col-md-7">
-                              <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
+                              <input type="text" name="namaCustomer{{$item->id_dokumen}}" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                               @if($item->tipe == 'Faktur')
                                 value="{{ $item->so->customer->nama }}" 
                               @elseif($item->tipe == 'Dokumen')
