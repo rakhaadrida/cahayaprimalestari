@@ -411,7 +411,7 @@
           margin-left: 0; 
           /* margin-left: 20px; */
           margin-right: 30px;
-          margin-top: -10px;
+          margin-top: -15px;
       }
 
       .table-footer {
