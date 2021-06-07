@@ -110,6 +110,13 @@ class LapKeuController extends Controller
         $sales = Sales::All();
         $salesOff = Sales::where('id', 'SLS03')->get();
 
+        // $barang = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
+        //         ->select('id_barang as id')->where('id_kategori', 'KAT01')
+        //         ->where('detilso.created_at', 'LIKE', $tahun.'-'.$month.'-%')
+        //         // ->whereYear('detilso.created_at', $tahun)->whereMonth('detilso.created_at', $month)
+        //         ->distinct('id_barang')->orderBy('id_barang')->get();
+        // return response()->json($barang);
+
         $items = $this->getItems($month, $tahun);
         $retur = $this->getRetur($month, $tahun);
 
@@ -175,7 +182,12 @@ class LapKeuController extends Controller
         $qty = 0; $qtySO = 0; $k = 0; $sisaQty = 0; $sisa = 0; $h = 0; $hpp = []; $kode = '';
         $hppPerKat = collect();
         foreach($jenis as $j) {
-            $barang = Barang::where('id_kategori', $j->id)->get();
+            // $barang = Barang::where('id_kategori', $j->id)->get();
+            $barang = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
+                    ->select('id_barang as id')->where('id_kategori', $j->id)
+                    ->where('detilso.created_at', 'LIKE', $tahun.'-'.$month.'-%')
+                    ->distinct('id_barang')->orderBy('id_barang')->get();
+                    
             foreach($barang as $b) {
                 $sisa = 0;
                 $totBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
