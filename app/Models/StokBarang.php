@@ -19,10 +19,10 @@ class StokBarang extends Model
     public $incrementing = false;
 
     public function barang() {
-        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id')->withTrashed();
     }
 
     public function gudang() {
-        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id');
+        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id')->withTrashed();
     }
 }

@@ -15,15 +15,15 @@ class BarangMasuk extends Model
     public $incrementing = false;
 
     public function gudang() {
-        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id');
+        return $this->belongsTo('App\Models\Gudang', 'id_gudang', 'id')->withTrashed();
     }
 
     public function supplier() {
-        return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id');
+        return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id')->withTrashed();
     }
 
     public function user() {
-        return $this->belongsTo('App\User', 'id_user', 'id');
+        return $this->belongsTo('App\User', 'id_user', 'id')->withTrashed();
     }
 
     public function detilbm() {

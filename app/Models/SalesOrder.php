@@ -16,15 +16,15 @@ class SalesOrder extends Model
     public $incrementing = false;
 
     public function customer() {
-        return $this->belongsTo('App\Models\Customer', 'id_customer', 'id');
+        return $this->belongsTo('App\Models\Customer', 'id_customer', 'id')->withTrashed();
     }
 
     public function sales() {
-        return $this->belongsTo('App\Models\Sales', 'id_sales', 'id');
+        return $this->belongsTo('App\Models\Sales', 'id_sales', 'id')->withTrashed();
     }
 
     public function user() {
-        return $this->belongsTo('App\User', 'id_user', 'id');
+        return $this->belongsTo('App\User', 'id_user', 'id')->withTrashed();
     }
 
     public function detilso() {

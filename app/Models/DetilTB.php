@@ -20,14 +20,14 @@ class DetilTB extends Model
     }
 
     public function barang() {
-        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id')->withTrashed();
     }
 
     public function gudangAsal() {
-        return $this->belongsTo('App\Models\Gudang', 'id_asal', 'id');
+        return $this->belongsTo('App\Models\Gudang', 'id_asal', 'id')->withTrashed();
     }
 
     public function gudangTuju() {
-        return $this->belongsTo('App\Models\Gudang', 'id_tujuan', 'id');
+        return $this->belongsTo('App\Models\Gudang', 'id_tujuan', 'id')->withTrashed();
     }
 }

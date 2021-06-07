@@ -20,6 +20,6 @@ class DetilBM extends Model
     }
 
     public function barang() {
-        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id');
+        return $this->belongsTo('App\Models\Barang', 'id_barang', 'id')->withTrashed();
     }
 }
