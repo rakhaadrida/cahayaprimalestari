@@ -58,9 +58,25 @@
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="subtotal" id="subtotal" value={{ number_format($totalBM->first()->totBM - $potBM->first()->potongan, 0, "", ".") }}>
                       </div>
                     </div>
+                    <div class="form-group row" style="margin-top: -25px">
+                      <label for="subtotal" class="col-5 col-form-label text-bold ">Total Retur</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="retur" id="retur" value={{ number_format($retur->first()->total, 0, "", ".") }}>
+                      </div>
+                    </div>
+                    <div class="form-group row" style="margin-top: -25px">
+                      <label for="subtotal" class="col-5 col-form-label text-bold ">Kurang Bayar</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="kurangBayar" id="kurangBayar" value={{ number_format($totalBM->first()->totBM - $retur->first()->total - $potBM->first()->potongan, 0, "", ".") }}>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="form-group row subtotal-so">
+                <div class="form-group row" style="margin-top: -60px">
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
@@ -315,7 +331,6 @@ for(let i = 0; i < bayarModal.length; i++) {
       kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + (+modalAwal[i].value - +e.target.value.replace(/\./g, "")));
     }
 
-    console.log(+e.target.value.replace(/\./g, "") > +kurangAkhir.value.replace(/\./g, ""));
     if(+e.target.value.replace(/\./g, "") > +kurangAkhir.value.replace(/\./g, "")) {
       modalAwal[i].value = '0';
       kurangAkhir.value = addCommas(+kurangAkhir.value.replace(/\./g, "") + +bayarModal[0].value.replace(/\./g, ""));
@@ -392,7 +407,7 @@ function addCommas(nStr) {
 }
 
 function checkLimit(e) {
-  if(+bayarModal[0].value.replace(/\./g, "") > '{{ $kurang }}') {
+  if((+bayarModal[0].value.replace(/\./g, "") > '{{ $kurang }}') && (+bayarModal[0].value.replace(/\./g, "") != 0)) {
     document.getElementById("submitAP").dataset.toggle = "modal";
     document.getElementById("submitAP").dataset.target = "#modalNotif";
     return false;

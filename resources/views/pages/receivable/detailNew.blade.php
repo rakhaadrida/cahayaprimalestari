@@ -58,9 +58,25 @@
                         <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="subtotal" id="subtotal" value={{ number_format($item->first()->so->total - $item->first()->so->diskon, 0, "", ".") }}>
                       </div>
                     </div>
+                    <div class="form-group row" style="margin-top: -25px">
+                      <label for="subtotal" class="col-5 col-form-label text-bold ">Total Retur</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="retur" id="retur" value={{ number_format($retur->first()->total, 0, "", ".") }}>
+                      </div>
+                    </div>
+                    <div class="form-group row" style="margin-top: -25px">
+                      <label for="subtotal" class="col-5 col-form-label text-bold ">Kurang Bayar</label>
+                      <span class="col-form-label text-bold">:</span>
+                      <span class="col-form-label text-bold ml-2">Rp</span>
+                      <div class="col-5">
+                        <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-right text-dark" name="kurangBayar" id="kurangBayar" value={{ number_format($item->first()->so->total - $retur->first()->total, 0, "", ".") }}>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="form-group row subtotal-so">
+                <div class="form-group row" style="margin-top: -60px">
                   <label for="alamat" class="col-2 col-form-label text-bold ">Nama Customer</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-4 mt-1">
@@ -395,7 +411,7 @@ function addCommas(nStr) {
 }
 
 function checkLimit(e) {
-  if(+cicilModal[0].value.replace(/\./g, "") > '{{ $kurang }}') {
+  if((+cicilModal[0].value.replace(/\./g, "") > '{{ $kurang }}') && (+cicilModal[0].value.replace(/\./g, "") != 0)) {
     document.getElementById("submitAR").dataset.toggle = "modal";
     document.getElementById("submitAR").dataset.target = "#modalNotif";
 

@@ -188,7 +188,7 @@ class AccReceivableController extends Controller
             $status = 'BELUM LUNAS';
 
         $items = DetilAR::where('id_ar', $request->kodeAR)->get();
-        $j = 0;
+        $j = 0; $totCicil = 0;
         foreach($items as $i) {
             if($j < $request->jumBaris) {
                 $tglDetil = $request->tgldetil[$j];
@@ -199,12 +199,17 @@ class AccReceivableController extends Controller
                     $i->cicil = str_replace(".", "", $request->cicildetil[$j]);
                     $i->save();
                 }
+
+                $totCicil += str_replace(".", "", $request->cicildetil[$j]);
             } else {
                 $i->delete();
             }
 
             $j++;
         }
+
+        if(str_replace(".", "", $request->kurangBayar) - $totCicil == 0)
+            $status = 'LUNAS';
 
         $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('created_at', $waktu->year)
                     ->whereMonth('created_at', $month)->get();
