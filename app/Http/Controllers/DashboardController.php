@@ -32,6 +32,7 @@ class DashboardController extends Controller
         if(Auth::user()->roles == 'SUPER') {        
             $salesMonthly = SalesOrder::selectRaw('sum(total) as sales')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                            ->where('id_customer', '!=', 'CUS1071')
                             ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $bulan)->get();
         }
 
@@ -59,6 +60,7 @@ class DashboardController extends Controller
         if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR')) {
             $salesAnnual = SalesOrder::selectRaw('sum(total) as sales')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                            ->where('id_customer', '!=', 'CUS1071')
                             ->whereYear('tgl_so', $tahun)->get();
             $retur = AR_Retur::selectRaw('sum(total) as total')
                     ->whereYear('tanggal', $tahun)->get();
@@ -78,7 +80,8 @@ class DashboardController extends Controller
             // $salesMonthly[0]->sales -= $returMon[0]->total;
 
             $salesPerMonth = SalesOrder::selectRaw('sum(total) as sales, MONTH(tgl_so) month')
-                            ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
+                            ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                            ->where('id_customer', '!=', 'CUS1071')->whereYear('tgl_so', $tahun)
                             ->groupBy('month')->get();
             // return response()->json($salesPerMonth);
             $returPerMonth = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
