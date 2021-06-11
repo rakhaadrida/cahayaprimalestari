@@ -44,6 +44,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                 ->join('sales', 'sales.id', 'so.id_sales')
                 ->select('so.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total'))
                 ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
+                ->where('id_customer', '!=', 'CUS1071')
                 ->whereYear('so.tgl_so', $this->tahun)
                 ->whereMonth('so.tgl_so', $this->month)
                 ->groupBy('so.id_sales', 'barang.id_kategori')

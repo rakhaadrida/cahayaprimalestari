@@ -231,7 +231,8 @@ class LapKeuController extends Controller
                             ->select('detilso.*')->where('id_barang', $b->id)
                             ->where('qty', '!=', 0)
                             ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $month)
-                            ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
+                            ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])
+                            ->where('id_customer', '!=', 'CUS1071')->get();
                            
                 if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {
                     $k = 0;
@@ -291,6 +292,7 @@ class LapKeuController extends Controller
                     // ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
                     ->select('so.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
+                    ->where('id_customer', '!=', 'CUS1071')
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
                     // ->groupBy('customer.id_sales', 'barang.id_kategori')
@@ -309,6 +311,7 @@ class LapKeuController extends Controller
                     // ->select('customer.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
                     ->select('so.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
+                    ->where('id_customer', '!=', 'CUS1071')
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
                     // ->groupBy('customer.id_sales', 'barang.id_kategori')
