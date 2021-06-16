@@ -23,22 +23,6 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        $items = Approval::where('tipe', 'Faktur')->where('status', 'BATAL')->get();
-        foreach($items as $i) {
-            $item = SalesOrder::where('id', $i->id_dokumen)->first();
-            $item->{'status'} = $i->status;
-            $item->save();
-        }
-
-        $items = Approval::where('tipe', 'Dokumen')->where('status', 'BATAL')->get();
-        foreach($items as $i) {
-            $item = BarangMasuk::where('id', $i->id_dokumen)->first();
-            $item->{'status'} = $i->status;
-            $item->save();
-        }
-
-        $items = NeedApproval::where('id_dokumen', 'IV21040888')->delete();
-
         return view('pages.gudang.index', $data);
     }
 
