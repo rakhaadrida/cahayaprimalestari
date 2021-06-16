@@ -124,7 +124,6 @@ class NotifController extends Controller
 
     public function markAsRead($id) {
         $item = Approval::where('id', $id)->first();
-        // return response()->json($item);
         $item->{'baca'} = 'T';
         $item->save();
 

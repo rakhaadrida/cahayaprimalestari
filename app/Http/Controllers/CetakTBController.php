@@ -74,7 +74,7 @@ class CetakTBController extends Controller
     } 
 
     public function update($awal, $akhir) {
-        $items = TransferBarang::whereBetween('id', [$awal, $akhir])->get();
+        $items = TransferBarang::where('status', 'INPUT')->whereBetween('id', [$awal, $akhir])->get();
 
         foreach($items as $item) {
             $item->status = 'CETAK';

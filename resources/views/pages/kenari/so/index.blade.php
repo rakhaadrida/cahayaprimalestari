@@ -549,6 +549,9 @@ function displayCust(e) {
       tempTempo = '';
       namaCust.value = '';
     }
+
+    radiosJen[0].checked = false;
+    radiosJen[0].checked = false;
   @endforeach
 
   @foreach($totalKredit as $t)

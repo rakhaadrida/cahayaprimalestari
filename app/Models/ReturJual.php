@@ -12,7 +12,7 @@ class ReturJual extends Model
     public $incrementing = false;
 
     public function customer() {
-        return $this->belongsTo('App\Models\Customer', 'id_customer', 'id');
+        return $this->belongsTo('App\Models\Customer', 'id_customer', 'id')->withTrashed();
     }
 
     public function detilrj() {

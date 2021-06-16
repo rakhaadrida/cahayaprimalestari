@@ -20,19 +20,6 @@ class SupplierController extends Controller
         $data = [
             'items' => $items
         ];
-
-        // $item = DetilBM::where('diskon', NULL)->get();
-        // foreach($item as $i) {
-        //     $i->diskon = 25;
-        //     $i->disPersen = 25;
-        //     $i->save();
-        // }
-
-        // $item = BarangMasuk::where('diskon', 'F')->get();
-        // foreach($item as $i) {
-        //     $i->diskon = 'T';
-        //     $i->save();
-        // }
         
         return view('pages.supplier.index', $data);
     }

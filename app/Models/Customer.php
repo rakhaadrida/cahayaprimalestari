@@ -15,7 +15,7 @@ class Customer extends Model
     public $incrementing = false;
     
     public function sales() {
-        return $this->belongsTo('App\Models\Sales', 'id_sales', 'id');
+        return $this->belongsTo('App\Models\Sales', 'id_sales', 'id')->withTrashed();
     }
 
     public function so() {

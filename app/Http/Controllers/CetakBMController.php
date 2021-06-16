@@ -95,7 +95,7 @@ class CetakBMController extends Controller
     } 
 
     public function update($awal, $akhir) {
-        $items = BarangMasuk::whereBetween('id', [$awal, $akhir])->get();
+        $items = BarangMasuk::whereIn('status', ['INPUT', 'UPDATE'])->whereBetween('id', [$awal, $akhir])->get();
 
         foreach($items as $item) {
             $item->status = 'CETAK';

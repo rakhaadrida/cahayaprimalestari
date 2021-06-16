@@ -12,7 +12,7 @@ class ReturBeli extends Model
     public $incrementing = false;
 
     public function supplier() {
-        return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id');
+        return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id')->withTrashed();
     }
 
     public function detilrb() {

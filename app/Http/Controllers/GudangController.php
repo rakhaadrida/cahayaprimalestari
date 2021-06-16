@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
-use App\Models\AccReceivable;
-use App\Models\AccPayable;
-use App\Models\DetilAR;
-use App\Models\DetilAP;
+use App\Models\NeedApproval;
+use App\Models\Approval;
+use App\Models\SalesOrder;
+use App\Models\BarangMasuk;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GudangExport;
 use Carbon\Carbon;
@@ -23,12 +23,21 @@ class GudangController extends Controller
             'items' => $items
         ];
 
-        /* $kode = ['IV21050065', 'IV21050063', 'IV21050058', 'IV21050054', 'IV21041394', 'IV21041362', 'IV21041337', 'IV21041330', 'IV21041324', 'IV21041250', 'IV21040133', 'IV21040061', 'IV21002710', 'IV21002595', 'IV21002111', 'IV21001601', 'IV21001463', 'IV21001348', 'IV21000098', 'IV21000071', 'IN21000177P'];
-        $items = AccReceivable::whereIn('id_so', $kode)->get();
+        $items = Approval::where('tipe', 'Faktur')->where('status', 'BATAL')->get();
         foreach($items as $i) {
-            $i->keterangan = 'LUNAS';
-            $i->save();
-        } */
+            $item = SalesOrder::where('id', $i->id_dokumen)->first();
+            $item->{'status'} = $i->status;
+            $item->save();
+        }
+
+        $items = Approval::where('tipe', 'Dokumen')->where('status', 'BATAL')->get();
+        foreach($items as $i) {
+            $item = BarangMasuk::where('id', $i->id_dokumen)->first();
+            $item->{'status'} = $i->status;
+            $item->save();
+        }
+
+        $items = NeedApproval::where('id_dokumen', 'IV21040888')->delete();
 
         return view('pages.gudang.index', $data);
     }

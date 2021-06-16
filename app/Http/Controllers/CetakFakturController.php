@@ -104,7 +104,10 @@ class CetakFakturController extends Controller
     } 
 
      public function update($awal, $akhir) {
-        $items = SalesOrder::whereBetween('id', [$awal, $akhir])->get();
+        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
+                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+                ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
+                ->whereBetween('so.id', [$awal, $akhir])->get();
 
         foreach($items as $item) {
             $item->status = 'CETAK';
