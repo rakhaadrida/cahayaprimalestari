@@ -35,11 +35,13 @@ class AccPayableController extends Controller
                 ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
                 ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')
                 ->where('ap.id', '!=', $apLast->first()->id)
-                ->orderBy('ap.created_at', 'desc')->get();
+                ->where('keterangan', 'BELUM LUNAS')->orWhere('diskon', 'F')
+                ->groupBy('ap.id_bm')->orderBy('ap.created_at', 'desc')->get();
         else
             $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
                 ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
-                ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')->orderBy('ap.created_at', 'desc')->get();               
+                ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')->where('keterangan', 'BELUM LUNAS')->orWhere('diskon', 'F')
+                ->groupBy('ap.id_bm')->orderBy('ap.created_at', 'desc')->get();               
 
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -93,7 +95,7 @@ class AccPayableController extends Controller
             $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
                 ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
                 ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')->whereIn('keterangan', [$status[0], $status[1]])
-                ->orderBy('ap.created_at', 'desc')->get();
+                ->groupBy('ap.id')->orderBy('ap.created_at', 'desc')->get();
         } else {
             $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
                 ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
@@ -136,11 +138,18 @@ class AccPayableController extends Controller
 
     public function process(Request $request) {
         $items = BarangMasuk::where('id_faktur', $request->kode)->get();
+        $ap = AccPayable::where('id_bm', $request->kode)->first();
+        $status = $ap->{'keterangan'};
+
+        $ap->{'keterangan'} = 'Belum Lunas';
+        $ap->save();
+
+        $ap->{'keterangan'} = $status;
+        $ap->save();
 
         foreach($items as $i) {
             $total = 0;
             $detil = DetilBM::where('id_bm', $i->id)->get();
-            // $bm = BarangMasuk::where('id', $request->kode)->first();
 
             foreach($detil as $d) {
                 $d->harga = str_replace(".", "", $request->{"harga".$i->id.$d->id_barang});
@@ -152,9 +161,7 @@ class AccPayableController extends Controller
             }
 
             $i->tempo = $request->tempo != '' ? $request->tempo : 0;
-            // $i->total = str_replace(".", "", $request->grandtotal);
             $i->total = $total;
-            // $i->potongan = str_replace(".", "", $request->potongan);
             $i->diskon = 'T';
             $i->save();
         }
@@ -192,6 +199,10 @@ class AccPayableController extends Controller
 
         $tglBayar = $request->tgl;
         $tglBayar = $this->formatTanggal($tglBayar, 'Y-m-d');
+
+        $ap = AccPayable::where('id', $request->kodeAP)->first();
+        $ap->{'keterangan'} = 'Belum Lunas';
+        $ap->save();
 
         if(str_replace(".", "", $request->kurangAkhir) - (int) str_replace(".", "", $request->bayar) == 0)
             $status = 'LUNAS';
@@ -272,8 +283,6 @@ class AccPayableController extends Controller
         $retur = DetilRAP::join('ap_retur', 'ap_retur.id', 'detilrap.id_retur')
                 ->where('id_ap', $item->first()->id)->orderBy('tgl_retur', 'asc')->get();
         $total = AP_Retur::selectRaw('sum(total) as total')->where('id_ap', $item->first()->id)->get();
-        // $barang = Barang::All();
-        // $harga = HargaBarang::All();
 
         $returBeli = ReturBeli::where('id_supplier', $item->first()->bm->first()->id_supplier)->get();
         $detilRB = DetilRB::where('id_retur', $request->nomorRetur)->get();
@@ -283,8 +292,6 @@ class AccPayableController extends Controller
             'item' => $item,
             'retur' => $retur,
             'total' => $total,
-            // 'barang' => $barang,
-            // 'harga' => $harga,
             'returBeli' => $returBeli,
             'detilRB' => $detilRB,
             'kode' => $kode
@@ -307,10 +314,6 @@ class AccPayableController extends Controller
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'RTP'.$tahun.$bulan.sprintf("%04s", $lastnumber);
-
-        // $tanggal = Carbon::now('+07:00')->toDateString();
-        // $total = (str_replace(".", "", $request->{"harga".$request->kode}) * 
-        //         $request->{"qty".$request->kode}) - str_replace(".", "", $request->{"diskonRp".$request->kode});
 
         AP_Retur::create([
             'id' => $newcode,
