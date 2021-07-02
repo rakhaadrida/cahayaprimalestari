@@ -48,8 +48,8 @@ class SalesOrderController extends Controller
         $tahun = substr($waktu->year, -2);
 
         $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('tgl_so', $waktu->year)
-                    ->whereMonth('tgl_so', $month)->get();
+                    ->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
@@ -147,8 +147,8 @@ class SalesOrderController extends Controller
         $tahun = substr($waktu->year, -2);
 
         $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('tgl_so', $waktu->year)
-                    ->whereMonth('tgl_so', $month)->get();
+                    ->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
