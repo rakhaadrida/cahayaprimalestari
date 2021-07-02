@@ -65,7 +65,7 @@ class KenariController extends Controller
 
         $lastcodeKen = SalesOrder::join('users', 'users.id', 'so.id_user')
                         ->selectRaw('max(so.id) as id')->where('roles', 'KENARI')
-                        ->whereYear('created_at', $waktu->year)->whereMonth('created_at', $month)->get();
+                        ->whereYear('so.created_at', $waktu->year)->whereMonth('so.created_at', $month)->get();
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
