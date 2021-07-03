@@ -23,6 +23,27 @@ class GudangController extends Controller
             'items' => $items
         ];
 
+        NeedApproval::where('id_dokumen', 'IV21070081')->delete();
+        $item = SalesOrder::where('id', 'IV21070081')->first();
+        $item->{'status'} = 'BATAL';
+        $item->save();
+
+        $lastcode = Approval::selectRaw('max(id) as id')->whereYear('tanggal', '2021')
+                    ->whereMonth('tanggal', '7')->get();
+        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
+        $lastnumber++;
+        $newcode = 'APR2107'.sprintf('%04s', $lastnumber);
+
+        Approval::create([
+            'id' => $newcode,
+            'id_dokumen' => 'IV21070081',
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => 'BATAL',
+            'keterangan' => 'batal',
+            'tipe' => 'Faktur',
+            'baca' => 'T'
+        ]);
+
         return view('pages.gudang.index', $data);
     }
 
