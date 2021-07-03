@@ -58,14 +58,14 @@ class KenariController extends Controller
         $tahun = substr($waktu->year, -2);
 
         $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
+                    ->whereYear('created_at', $waktu->year)->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $lastcodeKen = SalesOrder::join('users', 'users.id', 'so.id_user')
                         ->selectRaw('max(so.id) as id')->where('roles', 'KENARI')
-                        ->whereYear('tgl_so', $waktu->year)->whereMonth('tgl_so', $month)->get();
+                        ->whereYear('so.created_at', $waktu->year)->whereMonth('so.created_at', $month)->get();
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -156,8 +156,8 @@ class KenariController extends Controller
         $tahun = substr($waktu->year, -2);
 
         $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('tgl_so', $waktu->year)
-                    ->whereMonth('tgl_so', $month)->get();
+                    ->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
@@ -192,7 +192,7 @@ class KenariController extends Controller
         ]);
 
         $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
-                    ->selectRaw('max(ar.id) as id')->whereMonth('tgl_so', $month)->get();
+                    ->selectRaw('max(ar.id) as id')->where('ar.id', 'LIKE', '%'.$tahun.$bulan.'%')->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
