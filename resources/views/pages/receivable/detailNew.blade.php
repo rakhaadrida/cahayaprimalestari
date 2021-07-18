@@ -107,14 +107,7 @@
                 <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $total = 0; $kurang = $item->first()->so->total - $retur->first()->total; @endphp
                   @foreach($detilar as $d)
-                    @if($d->cicil != 0)
-                      {{-- <tr class="table-modal-first-row text-dark" style="font-size: 16px !important">
-                        <td class="text-center">{{ $i }}</td>
-                        <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_bayar)->format('d-M-y') }}</td>
-                        <td class="text-right">{{ number_format($d->cicil, 0, "", ".") }}</td>
-                        @php $kurang -= $d->cicil; @endphp
-                        <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
-                      </tr> --}}
+                    {{-- @if($d->cicil != 0) --}}
                       <tr class="table-modal-first-row text-dark" id="{{$i-1}}" style="font-size: 16px !important">
                         <td class="text-center align-middle">{{ $i }}</td>
                         <td class="text-center">
@@ -134,10 +127,10 @@
                           </a>
                         </td>
                       </tr>
-                    @endif
+                    {{-- @endif --}}
                     @php $i++; $total += $d->cicil; @endphp
                   @endforeach
-                  @if(($item->first()->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
+                  @if((($item->first()->keterangan == 'BELUM LUNAS') || ($item->first()->keterangan == 'Belum Lunas')) && (Auth::user()->roles != 'OFFICE02'))
                     <input type="hidden" name="kurangAwal" class="kurangAwal" value="{{ $kurang }}">
                     <tr class="text-dark">
                       <td class="text-center align-middle">{{ $i }}</td>
