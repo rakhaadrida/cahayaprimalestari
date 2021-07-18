@@ -130,6 +130,16 @@ class NotifController extends Controller
         return redirect()->route('notif');
     }
 
+    public function markAsReadAll() {
+        $items = Approval::where('baca', 'F')->get();
+        foreach($items as $item) {
+            $item->baca = 'T';
+            $item->save();
+        }
+
+        return redirect()->route('notif');
+    }
+
     public function afterPrint($id, $kode) {
         $item = SalesOrder::where('id', $id)->first();
         $item->{'status'} = 'CETAK';

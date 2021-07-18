@@ -363,6 +363,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
         Route::get('notif/read/{id}', 'NotifController@markAsRead')->name('notif-read');
+        Route::get('notif/read-all', 'NotifController@markAsReadAll')->name('notif-read-all');
         Route::get('notif/afterPrint/{id}/{kode}', 'NotifController@afterPrint')->name('notif-after-print');
     });
 

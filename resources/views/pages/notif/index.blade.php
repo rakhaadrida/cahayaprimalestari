@@ -12,6 +12,7 @@
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Notifikasi</h1>
+      <a href="{{ route('notif-read-all') }}" class="btn btn-sm btn-success shadow-sm mb-3">Tandai Semua Sudah Dibaca</a>
   </div>
 
   <div class="row">
