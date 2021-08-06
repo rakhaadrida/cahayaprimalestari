@@ -38,14 +38,13 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
                         <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly required>
-                        {{-- value="{{ $newcode }}" readonly --}}
                       </div>
                       <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
                         <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold mt-1" name="tanggal" value="{{ $tanggal }}" required>
                       </div>
-                    </div>   
+                    </div>
                   </div>
                 </div>
                 <div class="form-group row" style="margin-top: -18px">
@@ -133,28 +132,6 @@
                       </div>
                       <span class="col-form-label text-bold input-right">hari</span>
                     </div>
-                    {{-- <div class="form-group row total-po">
-                      <label for="waktuTagih" class="col-6 col-form-label text-bold">Waktu Penagihan</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <div class="col-3">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="waktuTagih">
-                      </div>
-                      <span class="col-form-label text-bold">hari</span>
-                    </div>
-                    <div class="form-group row total-po">
-                      <label for="diskonFaktur" class="col-6 col-form-label text-bold">Diskon Faktur</label>
-                      <span class="col-form-label text-bold">:</span>
-                      <div class="col-3">
-                        <input type="text" class="form-control form-control-sm text-bold mt-1" name="diskonFaktur" id="diskonFaktur"
-                          @if($itemsRow != 0) 
-                            value="{{ $items[0]->diskon_faktur }}"
-                          @else 
-                            value="0"
-                          @endif
-                        />
-                      </div>
-                      <span class="col-form-label text-bold">%</span>
-                    </div> --}}
                     <div class="form-group row total-po">
                       <label for="pkp" class="col-6 col-form-label text-bold text-right">PKP</label>
                       <span class="col-form-label text-bold">:</span>
@@ -188,7 +165,7 @@
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-              
+
               <!-- Tabel Data Detil PO -->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" tabindex="-1" class="text-primary text-bold">
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
@@ -227,8 +204,8 @@
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
-                      <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
+                      <td>
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty"
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                         <input type="hidden" name="teksSat[]" class="teksSat">
                         <input type="hidden" name="teksSatUk[]" class="teksSatUk">
@@ -237,11 +214,11 @@
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
+                        <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan"
                         value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'sat')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 5 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe"
                         value="{{ old('tipe[]') }}">
                       </td>
                       <td>
@@ -251,11 +228,11 @@
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
+                        <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon"
                         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off">
                       </td>
                       <td>
-                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
+                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp"
                         value="{{ old('diskonRp[]') }}" >
                       </td>
                       <td>
@@ -267,13 +244,13 @@
                         </a>
                       </td>
                     </tr>
-                    
+
                     <div class="modal modalGudang" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true" class="h2 text-bold">&times;</span>
+                                <span aria-hidden="true" id="closeModal" class="h2 text-bold">&times;</span>
                             </button>
                             <h4 class="modal-title text-bold">Pilih Gudang</h4>
                           </div>
@@ -346,9 +323,6 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="subtotal" id="subtotal" readonly class="form-control-plaintext form-control-sm text-bold text-secondary text-right mt-1" />
-                  {{-- @if($itemsRow != 0) 
-                    value="{{ $totalNotPPN }}"
-                  @endif --}}
                 </div>
               </div>
               <div class="form-group row justify-content-end total-so so-info-total">
@@ -357,9 +331,6 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="diskonFaktur" id="diskonFaktur" class="form-control form-control-sm text-bold text-dark text-right mt-1 diskon-faktur" placeholder="Input Diskon" onkeypress="return angkaSaja(event, 'OKE')" />
-                  {{-- @if($itemsRow != 0) 
-                    value="{{ $totalNotPPN }}"
-                  @endif --}}
                 </div>
               </div>
               <div class="form-group row justify-content-end total-so so-info-total">
@@ -368,9 +339,6 @@
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
                   <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext form-control-sm text-bold text-secondary text-right mt-1" />
-                  {{-- @if($itemsRow != 0) 
-                    value="{{ $totalNotPPN }}"
-                  @endif --}}
                 </div>
               </div>
               <div class="form-group row justify-content-end total-so so-info-total">
@@ -378,10 +346,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right" 
-                  {{-- @if($itemsRow != 0) 
-                    value="{{ $ppn }}"
-                  @endif --}}
+                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right"
                   />
                 </div>
               </div>
@@ -390,10 +355,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right mt-1" 
-                  {{-- @if($itemsRow != 0) 
-                    value="{{ $grandtotal }}"
-                  @endif --}}
+                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right mt-1"
                   />
                 </div>
               </div>
@@ -470,7 +432,6 @@
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          {{-- <a href="{{ url('/so/process/'.$newcode.'/CETAK') }}" class="btn btn-success btn-block text-bold btnCetak">Cetak</a> --}}
                           <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
                         </div>
                         <div class="col-3">
@@ -498,12 +459,6 @@
                   </div>
                 </div>
               </div>
-
-              {{-- @if($status == 'true')
-                <!-- Tampilan Cetak -->
-                <iframe src="{{url('so/cetak/'.$lastSO[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-              @endif --}}
-
             </form>
           </div>
         </div>
@@ -517,17 +472,6 @@
 @push('addon-script')
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
-
-/* @if($status == 'true')
-  const printFrame = document.getElementById("frameCetak").contentWindow;
-
-  printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('so-after-print', $lastSO[0]->id) }}";
-  }
-  
-  printFrame.window.focus();
-  printFrame.window.print();
-@endif */ 
 
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
@@ -609,7 +553,7 @@ const limitNama = document.getElementById('limitNama');
 const limitAngka = document.getElementById('limitAngka');
 var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
 var kodeModal; var totPast; var g; var gdg; var tempQty = 0;
-var sisa; var stokJohar; var stokLain; var totStok;
+var sisa; var stokJohar; var stokLain; var totStok; var cekModal;
 
 /** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keyup', displayCust);
@@ -624,11 +568,11 @@ diskonFaktur.addEventListener('keyup', displayTotal);
 
 Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayJenis);
-}); 
+});
 
 Array.prototype.forEach.call(radiosJen, function(radio) {
    radio.addEventListener('change', displayTempo);
-}); 
+});
 
 /** Tampil Id Supplier **/
 function displayCust(e) {
@@ -682,11 +626,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   tanggalKirim.value = value;
 }
 
@@ -709,7 +653,7 @@ function displayJenis(e) {
     radiosJen[0].disabled = true;
     radiosJen[1].disabled = true;
   }
-} 
+}
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
@@ -723,7 +667,7 @@ function displayTempo(e) {
     tempo.removeAttribute('required');
     tempo.value = '';
   }
-} 
+}
 
 /** Add New Table Line **/
 function displayRow(e) {
@@ -749,12 +693,12 @@ function displayRow(e) {
         <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
       </td>
       <td>
-        <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
+        <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow"
         value="{{ old('satuan[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
         autocomplete="off">
       </td>
       <td>
-        <input type="text" tabindex="${tab += 5}" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow" 
+        <input type="text" tabindex="${tab += 5}" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow"
         value="{{ old('tipe[]') }}">
       </td>
       <td>
@@ -764,7 +708,7 @@ function displayRow(e) {
         <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
       </td>
       <td style="width: 60px">
-        <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
+        <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow"
         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9, tanda +, dan tanda koma" autocomplete="off">
       </td>
       <td style="width: 120px">
@@ -779,7 +723,7 @@ function displayRow(e) {
         </a>
       </td>
     </tr>
-  `; 
+  `;
 
   const newModal = `
     <div class="modal modalGudangRow" id="gud${newNum}" tabindex="-1" role="dialog" aria-labelledby="${newNum}" aria-hidden="true">
@@ -854,7 +798,6 @@ function displayRow(e) {
 
   $(tablePO).append(newTr);
   $(tablePO).append(newModal);
-  // jumBaris.value = newNum;
   jumBaris.value = +jumBaris.value + 1;
   const newRow = document.getElementById(newNum);
   const newMod = document.getElementById("gud"+newNum);
@@ -895,14 +838,14 @@ function displayRow(e) {
   document.getElementById("resetSO").tabIndex = tab++;
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keyup", displayHargaRow); 
+  brgRow.addEventListener("keyup", displayHargaRow);
   kodeRow.addEventListener("keyup", displayHargaRow);
-  brgRow.addEventListener("blur", displayHargaRow); 
+  brgRow.addEventListener("blur", displayHargaRow);
   kodeRow.addEventListener("blur", displayHargaRow);
 
-  brgRow.addEventListener("change", resetQtyRow); 
+  brgRow.addEventListener("change", resetQtyRow);
   kodeRow.addEventListener("change", resetQtyRow);
-  
+
   function displayHargaRow(e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
@@ -911,7 +854,7 @@ function displayRow(e) {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
       diskonRow.removeAttribute('required');
-    } 
+    }
 
     @foreach($barang as $br)
       if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
@@ -922,7 +865,6 @@ function displayRow(e) {
           pcs.innerHTML = 'Pcs';
           teksSatRow.value = 'Pcs';
           teksSatUkRow.value = 'Dus';
-          // satuanRow.value = '';
           satuanRow.removeAttribute('readonly');
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
@@ -938,7 +880,6 @@ function displayRow(e) {
           satuanUkuran.innerHTML = 'Dus';
           teksSatUkRow.value = 'Dus';
           teksSatRow.value = 'Set';
-          // satuanRow.value = '';
         }
         else {
           pcs.innerHTML = 'Meter';
@@ -966,11 +907,6 @@ function displayRow(e) {
         diskonRow.setAttribute('required', true);
       }
     @endforeach
-
-    // kodeGudangRow.value = 'GDG01';
-    // qtyGudangRow.value = '';
-    // qtyRow.value = '';
-    // satuanRow.value = '';
   }
 
   function resetQtyRow(e) {
@@ -980,9 +916,9 @@ function displayRow(e) {
     satuanRow.value = '';
   }
 
-  hargaRow.addEventListener("keyup", displayHargaCustomRow); 
+  hargaRow.addEventListener("keyup", displayHargaCustomRow);
   hargaRow.addEventListener("blur", displayHargaCustomRow);
-  
+
   function displayHargaCustomRow(e) {
     $(this).val(function(index, value) {
       return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -1007,66 +943,58 @@ function displayRow(e) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
-      $(qtyRow).tooltip('show');  
+      $(qtyRow).tooltip('show');
       e.preventDefault();
     }
-    
+
     return true;
-  });  
+  });
 
   satuanRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
-      $(satuanRow).tooltip('show');  
+      $(satuanRow).tooltip('show');
       e.preventDefault();
     }
-    
+
     return true;
-  });  
+  });
 
   /** Tampil Jumlah **/
-  qtyRow.addEventListener("blur", displayQtyRow);
+  qtyRow.addEventListener("blur", checkQtyRow);
   if(teksSatRow.value == 'Pcs')
-    satuanRow.addEventListener("blur", displayQtyRow);
-  else 
-    satuanRow.addEventListener("change", displayQtyRow);
+    satuanRow.addEventListener("blur", checkQtyRow);
+  else
+    satuanRow.addEventListener("change", checkQtyRow);
 
-  function displayQtyRow(e) {
+  function checkQtyRow(e) {
     stokJohar = 0;
     stokLain = [];
     totStok = 0;
-    var kgr = [];
-    var urutKGR = 1;
 
-    @foreach($gudang as $g)
-      kgr.push('{{ $g->id }}');
-    @endforeach
-
-    @foreach($stok as $s)
-      if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
-        stokJohar = '{{ $s->stok }}';
-        totStok = +totStok + +stokJohar;
-      }
-      else if('{{ $s->id_barang }}' == kodeRow.value){
-        for(let kr = urutKGR; kr < kgr.length; kr++) {
-          if('{{ $s->id_gudang }}' == kgr[kr]) {
-            stokLain.push('{{ $s->stok }}');
-            totStok = +totStok + +'{{ $s->stok }}';
-            break;
-          } else {
-            stokLain.push(0);
+    if(e.target.value != '') {
+      $.ajax({
+          type: 'POST',
+          url: '/so/check/stock/' + kodeRow.value,
+          data: {
+              _token: '{{ csrf_token() }}',
+          },
+          dataType: 'json',
+          success:function(data) {
+              stokJohar = data.stokJohar.stok;
+              totStok = data.totalStok;
+              stokLain = data.stokLain;
+              displayQtyRow(e.target.id, e.target.value, stokJohar, totStok, stokLain)
           }
-        }
-        urutKGR++;
-        // stokLain.push('{{ $s->stok }}');
-        // totStok = +totStok + +'{{ $s->stok }}';
-      }
-    @endforeach
+      });
+    }
+  }
 
-    hitungQtyRow(e.target.id, e.target.value, teksSatRow.value, ukuranRow.value);
+  function displayQtyRow(id, qtyValue, stokJohar, totStok, stokLain) {
+    hitungQtyRow(id, qtyValue, teksSatRow.value, ukuranRow.value);
 
-    if(e.target.value == "") {
+    if(qtyValue == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
       jumlahRow.value = "";
@@ -1076,7 +1004,7 @@ function displayRow(e) {
       qtyRow.value = "";
       satuanRow.value = "";
     }
-    else if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > totStok)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow.value) > totStok)) {
+    else if(((id == `qtyRow${newNum}`) && (+qtyValue > totStok)) || ((id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+qtyValue * +ukuranRow.value) > totStok)) {
       $('#notif'+newNum).modal("show");
       nmbrgRow.textContent = brgRow.value;
       totalstokRow.textContent = `${totStok} ${teksSatRow.value}`;
@@ -1098,10 +1026,10 @@ function displayRow(e) {
       return false;
     }
     else {
-      if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > stokJohar)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow.value) > stokJohar)) {
+      if(((id == `qtyRow${newNum}`) && (+qtyValue > stokJohar)) || ((id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+qtyValue * +ukuranRow.value) > stokJohar)) {
         var arrJumQtyRow = qtyGudangRow.value.split(',');
         var jumQtyRow = arrJumQtyRow.reduce(getSum, 0);
-        if((tempQty == 0) || ((tempQty > 0) && (jumQtyRow != e.target.value))) {
+        if((tempQty == 0) || ((tempQty > 0) && (jumQtyRow != qtyValue))) {
           $('#gud'+newNum).modal("show");
           kodeModal = newNum;
           teksJoharRow.textContent = `${stokJohar}`;
@@ -1149,7 +1077,6 @@ function displayRow(e) {
               gudangUkuranRow[i].textContent = ``;
             }
           }
-          // qtyGudangRow.value = stokJohar;
         }
       }
       else {
@@ -1168,8 +1095,7 @@ function displayRow(e) {
       nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
       checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
-    // total_ppn(subtotal.value.replace(/\./g, ""));
-    tempQty = e.target.value;
+    tempQty = qtyValue;
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
@@ -1182,11 +1108,12 @@ function displayRow(e) {
       else if(teks == 'Rol')
         satuanRow.value = +angka * +ukuran;
     }
-    else if(kode == `satuanRow${newNum}`) 
+    else if(kode == `satuanRow${newNum}`)
       qtyRow.value = +angka * +ukuran;
   }
 
   $('#gud'+newNum).on('shown.bs.modal', function(e) {
+    cekModal = 0;
     const kodeGudRow = document.querySelectorAll(".kodeGudRow"+newNum);
     const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
     kodeGudangRow.value = 'GDG01';
@@ -1195,8 +1122,8 @@ function displayRow(e) {
     const btnPilihRow = document.querySelectorAll(".btnPilihRow"+newNum);
     for(let i = 0; i < btnPilihRow.length; i++) {
       btnPilihRow[i].disabled = false;
-      // btnPilihRow[i].addEventListener("click", function (e) {
       $(btnPilihRow[i]).off('click').on('click', function(e) {
+        cekModal = 1;
         totPast = +stokGudangRow[i].textContent;
         if(+totPast < +sisaQtyRow.textContent) {
           btnPilihRow[i].disabled = true;
@@ -1210,27 +1137,17 @@ function displayRow(e) {
           $('#gud'+newNum).modal("hide");
           tipeRow.focus();
         }
-        // btnPilih[i].removeEventListener('click', handler);
-
-        /* totPast = +qtyGudangRow.value + +stokGudangRow[i].textContent;
-        if(totPast < qtyOrderRow.textContent) {
-          sisa = +sisaQtyRow.textContent - +stokGudangRow[i].textContent;
-          qtyGudangRow.value = qtyGudangRow.value.concat(`,${stokGudangRow[i].textContent}`);
-          qtyGudangRow.value = qtyGudangRow.value.concat(`,${sisa}`);
-          kodeGudangRow.value = kodeGudangRow.value.concat(`,${kodeGudRow[i].value}`);
-          @foreach($gudang as $g)
-            if(('{{ $g->id }}' != kodeGudRow.value) && ('{{ $g->id }}' != 'GDG01')) {
-              kodeGudangRow.value = kodeGudangRow.value.concat(`,{{ $g->id }}`);
-            }
-          @endforeach
-        } 
-        else {
-          qtyGudangRow.value = qtyGudangRow.value.concat(`,${sisaQtyRow.textContent}`);
-          kodeGudangRow.value = kodeGudangRow.value.concat(`,${kodeGudRow[i].value}`);
-        }
-        $('#gud'+newNum).modal("hide"); */
       });
     }
+
+    $('#gud'+newNum).on('hidden.bs.modal', function () {
+      if(cekModal == 0) {
+        qtyRow.value = '';
+        satuanRow.value = '';
+        jumlahRow.value = '';
+        nettoRow.value = '';
+      }
+    });
   });
 
   tipeRow.addEventListener("keyup", displayTipeRow);
@@ -1271,17 +1188,17 @@ function displayRow(e) {
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && charCodeRow != 43 && charCodeRow != 44  && (charCodeRow < 48 || charCodeRow > 57)) {
       $(diskonRow).tooltip('show');
-      
+
       e.preventDefault();
     }
-    
+
     return true;
   });
 
   /** Tampil Diskon Rp **/
   diskonRow.addEventListener("keyup", displayDiskonRow);
   diskonRow.addEventListener("blur", displayDiskonRow);
-  
+
   function displayDiskonRow(e) {
     if(e.target.value == "") {
       netPast = nettoRow.value.replace(/\./g, "");
@@ -1296,12 +1213,11 @@ function displayRow(e) {
       nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""))
       checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
-    // total_ppn(subtotal.value.replace(/\./g, ""));
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
-  
+
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     if(qtyRow.value != "") {
@@ -1310,9 +1226,8 @@ function displayRow(e) {
       grandtotal.value = totalNotPPN.value;
       total_ppn(totalNotPPN.value.replace(/\./g, ""));
     }
-    
+
     const curNum = $(this).closest('tr').find('td:first-child').text();
-    // const lastNum = $(tablePO).find('tr:last').attr("id");
     const lastNum = $(tablePO).find('tr:last td:first-child').text();
     var numRow;
     if(+curNum < +lastNum) {
@@ -1323,7 +1238,6 @@ function displayRow(e) {
       var selisih = +lastNum - +curNum;
       var nomor = document.querySelectorAll('.nomor');
       for(let i = +curNum; i < +lastNum; i++) {
-        // $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
         nomor[i-6].innerHTML = i;
       }
       numRow = lastNum;
@@ -1335,7 +1249,6 @@ function displayRow(e) {
     jumBaris.value -= 1;
     var kdBrg = document.querySelectorAll('.kdBrgRow');
     if(jumBaris.value > 5)
-      // document.getElementById("kdBrgRow"+numRow).focus();
       kdBrg[lastNum-7].focus();
     else
       kodeBarang[4].focus();
@@ -1352,7 +1265,7 @@ function displayRow(e) {
 
     var tipeHrg = '{{ implode(",", $hrg) }}';
     tipeHrg = tipeHrg.split(',');
-      
+
     function split(val) {
       return val.split(/,\s/);
     }
@@ -1383,7 +1296,7 @@ function displayRow(e) {
         return false;
       }
     });
-    
+
     $(brgRow).on("keydown", function(event) {
       if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
@@ -1435,7 +1348,7 @@ function displayRow(e) {
         return false;
       }
     });
-  }); 
+  });
 }
 
 /** Tampil Harga Barang **/
@@ -1458,7 +1371,7 @@ for(let i = 0; i < brgNama.length; i++) {
       $(this).parents('tr').find('input').val('');
       qty[i].removeAttribute('required');
       diskon[i].removeAttribute('required');
-    } 
+    }
 
     @foreach($barang as $br)
       if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
@@ -1469,7 +1382,6 @@ for(let i = 0; i < brgNama.length; i++) {
           pcs.innerHTML = 'Pcs';
           teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Pcs';
-          // satuan[i].value = '';
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
@@ -1484,7 +1396,6 @@ for(let i = 0; i < brgNama.length; i++) {
           satuanUkuran.innerHTML = 'Dus';
           teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Set';
-          // satuan[i].value = '';
         }
         else {
           pcs.innerHTML = 'Meter';
@@ -1526,7 +1437,7 @@ for(let i = 0; i < brgNama.length; i++) {
 for(let i = 0; i < harga.length; i++) {
   harga[i].addEventListener("keyup", displayHargaCustom);
   harga[i].addEventListener("blur", displayHargaCustom);
-  
+
   function displayHargaCustom(e) {
     $(this).val(function(index, value) {
       return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -1549,48 +1460,41 @@ for(let i = 0; i < harga.length; i++) {
 
 /** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
-  qty[i].addEventListener("blur", displayQty);
+  qty[i].addEventListener("blur", checkQty);
 
   if(teksSat[i].value == 'Pcs')
-    satuan[i].addEventListener("blur", displayQty);
-  else 
-    satuan[i].addEventListener("change", displayQty);
+    satuan[i].addEventListener("blur", checkQty);
+  else
+    satuan[i].addEventListener("change", checkQty);
 
-  function displayQty(e) {
+  function checkQty(e) {
     stokJohar = 0;
     stokLain = [];
     totStok = 0;
-    gdg = [];
-    g = 0;
-    var kg = [];
-    var urutKG = 1;
 
-    @foreach($gudang as $g)
-      kg.push('{{ $g->id }}');
-    @endforeach
-
-    @foreach($stok as $s)
-      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->id_gudang }}' == 'GDG01')) {
-        stokJohar = '{{ $s->stok }}';
-        totStok = +totStok + +stokJohar;
-      }
-      else if('{{ $s->id_barang }}' == kodeBarang[i].value) {
-        for(let k = urutKG; k < kg.length; k++) {
-          if('{{ $s->id_gudang }}' == kg[k]) {
-            stokLain.push('{{ $s->stok }}');
-            totStok = +totStok + +'{{ $s->stok }}';
-            break;
-          } else {
-            stokLain.push(0);
+    if(e.target.value != '') {
+      $.ajax({
+          type: 'POST',
+          url: '/so/check/stock/' + kodeBarang[i].value,
+          data: {
+              _token: '{{ csrf_token() }}',
+          },
+          dataType: 'json',
+          success:function(data) {
+              stokJohar = data.stokJohar.stok;
+              totStok = data.totalStok;
+              stokLain = data.stokLain;
+              console.log(totStok);
+              displayQty(e.target.id, e.target.value, stokJohar, totStok, stokLain)
           }
-        }
-        urutKG++;
-      }
-    @endforeach
+      });
+    }
+  }
 
-    hitungQty(i, e.target.id, e.target.value, teksSat[i].value, ukuran[i].value);
+  function displayQty(id, qtyValue, stokJohar, totStok, stokLain) {
+    hitungQty(i, id, qtyValue, teksSat[i].value, ukuran[i].value);
 
-    if(e.target.value == "") {
+    if(qtyValue == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       jumlah[i].value = "";
@@ -1601,7 +1505,7 @@ for(let i = 0; i < qty.length; i++) {
       qty[i].value = "";
       satuan[i].value = "";
     }
-    else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > totStok))) {
+    else if(((id == 'qty') && (+qtyValue > totStok)) || ((id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+qtyValue * +ukuran[i].value) > totStok))) {
       $('#notif'+i).modal("show");
       nmbrg[i].textContent = brgNama[i].value;
       totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
@@ -1624,17 +1528,17 @@ for(let i = 0; i < qty.length; i++) {
       return false;
     }
     else {
-      if(((e.target.id == 'qty') && (+e.target.value > stokJohar)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > stokJohar))) {
+      if(((id == 'qty') && (+qtyValue > stokJohar)) || ((id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+qtyValue * +ukuran[i].value) > stokJohar))) {
         var arrJumQty = qtyGudang[i].value.split(',');
         var jumQty = arrJumQty.reduce(getSum, 0);
-        if((tempQty == 0) || ((tempQty > 0) && (jumQty != e.target.value))) {
+        if((tempQty == 0) || ((tempQty > 0) && (jumQty != qtyValue))) {
           $('#'+i).modal("show");
           kodeModal = i;
           teksJohar[i].textContent = `${stokJohar}`;
           teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
           if(teksSat[i].value == 'Pcs') {
-            teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran[i].value}`; 
-            teksUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;         
+            teksJoharUkuran[i].textContent = `\u00A0/ ${stokJohar / ukuran[i].value}`;
+            teksUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
           } else {
             teksJoharUkuran[i].textContent = ``;
             teksUkuran[i].textContent = ``;
@@ -1653,7 +1557,7 @@ for(let i = 0; i < qty.length; i++) {
           sisaQty[i].textContent = `${+qty[i].value - +stokJohar}`;
           sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
           if(teksSat[i].value == 'Pcs') {
-            sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran[i].value}`; 
+            sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokJohar) / ukuran[i].value}`;
             sisaUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
           } else {
             sisaQtyUkuran[i].textContent = ``;
@@ -1675,7 +1579,6 @@ for(let i = 0; i < qty.length; i++) {
               gudangUkuran[j].textContent = ``;
             }
           }
-          // qtyGudang[i].value = stokJohar;
         }
       }
       else {
@@ -1694,13 +1597,12 @@ for(let i = 0; i < qty.length; i++) {
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    // total_ppn(subtotal.value.replace(/\./g, ""));
-    tempQty = e.target.value;
+    tempQty = qtyValue;
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
-}  
+}
 
 // Pilih Tipe
 for(let i = 0; i < tipe.length; i++) {
@@ -1756,7 +1658,6 @@ for(let i = 0; i < diskon.length; i++) {
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    // total_ppn(subtotal.value.replace(/\./g, ""));
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
@@ -1765,49 +1666,42 @@ for(let i = 0; i < diskon.length; i++) {
 /** Tampil Kode Gudang Tambahan **/
 for(let j = 0; j < modalGudang.length; j++) {
   $('#'+j).on('show.bs.modal', function(e) {
+    cekModal = 0;
     const kodeGud = document.querySelectorAll(".kodeGud"+j);
     const stokGudang = document.querySelectorAll('.stokGudang'+j);
     kodeGudang[j].value = 'GDG01';
     qtyGudang[j].value = stokJohar;
 
     const btnPilih = document.querySelectorAll(".btnPilih"+j);
-    
+
     for(let i = 0; i < btnPilih.length; i++) {
       btnPilih[i].disabled = false;
-      // btnPilih[i].addEventListener("click", function handler(e) {
       $(btnPilih[i]).off('click').on('click', function(e) {
-        // kodeGudang[j].value = 'GDG01';
-        // qtyGudang[j].value = stokJohar;
-        // totPast = +qtyGudang[j].value + +stokGudang[i].textContent;
+        cekModal = 1;
         totPast = +stokGudang[i].textContent;
         if(+totPast < +sisaQty[j].textContent) {
           btnPilih[i].disabled = true;
-          // btnPilih[i].removeEventListener('click', unclick, false);
           sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
           sisaQty[j].textContent = `${sisa}`;
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${stokGudang[i].textContent}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
-
-          /* sisa = +sisaQty[j].textContent - +stokGudang[i].textContent;
-          qtyGudang[j].value = qtyGudang[j].value.concat(`,${stokGudang[i].textContent}`);
-          qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisa}`);
-          kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
-          @foreach($gudang as $g)
-            if(('{{ $g->id }}' != kodeGud[i].value) && ('{{ $g->id }}' != 'GDG01')) {
-              kodeGudang[j].value = kodeGudang[j].value.concat(`,{{ $g->id }}`);
-            }
-          @endforeach */
         } else {
           qtyGudang[j].value = qtyGudang[j].value.concat(`,${sisaQty[j].textContent}`);
           kodeGudang[j].value = kodeGudang[j].value.concat(`,${kodeGud[i].value}`);
-          // btnPilih[i].removeEventListener('click', unclick, false);
           $('#'+j).modal("hide");
           tipe[j].focus();
         }
-
-        // btnPilih[i].removeEventListener('click', handler);
       });
-    } 
+    }
+
+    $('#'+j).on('hidden.bs.modal', function () {
+      if(cekModal == 0) {
+        qty[j].value = '';
+        satuan[j].value = '';
+        jumlah[j].value = '';
+        netto[j].value = '';
+      }
+    });
   });
 }
 
@@ -1853,7 +1747,6 @@ function checkSubtotal(Past, Now) {
 
 /** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  // ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
 }
 
@@ -1943,7 +1836,6 @@ for(let i = 0; i < hapusBaris.length; i++) {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       grandtotal.value = totalNotPPN.value;
-      // total_ppn(totalNotPPN.value.replace(/\./g, ""));
     }
 
     for(let j = i; j < hapusBaris.length; j++) {
@@ -1982,7 +1874,6 @@ for(let i = 0; i < hapusBaris.length; i++) {
       }
     }
 
-    // $(this).parents('tr').next().find('input').val('');
     for(let j = 0; j < kodeBarang.length; j++) {
       if(kodeBarang[j].value == '') {
         kodeBarang[j].focus();
@@ -1993,8 +1884,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || 
-  (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
+  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
   }
   else {
@@ -2042,14 +1932,14 @@ function checkRequired(e) {
         totalKredit.textContent = 0;
         totalTagihan.textContent = addCommas(0 + +grandtotal.value.replace(/\./g, ""));
       }
-      
+
       return false;
-    } 
+    }
     else {
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalKonfirm";
       return false;
-    } 
+    }
   }
 }
 
@@ -2067,7 +1957,6 @@ $(function() {
 
   var customer = [];
   @foreach($customer as $c)
-    // customer.push('{{ $c->nama }}');
     customer.push('{{ $c->nama }} ({{ $c->alamat }})');
   @endforeach
 
@@ -2075,7 +1964,7 @@ $(function() {
   @foreach($sales as $s)
     sales.push('{{ $s->nama }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }

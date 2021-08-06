@@ -172,17 +172,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/bm-harian/excel', 'BMHarianController@excel')->name('bm-harian-excel');
 
         // Transfer Barang
-        // Route::get('/transfer', 'TransferBarangController@index')->name('tb');
         Route::post('/transfer/create/{id}', 'TransferBarangController@create')
             ->name('tb-create');
-        // Route::post('/transfer/process/{id}', 'TransferBarangController@process')
-        //     ->name('tb-process');
         Route::get('/transfer/remove/{id}/{barang}/{asal}/{tujuan}','TransferBarangController@remove')
             ->name('tb-remove');
-        // Route::get('/tb/index', 'TransferBarangController@indexTab')
-        //     ->name('tb-index');
-        // Route::post('/tb/detail/{id}', 'TransferBarangController@detail')
-        //     ->name('tb-detail');
 
         // Sales Order
         Route::get('/so/index/{status}', 'SalesOrderController@index')->name('so');
@@ -194,18 +187,15 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/so/afterPrint/{id}', 'SalesOrderController@afterPrint')
             ->name('so-after-print');
         Route::get('/so/remove/{id}/{barang}','SalesOrderController@remove')->name('so-remove');
-        // Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
-        // Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
         Route::post('/so/change/status/{id}', 'SalesOrderController@status')->name('so-status');
         Route::post('/so/change/edit/{id}', 'SalesOrderController@edit')->name('so-edit');
         Route::post('/so/change/update', 'SalesOrderController@update')->name('so-update');
+        Route::post('/so/check/stock/{code}', 'SalesOrderController@getStok')->name('so-stock');
 
         // Transaksi Harian
         Route::get('/transaksi', 'TransaksiController@index')->name('trans');
         Route::post('/transaksi', 'TransaksiController@index')->name('trans-home');
         Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
-        // Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
-        //     ->name('trans-detail');
         
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
@@ -232,8 +222,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-ttr');
         Route::get('/cetak-update/{awal}/{akhir}', 'CetakFakturController@update')
             ->name('cetak-update');
-        // Route::post('/cetak-faktur/cetak', 'CetakFakturController@cetak')
-            // ->name('cetak-all');
 
         // Surat Jalan
         Route::get('/sj', 'SuratJalanController@index')->name('sj');
@@ -280,8 +268,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('value/excel', 'RekapValueController@cetak_excel')->name('val-excel');
 
         // Laporan Keuangan
-        // Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
-        // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
         Route::post('keuangan/excel', 'LapKeuController@excel')->name('lap-keu-excel');
         Route::post('keuangan/excel-admin', 'LapKeuController@excelAdmin')->name('lap-keu-excel-admin');
         Route::post('keuangan/store-index', 'LapKeuController@storeIndex')->name('lap-keu-store-index');
@@ -363,7 +349,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
         Route::get('notif/read/{id}', 'NotifController@markAsRead')->name('notif-read');
-        Route::get('notif/read-all', 'NotifController@markAsReadAll')->name('notif-read-all');
         Route::get('notif/afterPrint/{id}/{kode}', 'NotifController@afterPrint')->name('notif-after-print');
     });
 
@@ -402,9 +387,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
-        // Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')
-        //     ->name('trans-detail');
-
         // Ubah dan Cek Faktur
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
@@ -478,7 +460,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::group(['roles'=>['ADMIN', 'SUPER', 'OFFICE02']], function() {
         // Laporan Keuangan
         Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
-        // Route::post('keuangan/show', 'LapKeuController@show')->name('lap-keu-show');
         Route::get('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show');
         Route::post('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show-post');
         Route::post('keuangan/detailHpp/{jenis}/{sales}', 'LapKeuController@indexHpp')
@@ -516,12 +497,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('kenari/transaksi', 'KenariController@indexTrans')->name('trans-kenari');
         Route::get('kenari/transaksi/show', 'KenariController@showTrans')->name('trans-show-kenari');
     });
-
-    // Route::group(['roles'=>['AR', 'SUPER']], function() {
-    //     // Account Receivable
-    //     Route::post('ar', 'AccReceivableController@index')->name('ar-home');
-    //     Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
-    // });
 });
 
 Auth::routes(['verify' => true]);

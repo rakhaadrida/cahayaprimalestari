@@ -647,20 +647,20 @@ class SalesOrderController extends Controller
         return redirect($url);
     }
 
-    /* 
-        $tempDetil = TempDetilSO::where('id_so', $id)->get();
-        foreach($tempDetil as $td) {
-            DetilSO::create([
-                'id_so' => $td->id_so,
-                'id_barang' => $td->id_barang,
-                'harga' => $td->harga,
-                'qty' => $td->qty,
-                'diskon' => $td->diskon
-            ]);
+    public function getStok(Request $request, $code) {
+        $gudang = Gudang::where('tipe', 'BIASA')->where('id', '!=', 'GDG01')->pluck('id')->toArray();
 
-            // $updateStok = StokBarang::where('id_barang', $td->id_barang)
-            //                 ->where('id_gudang', 'GDG01')->first();
+        $stokJohar = StokBarang::where('id_barang', $code)->where('id_gudang', 'GDG01')->first();
+        $totalStok = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)->sum('stok');
+        $stokLain = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)
+            ->pluck('stok')->toArray();
 
-            $deleteTemp = TempDetilSO::where('id_so', $id)->where('id_barang', $td->id_barang)->delete();
-        } */
+        $data = [
+            'stokJohar' => $stokJohar, 
+            'totalStok' => $totalStok + $stokJohar->stok,
+            'stokLain' => $stokLain
+        ];
+
+        return response()->json($data);
+    }
 }
