@@ -83,7 +83,6 @@ class ReturController extends Controller
     } */
 
     public function storeJual(Request $request, $id) {
-        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
         $waktu = Carbon::now('+07:00');
@@ -116,14 +115,14 @@ class ReturController extends Controller
                 ]);
 
                 $stok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                        ->where('id_gudang', $gudang[0]->id)
-                        ->where('status', 'F')->first();
-                
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
+
                 if($stok == NULL) {
                     StokBarang::create([
                         'id_barang' => $request->kodeBarang[$i],
-                        'id_gudang' => $gudang[0]->id,
-                        'status' => 'F',
+                        'id_gudang' => 'GDG01',
+                        'status' => 'T',
                         'stok' => $request->qty[$i]
                     ]);
                 } else {
@@ -147,14 +146,14 @@ class ReturController extends Controller
 
         foreach($detilRJ as $d) {
             $stok = StokBarang::where('id_barang', $d->id_barang)
-                    ->where('id_gudang', $gudang->first()->id)
-                    ->where('status', 'F')->first();
+                    ->where('id_gudang', 'GDG01')
+                    ->first();
 
             $stok->{'stok'} -= $d->qty_retur;
             $stok->save();
 
             $stokBagus = StokBarang::where('id_barang', $d->id_barang)
-                    ->where('id_gudang', $gudang->first()->id)
+                    ->where('id_gudang', 'GDG01')
                     ->where('status', 'T')->first();
 
             $stokBagus->{'stok'} += $d->qty_kirim;
@@ -268,14 +267,12 @@ class ReturController extends Controller
         $item = ReturJual::where('id', $id)->get();
         $retur = DetilRJ::where('id_retur', $id)->get();
         $barang = Barang::All();
-        $gudang = Gudang::where('tipe', 'RETUR')->get();
-        $stokBagus = StokBarang::where('id_gudang', $gudang->first()->id)->where('status', 'T')->get();
+        $stokBagus = StokBarang::where('id_gudang', 'GDG01')->where('status', 'T')->get();
 
         $data = [
             'item' => $item,
             'retur' => $retur,
             'barang' => $barang,
-            'gudang' => $gudang,
             'stokBagus' => $stokBagus
         ];
 
@@ -288,11 +285,10 @@ class ReturController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $retur = ReturJual::where('id', $request->kode)->first();
         $items = DetilRJ::where('id_retur', $request->kode)->get();
 
-        $kodeBarang = []; 
+        $kodeBarang = []; $statusCetak = 'false';
         if($items->count() != $request->jumBaris) {
             for($i = 0; $i < $request->jumBaris; $i++) {
                 array_push($kodeBarang, $request->kodeBarang[$i]);
@@ -303,26 +299,24 @@ class ReturController extends Controller
 
             foreach($hapus as $i) {
                 $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang->first()->id)
-                        ->where('status', 'F')->first();
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
                 $stokJelek->{'stok'} -= $i->qty_retur;
                 $stokJelek->save();
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang->first()->id)
-                        ->where('status', 'T')->first();
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
                 $stokBagus->{'stok'} += $i->qty_kirim;
                 $stokBagus->save();
             }
 
             DetilRJ::where('id_retur', $request->kode)->whereNotIn('id_barang', $kodeBarang)->delete();
-        } 
+        }
 
         $lastcode = DetilRJ::selectRaw('max(id_kirim) as id')
-                    // ->whereYear('created_at', $waktu->year)
-                    // ->whereMonth('created_at', $month)
                     ->where('id_kirim', 'LIKE', 'KRM'.$tahun.$bulan.'%')
-                    ->get();  
+                    ->get();
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'KRM'.$tahun.$bulan.sprintf("%04s", $lastnumber);
@@ -340,52 +334,32 @@ class ReturController extends Controller
             if(($request->kodeBarang[$k] != $i->id_barang) || ($request->qtyRetur[$k] != $i->qty_retur) || ($tglKirim != $i->tgl_kirim) || ($request->kirim[$k] != $i->qty_kirim)) {
                 if($request->kodeBarang[$k] != $i->id_barang) {
                     $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                            ->where('id_gudang', $gudang->first()->id)
-                            ->where('status', 'F')->first();
-                    $stokJelek->{'stok'} -= $i->qty_retur; 
+                            ->where('id_gudang', 'GDG01')
+                            ->first();
+                    $stokJelek->{'stok'} -= $i->qty_retur;
                     $stokJelek->save();
 
                     $stokJelekNew = StokBarang::where('id_barang', $request->kodeBarang[$k])
-                            ->where('id_gudang', $gudang->first()->id)
-                            ->where('status', 'F')->first();
+                            ->where('id_gudang', 'GDG01')
+                            ->first();
 
                     if($stokJelekNew == NULL) {
                         StokBarang::create([
                             'id_barang' => $request->kodeBarang[$k],
-                            'id_gudang' => $gudang->first()->id,
-                            'status' => 'F',
+                            'id_gudang' => 'GDG01',
+                            'status' => 'T',
                             'stok' => $request->qtyRetur[$k]
                         ]);
                     } else {
-                        $stokJelekNew->{'stok'} += $request->qtyRetur[$k]; 
+                        $stokJelekNew->{'stok'} += $request->qtyRetur[$k];
                     }
+
                     $stokJelekNew->save();
-
-                    $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                            ->where('id_gudang', $gudang->first()->id)
-                            ->where('status', 'T')->first();
-                    $stokBagus->{'stok'} += $i->qty_kirim; 
-                    $stokBagus->save();
-
-                    $stokBagusNew = StokBarang::where('id_barang', $request->kodeBarang[$k])
-                                ->where('id_gudang', $gudang->first()->id)
-                                ->where('status', 'T')->first();
-                    if($stokBagusNew == NULL) {
-                        StokBarang::create([
-                            'id_barang' => $request->kodeBarang[$k],
-                            'id_gudang' => $gudang->first()->id,
-                            'status' => 'T',
-                            'stok' => $request->kirim[$k]
-                        ]);
-                    } else {
-                        $stokBagusNew->{'stok'} -= $request->kirim[$k]; 
-                    }
-                    $stokBagusNew->save();
                 } else {
                     if($request->qtyRetur[$k] != $i->qty_retur) {
                         $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                                ->where('id_gudang', $gudang->first()->id)
-                                ->where('status', 'F')->first();
+                                ->where('id_gudang', 'GDG01')
+                                ->first();
 
                         if($i->qty_retur > $request->qtyRetur[$k])
                             $stokJelek->{'stok'} -= ($i->qty_retur - $request->qtyRetur[$k]);
@@ -397,29 +371,34 @@ class ReturController extends Controller
                 }
 
                 $qty = $i->qty_kirim;
-                // if($i->id_kirim == NULL)
-                $i->id_kirim = $newcode;
 
                 $i->id_barang = $request->kodeBarang[$k];
                 $i->tgl_kirim = $tglKirim;
                 $i->qty_retur = $request->qtyRetur[$k];
-                $i->qty_kirim = $request->kirim[$k];
-                $i->potong = 0;
+
+                if($request->kirim[$k] != NULL) {
+                    $i->id_kirim = $newcode;
+                    $i->qty_kirim = $request->kirim[$k];
+                    $i->potong = 0;
+
+                    $statusCetak = 'true';
+                }
+
                 $i->save();
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang->first()->id)
+                        ->where('id_gudang', 'GDG01')
                         ->where('status', 'T')->first();
-                
+
                 if($qty == NULL)
-                    $stokBagus->{'stok'} -= $request->kirim[$k]; 
+                    $stokBagus->{'stok'} -= $request->kirim[$k];
                 else {
                     if($qty > $request->kirim[$k])
                         $stokBagus->{'stok'} += ($qty - $request->kirim[$k]);
                     else
                         $stokBagus->{'stok'} -= ($request->kirim[$k] - $qty);
                 }
-                 
+
                 $stokBagus->save();
             }
             $qtyAwal += $i->qty_retur;
@@ -430,37 +409,20 @@ class ReturController extends Controller
         if($qtyAwal == $qtyRetur) {
             $status = 'LENGKAP';
         }
-        else 
+        else
             $status = 'INPUT';
 
-        /* foreach($items as $i) {
-            $tglKirim = $request->{"tanggal".$request->kode};
-            $tglKirim = $this->formatTanggal($tglKirim, 'Y-m-d');
-
-            $i->id_kirim = $newcode;
-            $i->tgl_kirim = $tglKirim;
-            $i->qty_kirim = $request->{"kirim".$request->kode.$i->id_barang};
-            $i->save();
-
-            $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                    ->where('id_gudang', $gudang[0]->id)
-                    ->where('status', 'T')->first();
-            $stokBagus->{'stok'} -= (int) $request->{"kirim".$request->kode.$i->id_barang}; 
-            $stokBagus->save();
-        } */
-
-        // $retur->{'status'} = 'LENGKAP';
         $retur->{'status'} = $status;
         $retur->save();
 
         $data = [
-            'status' => 'true',
+            'status' => $statusCetak,
             'id' => $newcode
         ];
 
         return redirect()->route('retur-jual', $data);
     }
-    
+
     public function cetakKirimJual(Request $request, $id) {
         $items = ReturJual::join('detilrj', 'detilrj.id_retur', 'returjual.id')
                 ->where('id_kirim', $id)->groupBy('id_kirim')->get();
@@ -526,9 +488,7 @@ class ReturController extends Controller
 
     public function createPembelian() {
         $supplier = Supplier::All();
-        $gudang = Gudang::where('tipe', 'RETUR')->get();
-        $barang = StokBarang::where('id_gudang', $gudang[0]->id)
-                ->where('status', 'F')->get();
+        $barang = StokBarang::where('id_gudang', 'GDG01')->get();
 
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');
@@ -568,7 +528,6 @@ class ReturController extends Controller
     }
 
     public function storeBeli(Request $request, $id) {
-        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
         $waktu = Carbon::now('+07:00');
@@ -597,14 +556,14 @@ class ReturController extends Controller
                 ]);
 
                 $stok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                        ->where('id_gudang', $gudang[0]->id)
-                        ->where('status', 'F')->first();
-                
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
+
                 if($stok == NULL) {
                     StokBarang::create([
                         'id_barang' => $request->kodeBarang[$i],
-                        'id_gudang' => $gudang[0]->id,
-                        'status' => 'F',
+                        'id_gudang' => 'GDG01',
+                        'status' => 'T',
                         'stok' => $request->qty[$i]
                     ]);
                 } else {
@@ -623,13 +582,12 @@ class ReturController extends Controller
     }
 
     public function batalReturBeli(Request $request, $id) {
-        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $detilRB = DetilRB::where('id_retur', $id)->get();
 
         foreach($detilRB as $d) {
             $stok = StokBarang::where('id_barang', $d->id_barang)
-                    ->where('id_gudang', $gudang->first()->id)
-                    ->where('status', 'F')->first();
+                    ->where('id_gudang', 'GDG01')
+                    ->first();
 
             $stok->{'stok'} += $d->qty_retur;
 
@@ -638,13 +596,8 @@ class ReturController extends Controller
                     ->where('id_retur', $id)->where('id_barang', $d->id_barang)
                     ->groupBy('id_barang')->get();
 
-            $stokBagus = StokBarang::where('id_barang', $d->id_barang)
-                    ->where('id_gudang', $gudang->first()->id)
-                    ->where('status', 'T')->first();
             if($rt->count() != 0) {
-                $stokBagus->{'stok'} -= $rt->first()->qt;
-                $stokBagus->save();
-
+                $stok->{'stok'} -= $rt->first()->qt;
                 $stok->{'stok'} -= ($rt->first()->qb + $rt->first()->qp);
             }
 
@@ -774,7 +727,6 @@ class ReturController extends Controller
         $tahun = substr($waktu->year, -2);
 
         $id = [];
-        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $retur = ReturBeli::where('id', $request->kode)->first();
 
         $items = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
@@ -782,20 +734,20 @@ class ReturController extends Controller
         $rb = DetilRB::where('id_retur', $request->kode)->get();
         $jum = $request->jumBaris - $request->jumRB;
 
-        $kodeBarang = []; $kodeTerima = [];
+        $kodeBarang = []; $kodeTerima = []; $statusCetak = 'false';
         if($items->count() != 0) {
             if($jum != $items->count()) {
                 $k = 0;
                 foreach($items as $i) {
                     if(($k >= $jum) || ($i->id_terima != $request->kodeTerima[$k]) && ($i->id_barang != $request->kodeDetil[$k])) {
                         $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                                ->where('id_gudang', $gudang->first()->id)
-                                ->where('status', 'F')->first();
+                                ->where('id_gudang', 'GDG01')
+                                ->first();
                         $stokJelek->{'stok'} -= $i->qty_batal;
                         $stokJelek->save();
 
                         $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                                ->where('id_gudang', $gudang->first()->id)
+                                ->where('id_gudang', 'GDG01')
                                 ->where('status', 'T')->first();
                         $stokBagus->{'stok'} -= $i->qty_terima;
                         $stokBagus->save();
@@ -819,8 +771,8 @@ class ReturController extends Controller
 
                 foreach($hapus as $i) {
                     $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                            ->where('id_gudang', $gudang->first()->id)
-                            ->where('status', 'F')->first();
+                            ->where('id_gudang', 'GDG01')
+                            ->first();
                     $stokJelek->{'stok'} += $i->qty_retur;
                     $stokJelek->save();
                 }
@@ -830,7 +782,7 @@ class ReturController extends Controller
                 $stat = 0;
             }
         }
-                
+
         $items = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
                 ->where('id_retur', $request->kode)->orderBy('id_barang')->orderBy('id_terima')->get();
         $d = 0; $stat = 0;
@@ -841,7 +793,7 @@ class ReturController extends Controller
             } else {
                 $tglTerima = NULL;
             }
-            
+
             if(($tglTerima != $i->returterima->tanggal) || ($request->terimaDetil[$d] != $i->qty_terima) || ($request->batalDetil[$d] != $i->qty_batal)) {
                 $rt = ReturTerima::where('id', $i->id)->where('id_retur', $request->kode)->first();
                 $rt->{'tanggal'} = $tglTerima;
@@ -849,8 +801,7 @@ class ReturController extends Controller
 
                 $qtyTer = $i->qty_terima;
                 $qtyBat = $i->qty_batal;
-  
-                // $i->id_barang = $request->kodeBarang[$k];
+
                 $i->qty_terima = $request->terimaDetil[$d];
                 $i->qty_batal = $request->batalDetil[$d];
                 $i->save();
@@ -858,25 +809,25 @@ class ReturController extends Controller
                 array_push($id, $i->id_terima);
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang->first()->id)
+                        ->where('id_gudang', 'GDG01')
                         ->where('status', 'T')->first();
 
                 if($qtyTer > $request->terimaDetil[$d])
                     $stokBagus->{'stok'} -= ($qtyTer - $request->terimaDetil[$d]);
                 else
                     $stokBagus->{'stok'} += ($request->terimaDetil[$d] - $qtyTer);
-                
+
                 $stokBagus->save();
 
                 $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang->first()->id)
-                        ->where('status', 'F')->first();
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
 
                 if($qtyBat > $request->batalDetil[$d])
                     $stokJelek->{'stok'} -= ($qtyBat - $request->batalDetil[$d]);
                 else
                     $stokJelek->{'stok'} += ($request->batalDetil[$d] - $qtyBat);
-                
+
                 $stokJelek->save();
 
                 $stat = 1;
@@ -886,13 +837,10 @@ class ReturController extends Controller
         }
 
         $lastcode = ReturTerima::selectRaw('max(id) as id')
-                    // ->whereYear('tanggal', $waktu->year)
-                    // ->whereMonth('tanggal', $month)
                     ->where('id', 'LIKE', 'TRM'.$tahun.$bulan.'%')->get();
         $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
         $lastnumber++;
         $newcode = 'TRM'.$tahun.$bulan.sprintf("%04s", $lastnumber);
-        // return response()->json($newcode);
 
         $items = DetilRB::where('id_retur', $request->kode)->get();
         $t = 0; $det = 0;
@@ -903,14 +851,14 @@ class ReturController extends Controller
                             ->where('id_retur', $request->kode)->where('id_barang', $i->id_barang)->get();
 
                 $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang->first()->id)
-                        ->where('status', 'F')->first();
-                $stokJelek->{'stok'} += ($i->qty_retur - $rt->first()->totBatal); 
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
+                $stokJelek->{'stok'} += ($i->qty_retur - $rt->first()->totBatal);
                 $stokJelek->save();
 
                 $stokJelekNew = StokBarang::where('id_barang', $request->kodeBarang[$t])
-                        ->where('id_gudang', $gudang->first()->id)
-                        ->where('status', 'F')->first();
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
 
                 if($stokJelekNew == NULL) {
                     StokBarang::create([
@@ -920,28 +868,28 @@ class ReturController extends Controller
                         'stok' => $request->qty[$t] - $rt->first()->totBatal
                     ]);
                 } else {
-                    $stokJelekNew->{'stok'} -= ($request->qty[$t] - $rt->first()->totBatal); 
+                    $stokJelekNew->{'stok'} -= ($request->qty[$t] - $rt->first()->totBatal);
                 }
                 $stokJelekNew->save();
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang->first()->id)
+                        ->where('id_gudang', 'GDG01')
                         ->where('status', 'T')->first();
-                $stokBagus->{'stok'} -= $rt->first()->totTerima; 
+                $stokBagus->{'stok'} -= $rt->first()->totTerima;
                 $stokBagus->save();
 
                 $stokBagusNew = StokBarang::where('id_barang', $request->kodeBarang[$t])
-                            ->where('id_gudang', $gudang->first()->id)
+                            ->where('id_gudang', 'GDG01')
                             ->where('status', 'T')->first();
                 if($stokBagusNew == NULL) {
                     StokBarang::create([
                         'id_barang' => $request->kodeBarang[$t],
-                        'id_gudang' => $gudang->first()->id,
+                        'id_gudang' => 'GDG01',
                         'status' => 'T',
                         'stok' => $rt->first()->totTerima
                     ]);
                 } else {
-                    $stokBagusNew->{'stok'} += $rt->first()->totTerima; 
+                    $stokBagusNew->{'stok'} += $rt->first()->totTerima;
                 }
 
                 $stokBagusNew->save();
@@ -963,11 +911,11 @@ class ReturController extends Controller
                 $i->id_barang = $request->kodeBarang[$t];
                 $i->qty_retur = $request->qty[$t];
                 $i->save();
-            } else { 
+            } else {
                 if($request->qty[$t] != $i->qty_retur) {
                     $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                            ->where('id_gudang', $gudang->first()->id)
-                            ->where('status', 'F')->first();
+                            ->where('id_gudang', 'GDG01')
+                            ->first();
 
                     if($i->qty_retur > $request->qty[$t])
                         $stokJelek->{'stok'} += ($i->qty_retur - $request->qty[$t]);
@@ -997,7 +945,7 @@ class ReturController extends Controller
                     ]);
 
                     array_push($id, $newcode);
-                } 
+                }
                 elseif($rt->last()->tanggal != $tglTerima) {
                     $lastcode = ReturTerima::selectRaw('max(id) as id')->whereYear('tanggal', $waktu->year)
                                 ->whereMonth('tanggal', $month)->where('id', 'LIKE', 'TRM'.$tahun.$bulan.'%')->get();
@@ -1023,14 +971,14 @@ class ReturController extends Controller
                 ]);
 
                 $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang[0]->id)
+                        ->where('id_gudang', 'GDG01')
                         ->where('status', 'T')->first();
-                $stokBagus->{'stok'} += (int) $request->terima[$t]; 
+                $stokBagus->{'stok'} += (int) $request->terima[$t];
                 $stokBagus->save();
 
                 $stokJelek = StokBarang::where('id_barang', $i->id_barang)
-                        ->where('id_gudang', $gudang[0]->id)
-                        ->where('status', 'F')->first();
+                        ->where('id_gudang', 'GDG01')
+                        ->first();
                 $stokJelek->{'stok'} += (int) $request->batal[$t];
                 $stokJelek->save();
 
@@ -1038,17 +986,17 @@ class ReturController extends Controller
             }
 
             $t++;
-        } 
+        }
 
         $items = DetilRB::selectRaw('sum(qty_retur) as total')
                 ->where('id_retur', $request->kode)->get();
         $total = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
-                ->select(DB::raw('sum(qty_terima) as totalTerima, 
+                ->select(DB::raw('sum(qty_terima) as totalTerima,
                 sum(qty_batal) as totalBatal'))->where('id_retur', $request->kode)->get();
 
-        if($items[0]->total == ($total[0]->totalTerima + $total[0]->totalBatal)) 
+        if($items[0]->total == ($total[0]->totalTerima + $total[0]->totalBatal))
             $status = 'LENGKAP';
-        else 
+        else
             $status = 'INPUT';
 
         $retur->{'status'} = $status;
@@ -1056,7 +1004,7 @@ class ReturController extends Controller
 
         $query = http_build_query(array('id' => $id));
 
-        if($stat == 0) 
+        if($stat == 0)
             $statIndex = 'false';
         else
             $statIndex = 'true';
@@ -1076,14 +1024,10 @@ class ReturController extends Controller
         $newcode = 'TRM'.sprintf("%04s", $lastnumber);
 
         $items = DetilRB::where('id_retur', $id)->get();
-        // $terima = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
-        //         ->selectRaw('sum(qty_terima) as qty_terima')->selectRaw('sum(qty_batal) as qty_batal')
-        //         ->where('id_retur', $id)->groupBy('id_barang')->get();
 
         $t = 0; $qty = 0;
         foreach($items as $i) {
             $tglTerima = Carbon::now()->toDateString();
-            // $tglTerima = $this->formatTanggal($tglTerima, 'Y-m-d');
 
             $terima = DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
                 ->selectRaw('sum(qty_terima) as qty_terima')->selectRaw('sum(qty_batal) as qty_batal')
@@ -1096,7 +1040,7 @@ class ReturController extends Controller
                     'id_retur' => $id,
                     'tanggal' => $tglTerima
                 ]);
-            } 
+            }
             elseif($rt->last()->tanggal != $tglTerima) {
                 $lastcode = ReturTerima::max('id');
                 $lastnumber = (int) substr($lastcode, 3, 4);
@@ -1110,7 +1054,7 @@ class ReturController extends Controller
                 ]);
             }
 
-            if($terima->count() != 0) 
+            if($terima->count() != 0)
                 $qty = $i->qty_retur - $terima[0]->qty_terima - $terima[0]->qty_batal;
 
             if($qty != 0) {

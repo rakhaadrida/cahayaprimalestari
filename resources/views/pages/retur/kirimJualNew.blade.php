@@ -45,7 +45,7 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->tanggal)->format('d-M-y') }}">
                       </div>
-                    </div>   
+                    </div>
                   </div>
                 </div>
                 <div class="form-group row subtotal-so">
@@ -82,12 +82,12 @@
                   </tr>
                 </thead>
                 <tbody id="tablePO" class="table-ar">
-                  @php 
+                  @php
                     $i = 1; $totalRetur = 0; $totalKirim = 0; $totalPotong = 0;
                   @endphp
                   @foreach($retur as $dr)
                     @php $stok = App\Models\StokBarang::where('id_barang', $dr->id_barang)
-                                ->where('id_gudang', $gudang->first()->id)->where('status', 'T')->get();
+                                ->where('id_gudang', 'GDG01')->where('status', 'T')->get();
                     @endphp
                     <tr class="text-dark text-bold" id="{{$i-1}}">
                       <td class="text-center align-middle">{{ $i }}</td>
@@ -178,7 +178,7 @@
                         </div>
                         <div class="form-group subtotal-so">
                           <label for="keterangan" class="col-form-label">Keterangan</label>
-                          <input type="text" class="form-control" name="keterangan" 
+                          <input type="text" class="form-control" name="keterangan"
                           id="keterangan" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
                         </div>
                         <hr>
@@ -258,7 +258,7 @@ const btnCetak = document.querySelectorAll('.btnCetak');
 kirimRJ.addEventListener("keypress", checkEnter);
 
 function checkEnter(e) {
-  var key = e.charCode || e.keyCode || 0;     
+  var key = e.charCode || e.keyCode || 0;
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
@@ -293,11 +293,11 @@ for(let i = 0; i < tglKirim.length; i++) {
     var arrValue = value.split("", 3);
     var kode = arrValue.join("");
 
-    if(value.length > 2 && value.length <= 4) 
+    if(value.length > 2 && value.length <= 4)
       value = value.slice(0,2) + "-" + value.slice(2);
     else if(value.length > 4 && value.length <= 8)
       value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
+
     tglKirim[i].value = value;
   });
 }
@@ -308,11 +308,11 @@ for(let i = 0; i < tglBayar.length; i++) {
     var arrValue = value.split("", 3);
     var kode = arrValue.join("");
 
-    if(value.length > 2 && value.length <= 4) 
+    if(value.length > 2 && value.length <= 4)
       value = value.slice(0,2) + "-" + value.slice(2);
     else if(value.length > 4 && value.length <= 8)
       value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
+
     tglBayar[i].value = value;
   });
 }
@@ -335,7 +335,7 @@ for(let i = 0; i < kirimModal.length; i++) {
       tglBayar[i].setAttribute('required', true);
     }
   });
-} 
+}
 
 for(let i = 0; i < batalModal.length; i++) {
   batalModal[i].addEventListener("change", function(e) {
@@ -352,7 +352,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
     const delRow = document.getElementById(i);
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $('tbody tr:last').prev().prev().prev().find('td:first-child').text();
-    
+
     $(delRow).remove();
     for(let j = +curNum; j < (+lastNum + +jumBaris.value); j++) {
       $(tablePO).find('tr:nth-child('+j+') td:first-child').html(j);
@@ -394,17 +394,17 @@ function checkLimit(e) {
   if(cek == 1) {
     document.getElementById("submitRJ").dataset.toggle = "modal";
     document.getElementById("submitRJ").dataset.target = "#modalNotif";
-    for(let i = 0; i < urut.length; i++) { 
+    for(let i = 0; i < urut.length; i++) {
       $(kirimModal[urut[i]]).closest('td').css("border-color", "red");
       $(kirimModal[urut[i]]).closest('td').css("border-width", "3px");
     }
     return false;
-  } 
+  }
   else {
     document.getElementById("submitRJ").formMethod = "POST";
     document.getElementById("submitRJ").formAction = "{{ route('retur-jual-process') }}";
   }
-} 
+}
 
 function checkEditable() {
   const ket = document.getElementById("keterangan");
@@ -436,7 +436,7 @@ $(function() {
     kode.push('{{ $b->id }}');
     nama.push('{{ $b->nama }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }

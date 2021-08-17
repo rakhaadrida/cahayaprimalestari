@@ -70,7 +70,7 @@
       .text-dark {
           color: black !important;
       }
-      
+
       .text-right {
           text-align: right !important;
       }
@@ -273,7 +273,7 @@
       }
 
       .footer-cetak-so {
-        
+
         margin-top: -13px;
         margin-bottom: -50px;
         margin-left: 90px;
@@ -300,7 +300,7 @@
   <body>
     @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; @endphp
     @foreach($items as $item)
-      @if(($items->first()->id != ($det <= 34 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 34)) 
+      @if(($items->first()->id != ($det <= 34 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 34))
         @php $i = 1; $no = 1; $kur = 0; $kode = []; @endphp
       @endif
       <div class="cetak-all-container" style="page-break-after: always">
@@ -353,8 +353,8 @@
           <span></span>
         </div>
         <br>
-        
-        @php 
+
+        @php
         $stat = $det;
         if($det <= 34)
           $rb = $item->id;
@@ -385,7 +385,7 @@
                 <td align="center">{{ $no }}</td>
                 <td align="center">{{ $itemDet->id_barang }}</td>
                 <td>{{ $itemDet->barang->nama }}</td>
-                <td align="center" style="width: 50px">{{ $itemDet->qty_terima }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @elseif($itemDet->barang->satuan == "Set") SET @elseif($itemDet->barang->satuan == "Meter / Rol") Rol @else Meter @endif</td>
+                <td align="center" style="width: 50px">{{ $itemDet->qty_terima + $itemDet->qty_batal }} @if($itemDet->barang->satuan == "Pcs / Dus") Pcs @elseif($itemDet->barang->satuan == "Set") SET @elseif($itemDet->barang->satuan == "Meter / Rol") Rol @else Meter @endif</td>
                 {{-- <td align="center" style="width: 1px">/</td>
                 <td style="width: 50px">
                   {{ $itemDet->qty / $itemDet->barang->ukuran }} @if($itemDet->barang->satuan == "Pcs / Dus") Dus @else Rol @endif
@@ -401,7 +401,7 @@
           </tbody>
         </table>
         @php $i++; $urut++; $kur++; @endphp
-        
+
         <div class="container-fluid footer-cetak-so">
           <table class="table-footer">
             <thead>

@@ -10,7 +10,7 @@
 
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Retur Penjualan</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Retur Customer</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -44,7 +44,7 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" class="form-control datepicker form-control-sm text-bold" name="tanggal" id="tglRetur" value="{{ $tanggal }}" autocomplete="off" required autofocus>
                       </div>
-                    </div>  
+                    </div>
                   </div>
                 </div>
                 <div class="form-group row ">
@@ -61,7 +61,7 @@
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-              
+
               <!-- Tabel Data Detil BM-->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
@@ -85,7 +85,7 @@
                       <td>
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
-                      <td> 
+                      <td>
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-center qty" value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" @if($i == 1) required @endif>
                       </td>
                       <td align="center" class="align-middle">
@@ -107,7 +107,7 @@
                   {{-- formaction="{{ route('ret-process-jual', $newcode) }}" formmethod="POST" --}}
                 </div>
                 <div class="col-2">
-                  <button type="reset" tabindex="{{ $tab += 2 }}" id="resetRJ" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
+                  <button type="reset" tabindex="{{ $tab += 2 }}" id="resetRJ" class="btn btn-outline-danger btn-block text-bold">Reset All </button>
                 </div>
                 <div class="col-2">
                   <a href="{{ url()->previous() }}" tabindex="{{ $tab += 3 }}" id="backRJ" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
@@ -179,7 +179,7 @@ newRow.addEventListener("click", displayRow);
 formRJ.addEventListener("keypress", checkEnter);
 
 function checkEnter(e) {
-  var key = e.charCode || e.keyCode || 0;     
+  var key = e.charCode || e.keyCode || 0;
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
@@ -201,7 +201,7 @@ function displayRow(e) {
       <td>
         <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
-      <td> 
+      <td>
         <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
       <td align="center" class="align-middle">
@@ -210,7 +210,7 @@ function displayRow(e) {
         </a>
       </td>
     </tr>
-  `; 
+  `;
 
   $(tablePO).append(newTr);
   jumBaris.value = newNum;
@@ -250,13 +250,13 @@ function displayRow(e) {
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
       $(qtyRow).tooltip('show');
-      
+
       e.preventDefault();
     }
-    
+
     return true;
   });
-  
+
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
@@ -289,7 +289,7 @@ function displayRow(e) {
       idBarang.push('{{ $b->id }}');
       nmBarang.push('{{ $b->nama }}');
     @endforeach
-      
+
     function split(val) {
       return val.split(/,\s/);
     }
@@ -320,7 +320,7 @@ function displayRow(e) {
         return false;
       }
     });
-    
+
     $(brgRow).on("keydown", function(event) {
       if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
@@ -343,7 +343,7 @@ function displayRow(e) {
         return false;
       }
     });
-  }); 
+  });
 }
 
 function formatTanggal(e) {
@@ -351,11 +351,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   tglRetur.value = value;
 }
 
@@ -463,7 +463,7 @@ function checkRequired(e) {
     document.getElementById("submitRJ").dataset.toggle = "modal";
     document.getElementById("submitRJ").dataset.target = "#modalNotif";
     return false;
-  } 
+  }
   else {
     document.getElementById("submitRJ").formMethod = "POST";
     document.getElementById("submitRJ").formAction = "{{ route('ret-process-jual', $newcode) }}";
@@ -484,7 +484,7 @@ $(function() {
     kode.push('{{ $b->id }}');
     nama.push('{{ $b->nama }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }

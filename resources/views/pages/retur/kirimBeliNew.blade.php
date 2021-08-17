@@ -39,13 +39,12 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" readonly class="form-control form-control-sm text-bold text-dark" name="kode" value="{{ $item->first()->id }}" >
                       </div>
-                      {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal Retur</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->tanggal)->format('d-M-y') }}">
                       </div>
-                    </div>   
+                    </div>
                   </div>
                 </div>
                 <div class="form-group row subtotal-so">
@@ -62,11 +61,6 @@
               <!-- End Inputan Data Id, Tanggal, Supplier BM -->
 
               <!-- Tabel Data Detil BM-->
-              {{-- @if(($item->first()->keterangan == 'BELUM LUNAS') && (Auth::user()->roles != 'OFFICE02'))
-                <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
-                  Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
-                </span>
-              @endif --}}
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold text-dark">
                   <tr class="text-center">
@@ -85,7 +79,7 @@
                 <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kurang = 0; $totalDRT = 0; @endphp
                   @foreach($retur as $d)
-                    @php 
+                    @php
                       $totalTerima = 0; $totalBatal = 0; $totalPotong = 0; $kode = $item->first()->id; $no = 0;
                       $returTerima = App\Models\DetilRT::join('returterima', 'returterima.id',
                                     'detilrt.id_terima')->where('id_retur', $item->first()->id)
@@ -130,7 +124,7 @@
                             </a>
                           </td>
                         </tr>
-                        @php $i++; $totalTerima += $dr->qty_terima; $totalBatal += $dr->qty_batal; 
+                        @php $i++; $totalTerima += $dr->qty_terima; $totalBatal += $dr->qty_batal;
                               $totalPotong += $dr->potong; $no++; @endphp
                       @endforeach
                       @php $totalDRT += $returTerima->count(); @endphp
@@ -169,7 +163,7 @@
                       </tr>
                       @php $i++; @endphp
                     @endif
-                    
+
                   @endforeach
                 </tbody>
                 <tfoot>
@@ -233,7 +227,7 @@
                         </div>
                         <div class="form-group subtotal-so">
                           <label for="keterangan" class="col-form-label">Keterangan</label>
-                          <input type="text" class="form-control" name="keterangan" 
+                          <input type="text" class="form-control" name="keterangan"
                           id="keterangan" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
                         </div>
                         <hr>
@@ -315,7 +309,7 @@ const kodeRB = document.getElementById('angka');
 kirimRB.addEventListener("keypress", checkEnter);
 
 function checkEnter(e) {
-  var key = e.charCode || e.keyCode || 0;     
+  var key = e.charCode || e.keyCode || 0;
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
@@ -344,11 +338,11 @@ for(let i = 0; i < tglBayar.length; i++) {
     var arrValue = value.split("", 3);
     var kode = arrValue.join("");
 
-    if(value.length > 2 && value.length <= 4) 
+    if(value.length > 2 && value.length <= 4)
       value = value.slice(0,2) + "-" + value.slice(2);
     else if(value.length > 4 && value.length <= 8)
       value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
+
     tglBayar[i].value = value;
   });
 }
@@ -384,7 +378,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
     const delRow = document.getElementById(i);
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $('tbody tr:last').find('td:first-child').text();
-    
+
     $(delRow).remove();
     for(let j = +curNum; j < +lastNum; j++) {
       $(tablePO).find('tr:nth-child('+j+') td:first-child').html(j);
@@ -432,25 +426,25 @@ function checkLimit(e) {
   if(cek == 1) {
     document.getElementById("submitRB").dataset.toggle = "modal";
     document.getElementById("submitRB").dataset.target = "#modalNotif";
-    for(let i = 0; i < urut.length; i++) { 
+    for(let i = 0; i < urut.length; i++) {
       $(kirimModal[urut[i]]).closest('td').css("border-color", "red");
       $(kirimModal[urut[i]]).closest('td').css("border-width", "3px");
       $(batalModal[urut[i]]).closest('td').css("border-color", "red");
       $(batalModal[urut[i]]).closest('td').css("border-width", "3px");
     }
-    for(let i = 0; i < urutDetil.length; i++) { 
+    for(let i = 0; i < urutDetil.length; i++) {
       $(terimaDetil[urutDetil[i]]).closest('td').css("border-color", "red");
       $(terimaDetil[urutDetil[i]]).closest('td').css("border-width", "3px");
       $(batalDetil[urutDetil[i]]).closest('td').css("border-color", "red");
       $(batalDetil[urutDetil[i]]).closest('td').css("border-width", "3px");
     }
     return false;
-  } 
+  }
   else {
     document.getElementById("submitRB").formMethod = "POST";
     document.getElementById("submitRB").formAction = "{{ route('retur-beli-process') }}";
   }
-} 
+}
 
 function checkEditable() {
   const ket = document.getElementById("keterangan");
@@ -495,7 +489,7 @@ $(function() {
     kode.push('{{ $b->id }}');
     nama.push('{{ $b->nama }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }
