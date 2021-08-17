@@ -743,16 +743,20 @@ class ReturController extends Controller
                         $stokJelek = StokBarang::where('id_barang', $i->id_barang)
                                 ->where('id_gudang', 'GDG01')
                                 ->first();
-                        $stokJelek->{'stok'} -= $i->qty_batal;
+                        $stokJelek->{'stok'} -= ($i->qty_terima + $i->qty_batal + $i->potong);
                         $stokJelek->save();
 
-                        $stokBagus = StokBarang::where('id_barang', $i->id_barang)
-                                ->where('id_gudang', 'GDG01')
-                                ->where('status', 'T')->first();
-                        $stokBagus->{'stok'} -= $i->qty_terima;
-                        $stokBagus->save();
+                        $hapus = DetilRB::where('id_retur', $request->kode)
+                            ->where('id_barang', $i->id_barang)->first();
+
+                        $stokJelek = StokBarang::where('id_barang', $i->id_barang)
+                            ->where('id_gudang', 'GDG01')
+                            ->first();
+                        $stokJelek->{'stok'} += $hapus->{'qty_retur'};
+                        $stokJelek->save();
 
                         DetilRT::where('id_terima', $i->id_terima)->where('id_barang', $i->id_barang)->delete();
+                        DetilRB::where('id_retur', $request->kode)->where('id_barang', $i->id_barang)->delete();
                     } else {
                         $k++;
                     }
