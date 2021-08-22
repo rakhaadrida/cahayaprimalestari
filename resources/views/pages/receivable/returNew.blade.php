@@ -47,7 +47,7 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->so->tgl_so)->format('d-M-y') }}">
                       </div>
-                    </div>   
+                    </div>
                   </div>
                   <div class="col" style="margin-left: -360px">
                     <div class="form-group row subtotal-po">
@@ -88,6 +88,7 @@
                     <th rowspan="2" class="align-middle">Nama Barang</th>
                     <th rowspan="2" class="align-middle"style="width: 110px">Tgl. Retur</th>
                     <th rowspan="2" class="align-middle"style="width: 60px">Qty</th>
+                    <th rowspan="2" class="align-middle"style="width: 60px">Tipe Harga</th>
                     <th rowspan="2" class="align-middle"style="width: 90px">Harga</th>
                     <th rowspan="2" class="align-middle"style="width: 100px">Jumlah</th>
                     <th colspan="2">Diskon</th>
@@ -102,19 +103,6 @@
                 <tbody id="tablePO" class="table-ar">
                   @php $i = 1; $totalQty = 0; $totalRet = 0; @endphp
                   @foreach($retur as $d)
-                    {{-- <tr class="table-modal-first-row text-dark" style="font-size: 16px">
-                      <td class="text-center" >{{ $i }}</td>
-                      <td class="text-center">{{ $d->id_barang }}</td>
-                      <td>{{ $d->barang->nama }}</td>
-                      <td class="text-center">{{ \Carbon\Carbon::parse($d->tgl_retur)->format('d-M-y') }}</td>
-                      <td class="text-right">{{ $d->qty }}</td>
-                      @php $kurang -= $d->cicil; @endphp 
-                      <td class="text-right">{{ number_format($d->harga, 0, "", ".") }}</td>
-                      <td class="text-right">{{ number_format($d->qty * $d->harga, 0, "", ".") }}</td>
-                      <td class="text-right">{{ $d->diskon }}</td>
-                      <td class="text-right">{{ number_format($d->diskonRp, 0, "", ".") }}</td>
-                      <td class="text-right">{{ number_format(($d->qty * $d->harga) - $d->diskonRp, 0, "", ".") }}</td>
-                    </tr> --}}
                     <tr class="table-modal-first-row text-dark retur-ar" id="{{ $i-1 }}">
                       <td class="text-center align-middle">{{ $i }}</td>
                       <td class="text-center">
@@ -170,6 +158,9 @@
                           <input type="text" class="form-control form-control-sm text-bold text-dark text-right qty" name="qty{{$item->first()->id}}[]" id="qty{{$item->first()->id}}" onkeypress="return angkaSaja(event, {{$j - $retur->count()}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" >
                         </td>
                         <td class="align-middle">
+                          <input type="text" class="form-control form-control-sm text-bold text-dark text-center tipe" name="tipe{{$item->first()->id}}[]" id="tipe{{$item->first()->id}}" autocomplete="off" >
+                        </td>
+                        <td class="align-middle">
                           <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right harga" name="harga{{$item->first()->id}}[]" id="harga{{$item->first()->id}}">
                         </td>
                         <td class="text-right align-middle">
@@ -191,7 +182,7 @@
                         </td>
                       </tr>
                     @endfor
-                  @endif 
+                  @endif
                 </tbody>
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="font-size: 16px">
@@ -256,6 +247,7 @@ const kodeBarang = document.querySelectorAll('.kodeBarang');
 const brgNama = document.querySelectorAll(".namaBarang");
 const tglRetur = document.querySelectorAll('.tglRetur');
 const qty = document.querySelectorAll('.qty');
+const tipe = document.querySelectorAll(".tipe");
 const harga = document.querySelectorAll('.harga');
 const jumlah = document.querySelectorAll('.jumlah');
 const diskon = document.querySelectorAll('.diskon');
@@ -273,7 +265,7 @@ newRow.addEventListener('click', displayRow);
 returAR.addEventListener("keypress", checkEnter);
 
 function checkEnter(e) {
-  var key = e.charCode || e.keyCode || 0;     
+  var key = e.charCode || e.keyCode || 0;
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
@@ -295,13 +287,13 @@ function displayRow(e) {
       <td class="align-middle">
         <input type="text" name="namaBarang{{$item->first()->id}}[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
       </td>
-      <td class="align-middle"> 
+      <td class="align-middle">
         <input type="text" class="form-control datepickerRow form-control-sm text-bold text-dark text-center tglReturRow" name="tglRetur{{$item->first()->id}}[]" id="tglReturRow${newNum}" placeholder="DD-MM-YYYY" autocomplete="off">
       </td>
-      <td class="align-middle"> 
+      <td class="align-middle">
         <input type="text" class="form-control form-control-sm text-bold text-dark text-right qtyRow" name="qty{{$item->first()->id}}[]" id="qtyRow${newNum}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
       </td>
-      <td class="align-middle"> 
+      <td class="align-middle">
         <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right hargaRow" name="harga{{$item->first()->id}}[]" id="hargaRow${newNum}">
       </td>
       <td class="text-right align-middle">
@@ -322,7 +314,7 @@ function displayRow(e) {
         </a>
       </td>
     </tr>
-  `; 
+  `;
 
   $(tablePO).append(newTr);
   jumBaris.value = +jumBaris.value + 1;
@@ -380,11 +372,11 @@ function displayRow(e) {
     var arrValue = value.split("", 3);
     var kode = arrValue.join("");
 
-    if(value.length > 2 && value.length <= 4) 
+    if(value.length > 2 && value.length <= 4)
       value = value.slice(0,2) + "-" + value.slice(2);
     else if(value.length > 4 && value.length <= 8)
       value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
+
     tglReturRow.value = value;
   });
 
@@ -395,7 +387,7 @@ function displayRow(e) {
       diskonRpRow.value = "";
       nettoRow.value = "";
     }
-    else {  
+    else {
       netPast = +nettoRow.value.replace(/\./g, "");
       jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
       if(diskonRow.value != "") {
@@ -429,7 +421,7 @@ function displayRow(e) {
     if(qtyRow.value != "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
     }
-    
+
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
     console.log(lastNum);
@@ -462,7 +454,7 @@ function displayRow(e) {
       idBarang.push('{{ $b->id }}');
       nmBarang.push('{{ $b->nama }}');
     @endforeach
-      
+
     function split(val) {
       return val.split(/,\s/);
     }
@@ -493,7 +485,7 @@ function displayRow(e) {
         return false;
       }
     });
-    
+
     $(brgRow).on("keydown", function(event) {
       if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
@@ -516,7 +508,7 @@ function displayRow(e) {
         return false;
       }
     });
-  }); 
+  });
 }
 
 for(let i = retur; i < kodeBarang.length; i++) {
@@ -540,6 +532,7 @@ for(let i = retur; i < kodeBarang.length; i++) {
 
     @foreach($harga as $hb)
       if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+        tipe[i].value = '{{ $hb->hargaBarang->tipe }}';
         harga[i].value = addCommas('{{ $hb->harga_ppn }}');
       }
     @endforeach
@@ -554,11 +547,11 @@ for(let i = 0; i < tglRetur.length; i++) {
     var arrValue = value.split("", 3);
     var kode = arrValue.join("");
 
-    if(value.length > 2 && value.length <= 4) 
+    if(value.length > 2 && value.length <= 4)
       value = value.slice(0,2) + "-" + value.slice(2);
     else if(value.length > 4 && value.length <= 8)
       value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
+
     tglRetur[i].value = value;
   });
 }
@@ -573,7 +566,7 @@ for(let i = 0; i < qty.length; i++) {
       diskonRp[i].value = "";
       netto[i].value = "";
     }
-    else {  
+    else {
       netPast = +netto[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
       if(diskon[i].value != "") {
@@ -615,7 +608,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
     const delRow = document.getElementById(i);
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $('tbody tr:last').prev().prev().prev().find('td:first-child').text();
-    
+
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
     $(delRow).remove();
     for(let j = +curNum; j < (+lastNum + +jumBaris.value); j++) {
@@ -714,7 +707,7 @@ function checkSubtotal(Past, Now) {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + (+Now - +Past));
     // totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") + (+Now - +Past));
   }
-} 
+}
 
 /** Add Thousand Separators **/
 function addCommas(nStr) {
@@ -737,7 +730,10 @@ $(function() {
     kode.push('{{ $b->id }}');
     nama.push('{{ $b->nama }}');
   @endforeach
-    
+
+  var tipeHarga = '{{ implode(",", $hrg) }}';
+  tipeHarga = tipeHarga.split(',');
+
   function split(val) {
     return val.split(/,\s*/);
   }
@@ -803,6 +799,34 @@ $(function() {
       return false;
     }
   });
+
+  $(tipe).on("keydown", function(event) {
+    if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+    }
+  })
+    .autocomplete({
+        minLength: 0,
+        source: function(request, response) {
+            // delegate back to autocomplete, but extract the last term
+            response($.ui.autocomplete.filter(tipeHarga, extractLast(request.term)));
+        },
+        focus: function() {
+            // prevent value inserted on focus
+            return false;
+        },
+        select: function(event, ui) {
+            var terms = split(this.value);
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push(ui.item.value);
+            // add placeholder to get the comma-and-space at the end
+            terms.push("");
+            this.value = terms.join("");
+            return false;
+        }
+    });
 });
 
 </script>

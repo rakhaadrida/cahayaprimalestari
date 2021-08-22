@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Harga;
 use Illuminate\Http\Request;
 use App\Models\Gudang;
 use App\Models\StokBarang;
@@ -511,8 +512,10 @@ class ReturController extends Controller
     } */
 
     public function createPembelian() {
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $supplier = Supplier::All();
-        $barang = StokBarang::where('id_gudang', 'GDG01')->get();
+        $barang = StokBarang::where('id_gudang', $gudang->first()->id)
+            ->where('status', 'F')->get();
 
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');
@@ -552,6 +555,7 @@ class ReturController extends Controller
     }
 
     public function storeBeli(Request $request, $id) {
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
         $waktu = Carbon::now('+07:00');
@@ -580,13 +584,13 @@ class ReturController extends Controller
                 ]);
 
                 $stok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                        ->where('id_gudang', 'GDG01')
-                        ->first();
+                        ->where('id_gudang', $gudang->first()->id)
+                        ->where('status', 'F')->first();
 
                 if($stok == NULL) {
                     StokBarang::create([
                         'id_barang' => $request->kodeBarang[$i],
-                        'id_gudang' => 'GDG01',
+                        'id_gudang' => $gudang->first()->id,
                         'status' => 'T',
                         'stok' => $request->qty[$i]
                     ]);
@@ -606,12 +610,13 @@ class ReturController extends Controller
     }
 
     public function batalReturBeli(Request $request, $id) {
+        $gudang = Gudang::where('tipe', 'RETUR')->get();
         $detilRB = DetilRB::where('id_retur', $id)->get();
 
         foreach($detilRB as $d) {
             $stok = StokBarang::where('id_barang', $d->id_barang)
-                    ->where('id_gudang', 'GDG01')
-                    ->first();
+                    ->where('id_gudang', $gudang->first()->id)
+                    ->where('status', 'F')->first();
 
             $stok->{'stok'} += $d->qty_retur;
 
@@ -733,6 +738,7 @@ class ReturController extends Controller
         $retur = DetilRB::where('id_retur', $id)->get();
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $barang = Barang::All();
+
 
         $data = [
             'item' => $item,
