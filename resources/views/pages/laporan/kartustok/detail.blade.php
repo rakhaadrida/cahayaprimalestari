@@ -30,7 +30,7 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              <div class="container so-container"> 
+              <div class="container so-container">
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Kode Barang</label>
                   <span class="col-form-label text-bold">:</span>
@@ -41,7 +41,7 @@
                   <div class="col-2">
                     <input type="text" class="form-control form-control-sm text-bold mt-1" name="kodeAkhir" id="kodeAkhir" value="{{ $itemsBRG[$itemsBRG->count() - 1]->id }}" required>
                   </div>
-                </div>   
+                </div>
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
@@ -55,7 +55,7 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                </div>  
+                </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
@@ -81,7 +81,7 @@
                 <div class="carousel-inner">
                   @php $j=0; @endphp
                   @foreach($itemsBRG as $item)
-                  <div class="carousel-item 
+                  <div class="carousel-item
                     @if($item->id == $itemsBRG[0]->id) active
                     @endif "
                   />
@@ -137,7 +137,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      @php 
+                      @php
                         $itemsBM = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                                     ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'qty')
                                     ->where('id_barang', $item->id)
@@ -152,26 +152,26 @@
                                         $q->whereBetween('tgl_so', [$awal, $akhir])
                                         ->where('status', '!=', 'BATAL');
                                     })->groupBy('id_so', 'id_barang');
-                        $itemsRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
+                        /* $itemsRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
                                     ->select('id', 'id_retur', 'id_barang', 'tanggal', 'returjual.created_at', 'tgl_kirim as id_asal', 'id_kirim as id_tujuan', 'qty_retur as qty')
                                     ->where('id_barang', $item->id)
                                     ->whereHas('retur', function($q) use($awal, $akhir) {
                                         $q->whereBetween('tanggal', [$awal, $akhir])
                                         ->where('status', '!=', 'BATAL');
-                                    });
+                                    }); */
                         $itemsKRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
                                     ->select('id_kirim as id', 'id_retur', 'id_barang', 'tgl_kirim as tanggal', 'returjual.created_at', 'tanggal as id_asal', 'potong as id_tujuan', 'qty_kirim as qty')->where('id_barang', $item->id)->where('qty_kirim', '!=', 0)
                                     ->whereHas('retur', function($q) use($awal, $akhir) {
                                         $q->whereBetween('tanggal', [$awal, $akhir])
                                         ->where('status', '!=', 'BATAL');
                                     });
-                        $itemsRB = \App\Models\DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
+                        /* $itemsRB = \App\Models\DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
                                     ->select('id', 'id_retur', 'id_barang', 'tanggal', 'returbeli.created_at', 'detilrb.created_at as id_asal', 'returbeli.updated_at as id_tujuan', 'qty_retur as qty')
                                     ->where('id_barang', $item->id)
                                     ->whereHas('returbeli', function($q) use($awal, $akhir) {
                                         $q->whereBetween('tanggal', [$awal, $akhir])
                                         ->where('status', '!=', 'BATAL');
-                                    });
+                                    }); */
                         $itemsTRB = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
                                     ->select('id_terima as id', 'id_retur', 'id_barang', 'tanggal', 'returterima.created_at', 'qty_batal as id_asal', 'potong as id_tujuan', 'qty_terima as qty')->where('id_barang', $item->id)->where('qty_terima', '!=', 0)
                                     ->whereHas('returterima', function($q) use($awal, $akhir) {
@@ -181,8 +181,10 @@
                                     ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', $item->id)
                                     ->whereHas('tb', function($q) use($awal, $akhir) {
                                         $q->whereBetween('tgl_tb', [$awal, $akhir]);
-                                    })->union($itemsBM)->union($itemsSO)->union($itemsRJ)->union($itemsKRJ)
-                                    ->union($itemsRB)->union($itemsTRB)->orderBy('created_at')->get();
+                                    })->union($itemsBM)->union($itemsSO)->union($itemsKRJ)
+                                    ->union($itemsTRB)->orderBy('created_at')->get();
+
+                        //->union($itemsRJ)->union($itemsRB)
 
                         $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                                     ->selectRaw('sum(qty) as qty')->where('id_barang', $item->id)
@@ -191,7 +193,8 @@
                                     ->selectRaw('sum(qty) as qty')->where('id_barang', $item->id)
                                     ->where('tanggal', '>', $akhir)->where('status', '!=', 'BATAL')->get();
                         $kurangRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
-                                    ->selectRaw('sum(qty_retur - qty_kirim) as qty')
+                                    ->selectRaw('sum(qty_kirim) as qty')
+                                   // ->selectRaw('sum(qty_retur - qty_kirim) as qty')
                                     ->where('status', 'INPUT')->where('id_barang', $item->id)
                                     ->where('tanggal', '>', $akhir)->get();
                         $detilRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
@@ -203,8 +206,9 @@
                                     ->selectRaw('sum(qty_retur) as retur')
                                     ->where('status', 'INPUT')->where('id_barang', $item->id)
                                     ->where('tanggal', '>', $akhir)->get();
-                        $tambahRB = $detilRB->first()->retur - $detilRT->first()->qty;
-                      
+                        // $tambahRB = $detilRB->first()->retur - $detilRT->first()->qty;
+                        $tambahRB = $detilRT->first()->qty;
+
                       @endphp
                       @if($items->count() != 0)
                         <tr>
@@ -212,8 +216,8 @@
                           <td class="text-bold text-dark text-right">{{ $stokAwal[$j] }}</td>
                           <td colspan="{{ $gudang->count() + 6 }}"></td>
                         </tr>
-                        @php 
-                          $i = 1; $totalBM = 0; $totalSO = 0;        
+                        @php
+                          $i = 1; $totalBM = 0; $totalSO = 0;
                         @endphp
                         @foreach($items as $it)
                           <tr class="text-dark">
@@ -238,7 +242,8 @@
                                 $nama = ($namaTB->count() != 0 ? $namaTB->first()->gudangAsal->nama : '0');
                                 $namaGud = ($namaTB->count() != 0 ? $namaTB->first()->gudangTuju->nama: '0');
                                 $user = ($namaTB->count() != 0 ? $namaTB->first()->tb->user->name: '0');
-                              } 
+                              }
+
                               elseif(((substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT'))) {
                                 $namaRJ = \App\Models\ReturJual::where('id', $it->id)->get();
                                 $nama = ($namaRJ->count() != 0 ? $namaRJ->first()->customer->nama : '0');
@@ -260,7 +265,7 @@
                               elseif(substr($it->id, 0, 3) == 'TRM') {
                                 $namaRJ = \App\Models\ReturBeli::where('id', $it->id_tb)->get();
                                 $nama = ($namaRJ->count() != 0 ? $namaRJ->first()->supplier->nama : '0');
-                                $namaGud = 'Retur Bagus';
+                                $namaGud = 'Kantor';
                                 $user = '';
                               }
                               else {
@@ -286,7 +291,7 @@
                             </td>
                             @foreach($gudang as $g)
                               @php
-                                if(($g->tipe == 'RETUR') && (substr($it->id, 0, 3) == 'KRM')) {
+                                if(($g->id == 'GDG01') && (substr($it->id, 0, 3) == 'KRM')) {
                                   $itemGud = \App\Models\DetilRJ::select('qty_kirim as qty')
                                           ->where('id_retur', $it->id_tb)
                                           ->where('id_barang', $it->id_barang)->get();
@@ -314,8 +319,8 @@
                               {{ $user }} <br> {{ \Carbon\Carbon::parse($it->created_at)->format('H:i:s') }}
                             </td>
                             @php
-                              if((substr($it->id, 0, 2) == 'BM') || (substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT') || (substr($it->id, 0, 3) == 'TRM')) 
-                                $totalBM += $it->qty; 
+                              if((substr($it->id, 0, 2) == 'BM') || (substr($it->id, 0, 3) == 'RTJ') || (substr($it->id, 0, 3) == 'RTT') || (substr($it->id, 0, 3) == 'TRM'))
+                                $totalBM += $it->qty;
                               elseif((substr($it->id, 0, 2) != 'BM') && (substr($it->id, 0, 2) != 'TB') && (substr($it->id, 0, 3) != 'RTJ') && (substr($it->id, 0, 3) != 'RTT') && (substr($it->id, 0, 3) != 'TRM'))
                                 $totalSO += $it->qty;
                             @endphp
@@ -336,7 +341,7 @@
                           <td class="text-bold text-dark text-right">{{ $stok[$j]->total + $tambahGd->first()->qty - $kurangGd->first()->qty - $kurangRJ->first()->qty + $tambahRB }}</td>
                           <td colspan="{{ $gudang->count() + 6 }}"></td>
                         </tr>
-                      @else 
+                      @else
                         <tr>
                           <td colspan="{{ $gudang->count() + 12 }}" class="text-center text-bold h4 p-2"><i>Tidak ada transaksi untuk kode dan tanggal tersebut</i></td>
                         </tr>
@@ -350,7 +355,7 @@
                   @php $j++; @endphp
                   @endforeach
                 </div>
-                @if(($itemsBRG->count() > 0) && ($itemsBRG->count() != 1)) 
+                @if(($itemsBRG->count() > 0) && ($itemsBRG->count() != 1))
                   <a class="carousel-control-prev" href="#so-carousel" role="button" data-slide="prev">
                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                       <span class="sr-only">Previous</span>
@@ -408,11 +413,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   if(e.target.id == 'tglAwal')
     tglAwal.value = value;
   else
@@ -437,7 +442,7 @@ $(function() {
   @foreach($barang as $b)
     barang.push('{{ $b->id }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }

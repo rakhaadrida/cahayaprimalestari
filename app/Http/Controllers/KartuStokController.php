@@ -21,7 +21,7 @@ class KartuStokController extends Controller
 {
     public function index() {
         $barang = Barang::All();
-        
+
         $data = [
             'barang' => $barang
         ];
@@ -41,7 +41,7 @@ class KartuStokController extends Controller
         $tglAkhir = $request->tglAkhir;
         $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
         $barang = Barang::All();
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('tipe', '!=', 'RETUR')->get();
 
         $rowBM = DetilBM::with(['bm', 'barang'])
                     ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
@@ -59,6 +59,7 @@ class KartuStokController extends Controller
                         ->get();
         $stok = StokBarang::select('id_barang', DB::raw('sum(stok) as total'))
                         ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
+                        ->where('status', '!=', 'F')
                         ->groupBy('id_barang')->get();
 
         $i = 0;
@@ -84,8 +85,9 @@ class KartuStokController extends Controller
             foreach($itemsSO as $so) {
                 $stokAwal[$i] += $so->qty;
             }
-            
-            $itemsRJ = \App\Models\DetilRJ::selectRaw('sum(qty_retur - qty_kirim) as qty')
+
+            $itemsRJ = \App\Models\DetilRJ::selectRaw('sum(qty_kirim) as qty')
+//                        \App\Models\DetilRJ::selectRaw('sum(qty_retur - qty_kirim) as qty')
                         ->where('id_barang', $s->id_barang)
                         ->whereHas('retur', function($q) use($tglAwal, $now) {
                             $q->whereBetween('tanggal', [$tglAwal, $now])
@@ -108,7 +110,7 @@ class KartuStokController extends Controller
                         ->where('id_barang', $s->id_barang)
                         ->whereBetween('returbeli.tanggal', [$tglAwal, $now])->get();
 
-                $stokAwal[$i] += ($rb->qty - $itemsRT->first()->qty);
+                $stokAwal[$i] += $itemsRT->first()->qty;
             }
 
             $i++;
@@ -125,7 +127,7 @@ class KartuStokController extends Controller
             'stok' => $stok,
             'stokAwal' => $stokAwal
         ];
-        
+
         return view('pages.laporan.kartustok.detail', $data);
     }
 
