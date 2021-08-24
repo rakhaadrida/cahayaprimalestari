@@ -36,7 +36,7 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              <div class="container so-container"> 
+              <div class="container so-container">
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
@@ -52,7 +52,7 @@
                       <option value="LENGKAP">LENGKAP</option>
                     </select>
                   </div>
-                </div>   
+                </div>
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
@@ -66,7 +66,7 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('retur-beli-show') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Cari</button>
                   </div>
-                </div>  
+                </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
@@ -80,10 +80,10 @@
                     <th style="width: 60px" class="align-middle">Tgl. Retur</th>
                     <th class="align-middle">Supplier</th>
                     <th style="width: 40px" class="align-middle">Qty Retur</th>
-                    <th style="width: 50px" class="align-middle">Qty Terima</th>
-                    <th style="width: 50px" class="align-middle">Qty Ditolak</th>
+{{--                    <th style="width: 50px" class="align-middle">Qty Terima</th>--}}
+{{--                    <th style="width: 50px" class="align-middle">Qty Ditolak</th>--}}
                     <th style="width: 50px" class="align-middle">Potong Tagihan</th>
-                    <th style="width: 50px" class="align-middle">Qty Kurang</th>
+{{--                    <th style="width: 50px" class="align-middle">Qty Kurang</th>--}}
                     <th style="width: 70px" class="align-middle">Status</th>
                   </tr>
                 </thead>
@@ -94,7 +94,7 @@
                       $qtyRetur = App\Models\DetilRB::selectRaw('sum(qty_retur) as total')
                                 ->where('id_retur', $r->id)->get();
                       $qtyProses = App\Models\DetilRT::join('returterima', 'returterima.id',
-                               'detilrt.id_terima')->selectRaw('sum(qty_terima) 
+                               'detilrt.id_terima')->selectRaw('sum(qty_terima)
                                 as totalTerima, sum(qty_batal) as totalBatal, sum(potong) as totalPotong')
                                 ->where('id_retur', $r->id)->get();
                     @endphp
@@ -106,10 +106,10 @@
                       </td>
                       <td class="align-middle">{{ $r->supplier->nama }}</td>
                       <td class="align-middle text-right">{{ $qtyRetur[0]->total }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalTerima != 0 ? $qtyProses[0]->totalTerima : '' }}</td>
-                      <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal != 0 ? $qtyProses[0]->totalBatal : '' }}</td>
+{{--                      <td class="align-middle text-right">{{ $qtyProses[0]->totalTerima != 0 ? $qtyProses[0]->totalTerima : '' }}</td>--}}
+{{--                      <td class="align-middle text-right">{{ $qtyProses[0]->totalBatal != 0 ? $qtyProses[0]->totalBatal : '' }}</td>--}}
                       <td class="align-middle text-right">{{ $qtyProses[0]->totalPotong != 0 ? $qtyProses[0]->totalPotong : '' }}</td>
-                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalTerima + $qtyProses[0]->totalBatal + $qtyProses[0]->totalPotong) }}</td>
+{{--                      <td class="align-middle text-right">{{ $qtyRetur[0]->total - ($qtyProses[0]->totalTerima + $qtyProses[0]->totalBatal + $qtyProses[0]->totalPotong) }}</td>--}}
                       <td align="center" class="align-middle text-bold" @if($r->status != "INPUT") style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         {{-- <a href="#Detail{{ $r->id }}" tabindex="{{ $tab++ }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$r->status}}
                         </a> --}}
@@ -130,13 +130,13 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+{{--                    <td></td>--}}
+{{--                    <td></td>--}}
+{{--                    <td></td>--}}
                   </tr>
                 </tfoot>
               </table>
-              
+
               @if($status == 'true')
                 <!-- Tampilan Cetak -->
                 <iframe src="{{url('retur/pembelian/cetak/'.$id)}}" id="frameCetak" frameborder="0" hidden></iframe>
@@ -164,9 +164,9 @@
   printFrame.window.onafterprint = function(e) {
     window.location = "{{ route('retur-beli', ['status' => 'false', 'id' => '0']) }}";
   }
-  
+
   printFrame.window.print();
-@endif 
+@endif
 
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
@@ -198,11 +198,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   if(e.target.id == 'tglAwal')
     tglAwal.value = value;
   else
@@ -226,7 +226,7 @@ $('#dataTable').dataTable( {
             i : 0;
     };
 
-    $.each([4, 5, 6, 7, 8], function(index, value) {
+    $.each([4, 5], function(index, value) {
 
       var column = api
         .column(value, {
@@ -246,7 +246,7 @@ $('#dataTable').dataTable( {
 
       // Update footer
       $(api.column(value).footer()).html(addCommas(column));
-    }); 
+    });
   }
 });
 

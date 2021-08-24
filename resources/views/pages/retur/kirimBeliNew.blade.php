@@ -68,11 +68,11 @@
                     <th class="align-middle" style="width: 90px">Kode Barang</th>
                     <th class="align-middle" style="width: 335px">Nama Barang</th>
                     <th class="align-middle" style="width: 60px">Qty Retur</th>
-                    <th class="align-middle" style="width: 100px">Tgl. Terima</th>
-                    <th class="align-middle" style="width: 70px">Qty Terima</th>
-                    <th class="align-middle" style="width: 70px">Qty Ditolak</th>
-                    <th class="align-middle" style="width: 70px">Potong Tagihan</th>
-                    <th class="align-middle" style="width: 50px">Qty Kurang</th>
+{{--                    <th class="align-middle" style="width: 100px">Tgl. Terima</th>--}}
+{{--                    <th class="align-middle" style="width: 70px">Qty Terima</th>--}}
+{{--                    <th class="align-middle" style="width: 70px">Qty Ditolak</th>--}}
+{{--                    <th class="align-middle" style="width: 70px">Potong Tagihan</th>--}}
+{{--                    <th class="align-middle" style="width: 50px">Qty Kurang</th>--}}
                     <th class="align-middle"style="width: 50px">Hapus</th>
                   </tr>
                 </thead>
@@ -106,18 +106,18 @@
                           <td class="text-center align-middle">
                             <input type="text" name="qtyDetil[]" id="qtyDetil{{$dr->id_barang}}" class="form-control-plaintext form-control-sm text-bold text-dark text-center qtyDetil" onkeypress="return angkaSaja(event)" autocomplete="off" value ="{{ $d->qty_retur }}" readonly>
                           </td>
-                          <td class="text-center">
-                            <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tglDetil[]" id="tglDetil{{$dr->id_barang}}" autocomplete="off" @if($dr->tanggal != '') value ="{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-m-Y') }}" @endif>
-                          </td>
-                          <td class="text-right">
-                            <input type="text" name="terimaDetil[]" id="terimaDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right terimaDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_terima != 0) value ="{{ $dr->qty_terima }}" @endif>
-                          </td>
-                          <td class="text-right">
-                            <input type="text" name="batalDetil[]" id="batalDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_batal != 0) value ="{{ $dr->qty_batal }}" @endif>
-                          </td>
-                          <td class="text-right align-middle">{{ $dr->potong != 0 ? $dr->potong : '' }}</td>
+{{--                          <td class="text-center">--}}
+{{--                            <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tglDetil[]" id="tglDetil{{$dr->id_barang}}" autocomplete="off" @if($dr->tanggal != '') value ="{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-m-Y') }}" @endif>--}}
+{{--                          </td>--}}
+{{--                          <td class="text-right">--}}
+{{--                            <input type="text" name="terimaDetil[]" id="terimaDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right terimaDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_terima != 0) value ="{{ $dr->qty_terima }}" @endif>--}}
+{{--                          </td>--}}
+{{--                          <td class="text-right">--}}
+{{--                            <input type="text" name="batalDetil[]" id="batalDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_batal != 0) value ="{{ $dr->qty_batal }}" @endif>--}}
+{{--                          </td>--}}
+{{--                          <td class="text-right align-middle">{{ $dr->potong != 0 ? $dr->potong : '' }}</td>--}}
                           @php $kurang -= ($dr->qty_terima + $dr->qty_batal + $dr->potong); @endphp
-                          <td class="text-right align-middle">{{ number_format($kurang, 0, "", ".") }}</td>
+{{--                          <td class="text-right align-middle">{{ number_format($kurang, 0, "", ".") }}</td>--}}
                           <td align="center" class="align-middle">
                             <a href="#" class="icRemove">
                               <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
@@ -142,19 +142,19 @@
                         <td class="align-middle text-center">
                           <input type="text" name="qty[]" id="qty{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-center qty" onkeypress="return angkaSaja(event)" autocomplete="off" value ="{{ $d->qty_retur }}" >
                         </td>
-                        <td class="text-center align-middle">
-                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl[]" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off">
-                        </td>
-                        <td class="text-right align-middle">
-                          <input type="text" name="terima[]" id="bayar{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
-                        </td>
-                        <td class="text-right align-middle">
-                          <input type="text" name="batal[]" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
-                        </td>
-                        <td class="text-right align-middle"></td>
-                        <td class="text-right align-middle">
-                          <input type="text" name="kurang[]" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">
-                        </td>
+{{--                        <td class="text-center align-middle">--}}
+{{--                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl[]" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off">--}}
+{{--                        </td>--}}
+{{--                        <td class="text-right align-middle">--}}
+{{--                          <input type="text" name="terima[]" id="bayar{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">--}}
+{{--                        </td>--}}
+{{--                        <td class="text-right align-middle">--}}
+{{--                          <input type="text" name="batal[]" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">--}}
+{{--                        </td>--}}
+{{--                        <td class="text-right align-middle"></td>--}}
+{{--                        <td class="text-right align-middle">--}}
+{{--                          <input type="text" name="kurang[]" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">--}}
+{{--                        </td>--}}
                         <td align="center" class="align-middle">
                           <a href="#" class="icRemove" >
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1" @if($returTerima->count() != 0) hidden @endif></i>
@@ -168,11 +168,12 @@
                 </tbody>
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="font-size: 16px">
-                    <td colspan="5" class="text-center">Total</td>
-                    <td class="text-right">{{ number_format($totalTerima, 0, "", ".") }}</td>
-                    <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>
-                    <td class="text-right">{{ number_format($totalPotong, 0, "", ".") }}</td>
-                    <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>
+                    <td colspan="3" class="text-center">Total</td>
+                    <td class="text-center">{{ number_format($retur->sum('qty_retur'), 0, "", ".") }}</td>
+{{--                    <td class="text-right">{{ number_format($totalTerima, 0, "", ".") }}</td>--}}
+{{--                    <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>--}}
+{{--                    <td class="text-right">{{ number_format($totalPotong, 0, "", ".") }}</td>--}}
+{{--                    <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>--}}
                     <td></td>
                   </tr>
                 </tfoot>
@@ -185,7 +186,11 @@
               @if($item->first()->status == 'INPUT')
                 <div class="form-row justify-content-center">
                   <div class="col-2">
-                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitRB" onclick="return checkLimit(event)">Submit</button>
+                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitRB" onclick="return checkLimit(event)">Update</button>
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-outline-dark btn-block text-bold" formaction="{{ route('retur-selesai-beli', $item->first()->id) }}" formmethod="GET">Selesai Retur</button>
+{{--                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitRB" onclick="return checkLimit(event)">Submit</button>--}}
                     {{-- formaction="{{ route('retur-beli-process') }}" formmethod="POST" --}}
                   </div>
                   <div class="col-2">

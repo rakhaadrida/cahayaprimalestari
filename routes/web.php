@@ -39,7 +39,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('supplier/hapus-all/all', 'SupplierController@hapusAll')
             ->name('sup-hapusAll');
         Route::get('supplier/excel/all', 'SupplierController@excel')->name('sup-excel');
-        
+
         // Soft Deletes Sales
         Route::get('sales/trash/all', 'SalesController@trash')->name('sales-trash');
         Route::get('sales/restore/{id}', 'SalesController@restore')->name('sales-restore');
@@ -98,7 +98,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('harga/hapus/{id}', 'HargaController@hapus')->name('harga-hapus');
         Route::get('harga/hapus-all/all', 'HargaController@hapusAll')
             ->name('harga-hapusAll');
-        
+
         // Soft Deletes Gudang
         Route::get('gudang/trash/all', 'GudangController@trash')->name('gudang-trash');
         Route::get('gudang/restore/{id}', 'GudangController@restore')->name('gudang-restore');
@@ -151,7 +151,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('bm-edit');
         Route::post('/barangmasuk/change/update', 'BarangMasukController@update')
             ->name('bm-update');
-        
+
         // Cetak Barang Masuk
         Route::get('/cetak-bm/{status}/{awal}/{akhir}', 'CetakBMController@index')
             ->name('cetak-bm');
@@ -163,7 +163,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-bm-all');
         Route::get('/cetak-bm-update/{awal}/{akhir}', 'CetakBMController@update')
             ->name('cetak-bm-update');
-        
+
         // Barang Masuk Harian
         Route::get('/bm-harian', 'BMHarianController@index')->name('bm-harian');
         Route::get('/bm-harian/show', 'BMHarianController@show')->name('bm-harian-show');
@@ -196,7 +196,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/transaksi', 'TransaksiController@index')->name('trans');
         Route::post('/transaksi', 'TransaksiController@index')->name('trans-home');
         Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
-        
+
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
         Route::post('/tandaterima/show', 'TandaTerimaController@show')->name('ttr-show');
@@ -210,7 +210,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('ttr-cetak');
         Route::get('/tandaterima/cetak-update/{awal}/{akhir}', 'TandaTerimaController@update')
             ->name('ttr-update');
-            
+
         // Cetak Faktur
         Route::get('/cetak-faktur/{status}/{awal}/{akhir}', 'CetakFakturController@index')
             ->name('cetak-faktur');
@@ -237,12 +237,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('extrana', 'ExtranaController@index')->name('extrana');
         Route::post('extrana/show', 'ExtranaController@show')->name('extrana-show');
         Route::post('extrana/excel', 'ExtranaController@excel')->name('extrana-excel');
-        
+
         // Barang Masuk
         Route::get('bmk', 'RekapBMKController@index')->name('bmk');
         Route::post('bmk/show', 'RekapBMKController@show')->name('bmk-show');
         Route::post('bmk/excel', 'RekapBMKController@excel')->name('bmk-excel');
-        
+
         // Barang Keluar
         Route::get('bk', 'RekapBKController@index')->name('bk');
         Route::post('bk/show', 'RekapBKController@show')->name('bk-show');
@@ -445,6 +445,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('retur/pembelian/create/{id}', 'ReturController@createReturBeli')->name('retur-beli-create');
         Route::post('retur/pembelian/terima', 'ReturController@storeTerimaBeli')
             ->name('retur-beli-process');
+        Route::get('/retur/pembelian/selesai/{id}', 'ReturController@selesaiReturBeli')
+            ->name('retur-selesai-beli');
         Route::get('/retur/pembelian/tagihan/{id}', 'ReturController@potongTagihanBeli')
             ->name('retur-potong-beli');
         Route::get('/retur/pembelian/cetak/{id}', 'ReturController@cetakTerimaBeli')
