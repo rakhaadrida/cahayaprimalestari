@@ -129,7 +129,7 @@
                       @endforeach
                       @php $totalDRT += $returTerima->count(); @endphp
                     @endif
-                    @if($d->qty_retur != $totalTerima + $totalBatal + $totalPotong)
+                    @if(($retur->first()->returBeli->status != 'LENGKAP') && ($d->qty_retur != $totalTerima + $totalBatal + $totalPotong))
                       <tr class="text-dark text-bold" id="{{ $i-1 }}">
                         <td class="text-center align-middle">{{ $i }}</td>
                         <td class="text-center align-middle">
