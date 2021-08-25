@@ -438,7 +438,10 @@ function displayRow(e) {
       @endforeach
     }
 
-  diskonRow.addEventListener("keyup", function (e) {
+    diskonRow.addEventListener("keyup", displayDiskonRow);
+    diskonRow.addEventListener("blur", displayDiskonRow);
+
+  function displayDiskonRow(e) {
     if(e.target.value == "") {
       netPast = nettoRow.value.replace(/\./g, "");
       nettoRow.value = addCommas(+nettoRow.value.replace(/\./g, "") + +diskonRpRow.value.replace(/\./g, ""));
@@ -452,7 +455,7 @@ function displayRow(e) {
       nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
       checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
-  });
+  }
 
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
@@ -681,7 +684,10 @@ for(let i = 0; i < tipe.length; i++) {
 }
 
 for(let i = 0; i < diskon.length; i++) {
-  diskon[i].addEventListener("keyup", function (e) {
+  diskon[i].addEventListener("keyup", displayDiskon);
+  diskon[i].addEventListener("blur", displayDiskon);
+
+  function displayDiskon(e) {
     if(e.target.value == "") {
       netPast = netto[i].value.replace(/\./g, "");
       netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
@@ -698,7 +704,7 @@ for(let i = 0; i < diskon.length; i++) {
     // total_ppn(subtotal.value.replace(/\./g, ""));
     // totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     // grandtotal.value = totalNotPPN.value;
-  });
+  }
 }
 
 /** Delete Baris Pada Tabel **/

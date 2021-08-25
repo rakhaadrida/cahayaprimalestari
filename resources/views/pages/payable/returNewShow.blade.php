@@ -46,7 +46,7 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="2" readonly class="form-control datepicker form-control-sm text-bold text-dark" name="tanggal" value="{{ \Carbon\Carbon::parse($item->first()->bm->first()->tanggal)->format('d-M-y') }}">
                       </div>
-                    </div>   
+                    </div>
                   </div>
                   <div class="col" style="margin-left: -360px">
                     <div class="form-group row subtotal-po">
@@ -256,7 +256,7 @@ returShowAP.addEventListener("keypress", checkEnter);
 // newRow.addEventListener('click', displayRow);
 
 function checkEnter(e) {
-  var key = e.charCode || e.keyCode || 0;     
+  var key = e.charCode || e.keyCode || 0;
   if (key == 13) {
     alert("Silahkan Klik Tombol Submit");
     e.preventDefault();
@@ -269,11 +269,11 @@ for(let i = 0; i < tglRetur.length; i++) {
     var arrValue = value.split("", 3);
     var kode = arrValue.join("");
 
-    if(value.length > 2 && value.length <= 4) 
+    if(value.length > 2 && value.length <= 4)
       value = value.slice(0,2) + "-" + value.slice(2);
     else if(value.length > 4 && value.length <= 8)
       value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-    
+
     tglRetur[i].value = value;
   });
 }
@@ -287,7 +287,7 @@ for(let i = 0; i < qty.length; i++) {
       diskonRp[i].value = "";
       netto[i].value = "";
     }
-    else {  
+    else {
       netPast = +netto[i].value.replace(/\./g, "");
       jumlah[i].value = addCommas(e.target.value * harga[i].value.replace(/\./g, ""));
       if(diskon[i].value != "") {
@@ -303,7 +303,10 @@ for(let i = 0; i < qty.length; i++) {
 }
 
 for(let i = 0; i < diskon.length; i++) {
-  diskon[i].addEventListener("keyup", function (e) {
+  diskon[i].addEventListener("keyup", displayDiskon);
+  diskon[i].addEventListener("blur", displayDiskon);
+
+  function displayDiskon(e) {
     if(e.target.value == "") {
       netPast = netto[i].value.replace(/\./g, "");
       netto[i].value = addCommas(+netto[i].value.replace(/\./g, "") + +diskonRp[i].value.replace(/\./g, ""))
@@ -320,7 +323,7 @@ for(let i = 0; i < diskon.length; i++) {
     // total_ppn(subtotal.value.replace(/\./g, ""));
     // totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     // grandtotal.value = totalNotPPN.value;
-  });
+  }
 }
 
 /** Hitung Diskon **/
@@ -371,7 +374,7 @@ function checkSubtotal(Past, Now) {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") + (+Now - +Past));
     // totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") + (+Now - +Past));
   }
-} 
+}
 
 /** Add Thousand Separators **/
 function addCommas(nStr) {
@@ -392,7 +395,7 @@ $(function() {
   @foreach($returBeli as $rb)
     returBeli.push('{{ $rb->id }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }
