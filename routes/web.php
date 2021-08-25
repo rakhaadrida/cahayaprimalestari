@@ -379,11 +379,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ap/process', 'AccPayableController@process')->name('ap-process');
         Route::post('ap/transfer', 'AccPayableController@transfer')->name('ap-transfer');
         Route::post('ap/retur', 'AccPayableController@retur')->name('ap-retur');
-        Route::get('ap/retur/{id}', 'AccPayableController@createRetur')->name('ap-retur-create');
+        Route::get('ap/retur/{id}', 'AccPayableController@createRetur')->where('id', '(.*)')->name('ap-retur-create');
         Route::post('ap/retur/show/{id}', 'AccPayableController@showRetur')->name('ap-retur-show');
         Route::post('ap/retur/update/{id}', 'AccPayableController@updateRetur')->name('ap-retur-update');
         Route::post('ap/retur/batal/{id}', 'AccPayableController@batalRetur')->name('ap-retur-batal');
-        Route::get('ap/transfer/{id}', 'AccPayableController@createTransfer')->name('ap-transfer-create');
+        Route::get('ap/transfer/{id}', 'AccPayableController@createTransfer')->where('id', '(.*)')->name('ap-transfer-create');
     });
 
     Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
