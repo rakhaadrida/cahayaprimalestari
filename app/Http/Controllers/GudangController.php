@@ -20,28 +20,7 @@ class GudangController extends Controller
 {
     public function index()
     {
-        $item = BarangMasuk::where('id_faktur', 'GP21/0023/')->first();
-        if(!empty($item)) {
-            $item->{'id_faktur'} = 'GP21/0023';
-            $item->save();
-        }
 
-        $ar = AccReceivable::where('id_so', 'IV21081195')->where('keterangan', 'BELUM LUNAS')->delete();
-
-        $lastcode = NeedApproval::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
-        $lastnumber++;
-        $newcode = 'APP'.sprintf('%04s', $lastnumber);
-
-        NeedApproval::create([
-            'id' => $newcode,
-            'tanggal' => Carbon::now('+07:00'),
-            'status' => 'LIMIT',
-            'keterangan' => 'Melebihi limit',
-            'id_dokumen' => 'IV21081196',
-            'tipe' => 'Faktur',
-            'id_user' => '8'
-        ]);
 
         $items = Gudang::All();
 
