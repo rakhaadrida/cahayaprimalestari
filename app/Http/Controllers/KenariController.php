@@ -135,17 +135,17 @@ class KenariController extends Controller
         $tglKirim = $this->formatTanggal($tglKirim, 'Y-m-d');
         $jumlah = $request->jumBaris;
 
-        if($request->tempo == "") 
+        if($request->tempo == "")
             $tempo = 0;
         else
             $tempo = $request->tempo;
 
-        if($request->pkp == "") 
+        if($request->pkp == "")
             $pkp = 0;
         else
             $pkp = $request->pkp;
 
-        if($request->diskonFaktur == "") 
+        if($request->diskonFaktur == "")
             $diskon = 0;
         else
             $diskon = $request->diskonFaktur;
@@ -174,7 +174,7 @@ class KenariController extends Controller
                 $totNetto += str_replace(".", "", $request->netto[$i]);
             }
         }
-        
+
         SalesOrder::create([
             'id' => $kode,
             'tgl_so' => $tanggal,
@@ -271,7 +271,6 @@ class KenariController extends Controller
             return redirect()->route('so-kenari', 'false');
         else
             return redirect()->route('so-cetak-kenari', $kode);
-        // return redirect()->route('so-kenari', $cetak);
     }
 
     public function cetak(Request $request, $id) {
@@ -315,7 +314,7 @@ class KenariController extends Controller
         return view('pages.kenari.so.cetakInv', $data);
         // return view('pages.kenari.so.cetakPdf', $data);
     }
-    
+
     public function afterPrint($id) {
         $item = SalesOrder::where('id', $id)->first();
         $item->{'status'} = 'CETAK';
@@ -377,12 +376,12 @@ class KenariController extends Controller
         }
 
         // return response()->json($items);
-        
+
         $customer = Customer::All();
         $stok = StokBarang::All();
         $so = SalesOrder::join('users', 'users.id', 'so.id_user')
                 ->select('so.id as id', 'so.*')->where('roles', 'KENARI')->get();
-        
+
         $data = [
             'items' => $items,
             'customer' => $customer,
@@ -432,7 +431,7 @@ class KenariController extends Controller
         }
 
         session()->put('url.intended', URL::previous());
-        return Redirect::intended('/');  
+        return Redirect::intended('/');
     }
 
     public function edit(Request $request, $id) {
@@ -510,25 +509,25 @@ class KenariController extends Controller
                         ->where('id_barang', $request->kodeBarang[$i])
                         ->where('id_gudang', $request->kodeGudang[$i])->first();
             }
-            
+
             $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                         ->where('id_gudang', $request->kodeGudang[$i])->first();
 
             if($stokAwal != NULL) {
                 if($stokAwal->{'qty'} > $request->qty[$i])
                     $updateStok->{'stok'} += ($stokAwal->{'qty'} - $request->qty[$i]);
-                else 
+                else
                     $updateStok->{'stok'} -= ($request->qty[$i] - $stokAwal->{'qty'});
             } else {
                 $updateStok->{'stok'} -= $request->qty[$i];
             }
-            
+
             $updateStok->save();
         }
 
         $items = SalesOrder::with(['customer', 'need_approval'])
                 ->where('id', $request->kode)->get();
-        
+
         if(($items[0]->need_approval->count() > 1) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
             $itemsApp = NeedApproval::where('id_dokumen', $request->kode)
                         ->latest()->skip(1)->take(1)->get();
@@ -536,7 +535,7 @@ class KenariController extends Controller
 
             $detilApp = NeedApproval::where('id_dokumen', $request->kode)->latest()->get();
             $detil = $detilApp->first()->need_appdetil;
-        } else { 
+        } else {
             $items = DetilSO::where('id_so', $request->kode)->get();
             $detil = NeedAppDetil::where('id_app', $newcode)->get();
         }
@@ -546,7 +545,7 @@ class KenariController extends Controller
                 $cek = 0;
                 foreach($detil as $d) {
                     if($item->id_barang == $d->id_barang) {
-                        $cek = 1; 
+                        $cek = 1;
                         break;
                     }
                 }
@@ -563,7 +562,7 @@ class KenariController extends Controller
                 $cek = 0;
                 foreach($detil as $d) {
                     if($item->id_barang == $d->id_barang) {
-                        $cek = 1; 
+                        $cek = 1;
                         break;
                     }
                 }
@@ -651,7 +650,7 @@ class KenariController extends Controller
                     $items->push($newItem);
                 }
             }
-        }   
+        }
 
         $items = $items->sortBy(function ($product, $key) {
                     return $product['tgl_so'].$product['id'];
@@ -672,7 +671,7 @@ class KenariController extends Controller
 
         return view('pages.kenari.cetakfaktur.cetakInv', $data);
         // return view('pages.kenari.cetakfaktur.cetakPdf', $data);
-    } 
+    }
 
     public function updateFaktur($awal, $akhir) {
         $items = SalesOrder::join('users', 'users.id', 'so.id_user')
@@ -699,7 +698,7 @@ class KenariController extends Controller
 
         $items = SalesOrder::join('users', 'users.id', 'so.id_user')
                 ->select('so.id as id', 'so.*')->where('roles', 'KENARI')
-                ->where('tgl_so', $tanggal)->get(); 
+                ->where('tgl_so', $tanggal)->get();
 
         $data = [
             'items' => $items
@@ -713,13 +712,13 @@ class KenariController extends Controller
         $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
         $tglAkhir = $request->tglAkhir;
         $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
-        
+
         $items = SalesOrder::with('customer')
                 ->join('users', 'users.id', 'so.id_user')
                 ->select('so.id as id', 'so.*')->where('roles', 'KENARI')
                 ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
                 ->orderBy('id', 'asc')->get();
-        
+
         $data = [
             'items' => $items,
             'tglAwal' => $request->tglAwal,
@@ -759,7 +758,7 @@ class KenariController extends Controller
                         ->where('keterangan', 'BELUM LUNAS')
                         ->groupBy('id_customer')
                         ->get();
-        
+
         $returPerCust = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
                         ->join('so', 'so.id', '=', 'ar.id_so')
                         ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))

@@ -43,7 +43,7 @@
                     <input type="text" tabindex="2" class="form-control form-control-sm text-bold mt-1" id="namaSupplier" name="nama" value="{{ $nama }}">
                     <input type="hidden" name="kode" id="kodeSupplier" value="{{ $kode }}">
                   </div>
-                </div>   
+                </div>
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
                   <span class="col-form-label text-bold">:</span>
@@ -58,7 +58,7 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('bm-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                </div>  
+                </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
@@ -81,13 +81,13 @@
                                 >
                               </div>
                             </div>
-                          </div> 
+                          </div>
                           <div class="col" style="margin-left: -480px">
                             <div class="form-group row">
                               <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Gudang</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark"
                                 @if($items->count() != 0)
                                   value="{{ $item->gudang->nama }}"
                                 @endif
@@ -115,7 +115,7 @@
                               <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Nama Supplier</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-8">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap"
                                 @if($items->count() != 0)
                                   value="{{ $item->supplier->nama }}"
                                 @endif
@@ -137,13 +137,13 @@
                                 >
                               </div>
                             </div>
-                          </div> 
+                          </div>
                           <div class="col" style="margin-left: -480px">
                             <div class="form-group row customer-detail">
                               <label for="tanggal" class="col-3 form-control-sm text-bold mt-1">Jatuh Tempo</label>
                               <span class="col-form-label text-bold">:</span>
                               <div class="col-4">
-                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap" 
+                                <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark text-wrap"
                                 @if($items->count() != 0)
                                   value="{{ \Carbon\Carbon::parse($item->tanggal)->add($item->tempo, 'days')->format('d-M-y') }}"
                                 @endif
@@ -185,7 +185,7 @@
                         </thead>
                         <tbody>
                           @if($items->count() != 0)
-                            @php 
+                            @php
                               $i = 1; $subtotal = 0;
                               if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
                                 $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
@@ -208,7 +208,7 @@
                                 <td align="right">
                                   {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
                                 </td>
-                                @php $subtotal += $itemDet->qty * $itemDet->harga; 
+                                @php $subtotal += $itemDet->qty * $itemDet->harga;
                                 @endphp
                               </tr>
                               @php $i++; @endphp
@@ -283,7 +283,7 @@
                               </div>
                               <div class="form-group subtotal-so">
                                 <label for="keterangan" class="col-form-label">Keterangan</label>
-                                <input type="text" class="form-control" name="ket{{$item->id}}" 
+                                <input type="text" class="form-control" name="ket{{$item->id}}"
                                 id="ket{{$item->id}}" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
                               </div>
                               <hr>
@@ -315,13 +315,11 @@
                   {{-- @endif --}}
                 @endif
               </div>
-
             </form>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </div>
 <!-- /.container-fluid -->
 @endsection
@@ -374,11 +372,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   if(e.target.id == 'tglAwal')
     tglAwal.value = value;
   else
@@ -411,7 +409,7 @@ $(function() {
   @foreach($bm as $b)
     kodeMasuk.push('{{ $b->id_faktur }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }

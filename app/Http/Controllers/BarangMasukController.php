@@ -78,7 +78,7 @@ class BarangMasukController extends Controller
         $lastnumber++;
         $newcodeBM = 'BM'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         $kodeBM = $newcodeBM;
-        
+
         BarangMasuk::create([
             'id' => $newcodeBM,
             'id_faktur' => $request->kode,
@@ -103,7 +103,7 @@ class BarangMasukController extends Controller
         $items = AccPayable::where('id_bm', $request->kode)->count();
         if($items != 1) {
             AccPayable::create([
-                'id' => $newcode, 
+                'id' => $newcode,
                 'id_bm' => $request->kode,
                 'keterangan' => ($request->namaSupplier != 'REVISI' ? 'BELUM LUNAS' : 'LUNAS')
             ]);
@@ -156,26 +156,6 @@ class BarangMasukController extends Controller
         else
             $cetak = 'true';
 
-        /*
-        $tempDetil = TempDetilBM::where('id_bm', $id)->get();
-        foreach($tempDetil as $td) {
-            DetilBM::create([
-                'id_bm' => $td->id_bm,
-                'id_barang' => $td->id_barang,
-                'harga' => str_replace(".", "", $td->harga),
-                'qty' => $td->qty,
-                'keterangan' => $td->keterangan
-            ]);
-
-            $updateStok = StokBarang::where('id_barang', $td->id_barang)
-                            ->where('id_gudang', 'GDG01')->first();
-            $updateStok->{'stok'} = $updateStok->{'stok'} + $td->qty;
-            $updateStok->save();
-
-            $deleteTemp = TempDetilBM::where('id_bm', $id)->where('id_barang', $td->id_barang)->delete();
-        }
-        */
-
         if($status != 'CETAK')
             return redirect()->route('barangMasuk', 'false');
         else
@@ -214,11 +194,6 @@ class BarangMasukController extends Controller
         ];
 
         return view('pages.pembelian.barangmasuk.cetakPdf', $data);
-
-        // $paper = array(0,0,612,394);
-        // $pdf = PDF::loadview('pages.pembelian.barangmasuk.cetakPdf', $data)->setPaper($paper);
-        // ob_end_clean();
-        // return $pdf->stream('cetak-bm.pdf');
     }
 
     public function afterPrint($id) {
@@ -230,31 +205,8 @@ class BarangMasukController extends Controller
             'status' => 'false'
         ];
 
-        // return $this->index('false');
         return redirect()->route('barangMasuk', $data);
     }
-
-    /* public function update(Request $request, $bm, $barang, $id) {
-        $updateDetil = TempDetilBM::where('id_bm', $bm)->where('id_barang', $barang)->first();
-
-        $updateDetil->{'qty'} = $request->editQty[$id-1];
-        $updateDetil->{'keterangan'} = $request->editKet[$id-1];
-        $updateDetil->save();
-
-        return redirect()->route('barangMasuk');
-    } 
-
-    public function remove($bm, $barang) {
-        $tempDetil = TempDetilBM::where('id_bm', $bm)->where('id_barang', $barang)->delete();
-
-        return redirect()->route('barangMasuk');
-    } 
-
-    public function reset($bm) {
-         $tempDetil = TempDetilBM::where('id_bm', $bm)->delete();
-
-        return redirect()->route('barangMasuk');
-    } */
 
     public function change() {
         $bm = BarangMasuk::orderBy('tanggal', 'desc')->get();
@@ -293,11 +245,11 @@ class BarangMasukController extends Controller
                     ->orWhere('id', $request->id)
                     ->orderBy('id', 'asc')->get();
         }
-        
+
         $supplier = Supplier::All();
         $stok = StokBarang::All();
         $bm = BarangMasuk::orderBy('tanggal', 'desc')->get();
-        
+
         $data = [
             'items' => $items,
             'supplier' => $supplier,
@@ -340,7 +292,6 @@ class BarangMasukController extends Controller
             $gudang = $detil[0]->bm->id_gudang;
         }
 
-        // return response()->json($detil); 
         foreach($detil as $item) {
             $updateStok = StokBarang::where('id_barang', $item->id_barang)
                     ->where('id_gudang', $gudang)->first();
@@ -350,7 +301,7 @@ class BarangMasukController extends Controller
         }
 
         session()->put('url.intended', URL::previous());
-        return Redirect::intended('/');  
+        return Redirect::intended('/');
     }
 
     public function edit(Request $request, $id) {
@@ -392,7 +343,7 @@ class BarangMasukController extends Controller
 
         if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE'))
             $kode = $items[0]->need_approval->last()->id;
-        
+
         NeedApproval::create([
             'id' => $newcode,
             'tanggal' => Carbon::now(),
@@ -401,7 +352,7 @@ class BarangMasukController extends Controller
             'id_dokumen' => $request->kode,
             'tipe' => 'Dokumen',
             'id_user' => Auth::user()->id
-        ]); 
+        ]);
 
         for($i = 0; $i < $jumlah; $i++) {
             NeedAppDetil::create([
@@ -411,7 +362,7 @@ class BarangMasukController extends Controller
                 'harga' => str_replace(".", "", $request->harga[$i]),
                 'qty' => $request->qty[$i],
                 'diskon' => $request->diskon[$i],
-            ]); 
+            ]);
 
             if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
                 $stokAwal = NeedAppDetil::where('id_app', $kode)
@@ -429,14 +380,14 @@ class BarangMasukController extends Controller
             if($stokAwal != NULL) {
                 if($stokAwal->{'qty'} > $request->qty[$i])
                     $updateStok->{'stok'} -= ($stokAwal->{'qty'} - $request->qty[$i]);
-                else 
+                else
                     $updateStok->{'stok'} += ($request->qty[$i] - $stokAwal->{'qty'});
             } else {
                 $updateStok->{'stok'} += $request->qty[$i];
             }
-            
+
             $updateStok->save();
-            
+
         }
 
         $items = BarangMasuk::with(['supplier', 'gudang', 'need_approval'])
@@ -456,17 +407,17 @@ class BarangMasukController extends Controller
         }
 
         // return response()->json($items);
-        
+
         if($items->count() != $detil->count()) {
             foreach($items as $item) {
                 $cek = 0;
                 foreach($detil as $d) {
                     if($item->id_barang == $d->id_barang) {
-                        $cek = 1; 
+                        $cek = 1;
                         break;
                     }
                 }
-                
+
                 if($cek == 0) {
                     $updateStok = StokBarang::where('id_barang', $item->id_barang)
                         ->where('id_gudang', $request->kodeGudang)->first();
@@ -479,7 +430,7 @@ class BarangMasukController extends Controller
                 $cek = 0;
                 foreach($detil as $d) {
                     if($item->id_barang == $d->id_barang) {
-                        $cek = 1; 
+                        $cek = 1;
                         break;
                     }
                 }
@@ -501,7 +452,7 @@ class BarangMasukController extends Controller
                 }
             } */
         }
-        
+
 
         $data = [
             'id' => $request->kode,
@@ -511,6 +462,6 @@ class BarangMasukController extends Controller
         ];
 
         $url = Route('bm-show', $data);
-        return redirect($url); 
+        return redirect($url);
     }
 }
