@@ -110,15 +110,20 @@
                         <br>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">
-                          <label class="form-check-label text-bold text-dark" for="kat7">Pipa</label>
+                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa</label>
                         </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
-                          <label class="form-check-label text-bold text-dark" for="kat8">Maspion</label>
+                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>
                         </div>
                         <div class="form-check form-check-inline" style="margin-left: -1px">
                           <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">
-                          <label class="form-check-label text-bold text-dark" for="kat7">Panasonic</label>
+                          <label class="form-check-label text-bold text-dark" for="kat8">Panasonic</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Ecolink">
+                          <label class="form-check-label text-bold text-dark" for="kat9">Ecolink</label>
                         </div>
                       </div>
                     </div>
