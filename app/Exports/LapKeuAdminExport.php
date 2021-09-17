@@ -27,7 +27,7 @@ class LapKeuAdminExport implements FromView, ShouldAutoSize, WithStyles
         $this->tahun = $tahun;
         $this->month = $month;
     }
-    
+
     public function view(): View
     {
         $jenis = JenisBarang::All();
@@ -52,12 +52,12 @@ class LapKeuAdminExport implements FromView, ShouldAutoSize, WithStyles
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id' , 'customer.id_sales')
                 ->select('so.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
-                ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
+                ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])
                 ->whereYear('so.tgl_so', $this->tahun)
                 ->whereMonth('so.tgl_so', $this->month)
                 ->groupBy('so.id_sales', 'barang.id_kategori')
                 ->get();
-        
+
         $kat = DetilSO::join('so', 'so.id', 'detilso.id_so')
                 ->join('barang', 'barang.id', 'detilso.id_barang')
                 ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
@@ -98,9 +98,9 @@ class LapKeuAdminExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setHeight(50);
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
-        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(15); 
+        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(15);
         $sheet->getRowDimension('4')->setRowHeight(30);
-        
+
         $alpha = range('A', 'Z');
         $sales = Sales::All();
         $jenis = JenisBarang::All();
@@ -119,7 +119,7 @@ class LapKeuAdminExport implements FromView, ShouldAutoSize, WithStyles
         $header = 'A4:'.$alpha[$lastAlpha].'4';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
-        
+
         $sheet->mergeCells('A1:'.$alpha[$lastAlpha].'1');
         $sheet->mergeCells('A2:'.$alpha[$lastAlpha].'2');
         $title = 'A1:'.$alpha[$lastAlpha].'2';
@@ -144,9 +144,9 @@ class LapKeuAdminExport implements FromView, ShouldAutoSize, WithStyles
         $rangeHarga = 'B5:'.$alpha[$lastAlpha].$rangeStr;
         $sheet->getStyle($rangeHarga)->getNumberFormat()->setFormatCode('#,##0');
 
-        $rangeHarga = 'O5:'.$alpha[$lastAlpha-1].$rangeStr;
+        $rangeHarga = $alpha[$lastAlpha-1].'5:'.$alpha[$lastAlpha-1].$rangeStr;
         $sheet->getStyle($rangeHarga)->getNumberFormat()->setFormatCode('(#,##0)');
-        
+
         $sheet->getStyle('A4:'.$alpha[$lastAlpha].$rangeStr)->getAlignment()->setVertical('center');
 
         $end = $range - 1;
@@ -165,5 +165,5 @@ class LapKeuAdminExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($summary)->getFont()->setBold(true)->setSize(12);
         $GT = $alpha[$lastAlpha].'5:'.$alpha[$lastAlpha].$rangeStrTot;
         $sheet->getStyle($GT)->getFont()->setBold(true)->setSize(12);
-    } 
+    }
 }

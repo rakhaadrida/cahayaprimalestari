@@ -126,17 +126,17 @@ class SalesOrderController extends Controller
         $tglKirim = $this->formatTanggal($tglKirim, 'Y-m-d');
         $jumlah = $request->jumBaris;
 
-        if($request->tempo == "") 
+        if($request->tempo == "")
             $tempo = 0;
         else
             $tempo = $request->tempo;
 
-        if($request->pkp == "") 
+        if($request->pkp == "")
             $pkp = 0;
         else
             $pkp = $request->pkp;
 
-        if($request->diskonFaktur == "") 
+        if($request->diskonFaktur == "")
             $diskon = 0;
         else
             $diskon = $request->diskonFaktur;
@@ -165,7 +165,7 @@ class SalesOrderController extends Controller
                 $totNetto += str_replace(".", "", $request->netto[$i]);
             }
         }
-        
+
         SalesOrder::create([
             'id' => $kode,
             // 'id' => $request->kode,
@@ -254,7 +254,7 @@ class SalesOrderController extends Controller
                                 ->where('id_gudang', $arrGudang[$j])->first();
                     $updateStok->{'stok'} -= $arrStok[$j];
                     $updateStok->save();
-                    
+
                     /* foreach($updateStok as $us) {
                         if($request->qty[$i] <= $us->stok) {
                             $us->stok -= $request->qty[$i];
@@ -409,13 +409,13 @@ class SalesOrderController extends Controller
                         ->orWhere('so.id', $id);
                     })->orderBy('tgl_so', 'asc')->orderBy('so.id', 'asc')->get();
         }
-        
+
         $customer = Customer::All();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
         $stok = StokBarang::All();
         $so = SalesOrder::join('users', 'users.id', 'so.id_user')
                         ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')->get();
-        
+
         $data = [
             'items' => $items,
             'customer' => $customer,
@@ -450,7 +450,7 @@ class SalesOrderController extends Controller
             'tipe' => 'Faktur',
             'id_user' => Auth::user()->id
         ]);
-   
+
         // return response()->json($items);
 
         if(($items->count() != 0) && ($items->first()->need_appdetil->count() != 0)) {
@@ -468,7 +468,7 @@ class SalesOrderController extends Controller
         }
 
         session()->put('url.intended', URL::previous());
-        return Redirect::intended('/');  
+        return Redirect::intended('/');
     }
 
     public function edit(Request $request, $id) {
@@ -568,26 +568,26 @@ class SalesOrderController extends Controller
                             ->where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $arrGudang[$j])->first();
                 }
-                
+
                 $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                             ->where('id_gudang', $arrGudang[$j])->first();
 
                 if($stokAwal != NULL) {
                     if($stokAwal->{'qty'} > $arrStok[$j])
                         $updateStok->{'stok'} += ($stokAwal->{'qty'} - $arrStok[$j]);
-                    else 
+                    else
                         $updateStok->{'stok'} -= ($arrStok[$j] - $stokAwal->{'qty'});
                 } else {
                     $updateStok->{'stok'} -= $arrStok[$j];
                 }
-                
+
                 $updateStok->save();
             }
         }
 
         $items = SalesOrder::with(['customer', 'need_approval'])
                 ->where('id', $request->kode)->get();
-        
+
         if(($items[0]->need_approval->count() > 1) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
             $itemsApp = NeedApproval::where('id_dokumen', $request->kode)
                         ->latest()->skip(1)->take(1)->get();
@@ -595,7 +595,7 @@ class SalesOrderController extends Controller
 
             $detilApp = NeedApproval::where('id_dokumen', $request->kode)->latest()->get();
             $detil = $detilApp->first()->need_appdetil;
-        } else { 
+        } else {
             $items = DetilSO::where('id_so', $request->kode)->get();
             $detil = NeedAppDetil::where('id_app', $newcode)->get();
         }
@@ -605,7 +605,7 @@ class SalesOrderController extends Controller
                 $cek = 0;
                 foreach($detil as $d) {
                     if($item->id_barang == $d->id_barang) {
-                        $cek = 1; 
+                        $cek = 1;
                         break;
                     }
                 }
@@ -622,7 +622,7 @@ class SalesOrderController extends Controller
                 $cek = 0;
                 foreach($detil as $d) {
                     if($item->id_barang == $d->id_barang) {
-                        $cek = 1; 
+                        $cek = 1;
                         break;
                     }
                 }
@@ -656,7 +656,7 @@ class SalesOrderController extends Controller
             ->pluck('stok')->toArray();
 
         $data = [
-            'stokJohar' => $stokJohar, 
+            'stokJohar' => $stokJohar,
             'totalStok' => $totalStok + $stokJohar->stok,
             'stokLain' => $stokLain
         ];
