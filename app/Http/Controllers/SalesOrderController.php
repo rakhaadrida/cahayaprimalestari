@@ -322,7 +322,11 @@ class SalesOrderController extends Controller
             'id' => $id
         ];
 
-        return view('pages.penjualan.so.cetakInv', $data);
+        if(Auth::user()->name != 'Admin_mitra') {
+            return view('pages.penjualan.so.cetakInv', $data);
+        } else {
+            return view('pages.penjualan.so.cetakInvAlter', $data);
+        }
     }
 
     public function tandaterima($id) {

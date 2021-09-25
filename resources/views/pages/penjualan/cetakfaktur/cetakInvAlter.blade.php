@@ -438,8 +438,11 @@
     </style>
   </head>
   <body>
-    @php $i = 1; $no = 1; $kode = []; $subtotal = 0; @endphp
+  @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; $subtotal = 0; @endphp
     @foreach($items as $item)
+      @if(($items->first()->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 12))
+        @php $i = 1; $no = 1; $kur = 0; $kode = []; $subtotal = 0; @endphp
+      @endif
       <div class="cetak-all-container" style="margin-bottom: -55px; page-break-after: always;">
 
         <div class="container-fluid float-left logo-cetak-so">
@@ -450,29 +453,29 @@
             <div class="subtitle-one">
                 <span class="sub-title">Tanggal</span>
                 <span class="sub-title-dot">:</span>
-                <span class="text-bold">{{ \Carbon\Carbon::parse($items->first()->tgl_so)->format('d-M-y') }}</span>
+                <span class="text-bold">{{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_so : $items[$urut-$kur]->tgl_so))->format('d-M-y') }}</span>
             </div>
             <div class="subtitle-second">
                 <span class="sub-title">Jatuh Tempo</span>
                 <span>:</span>
-                <span class="text-bold">{{ \Carbon\Carbon::parse($items->first()->tgl_so)->add($items->first()->tempo, 'days')->format('d-M-y') }}</span>
+                <span class="text-bold">{{ \Carbon\Carbon::parse(($det <= 12 ? $item->tgl_so : $items[$urut-$kur]->tgl_so))->add(($det <= 12 ? $item->tempo : $items[$urut-$kur]->tempo), 'days')->format('d-M-y') }}</span>
             </div>
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
           <br>
-          <h4 class="text-bold">{{ $items->first()->customer->nama }}</h4>
-          <h5 class="text-wrap">{{ substr($items->first()->customer->alamat, 0, 96) }}</h5>
+          <h4 class="text-bold">{{ $det <= 12 ? $item->customer->nama : $items[$urut-$kur]->customer->nama }}</h4>
+          <h5 class="text-wrap">{{ $det <= 12 ? substr($item->customer->alamat, 0, 96) : substr($items[$urut-$kur]->customer->alamat, 0, 96) }}</h5>
 
             <div class="subtitle-one">
                 <span class="sub-title">No. Invoice</span>
                 <span>:</span>
-                <span>{{ $items->first()->id }}</span>
+                <span>{{ $det <= 12 ? $item->id : $items[$urut-$kur]->id }}</span>
             </div>
             <div class="subtitle-second">
                 <span class="sub-title">Sales</span>
                 <span class="sub-title-dot">:</span>
-                <span>{{ $items->first()->sales->nama }}</span>
+                <span>{{ $det <= 12 ? $item->sales->nama : $items[$urut-$kur]->sales->nama }}</span>
             </div>
           <br>
         </div>
@@ -480,14 +483,20 @@
         <br>
 
         @php
-        // sum(diskonRp) as diskonRp
-        $itemsDet = \App\Models\DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
-                          ->select('id_barang', 'nama', 'satuan', 'diskon', 'diskonRp')
-                          ->selectRaw('avg(harga) as harga, sum(qty) as qty')
-                          ->where('id_so', $items->first()->id)
-                          ->whereNotIn('id_barang', $kode)
-                          ->groupBy('id_barang', 'diskon')
-                          ->get();
+            $stat = $det;
+            if($det <= 12)
+              $so = $item->id;
+            else
+              $so = $items[$urut-$kur]->id;
+
+            $itemsDet = \App\Models\DetilSO::with(['barang'])
+                    ->select('id_barang', 'diskon', 'diskonRp')
+                    ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                    ->where('id_so', $so)
+                    ->whereNotIn('id_barang', $kode)
+                    ->groupBy('id_barang', 'diskon')
+                    ->get();
+            $det = $itemsDet->count();
         @endphp
         <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
@@ -509,12 +518,12 @@
             @foreach($itemsDet as $itemDet)
               <tr class="baris-so">
                 <td align="center">{{ $no }}</td>
-                <td>{{ $itemDet->nama }}</td>
-                @if($itemDet->satuan == "Pcs / Dus")
+                <td>{{ $itemDet->barang->nama }}</td>
+                @if($itemDet->barang->satuan == "Pcs / Dus")
                   <td align="center">{{ $itemDet->qty }} PCS</td>
-                @elseif($itemDet->satuan == "Set")
+                @elseif($itemDet->barang->satuan == "Set")
                   <td align="center">{{ $itemDet->qty }} SET</td>
-                @elseif($itemDet->satuan == "Meter / Rol")
+                @elseif($itemDet->barang->satuan == "Meter / Rol")
                   <td align="center">{{ $itemDet->qty }} ROL</td>
                 @else
                   <td align="center">{{ $itemDet->qty }} MTR</td>
@@ -548,8 +557,6 @@
             @if($itemsDet->count() < 12)
               <tr class="text-center">
                 <td colspan="8"></td>
-                {{-- <td></td>
-                <td colspan="2"></td> --}}
               </tr>
             @endif
           </tbody>
@@ -617,21 +624,19 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        {{-- <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total + $items->first()->diskon, 0, "", ".") : '' }}</td> --}}
-                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($subtotal + $items->first()->diskon, 0, "", ".") : '' }}</td>
+                        <td class="text-right angka-total">{{ $det <= 12 ? number_format(($stat <= 12 ? $subtotal + $item->diskon : $subtotal + $items[$urut-$kur]->diskon), 0, "", ".") : '' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Disc Faktur</td>
-                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->diskon, 0, "", ".") : 'Bersambung' }}</td>
+                        <td class="text-right angka-total">{{ $det <= 12 ? number_format(($stat <= 12 ? $item->diskon : $items[$urut-$kur]->diskon), 0, "", ".") : 'Bersambung' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
-                        {{-- <td class="text-right angka-total" @if($itemsDet->count() > 12) style="letter-spacing: 0.7px;" @endif>{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : 'ke halaman' }}</td> --}}
-                        <td class="text-right angka-total" @if($itemsDet->count() > 12) style="letter-spacing: 0.7px;" @endif>{{ $itemsDet->count() <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
+                        <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">PPN</td>
-                        <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? '' : 'berikutnya...' }}</td>
+                        <td class="text-right angka-total">{{ $det <= 12 ? '' : 'berikutnya...' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total"></td>
@@ -642,8 +647,7 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>
-                        {{-- <td class="text-right angka-total-akhir">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : '' }}</td> --}}
-                        <td class="text-right angka-total-akhir">{{ $itemsDet->count() <= 12 ? number_format($subtotal, 0, "", ".") : '' }}</td>
+                        <td class="text-right angka-total-akhir">{{ $det <= 12 ? number_format(($subtotal), 0, "", ".") : '' }}</td>
                       </tr>
                     </table>
                   </div>
@@ -664,7 +668,7 @@
 
     <script type="text/javascript">
       window.onafterprint = function() {
-        window.location = "{{ route('so-after-print', $id) }}";
+        window.location = "{{ route('cetak-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
       }
 
       window.print();

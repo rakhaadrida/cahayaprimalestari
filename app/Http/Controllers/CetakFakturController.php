@@ -8,6 +8,7 @@ use App\Models\DetilSO;
 use App\Models\TandaTerima;
 use App\Models\Approval;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class CetakFakturController extends Controller
@@ -73,7 +74,7 @@ class CetakFakturController extends Controller
                     $items->push($newItem);
                 }
             }
-        }   
+        }
 
         $items = $items->sortBy(function ($product, $key) {
                     return $product['tgl_so'].$product['id'];
@@ -94,14 +95,12 @@ class CetakFakturController extends Controller
             'akhir' => $akhir
         ];
 
-        return view('pages.penjualan.cetakfaktur.cetakInv', $data);
-        // return view('pages.penjualan.cetakfaktur.cetakPdf', $data);
-
-        // $paper = array(0,0,686,394);
-        // $pdf = PDF::loadview('pages.penjualan.cetakfaktur.cetak', $data)->setPaper($paper);
-        // ob_end_clean();
-        // return $pdf->stream('cetak-all.pdf');
-    } 
+        if(Auth::user()->name != 'Admin_mitra') {
+            return view('pages.penjualan.cetakfaktur.cetakInv', $data);
+        } else {
+            return view('pages.penjualan.cetakfaktur.cetakInvAlter', $data);
+        }
+    }
 
      public function update($awal, $akhir) {
         $items = SalesOrder::join('users', 'users.id', 'so.id_user')
