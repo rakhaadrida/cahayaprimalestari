@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisBarang;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\StokBarang;
@@ -43,6 +44,7 @@ class KenariController extends Controller
         $customer = Customer::with(['sales'])->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $kategori = JenisBarang::All();
         $hrg = Harga::All();
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'KENARI')->get();
@@ -109,6 +111,7 @@ class KenariController extends Controller
             'customer' => $customer,
             'barang' => $barang,
             'harga' => $harga,
+            'kategori' => $kategori,
             'hrg' => $hrg,
             'stok' => $stok,
             'gudang' => $gudang,

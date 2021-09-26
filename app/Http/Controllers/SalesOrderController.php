@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisBarang;
 use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\Customer;
@@ -33,6 +34,8 @@ class SalesOrderController extends Controller
         $sales = Sales::All();
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $kategori = JenisBarang::All();
+
         // $hrg = Harga::All();
         $hrg = Harga::pluck('tipe')->toArray();
         $kodeBarang = Barang::pluck('id')->toArray();
@@ -100,6 +103,7 @@ class SalesOrderController extends Controller
             'kodeBarang' => $kodeBarang,
             'namaBarang' => $namaBarang,
             'harga' => $harga,
+            'kategori' => $kategori,
             'hrg' => $hrg,
             'stok' => $stok,
             'gudang' => $gudang,
@@ -482,6 +486,7 @@ class SalesOrderController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         $barang = Barang::All();
         $harga = HargaBarang::All();
+        $kategori = JenisBarang::All();
         $hrg = Harga::All();
         $sales = Sales::All();
         $customer = Customer::All();
@@ -496,6 +501,7 @@ class SalesOrderController extends Controller
             'tanggal' => $tanggal,
             'barang' => $barang,
             'harga' => $harga,
+            'kategori' => $kategori,
             'hrg' => $hrg,
             'sales' => $sales,
             'customer' => $customer,

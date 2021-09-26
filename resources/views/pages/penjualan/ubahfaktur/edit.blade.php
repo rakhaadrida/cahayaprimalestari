@@ -1160,8 +1160,14 @@ $(function() {
     sales.push('{{ $s->nama }}');
   @endforeach
 
-  var kat = ['CPL', 'Extrana C', 'Extrana T', 'Maspion C', 'Maspion T', 'MCB C', 'MCB T', 'Nitto C', 'Nitto T',
-                  'Panasonic C', 'Panasonic T', 'Phillips C', 'Phillips T', 'Pipa C', 'Pipa T', 'Prime C', 'Prime T'];
+  // var kat = ['CPL', 'Extrana C', 'Extrana T', 'Maspion C', 'Maspion T', 'MCB C', 'MCB T', 'Nitto C', 'Nitto T',
+  //                 'Panasonic C', 'Panasonic T', 'Phillips C', 'Phillips T', 'Pipa C', 'Pipa T', 'Prime C', 'Prime T'];
+
+  var kat = ['CPL'];
+  @foreach($kategori as $k)
+    kat.push('{{ $k->nama }} C');
+    kat.push('{{ $k->nama }} T');
+  @endforeach
 
   var kodeBrg = [];
   var namaBrg = [];

@@ -44,7 +44,7 @@
                       <div class="col-2">
                         <input type="text" tabindex="2" class="form-control datepicker form-control-sm text-bold mt-1" name="tanggal" value="{{ $tanggal }}" required>
                       </div>
-                    </div>   
+                    </div>
                   </div>
                 </div>
                 <div class="form-group row" style="margin-top: -18px">
@@ -82,46 +82,54 @@
                       </div>
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
-                      <div class="col-auto" style="margin-top: -35px">
-                        <div class="form-check form-check-inline mt-2">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>
-                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>
+                        <div class="col-2" style="margin-top: -30px">
+                            <select class="form-control form-control-sm" tabindex="5" id="kategori">
+                                <option value="CPL" selected>CPL</option>
+                                @foreach($kategori as $item)
+                                    <option value="{{ $item->nama }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>
-                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">
-                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>
-                        </div>
-                        <br>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">
-                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">
-                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">
-                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>
-                        </div>
-                        <br>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">
-                          <label class="form-check-label text-bold text-dark" for="kat7">Pipa</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
-                          <label class="form-check-label text-bold text-dark" for="kat8">Maspion</label>
-                        </div>
-                        <div class="form-check form-check-inline" style="margin-left: -1px">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">
-                          <label class="form-check-label text-bold text-dark" for="kat7">Panasonic</label>
-                        </div>
-                      </div>
+{{--                      <div class="col-auto" style="margin-top: -35px">--}}
+{{--                        <div class="form-check form-check-inline mt-2">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>--}}
+{{--                        </div>--}}
+{{--                        <br>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>--}}
+{{--                        </div>--}}
+{{--                        <br>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat7">Pipa</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat8">Maspion</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline" style="margin-left: -1px">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat7">Panasonic</label>--}}
+{{--                        </div>--}}
+{{--                      </div>--}}
                     </div>
                   </div>
                   <div class="col" style="margin-left: -350px; margin-right:-40px; margin-top: -120px">
@@ -152,11 +160,11 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3 jenis-check">
                         <div class="form-check mt-2">
-                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" required>
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" required checked disabled>
                           <label class="form-check-label text-bold text-dark" for="jenis1">Cash</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="T" >
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="T" disabled>
                           <label class="form-check-label text-bold text-dark" for="jenis2">Tempo</label>
                         </div>
                       </div>
@@ -166,7 +174,7 @@
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-              
+
               <!-- Tabel Data Detil PO -->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" tabindex="-1" class="text-primary text-bold">
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
@@ -205,8 +213,8 @@
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" id="namaBarang" class="form-control form-control-sm text-bold text-dark namaBarang"
                         value="{{ old('namaBarang[]') }}" @if($i == 1) required @endif>
                       </td>
-                      <td> 
-                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty" 
+                      <td>
+                        <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" id="qty" class="form-control form-control-sm text-bold text-dark text-right qty"
                         value="{{ old('qty[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'qty')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                         <input type="hidden" name="teksSat[]" class="teksSat">
                         <input type="hidden" name="teksSatUk[]" class="teksSatUk">
@@ -215,11 +223,11 @@
                         <input type="hidden" name="qtyGudang[]" class="qtyGudang">
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan" 
+                        <input type="text" tabindex="{{ $tab += 4 }}" name="satuan[]" id="satuan" class="form-control form-control-sm text-bold text-dark text-right satuan"
                         value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'sat')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 5 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
+                        <input type="text" tabindex="{{ $tab += 5 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe"
                         value="{{ old('tipe[]') }}">
                       </td>
                       <td>
@@ -229,11 +237,11 @@
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                       </td>
                       <td>
-                        <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
+                        <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon"
                         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
                       </td>
                       <td>
-                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
+                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp"
                         value="{{ old('diskonRp[]') }}" >
                       </td>
                       <td>
@@ -294,7 +302,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right" 
+                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right"
                   />
                 </div>
               </div>
@@ -303,7 +311,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right mt-1" 
+                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext form-control-sm text-bold text-danger text-right mt-1"
                   />
                 </div>
               </div>
@@ -434,10 +442,10 @@
   printFrame.window.onafterprint = function(e) {
     window.location = "{{ route('so-after-print-kenari', $lastSO[0]->id) }}";
   }
-  
+
   printFrame.window.focus();
   printFrame.window.print();
-@endif */ 
+@endif */
 
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
@@ -517,13 +525,15 @@ newRow.addEventListener("click", displayRow);
 diskonFaktur.addEventListener('keyup', formatNominal);
 diskonFaktur.addEventListener('keyup', displayTotal);
 
-Array.prototype.forEach.call(radios, function(radio) {
-   radio.addEventListener('change', displayJenis);
-}); 
+kategori.addEventListener('change', displayJenis);
+
+// Array.prototype.forEach.call(radios, function(radio) {
+//    radio.addEventListener('change', displayJenis);
+// });
 
 Array.prototype.forEach.call(radiosJen, function(radio) {
    radio.addEventListener('change', displayTempo);
-});  
+});
 
 /** Tampil Id Supplier **/
 function displayCust(e) {
@@ -566,20 +576,38 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   tanggalKirim.value = value;
 }
 
 /** Tampil Input Tempo **/
 function displayJenis(e) {
-  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
+    if(e.target.value != 'CPL') {
+        if((e.target.value == 'Extrana') && (tempTempo == 0))
+            tempTempo = '30';
+
+        tempo.value = tempTempo;
+        radiosJen[0].checked = false;
+        radiosJen[0].disabled = false;
+        radiosJen[1].disabled = false;
+    }
+    else {
+        tempo.setAttribute('readonly', 'true');
+        tempo.removeAttribute('required');
+        tempo.value = '';
+        radiosJen[0].checked = true;
+        radiosJen[0].disabled = true;
+        radiosJen[1].disabled = true;
+    }
+
+  /* if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
     if((radios[4].checked) && (tempTempo == 0))
       tempTempo = '30';
-      
+
     tempo.value = tempTempo;
     radiosJen[0].checked = false;
     radiosJen[0].disabled = false;
@@ -592,8 +620,8 @@ function displayJenis(e) {
     radiosJen[0].checked = true;
     radiosJen[0].disabled = true;
     radiosJen[1].disabled = true;
-  }
-} 
+  } */
+}
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
@@ -607,7 +635,7 @@ function displayTempo(e) {
     tempo.removeAttribute('required');
     tempo.value = '';
   }
-} 
+}
 
 /** Add New Table Line **/
 function displayRow(e) {
@@ -630,12 +658,12 @@ function displayRow(e) {
         <input type="hidden" name="kodeGudang[]" class="kodeGudangRow" id="kodeGudangRow${newNum}">
         <input type="hidden" name="qtyGudang[]" class="qtyGudangRow" id="qtyGudangRow${newNum}">
       <td>
-        <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow" 
+        <input type="text" tabindex="${tab += 4}" name="satuan[]" id="satuanRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right satuanRow"
         value="{{ old('satuan[]') }}" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9"
         autocomplete="off">
       </td>
       <td>
-        <input type="text" tabindex="${tab += 5}" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow" 
+        <input type="text" tabindex="${tab += 5}" name="tipe[]" id="tipeRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center tipeRow"
         value="{{ old('tipe[]') }}">
       </td>
       <td>
@@ -645,11 +673,11 @@ function displayRow(e) {
         <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
       </td>
       <td style="width: 60px">
-        <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow" 
+        <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow"
         value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
       </td>
       <td style="width: 120px">
-        <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRpRow" 
+        <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRpRow"
         value="{{ old('diskonRp[]') }}" >
       </td>
       <td>
@@ -661,7 +689,7 @@ function displayRow(e) {
         </a>
       </td>
     </tr>
-  `; 
+  `;
 
   const newModal = `
     <div class="modal" id="notif${newNum}" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
@@ -711,14 +739,14 @@ function displayRow(e) {
   document.getElementById("resetSO").tabIndex = tab++;
 
   /** Tampil Harga **/
-  brgRow.addEventListener("keyup", displayHargaRow); 
+  brgRow.addEventListener("keyup", displayHargaRow);
   kodeRow.addEventListener("keyup", displayHargaRow);
-  brgRow.addEventListener("blur", displayHargaRow); 
+  brgRow.addEventListener("blur", displayHargaRow);
   kodeRow.addEventListener("blur", displayHargaRow);
 
-  brgRow.addEventListener("change", resetQtyRow); 
+  brgRow.addEventListener("change", resetQtyRow);
   kodeRow.addEventListener("change", resetQtyRow);
-  
+
   function displayHargaRow(e) {
     if(e.target.value == "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
@@ -727,7 +755,7 @@ function displayRow(e) {
       $(this).parents('tr').find('input').val('');
       qtyRow.removeAttribute('required');
       diskonRow.removeAttribute('required');
-    } 
+    }
 
     @foreach($barang as $br)
       if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
@@ -783,7 +811,7 @@ function displayRow(e) {
     // kodeGudangRow.value = '{{ $gudang[0]->id }}';
     // qtyGudangRow.value = '';
     // qtyRow.value = '';
-  } 
+  }
 
   function resetQtyRow(e) {
     kodeGudangRow.value = '{{ $gudang[0]->id }}';
@@ -792,7 +820,7 @@ function displayRow(e) {
     satuanRow.value = '';
   }
 
-  hargaRow.addEventListener("keyup", displayHargaCustomRow); 
+  hargaRow.addEventListener("keyup", displayHargaCustomRow);
   hargaRow.addEventListener("blur", displayHargaCustomRow);
 
   function displayHargaCustomRow(e) {
@@ -819,29 +847,29 @@ function displayRow(e) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
-      $(qtyRow).tooltip('show');  
+      $(qtyRow).tooltip('show');
       e.preventDefault();
     }
-    
+
     return true;
-  });  
+  });
 
   satuanRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && (charCodeRow < 48 || charCodeRow > 57)) {
-      $(satuanRow).tooltip('show');  
+      $(satuanRow).tooltip('show');
       e.preventDefault();
     }
-    
+
     return true;
-  });  
+  });
 
   /** Tampil Jumlah **/
   qtyRow.addEventListener("blur", displayQtyRow);
   if(teksSatRow.value == 'Pcs')
     satuanRow.addEventListener("blur", displayQtyRow);
-  else 
+  else
     satuanRow.addEventListener("change", displayQtyRow);
 
   function displayQtyRow(e) {
@@ -851,7 +879,7 @@ function displayRow(e) {
     @foreach($stok as $s)
       if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->gudang->tipe }}' == 'KENARI'))
         totStok = '{{ $s->stok }}';
-      
+
     @endforeach
 
     hitungQtyRow(e.target.id, e.target.value, teksSatRow.value, ukuranRow);
@@ -915,7 +943,7 @@ function displayRow(e) {
       else if(teks == 'Rol')
         satuanRow.value = +angka * +ukuran;
     }
-    else if(kode == `satuanRow${newNum}`) 
+    else if(kode == `satuanRow${newNum}`)
       qtyRow.value = +angka * +ukuran;
   }
 
@@ -957,10 +985,10 @@ function displayRow(e) {
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
     if (charCodeRow > 31 && charCodeRow != 43  && (charCodeRow < 48 || charCodeRow > 57)) {
       $(diskonRow).tooltip('show');
-      
+
       e.preventDefault();
     }
-    
+
     return true;
   });
 
@@ -987,7 +1015,7 @@ function displayRow(e) {
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
-  
+
   /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     if(qtyRow.value != "") {
@@ -996,7 +1024,7 @@ function displayRow(e) {
       grandtotal.value = totalNotPPN.value;
       total_ppn(totalNotPPN.value.replace(/\./g, ""));
     }
-    
+
     const curNum = $(this).closest('tr').find('td:first-child').text();
     // const lastNum = $(tablePO).find('tr:last').attr("id");
     const lastNum = $(tablePO).find('tr:last td:first-child').text();
@@ -1040,7 +1068,7 @@ function displayRow(e) {
     @foreach($hrg as $h)
       tipeHrg.push('{{ $h->tipe }}');
     @endforeach
-      
+
     function split(val) {
       return val.split(/,\s/);
     }
@@ -1071,7 +1099,7 @@ function displayRow(e) {
         return false;
       }
     });
-    
+
     $(brgRow).on("keydown", function(event) {
       if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
@@ -1123,7 +1151,7 @@ function displayRow(e) {
         return false;
       }
     });
-  }); 
+  });
 }
 
 /** Tampil Harga Barang **/
@@ -1240,7 +1268,7 @@ for(let i = 0; i < qty.length; i++) {
 
   if(teksSat[i].value == 'Pcs')
     satuan[i].addEventListener("blur", displayQty);
-  else 
+  else
     satuan[i].addEventListener("change", displayQty);
 
   function displayQty(e) {
@@ -1248,7 +1276,7 @@ for(let i = 0; i < qty.length; i++) {
     stokLain = [];
     totStok = 0;
     @foreach($stok as $s)
-      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->gudang->tipe }}' == 'KENARI')) 
+      if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->gudang->tipe }}' == 'KENARI'))
         totStok = '{{ $s->stok }}';
     @endforeach
 
@@ -1308,7 +1336,7 @@ for(let i = 0; i < qty.length; i++) {
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
-}  
+}
 
 // Pilih Tipe
 for(let i = 0; i < tipe.length; i++) {
@@ -1547,8 +1575,10 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || 
-  (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
+  // if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) ||
+  // (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
+  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") ||
+      (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
   }
   else {
@@ -1596,14 +1626,14 @@ function checkRequired(e) {
         totalKredit.textContent = 0;
         totalTagihan.textContent = addCommas(0 + +grandtotal.value.replace(/\./g, ""));
       }
-      
+
       return false;
-    } 
+    }
     else {
       document.getElementById("submitSO").dataset.toggle = "modal";
       document.getElementById("submitSO").dataset.target = "#modalKonfirm";
       return false;
-    } 
+    }
     /* document.getElementById("submitSO").dataset.toggle = "modal";
     document.getElementById("submitSO").dataset.target = "#modalKonfirm";
     return false; */
@@ -1629,7 +1659,7 @@ $(function() {
     // customer.push('{{ $c->nama }}');
     customer.push('{{ $c->nama }} ({{ $c->alamat }})');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }

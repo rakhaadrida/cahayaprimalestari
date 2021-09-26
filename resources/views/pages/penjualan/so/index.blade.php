@@ -81,51 +81,59 @@
                       </div>
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
-                      <div class="col-auto" style="margin-top: -35px">
-                        <div class="form-check form-check-inline mt-2">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>
-                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>
-                        </div>
-                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>
-                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">
-                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>
-                        </div>
-                        <br>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">
-                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">
-                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">
-                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>
-                        </div>
-                        <br>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">
-                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">
-                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>
-                        </div>
-                        <div class="form-check form-check-inline" style="margin-left: -1px">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">
-                          <label class="form-check-label text-bold text-dark" for="kat8">Panasonic</label>
-                        </div>
-                        <br>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Ecolink">
-                          <label class="form-check-label text-bold text-dark" for="kat9">Ecolink</label>
-                        </div>
+                      <div class="col-2" style="margin-top: -30px">
+                        <select class="form-control form-control-sm" tabindex="5" id="kategori">
+                            <option value="CPL" selected>CPL</option>
+                            @foreach($kategori as $item)
+                                <option value="{{ $item->nama }}">{{ $item->nama }}</option>
+                            @endforeach
+                        </select>
                       </div>
+{{--                      <div class="col-auto" style="margin-top: -35px">--}}
+{{--                        <div class="form-check form-check-inline mt-2">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>--}}
+{{--                        </div>--}}
+{{--                        <br>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>--}}
+{{--                        </div>--}}
+{{--                        <br>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>--}}
+{{--                        </div>--}}
+{{--                        <div class="form-check form-check-inline" style="margin-left: -1px">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat8">Panasonic</label>--}}
+{{--                        </div>--}}
+{{--                        <br>--}}
+{{--                        <div class="form-check form-check-inline">--}}
+{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Ecolink">--}}
+{{--                          <label class="form-check-label text-bold text-dark" for="kat9">Ecolink</label>--}}
+{{--                        </div>--}}
+{{--                      </div>--}}
                     </div>
                   </div>
                   <div class="col" style="margin-left: -340px; margin-right:-40px; margin-top: -120px">
@@ -156,11 +164,11 @@
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-3 jenis-check">
                         <div class="form-check mt-2">
-                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" required>
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="C" required checked disabled>
                           <label class="form-check-label text-bold text-dark" for="jenis1">Cash</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="T" >
+                          <input class="form-check-input" tabindex="5" type="radio" name="jenis" id="jenis" value="T" disabled>
                           <label class="form-check-label text-bold text-dark" for="jenis2">Tempo</label>
                         </div>
                       </div>
@@ -571,9 +579,11 @@ newRow.addEventListener("click", displayRow);
 diskonFaktur.addEventListener('keyup', formatNominal);
 diskonFaktur.addEventListener('keyup', displayTotal);
 
-Array.prototype.forEach.call(radios, function(radio) {
-   radio.addEventListener('change', displayJenis);
-});
+kategori.addEventListener('change', displayJenis);
+
+// Array.prototype.forEach.call(radios, function(radio) {
+//    radio.addEventListener('change', displayJenis);
+// });
 
 Array.prototype.forEach.call(radiosJen, function(radio) {
    radio.addEventListener('change', displayTempo);
@@ -641,6 +651,26 @@ function formatTanggal(e) {
 
 /** Tampil Input Tempo **/
 function displayJenis(e) {
+    if(e.target.value != 'CPL') {
+        if((e.target.value == 'Extrana') && (tempTempo == 0))
+            tempTempo = '30';
+
+        tempo.value = tempTempo;
+        radiosJen[0].checked = false;
+        radiosJen[0].disabled = false;
+        radiosJen[1].disabled = false;
+    }
+    else {
+        tempo.setAttribute('readonly', 'true');
+        tempo.removeAttribute('required');
+        tempo.value = '';
+        radiosJen[0].checked = true;
+        radiosJen[0].disabled = true;
+        radiosJen[1].disabled = true;
+    }
+}
+
+/* function displayJenis(e) {
   if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
     if((radios[4].checked) && (tempTempo == 0))
       tempTempo = '30';
@@ -658,7 +688,7 @@ function displayJenis(e) {
     radiosJen[0].disabled = true;
     radiosJen[1].disabled = true;
   }
-}
+} */
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
@@ -1889,7 +1919,8 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
+  // if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
+  if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
   }
   else {
