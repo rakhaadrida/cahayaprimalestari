@@ -20,7 +20,9 @@ class GudangController extends Controller
 {
     public function index()
     {
+        AccReceivable::where('id_so', 'IV21091314')->where('keterangan', 'BELUM LUNAS')->delete();
 
+        AccReceivable::where('id_so', 'IV21091365')->where('keterangan', 'BELUM LUNAS')->delete();
 
         $items = Gudang::All();
 

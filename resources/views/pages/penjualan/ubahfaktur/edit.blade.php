@@ -1165,8 +1165,13 @@ $(function() {
 
   var kat = ['CPL'];
   @foreach($kategori as $k)
-    kat.push('{{ $k->nama }} C');
-    kat.push('{{ $k->nama }} T');
+    @if(($k->nama == 'MCB') || ($k->nama == 'BOSS'))
+        kat.push('{{ $k->nama }} C');
+        kat.push('{{ $k->nama }} T');
+    @else
+        kat.push('{{ ucfirst(strtolower($k->nama)) }} C');
+        kat.push('{{ ucfirst(strtolower($k->nama)) }} T');
+    @endif
   @endforeach
 
   var kodeBrg = [];

@@ -44,7 +44,7 @@ class KenariController extends Controller
         $customer = Customer::with(['sales'])->get();
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $kategori = JenisBarang::All();
+        $kategori = JenisBarang::orderBy('nama')->get();
         $hrg = Harga::All();
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'KENARI')->get();

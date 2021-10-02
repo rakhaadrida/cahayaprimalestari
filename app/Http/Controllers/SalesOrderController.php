@@ -34,7 +34,7 @@ class SalesOrderController extends Controller
         $sales = Sales::All();
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $kategori = JenisBarang::All();
+        $kategori = JenisBarang::orderBy('nama')->get();
 
         // $hrg = Harga::All();
         $hrg = Harga::pluck('tipe')->toArray();
@@ -486,7 +486,7 @@ class SalesOrderController extends Controller
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $kategori = JenisBarang::All();
+        $kategori = JenisBarang::orderBy('nama')->get();
         $hrg = Harga::All();
         $sales = Sales::All();
         $customer = Customer::All();

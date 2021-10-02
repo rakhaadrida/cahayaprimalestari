@@ -82,10 +82,14 @@
                       <label for="kat" class="col-2 col-form-label text-bold text-right" style="margin-top: -35px">Kategori</label>
                       <span class="col-form-label text-bold" style="margin-top: -35px">:</span>
                       <div class="col-2" style="margin-top: -30px">
-                        <select class="form-control form-control-sm" tabindex="5" id="kategori">
+                        <select class="form-control form-control-sm" tabindex="5" id="kategori" name="kategori">
                             <option value="CPL" selected>CPL</option>
                             @foreach($kategori as $item)
-                                <option value="{{ $item->nama }}">{{ $item->nama }}</option>
+                                @if(($item->nama == 'MCB') || ($item->nama == 'BOSS'))
+                                    <option value="{{ $item->nama }}">{{ $item->nama }}</option>
+                                @else
+                                    <option value="{{ ucfirst(strtolower($item->nama)) }}">{{ ucfirst(strtolower($item->nama)) }}</option>
+                                @endif
                             @endforeach
                         </select>
                       </div>
