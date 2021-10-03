@@ -259,17 +259,17 @@
       .customer-cetak-so .subtitle-one {
           color: black;
           font-weight: normal;
-          margin-top: 21px;
+          margin-top: 18px;
       }
 
       .customer-cetak-so .subtitle-second {
           color: black;
-          margin-top: -3px;
+          margin-top: -7px;
           font-weight: normal;
       }
 
       .customer-cetak-so .subtitle-second .sub-title-dot {
-          margin-left: 42px;
+          margin-left: 43px;
       }
 
       .table-info-cetak-so td {
@@ -401,11 +401,11 @@
       .waktu-cetak-so {
         font-weight: 500;
         margin-left: 30px;
-        margin-top: 17px;
+        margin-top: 15px;
       }
 
       .waktu-cetak {
-        font-size: 15px !important;
+        font-size: 14px !important;
         margin-left: 115px;
       }
 
@@ -417,7 +417,7 @@
 
       .cetak-ke {
         margin-left: 117px;
-        font-size: 15px !important;
+        font-size: 14px !important;
       }
 
       @media print {
@@ -444,7 +444,7 @@
 
         <div class="container-fluid float-left logo-cetak-so">
           <h2 class="text-bold">INVOICE</h2>
-          <h3 class="text-bold">Mitra Bintang LED</h3>
+          <h3 class="text-bold">MITRA ELEKTRIK</h3>
           <h4>Jakarta Pusat</h4>
 
             <div class="subtitle-one">

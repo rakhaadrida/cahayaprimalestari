@@ -930,7 +930,7 @@ function displayRow(e) {
         }
         ukuranRow.value = '{{ $br->ukuran }}';
 
-        if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}')) {
+        if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}')|| ('{{ $br->jenis->nama == 'POWERLINDO' }}')) {
           hargaRow.removeAttribute('readonly');
         } else {
           hargaRow.setAttribute('readonly', 'true');
@@ -1446,7 +1446,7 @@ for(let i = 0; i < brgNama.length; i++) {
         }
         ukuran[i].value = '{{ $br->ukuran }}';
 
-        if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}')) {
+        if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}') || ('{{ $br->jenis->nama == 'POWERLINDO' }}')) {
           harga[i].removeAttribute('readonly');
         } else {
           harga[i].setAttribute('readonly', 'true');

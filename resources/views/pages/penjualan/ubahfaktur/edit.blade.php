@@ -571,7 +571,7 @@ for(let i = 0; i < brgNama.length; i++) {
         brgNama[i].value = '{{ $br->nama }}'.replace(/&quot;/g, '\"');
       }
 
-      if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}')) {
+      if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}') || ('{{ $br->jenis->nama == 'POWERLINDO' }}')) {
         harga[i].removeAttribute('readonly');
       } else {
         harga[i].setAttribute('readonly', 'true');
