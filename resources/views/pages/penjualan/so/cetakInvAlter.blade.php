@@ -352,12 +352,14 @@
         font-size: 18px;
         padding-left: 25px;
         margin-bottom: 12px;
-        margin-top: -20px;
+        /*margin-top: -20px;*/
+          margin-top: 10px;
       }
 
       .ttd-gudang {
         font-size: 18px;
-        margin-top: -35px;
+        /*margin-top: -35px;*/
+          margin-top: -5px;
         margin-left: 35px;
         margin-bottom: -4px;
         line-height: 17px;
@@ -365,7 +367,8 @@
 
       .ttd-mengetahui {
         font-size: 18px;
-        margin-top: -37px;
+        /*margin-top: -37px;*/
+          margin-top: -7px;
         margin-left: 45px;
         margin-bottom: -5px;
         line-height: 10px;
@@ -654,12 +657,12 @@
         </div>
       </div>
 
-      <div class="waktu-cetak-so">
-          <span class="waktu-cetak">Pembayaran ke Rekening Bank BCA</span>
-      </div>
-      <div class="waktu-cetak-so-second">
-          <span class="cetak-ke">a/n Indah Ramadhon 5790416491</span>
-      </div>
+{{--      <div class="waktu-cetak-so">--}}
+{{--          <span class="waktu-cetak">Pembayaran ke Rekening Bank BCA</span>--}}
+{{--      </div>--}}
+{{--      <div class="waktu-cetak-so-second">--}}
+{{--          <span class="cetak-ke">a/n Indah Ramadhon 5790416491</span>--}}
+{{--      </div>--}}
     @endforeach
 
     <script type="text/javascript">
