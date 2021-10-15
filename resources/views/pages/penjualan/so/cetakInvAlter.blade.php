@@ -447,7 +447,7 @@
 
         <div class="container-fluid float-left logo-cetak-so">
           <h2 class="text-bold">INVOICE</h2>
-          <h3 class="text-bold">MITRA ELEKTRIK</h3>
+          <h3 class="text-bold">POWER ELEKTRIK</h3>
           <h4>Jakarta Pusat</h4>
 
             <div class="subtitle-one">
