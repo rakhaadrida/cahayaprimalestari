@@ -447,7 +447,7 @@
 
         <div class="container-fluid float-left logo-cetak-so">
           <h2 class="text-bold">INVOICE</h2>
-          <h3 class="text-bold">Mitra Bintang LED</h3>
+          <h3 class="text-bold">POWER ELEKTRIK</h3>
           <h4>Jakarta Pusat</h4>
 
             <div class="subtitle-one">
@@ -658,12 +658,12 @@
         </div>
       </div>
 
-      <div class="waktu-cetak-so">
-          <span class="waktu-cetak">Pembayaran ke Rekening Bank BCA</span>
-      </div>
-      <div class="waktu-cetak-so-second">
-          <span class="cetak-ke">a/n Indah Ramadhon 5790416491</span>
-      </div>
+{{--      <div class="waktu-cetak-so">--}}
+{{--          <span class="waktu-cetak">Pembayaran ke Rekening Bank BCA</span>--}}
+{{--      </div>--}}
+{{--      <div class="waktu-cetak-so-second">--}}
+{{--          <span class="cetak-ke">a/n Indah Ramadhon 5790416491</span>--}}
+{{--      </div>--}}
     @endforeach
 
     <script type="text/javascript">

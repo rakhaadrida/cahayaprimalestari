@@ -31,7 +31,7 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              <div class="container so-container"> 
+              <div class="container so-container">
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
@@ -53,7 +53,7 @@
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
                   </div>
-                </div>   
+                </div>
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
@@ -76,24 +76,12 @@
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-excel', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
                   </div>
-                </div>  
+                </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
-              <!-- Button Submit dan Reset -->
-              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-bottom: -18px" @else style="margin-bottom: 18px" @endif>
-                <div class="col-1">
-                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
-                </div>
-                <div class="col-1">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
-                </div>
-              </div> --}}
-              <!-- End Button Submit dan Reset -->
-
               <!-- Tabel Data Detil AR -->
-              {{-- <input type="hidden" id="kodeSO" name="kodeSO"> --}}
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ar->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -112,26 +100,26 @@
                   </tr>
                 </thead>
                 <tbody class="table-ar">
-                  @php 
-                    $i = 1; $tab = 6; 
+                  @php
+                    $i = 1; $tab = 6;
                     if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
                       $items = $ar;
                     elseif(Auth::user()->roles == 'OFFICE02')
                       $items = $arOffice
                   @endphp
                   @forelse($items as $a)
-                    @php 
+                    @php
                       $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
                                 ->where('id_ar', $a->id)->get();
                       $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                              ->where('id_ar', $a->id)->get(); 
+                              ->where('id_ar', $a->id)->get();
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td class="align-middle">{{ $a->namaCust }}</td>
                       <td class="align-middle">{{ $a->namaSales }}</td>
                       <td align="center" class="align-middle">{{ $a->kategori }}</td>
-                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $a->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $a->id_so }}</button></td>
                       <td align="center" class="align-middle">
                         {{ \Carbon\Carbon::parse($a->tgl_so)->format('d-M-y') }}
                       </td>
@@ -183,7 +171,7 @@
                 </div>
               </div> --}}
               <!-- End Button Submit dan Reset -->
-              
+
             </form>
           </div>
         </div>
@@ -232,11 +220,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   if(e.target.id == 'tglAwal')
     tglAwal.value = value;
   else
@@ -303,7 +291,7 @@ $('#dataTable').dataTable( {
 
       // Update footer
       $(api.column(value).footer()).html(addCommas(column));
-    }); 
+    });
   }
 });
 

@@ -33,7 +33,7 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              <div class="container so-container"> 
+              <div class="container so-container">
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
@@ -49,7 +49,7 @@
                       <option value="BELUM LUNAS">BELUM LUNAS</option>
                     </select>
                   </div>
-                </div>   
+                </div>
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
@@ -63,13 +63,12 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ap-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                </div>  
+                </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
               <!-- Tabel Data Detil AR -->
-              {{-- <input type="hidden" id="kodeBM" name="kodeBM"> --}}
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" @if($ap->count() != 0) id="dataTable" width="100%" cellspacing="0" @endif>
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -88,7 +87,7 @@
                 </thead>
                 <tbody class="table-ar">
                   @php $i = 1; $tab = 5 @endphp
-                  @php 
+                  @php
                     if($apLast->count() != 0) {
                       $totalBM = App\Models\BarangMasuk::selectRaw('sum(total) as totBM')
                                 ->where('id_faktur', $apLast->first()->id_bm)->where('status', '!=', 'BATAL')->get();
@@ -130,11 +129,11 @@
                       <td align="center" class="align-middle text-bold" @if(($apLast->first()->keterangan != null) && ($apLast->first()->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
                         <a href="{{ route('ap-transfer-create', $apLast->first()->id_bm) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$apLast->first()->keterangan}}</a>
                       </td>
-                    </tr> 
+                    </tr>
                   @endif
                   @php $i++; @endphp
                   @forelse($ap as $a)
-                    @php 
+                    @php
                       $totalBM = App\Models\BarangMasuk::selectRaw('sum(total) as totBM, sum(potongan) as potongan')
                               ->where('id_faktur', $a->id_bm)->get();
                       // $potBM = App\Models\BarangMasuk::selectRaw('sum(potongan) as potongan')
@@ -204,7 +203,7 @@
                 </div>
               </div> --}}
               <!-- End Button Submit dan Reset -->
-              
+
             </form>
           </div>
         </div>
@@ -252,11 +251,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   if(e.target.id == 'tglAwal')
     tglAwal.value = value;
   else
@@ -323,7 +322,7 @@ $('#dataTable').dataTable( {
 
       // Update footer
       $(api.column(value).footer()).html(addCommas(column));
-    }); 
+    });
   }
 });
 

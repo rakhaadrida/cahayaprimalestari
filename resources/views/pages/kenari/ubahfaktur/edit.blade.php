@@ -35,7 +35,7 @@
                       <div class="col-2 mt-1">
                         <input type="text" readonly class="form-control-plaintext form-control-sm text-bold text-dark" name="kode" value="{{ $items[0]->id }}">
                       </div>
-                    </div>  
+                    </div>
                   </div>
                   <div class="col" style="margin-left: -380px">
                     <div class="form-group row sj-first-line">
@@ -91,7 +91,7 @@
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-              
+
               <!-- Tabel Data Detil PO -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
                 <thead class="text-center text-bold text-dark">
@@ -110,7 +110,7 @@
                   </tr>
                 </thead>
                 <tbody id="tablePO">
-                  @php 
+                  @php
                     $i = 1; $tab = 1;
                     if(($items[0]->need_approval->count() != 0) && ($items[0]->need_approval->last()->status == 'PENDING_UPDATE')) {
                       $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
@@ -140,7 +140,7 @@
                         {{-- <input type="text" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}"> --}}
                         <span class="qtyAwal" hidden>{{ $item->qty }}</span>
                       </td>
-                      <td> 
+                      <td>
                         <input type="text" tabindex="{{ $tab += 3 }}" name="qty[]" class="form-control form-control-sm text-bold text-dark text-right qty" value="{{ $item->qty }}" onkeypress="return angkaSaja(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off" required>
                         <input type="hidden" name="teksSat[]" class="teksSat" value="{{ substr($item->barang->satuan, 0, 3) }}">
                         <input type="hidden" name="kodeGudang[]" class="kodeGudang" value="{{ $item->id_gudang }}">
@@ -156,7 +156,7 @@
                         }
                       @endphp
                       <td>
-                        <input type="text" tabindex="{{ $tab += 4 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe" 
+                        <input type="text" tabindex="{{ $tab += 4 }}" name="tipe[]" id="tipe" class="form-control form-control-sm text-bold text-dark text-center tipe"
                         value="{{ $tipe }}">
                       </td>
                       <td align="right">
@@ -168,20 +168,20 @@
                       <td align="right" style="width: 60px">
                         <input type="text" tabindex="{{ $tab += 5 }}" name="diskon[]" class="form-control form-control-sm text-bold text-right diskon" value="{{ $item->diskon }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off" required>
                       </td>
-                      @php 
+                      @php
                         $diskon = 100;
                         $arrDiskon = explode("+", $item->diskon);
                         for($j = 0; $j < sizeof($arrDiskon); $j++) {
                           $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                        } 
+                        }
                         $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                       @endphp
                       <td align="right" style="width: 120px" >
-                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
+                        <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp"
                         value="{{ number_format((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}" >
                       </td>
                       <td align="right">
-                        <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ number_format(($item->qty * $item->harga) - 
+                        <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ number_format(($item->qty * $item->harga) -
                         ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}" >
                       </td>
                       <td align="center" class="align-middle">
@@ -240,7 +240,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" 
+                  <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right"
                   value="0" />
                 </div>
               </div>
@@ -249,7 +249,7 @@
                 <span class="col-form-label text-bold">:</span>
                 <span class="col-form-label text-bold ml-2">Rp</span>
                 <div class="col-2">
-                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-right" 
+                  <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-right"
                   value="{{ number_format($items[0]->total, 0, "", ".") }}"
                   />
                 </div>
@@ -417,7 +417,7 @@ for(let i = 0; i < qty.length; i++) {
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   });
-} 
+}
 
 // Pilih Tipe
 for(let i = 0; i < tipe.length; i++) {
@@ -493,7 +493,7 @@ function hitungDiskon(angka) {
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
   }
-  totDiskon =  ((totDiskon - 100) * -1).toFixed(2);
+  totDiskon =  ((totDiskon - 100) * -1);
   return totDiskon;
 }
 
@@ -507,7 +507,7 @@ function total_ppn(sub) {
 function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
-  if (charCode > 31 && (charCode < 48 || charCode > 57)) {   
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= qty.length; i++) {
       if(inputan == i)
         $(qty[inputan-1]).tooltip('show');
@@ -556,7 +556,7 @@ for(let i = 0; i < hapusBaris.length; i++) {
 
     for(let j = i; j < jumBaris.value; j++) {
       if(j == jumBaris.value - 1) {
-        $(tablePO).find('tr:last-child').remove();  
+        $(tablePO).find('tr:last-child').remove();
       }
       else {
         console.log(kodeBarang[j+1].value)
@@ -574,9 +574,9 @@ for(let i = 0; i < hapusBaris.length; i++) {
           qty[j].removeAttribute('required');
         else
           qty[j+1].removeAttribute('required');
-      }     
+      }
     }
-    jumBaris.value -= 1; 
+    jumBaris.value -= 1;
   });
 }
 
@@ -593,7 +593,7 @@ $(function() {
   @foreach($hrg as $h)
     tipeHarga.push('{{ $h->tipe }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }
