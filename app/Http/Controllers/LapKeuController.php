@@ -25,11 +25,13 @@ use Carbon\Carbon;
 class LapKeuController extends Controller
 {
     public function index() {
+        ini_set('max_execution_time', 3000);
+
         $date = Carbon::now('+07:00');
         $tahun = $date->year;
         // $bul = $date->month;
         // $tanggal = $tahun.'-'.$bul.'-01';
-        $month = Carbon::parse($date)->format('m'); 
+        $month = Carbon::parse($date)->format('m');
 
         $arrBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                     'September', 'Oktober', 'November', 'Desember'];
@@ -43,7 +45,7 @@ class LapKeuController extends Controller
         $retur = $this->getRetur($month, $tahun);
 
         $jenis = $this->getJenis($jenis, $sales);
-        if(Auth::user()->roles == 'SUPER') 
+        if(Auth::user()->roles == 'SUPER')
             $hppPerKat = $this->getHpp($jenis, $month, $tahun);
         else
             $hppPerKat = NULL;
@@ -71,6 +73,8 @@ class LapKeuController extends Controller
     }
 
     public function show(Request $request, $tah, $mo) {
+        ini_set('max_execution_time', 3000);
+
         $date = Carbon::now('+07:00');
         $tahun = ($tah == 'now' ? $date->year : $tah);
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
@@ -90,7 +94,7 @@ class LapKeuController extends Controller
         }
 
         $tanggal = $tahun.'-'.$month.'-01';
-        $month = Carbon::parse($tanggal)->format('m'); 
+        $month = Carbon::parse($tanggal)->format('m');
 
         $totBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                 ->selectRaw('sum(qty) as totQty')->where('status', '!=', 'BATAL')
@@ -100,7 +104,7 @@ class LapKeuController extends Controller
                 ->where('id_barang', 'BRG0081')->where('tgl_so', '<', $tahun.'-'.$month.'-01')
                 // ->whereMonth('tgl_so', '<', $month)
                 ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
-        
+
         if($totSO[0]->totQty != null) {
             $sisa = $totBM[0]->totQty - $totSO[0]->totQty;
         }
@@ -121,7 +125,7 @@ class LapKeuController extends Controller
         $retur = $this->getRetur($month, $tahun);
 
         $jenis = $this->getJenis($jenis, $sales);
-        if(Auth::user()->roles == 'SUPER') 
+        if(Auth::user()->roles == 'SUPER')
             $hppPerKat = $this->getHpp($jenis, $month, $tahun);
         else
             $hppPerKat = NULL;
@@ -187,7 +191,7 @@ class LapKeuController extends Controller
                     ->select('id_barang as id')->where('id_kategori', $j->id)
                     ->where('detilso.created_at', 'LIKE', $tahun.'-'.$month.'-%')
                     ->distinct('id_barang')->orderBy('id_barang')->get();
-                    
+
             foreach($barang as $b) {
                 $sisa = 0;
                 $totBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
@@ -198,12 +202,12 @@ class LapKeuController extends Controller
                         ->where('id_barang', $b->id)->where('tgl_so', '<', $tahun.'-'.$month.'-01')
                         // ->whereMonth('tgl_so', '<', $month)
                         ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
-                
+
                 if($totSO[0]->totQty != null) {
                     $sisa = $totBM[0]->totQty - $totSO[0]->totQty;
                 }
 
-                if(($sisa == 0) && ($totSO[0]->totQty == null)) 
+                if(($sisa == 0) && ($totSO[0]->totQty == null))
                     $bmPerBrg = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                                 ->select('id_bm as id', 'detilbm.*')->where('status', '!=', 'BATAL')
                                 ->where('id_barang', $b->id)->get();
@@ -233,13 +237,13 @@ class LapKeuController extends Controller
                             ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $month)
                             ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])
                             ->where('id_customer', '!=', 'CUS1071')->get();
-                           
+
                 if(($bmPerBrg->count() != 0) && ($soPerBrg->count() != 0)) {
                     $k = 0;
                     for($i = 0; $i < $bmPerBrg->count(); $i++) {
                         if(($i == 0) && ($sisa > 0))
                             $bmPerBrg[$i]->qty = $sisa;
-                            
+
                         $qty = $bmPerBrg[$i]->qty;
                         for($m = $k; $m < $soPerBrg->count(); $m++) {
                             $idSales = $soPerBrg[$k]->so->id_sales;
@@ -284,13 +288,13 @@ class LapKeuController extends Controller
         return $hppPerKat;
     }
 
-    public function getItems($bulan, $tahun) { 
+    public function getItems($bulan, $tahun) {
         $items = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
                     ->join('so', 'so.id', 'detilso.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
                     ->join('sales', 'sales.id', 'so.id_sales')
-                    // ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
-                    ->select('so.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total')) 
+                    // ->select('customer.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total'))
+                    ->select('so.id_sales', 'sales.nama', 'barang.id_kategori', DB::raw('sum(harga * qty - diskonRp) as total'))
                     ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
                     ->where('id_customer', '!=', 'CUS1071')
                     ->whereYear('so.tgl_so', $tahun)
@@ -310,18 +314,20 @@ class LapKeuController extends Controller
                     ->join('sales', 'sales.id' , 'customer.id_sales')
                     // ->select('customer.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
                     ->select('so.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
-                    ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
+                    ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])
                     ->where('id_customer', '!=', 'CUS1071')
                     ->whereYear('so.tgl_so', $tahun)
                     ->whereMonth('so.tgl_so', $bulan)
                     // ->groupBy('customer.id_sales', 'barang.id_kategori')
                     ->groupBy('so.id_sales', 'barang.id_kategori')
                     ->get();
-        
+
         return $retur;
-    } 
+    }
 
     public function excel(Request $request) {
+        ini_set('max_execution_time', 3000);
+
         if($request->tahun != '') {
             $tahun = $request->tahun;
             $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
@@ -346,6 +352,8 @@ class LapKeuController extends Controller
     }
 
     public function excelAdmin(Request $request) {
+        ini_set('max_execution_time', 3000);
+
         if($request->tahun != '') {
             $tahun = $request->tahun;
             $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
@@ -437,7 +445,7 @@ class LapKeuController extends Controller
 
         $hppPerItems = DetilBM::join('barangmasuk', 'barangmasuk.id', '=', 'detilbm.id_bm')
                     ->select('id_barang', DB::raw('avg(harga) as avgHarga'),
-                    DB::raw('avg(disPersen) as avgDisPersen')) 
+                    DB::raw('avg(disPersen) as avgDisPersen'))
                     // ->where('diskon', '!=', NULL)
                     ->where('barangmasuk.status', '!=', 'BATAL')
                     ->whereYear('barangmasuk.tanggal', $tahun)
@@ -461,7 +469,7 @@ class LapKeuController extends Controller
         // foreach($qtySalesPerItems as $qty) {
         // echo "<br>";
         // var_dump($qty->id_sales." = ".$qty->id_barang." = ".$qty->id_kategori." = ".$qty->qtyItems." = ".$qty->avgDis." = ".$qty->hrg." = ".$qty->disHpp." = ".$qty->hrgHpp." = ".$qty->totHpp);
-        // } 
+        // }
 
         return $qtySalesPerItems;
     } */
