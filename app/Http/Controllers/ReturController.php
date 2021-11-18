@@ -50,8 +50,10 @@ class ReturController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = ReturJual::selectRaw('max(id) as id')->whereMonth('tanggal', $month)
-                    ->where('id', 'LIKE', 'RTJ%')->get();
+        $lastcode = ReturJual::selectRaw('max(id) as id')
+                ->where('id', 'LIKE', 'RTJ%')
+                ->whereYear('created_at', $waktu->year)
+                ->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 7, 4);
         $lastnumber++;
         $newcode = 'RTJ'.$tahun.$bulan.sprintf('%04s', $lastnumber);
