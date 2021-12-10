@@ -13,14 +13,18 @@ class RekapBKController extends Controller
     public function index() {
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
         $tanggal = Carbon::now('+07:00')->toDateString();
-        $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                    ->join('customer', 'customer.id', 'so.id_customer')
-                    ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
-                    ->where('tgl_so', $tanggal)->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')
-                    ->orderBy('nama')->get();
+        $items = DetilSO::query()
+                ->select('id_so', 'id_barang', 'id_gudang', 'customer.nama AS namaCustomer', 'barang.nama AS namaBarang', 'gudang.nama AS namaGudang')
+                ->selectRaw('sum(qty) as qty')
+                ->join('barang', 'barang.id', 'detilso.id_barang')
+                ->join('gudang', 'gudang.id', 'detilso.id_gudang')
+                ->join('so', 'so.id', 'detilso.id_so')
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->where('tgl_so', $tanggal)->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')
+                ->orderBy('customer.nama')->get();
         $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
-        
+
         $data = [
             'items' => $items,
             'waktu' => $waktu,
@@ -47,13 +51,17 @@ class RekapBKController extends Controller
             $tglAkhir = $tglAwal;
         }
 
-        $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
+        $items = DetilSO::query()
+                    ->select('id_so', 'id_barang', 'id_gudang', 'customer.nama AS namaCustomer', 'barang.nama AS namaBarang', 'gudang.nama AS namaGudang')
+                    ->selectRaw('sum(qty) as qty')
+                    ->join('barang', 'barang.id', 'detilso.id_barang')
+                    ->join('gudang', 'gudang.id', 'detilso.id_gudang')
+                    ->join('so', 'so.id', 'detilso.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
-                    ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
                     ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')
                     ->orderBy('customer.nama')->get();
-        
+
         $awal = $this->formatTanggal($tglAwal, 'd');
         $akhir = $this->formatTanggal($tglAkhir, 'd M y');
         if($request->tglAkhir != '') {

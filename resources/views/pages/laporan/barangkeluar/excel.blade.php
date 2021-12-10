@@ -4,7 +4,7 @@
       <h2 class="text-bold text-dark">REKAP BARANG KELUAR</h2>
       <h3 class="text-bold text-dark">Tanggal : {{ $tanggal }}</h3>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
-      
+
     </center>
     <br>
 
@@ -17,7 +17,6 @@
           <td>Tgl Faktur</td>
           <td>No Faktur</td>
           <td>Sales</td>
-          {{-- <td>Kode Barang</td> --}}
           <td>Customer</td>
           <td>Nama Barang</td>
           <td>Gudang</td>
@@ -27,20 +26,18 @@
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($items as $item)
-          @php 
-            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so); 
+          @php
+            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->tgl_so);
           @endphp
           <tr class="text-dark ">
             <td align="center">{{ $i }}</td>
-            <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('MMMM') }}</td>
-            {{-- <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->isoFormat('DD-MMM-YY') }}</td> --}}
+            <td align="center">{{ \Carbon\Carbon::parse($item->tgl_so)->isoFormat('MMMM') }}</td>
             <td align="center">{{ $awal->diffInDays($tanggal) }}</td>
             <td align="center">{{ $item->id_so }}</td>
-            <td align="center">{{ $item->so->sales->nama }}</td>
-            {{-- <td align="center">{{ $item->id_barang }}</td> --}}
-            <td>{{ $item->so->customer->nama }}</td>
-            <td>{{ $item->barang->nama }}</td>
-            <td align="center">{{ $item->gudang->nama }}</td>
+            <td align="center">{{ $item->namaSales }}</td>
+            <td>{{ $item->namaCustomer }}</td>
+            <td>{{ $item->namaBarang }}</td>
+            <td align="center">{{ $item->namaGudang }}</td>
             <td align="right">{{ $item->qty }}</td>
           </tr>
           @php $i++ @endphp

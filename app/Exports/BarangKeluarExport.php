@@ -28,17 +28,23 @@ class BarangKeluarExport implements WithMultipleSheets
 
         set_time_limit(300);
 
-        $sales = DetilSO::join('so', 'so.id', 'detilso.id_so')->join('barang', 'barang.id', 'detilso.id_barang')
-                ->whereBetween('tgl_so', [$this->tglAwal, $this->tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->groupBy('id_kategori')->orderBy('id_kategori')->get();
+        $sales = DetilSO::select('barang.id_kategori', 'jenisbarang.nama AS namaJenis')
+            ->join('so', 'so.id', 'detilso.id_so')
+            ->join('barang', 'barang.id', 'detilso.id_barang')
+            ->join('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
+            ->whereBetween('tgl_so', [$this->tglAwal, $this->tglAkhir])
+            ->whereNotIn('status', ['BATAL', 'LIMIT'])
+            ->groupBy('id_kategori')
+            ->orderBy('id_kategori')
+            ->get();
 
         for($i = 0; $i < ($sales->count() + 1); $i++) {
             if($i == 0) {
                 $id = '0';
                 $nama = 'KOSONG';
-            } else {    
+            } else {
                 $id = $sales[$i-1]->id_kategori;
-                $nama = $sales[$i-1]->barang->jenis->nama;
+                $nama = $sales[$i-1]->namaJenis;
             }
 
             $sheets[] = new BKPerKategoriExport($id, $nama, $this->tglAwal, $this->tglAkhir);

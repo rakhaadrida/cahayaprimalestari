@@ -49,9 +49,13 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
 
         $awal = Carbon::createFromFormat('Y-m-d', '1899-12-30');
 
-        $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
+        $items = DetilSO::select('id_so', 'so.tgl_so', 'customer.nama AS namaCustomer', 'sales.nama AS namaSales', 'barang.nama AS namaBarang', 'gudang.nama AS namaGudang')
+                    ->selectRaw('sum(qty) as qty')
+                    ->join('barang', 'barang.id', 'detilso.id_barang')
+                    ->join('gudang', 'gudang.id', 'detilso.id_gudang')
+                    ->join('so', 'so.id', 'detilso.id_so')
                     ->join('customer', 'customer.id', 'so.id_customer')
-                    ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
+                    ->join('sales', 'sales.id', 'so.id_sales')
                     ->whereBetween('tgl_so', [$this->tglAwal, $this->tglAkhir])
                     ->whereNotIn('status', ['BATAL', 'LIMIT'])->where('qty', '!=', 0)
                     ->groupBy('id_customer', 'id_barang', 'id_gudang')
@@ -69,7 +73,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
             'id' => $this->id,
             'nama' => $this->nama
         ];
-        
+
         if($this->id == '0')
             return view('pages.laporan.barangkeluar.excel', $data);
         else
@@ -89,7 +93,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
 
             $tglAwal = $this->tglAwal;
             $tglAkhir = $this->tglAkhir;
-            
+
             $sheet->setTitle('BK-'.$tanggal);
 
             $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -99,12 +103,17 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
             $drawing->setCoordinates('A1');
             $drawing->setWorksheet($sheet);
             $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(7);
-                    
+
             $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
-                        ->join('customer', 'customer.id', 'so.id_customer')
-                        ->select('id_so', 'id_barang', 'id_gudang')->selectRaw('sum(qty) as qty')
-                        ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])->whereNotIn('status', ['BATAL', 'LIMIT'])
-                        ->where('qty', '!=', 0)->groupBy('id_customer', 'id_barang', 'id_gudang')->orderBy('nama')->get();
+                ->join('customer', 'customer.id', 'so.id_customer')
+                ->select('id_so', 'id_barang', 'id_gudang')
+                ->selectRaw('sum(qty) as qty')
+                ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('qty', '!=', 0)
+                ->groupBy('id_customer', 'id_barang', 'id_gudang')
+                ->orderBy('nama')
+                ->get();
 
             $range = 5 + $items->count();
             $rangeStr = strval($range);
@@ -116,7 +125,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
             $sheet->getStyle($header)->getFill()
                     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                     ->getStartColor()->setARGB('ffddb5');
-            
+
             $sheet->mergeCells('A1:I1');
             $sheet->mergeCells('A2:I2');
             $sheet->mergeCells('A3:I3');
@@ -152,9 +161,8 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
             $drawing->setHeight(50);
             $drawing->setCoordinates('A1');
             $drawing->setWorksheet($sheet);
-            $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(8); 
-            // $sheet->getColumnDimension('F')->setAutoSize(false)->setWidth(13); 
-            
+            $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(8);
+
             $barang = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
                     ->join('so', 'so.id', 'detilso.id_so')
                     ->select('id_so as id', 'detilso.*')
@@ -173,7 +181,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
             $header = 'A4:I4';
             $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
-            
+
             $sheet->mergeCells('A1:I1');
             $sheet->mergeCells('A2:I2');
             $title = 'A1:I2';
@@ -197,7 +205,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
 
             $rangeHarga = 'D5:I'.$rangeStr;
             $sheet->getStyle($rangeHarga)->getNumberFormat()->setFormatCode('#,##0');
-            
+
             $namaJenis = 'A4:I4';
             $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
@@ -206,10 +214,10 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
                     ->getStartColor()->setARGB('ffddb5');
 
             $TH = 4; $rowTotal = 5;
-            
+
             $TH += ($barang->count() + 4);
             $strTH = strval($TH);
-            
+
             $TR = 'A'.$strTH.':I'.$strTH;
 
             $awal = $rowTotal;
@@ -218,7 +226,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
             $rowTotal = $range;
             $strTotal = $rangeStr;
             $strTotOne = strval($rangeStr-1);
-            $RT = 'A'.$rangeStr.':I'.$rangeStr; 
+            $RT = 'A'.$rangeStr.':I'.$rangeStr;
 
             $sheet->getStyle($RT)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($RT)->getAlignment()->setHorizontal('right');
@@ -231,5 +239,5 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
             $sheet->setCellValue('H'.$strTotal, '=SUM(H'.$strAwal.':H'.$strTotOne.')');
             $sheet->setCellValue('I'.$strTotal, '=SUM(I'.$strAwal.':I'.$strTotOne.')');
         }
-    } 
+    }
 }
