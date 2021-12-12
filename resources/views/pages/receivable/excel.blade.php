@@ -4,7 +4,7 @@
       <h2 class="text-bold text-dark">Data AR</h2>
       <h5 class="waktu-cetak">Tanggal : {{$awal}} s/d {{$akhir}}</h5>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
-      
+
     </center>
     <br>
 
@@ -29,72 +29,52 @@
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($items as $item)
-          @php 
-            $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
-                      ->where('id_ar', $item->id)->get();
-            $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                    ->where('id_ar', $item->id)->get();
-            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so);
-            $temp = \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
-                    ->format('Y-m-d'); 
-            $tempo = \Carbon\Carbon::createFromFormat('Y-m-d', $temp); 
+          @php
+            $total = \App\Utilities\Helper::getReceivableTotal($item->id);
+            $retur = \App\Utilities\Helper::getReceivableRetur($item->id);
+            $tanggal = \App\Utilities\Helper::getReceivableDate($item->tgl_so);
+            $temp = \App\Utilities\Helper::getReceivableTempo($item->tgl_so, $item->tempo);
+            $tempo = \App\Utilities\Helper::getReceivableDate($temp);
           @endphp
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
-            {{-- <td align="center">{{ $item->so->customer->sales->nama }}</td> --}}
-            <td align="center">{{ $item->so->sales->nama }}</td>
-            <td>{{ $item->so->customer->nama }}</td>
-            <td align="center">{{ $item->so->kategori }}</td>
+            <td align="center">{{ $item->namaSales }}</td>
+            <td>{{ $item->namaCustomer }}</td>
+            <td align="center">{{ $item->kategori }}</td>
             <td align="center">{{ $item->id_so }}</td>
-            {{-- <td align="center">{{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}</td>
-            <td align="center">
-              {{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
-                ->format('d-M-y') }}
-            </td> --}}
             <td align="center">{{ $aw->diffInDays($tanggal) }}</td>
             <td align="center">{{ $aw->diffInDays($tempo) }}</td>
-            <td align="right">{{ $item->so->total }}</td>
+            <td align="right">{{ $item->total }}</td>
             <td align="right">{{ $total->first()->totCicil }}</td>
             <td align="right">{{ $retur->first()->total }}</td>
-            <td align="right">{{ $item->so->total - $total->first()->totCicil - $retur->first()->total }}</td>
+            <td align="right">{{ $item->total - $total->first()->totCicil - $retur->first()->total }}</td>
             <td>{{ $item->keterangan }}</td>
-          </tr> 
+          </tr>
           @php $i++ @endphp
         @endforeach
         @if($itemsEx != NULL)
           @foreach($itemsEx as $item)
-            @php 
-              $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
-                        ->where('id_ar', $item->id)->get();
-              $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                      ->where('id_ar', $item->id)->get();
-              $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so);
-              $temp = \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
-                      ->format('Y-m-d'); 
-              $tempo = \Carbon\Carbon::createFromFormat('Y-m-d', $temp); 
+            @php
+                $total = \App\Utilities\Helper::getReceivableTotal($item->id);
+                $retur = \App\Utilities\Helper::getReceivableRetur($item->id);
+                $tanggal = \App\Utilities\Helper::getReceivableDate($item->tgl_so);
+                $temp = \App\Utilities\Helper::getReceivableTempo($item->tgl_so, $item->tempo);
+                $tempo = \App\Utilities\Helper::getReceivableDate($temp);
             @endphp
             <tr class="text-dark">
               <td align="center" class="align-middle">{{ $i }}</td>
-              {{-- <td align="center" class="align-middle text-center">{{ $item->so->customer->sales->nama }}</td> --}}
-              <td align="center" class="align-middle text-center">{{ $item->so->sales->nama }}</td>
-              <td class="align-middle">{{ $item->so->customer->nama }}</td>
-              <td align="center" class="align-middle">{{ $item->so->kategori }}</td>
+              <td align="center" class="align-middle text-center">{{ $item->namaSales }}</td>
+              <td class="align-middle">{{ $item->namaCustomer }}</td>
+              <td align="center" class="align-middle">{{ $item->kategori }}</td>
               <td align="center" class="align-middle">{{ $item->id_so }}</td>
-              {{-- <td align="center" class="align-middle">
-                {{ \Carbon\Carbon::parse($item->so->tgl_so)->format('d-M-y') }}
-              </td>
-              <td align="center" class="align-middle">
-                {{ \Carbon\Carbon::parse($item->so->tgl_so)->add($item->so->tempo, 'days')
-                  ->format('d-M-y') }}
-              </td> --}}
               <td align="center">{{ $aw->diffInDays($tanggal) }}</td>
               <td align="center">{{ $aw->diffInDays($tempo) }}</td>
-              <td align="right">{{ $item->so->total }}</td>
+              <td align="right">{{ $item->total }}</td>
               <td align="right">{{ $total->first()->totCicil }}</td>
               <td align="right">{{ $retur->first()->total }}</td>
-              <td align="right">{{ $item->so->total - $total->first()->totCicil - $retur->first()->total }}</td>
+              <td align="right">{{ $item->total - $total->first()->totCicil - $retur->first()->total }}</td>
               <td>{{ $item->keterangan }}</td>
-            </tr> 
+            </tr>
             @php $i++ @endphp
           @endforeach
         @endif

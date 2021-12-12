@@ -50,4 +50,16 @@ class Helper
 
         return $retur;
     }
+
+    public static function getReceivableDate($date) {
+        $arDate = Carbon::createFromFormat('Y-m-d', $date);
+
+        return $arDate;
+    }
+
+    public static function getReceivableTempo($date, $tempo) {
+        $arTempo = \Carbon\Carbon::parse($date)->add($tempo, 'days')->format('Y-m-d');
+
+        return $arTempo;
+    }
 }
