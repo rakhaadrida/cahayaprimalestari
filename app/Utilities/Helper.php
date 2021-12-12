@@ -3,6 +3,8 @@
 
 namespace App\Utilities;
 
+use App\Models\AR_Retur;
+use App\Models\DetilAR;
 use App\Models\DetilSO;
 use App\Models\StokBarang;
 use Carbon\Carbon;
@@ -33,5 +35,19 @@ class Helper
             ->get();
 
         return $barang;
+    }
+
+    public static function getReceivableTotal($id) {
+        $total = DetilAR::selectRaw('sum(cicil) as totCicil')
+            ->where('id_ar', $id)->get();
+
+        return $total;
+    }
+
+    public static function getReceivableRetur($id) {
+        $retur = AR_Retur::selectRaw('sum(total) as total')
+            ->where('id_ar', $id)->get();
+
+        return $retur;
     }
 }

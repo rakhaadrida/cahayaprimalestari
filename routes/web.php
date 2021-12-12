@@ -369,6 +369,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('ar/cicil/{id}', 'AccReceivableController@createCicil')->name('ar-cicil-create');
         Route::post('ar/excel/{status}', 'AccReceivableController@excel')->name('ar-excel');
         Route::post('ar/excelNow/{status}', 'AccReceivableController@excelNow')->name('ar-excel-now');
+        Route::post('ar/double-data', 'AccReceivableController@deleteDoubleData')->name('ar-double-data');
     });
 
     Route::group(['roles'=>['AP', 'SUPER']], function() {

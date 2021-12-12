@@ -33,8 +33,8 @@
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container">
                 <div class="form-group row" style="margin-top: -10px">
-                  <label for="bulan" class="col-2 col-form-label text-right text-bold">Nama Bulan</label>
-                  <span class="col-form-label text-bold">:</span>
+                  <label for="bulan" class="col-auto col-form-label text-right text-bold">Nama Bulan</label>
+                  <span class="col-form-label text-bold" style="margin-left: 5px">:</span>
                   <div class="col-2">
                     <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="bulan" id="bulan" autocomplete="off" autofocus>
                   </div>
@@ -47,9 +47,6 @@
                       <option value="BELUM LUNAS">BELUM LUNAS</option>
                     </select>
                   </div>
-                  {{-- <div class="col-2">
-                    <input type="text" class="form-control form-control-sm text-bold mt-1" name="status" id="status">
-                  </div> --}}
                   <div class="col-auto mt-1" style="margin-left: 215px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
                   </div>
@@ -58,7 +55,7 @@
                   </div>
                 </div>
                 <div class="form-group row" style="margin-top: -10px">
-                  <label for="kode" class="col-2 col-form-label text-right text-bold">Dari Tanggal</label>
+                  <label for="kode" class="col-auto col-form-label text-right text-bold">Dari Tanggal</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-2">
                     <input type="text" tabindex="3" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" autocomplete="off">
@@ -75,6 +72,9 @@
                   </div>
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
+                  </div>
+                  <div class="col-auto mt-1" style="margin-left: 35px; margin-right: -100px">
+                    <button type="submit" tabindex="5" formaction="{{ route('ar-double-data') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Hapus Double</button>
                   </div>
                 </div>
               </div>
@@ -107,10 +107,8 @@
                       $items = $arOffice
                   @endphp
                   @php
-                    $total = App\Models\DetilAR::selectRaw('sum(cicil) as totCicil')
-                              ->where('id_ar', $arLast->first()->id)->get();
-                    $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                            ->where('id_ar', $arLast->first()->id)->get();
+                    $total = \App\Utilities\Helper::getReceivableTotal($arLast->first()->id);
+                    $retur = \App\Utilities\Helper::getReceivableRetur($arLast->first()->id);
                   @endphp
                   @if(Auth::user()->roles != 'OFFICE02')
                     <tr class="text-dark">
@@ -145,10 +143,8 @@
                   @endif
                   @forelse($items as $a)
                     @php
-                      $total = App\Models\DetilAR::selectRaw('sum(cicil) as totCicil')
-                                ->where('id_ar', $a->id)->get();
-                      $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                              ->where('id_ar', $a->id)->get();
+                        $total = \App\Utilities\Helper::getReceivableTotal($a->id);
+                        $retur = \App\Utilities\Helper::getReceivableRetur($a->id);
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>

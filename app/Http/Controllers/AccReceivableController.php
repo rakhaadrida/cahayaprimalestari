@@ -617,4 +617,26 @@ class AccReceivableController extends Controller
 
         return Excel::download(new TransHarianExport($tanggal, $tanggalStr, $status), 'TH-'.$status.'-'.$tglFile.'.xlsx');
     }
+
+    public function deleteDoubleData() {
+        $arDouble = AccReceivable::select('id_so')
+            ->addSelect(DB::raw('COUNT(id_so) AS total'))
+            ->groupBy('id_so')
+            ->havingRaw('total > 1')
+            ->get();
+
+//        dd($arDouble);
+
+        foreach($arDouble as $item) {
+            $ar = AccReceivable::where('id_so', $item->id_so)
+                ->where('keterangan', 'BELUM LUNAS')
+                ->first();
+
+            if(!empty($ar)) {
+                $ar->delete();
+            }
+        }
+
+        return redirect()->route('ar');
+    }
 }
