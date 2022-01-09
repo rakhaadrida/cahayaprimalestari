@@ -76,7 +76,8 @@ class LapKeuController extends Controller
         ini_set('max_execution_time', 3000);
 
         $date = Carbon::now('+07:00');
-        $tahun = ($tah == 'now' ? $date->year : $tah);
+//        $tahun = ($tah == 'now' ? $date->year : $tah);
+        $tahun = $request->tahun;
         $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
         if($mo == 'now') {
@@ -102,24 +103,15 @@ class LapKeuController extends Controller
         $totSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
                 ->selectRaw('sum(qty) as totQty')
                 ->where('id_barang', 'BRG0081')->where('tgl_so', '<', $tahun.'-'.$month.'-01')
-                // ->whereMonth('tgl_so', '<', $month)
                 ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])->get();
 
         if($totSO[0]->totQty != null) {
             $sisa = $totBM[0]->totQty - $totSO[0]->totQty;
         }
-        // return response()->json($sisa);
 
         $jenis = JenisBarang::All();
         $sales = Sales::All();
         $salesOff = Sales::where('id', 'SLS03')->get();
-
-        // $barang = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
-        //         ->select('id_barang as id')->where('id_kategori', 'KAT01')
-        //         ->where('detilso.created_at', 'LIKE', $tahun.'-'.$month.'-%')
-        //         // ->whereYear('detilso.created_at', $tahun)->whereMonth('detilso.created_at', $month)
-        //         ->distinct('id_barang')->orderBy('id_barang')->get();
-        // return response()->json($barang);
 
         $items = $this->getItems($month, $tahun);
         $retur = $this->getRetur($month, $tahun);
