@@ -112,10 +112,8 @@
                   @endphp
                   @forelse($items as $a)
                     @php
-                      $total = App\Models\DetilAR::select(DB::raw('sum(cicil) as totCicil'))
-                                ->where('id_ar', $a->id)->get();
-                      $retur = App\Models\AR_Retur::selectRaw('sum(total) as total')
-                              ->where('id_ar', $a->id)->get();
+                      $total = \App\Utilities\Helper::getReceivableTotal($a->id);
+                      $retur = \App\Utilities\Helper::getReceivableRetur($a->id);
                     @endphp
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
@@ -163,18 +161,6 @@
                   </tr>
                 </tfoot>
               </table>
-
-              <!-- Button Submit dan Reset -->
-              {{-- <div class="form-row justify-content-center" @if($ar->count() != 0) style="margin-top: -18px" @endif>
-                <div class="col-1">
-                  <button type="submit" class="btn btn-success btn-block text-bold" formaction="{{ route('ar-process') }}" formmethod="POST">Submit</button>
-                </div>
-                <div class="col-1">
-                  <button type="reset" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
-                </div>
-              </div> --}}
-              <!-- End Button Submit dan Reset -->
-
             </form>
           </div>
         </div>

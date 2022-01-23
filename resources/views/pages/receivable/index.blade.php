@@ -107,36 +107,36 @@
                       $items = $arOffice
                   @endphp
                   @php
-                    $total = \App\Utilities\Helper::getReceivableTotal($arLast->first()->id);
-                    $retur = \App\Utilities\Helper::getReceivableRetur($arLast->first()->id);
+                    $total = \App\Utilities\Helper::getReceivableTotal($arLast->id);
+                    $retur = \App\Utilities\Helper::getReceivableRetur($arLast->id);
                   @endphp
                   @if(Auth::user()->roles != 'OFFICE02')
                     <tr class="text-dark">
                       <td align="center" class="align-middle">{{ $i }}</td>
-                      <td class="align-middle">{{ $arLast->first()->namaCust }}</td>
-                      <td class="align-middle">{{ $arLast->first()->namaSales }}</td>
-                      <td align="center" class="align-middle">{{ $arLast->first()->kategori }}</td>
-                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $arLast->first()->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $arLast->first()->id_so }}</button></td>
+                      <td class="align-middle">{{ $arLast->namaCust }}</td>
+                      <td class="align-middle">{{ $arLast->namaSales }}</td>
+                      <td align="center" class="align-middle">{{ $arLast->kategori }}</td>
+                      <td align="center" class="align-middle"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $arLast->id_so) }}" formmethod="POST" formtarget="_blank" class="btn btn-sm btn-link text-bold">{{ $arLast->id_so }}</button></td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($arLast->first()->tgl_so)->format('d-M-y') }}
+                        {{ \Carbon\Carbon::parse($arLast->tgl_so)->format('d-M-y') }}
                       </td>
                       <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($arLast->first()->tgl_so)->add($arLast->first()->tempo, 'days')
+                        {{ \Carbon\Carbon::parse($arLast->tgl_so)->add($arLast->tempo, 'days')
                           ->format('d-M-y') }}
                       </td>
                       <td align="right" class="align-middle">
-                        {{ number_format($arLast->first()->total, 0, "", ",") }}
+                        {{ number_format($arLast->total, 0, "", ",") }}
                       </td>
                       <td class="text-right align-middle">
                         {{ $total[0]->totCicil != null ? number_format($total[0]->totCicil, 0, "", ",") : 0}}
                       </td>
                       <td class="text-right align-middle">
                         <input type="hidden" value="{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '' }}">
-                        <a href="{{ route('ar-retur-create', $arLast->first()->id_so) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
+                        <a href="{{ route('ar-retur-create', $arLast->id_so) }}" tabindex="{{ $tab += 2 }}" class="btn btn-link btn-sm text-bold text-right btnRetur" style="font-size: 13px; width: 100%; padding-right: 0px; padding-top: 5px">{{ $retur[0]->total != null ? number_format($retur[0]->total, 0, "", ",") : '0' }}</a>
                       </td>
-                      <td align="right" class="align-middle">{{ number_format($arLast->first()->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
-                      <td align="center" class="align-middle text-bold" @if(($arLast->first()->keterangan != null) && ($arLast->first()->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="{{ route('ar-cicil-create', $arLast->first()->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$arLast->first()->keterangan}}</a>
+                      <td align="right" class="align-middle">{{ number_format($arLast->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
+                      <td align="center" class="align-middle text-bold" @if(($arLast->keterangan != null) && ($arLast->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
+                        <a href="{{ route('ar-cicil-create', $arLast->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$arLast->keterangan}}</a>
                       </td>
                     </tr>
                     @php $i++; @endphp
