@@ -41,7 +41,7 @@
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
                 <td class="align-middle">{{ $item->alamat }}</td>
-                <td class="align-middle">{{ $item->id_sales != '' ? $item->sales->nama : '' }}</td>
+                <td class="align-middle">{{ $item->id_sales != '' ? $item->namaSales : '' }}</td>
                 <td class="align-middle" align="center">
                   <a href="#DetailCustomer{{ $item->id }}" class="btn btn-info btn-sm" data-toggle="modal">
                     <i class="fas fa-fw fa-eye"></i>
@@ -65,7 +65,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection

@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AccReceivable;
-use Illuminate\Http\Request;
+use App\Exports\GudangExport;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
 use App\Models\StokBarang;
-use App\Models\NeedApproval;
-use App\Models\Approval;
-use App\Models\SalesOrder;
-use App\Models\BarangMasuk;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\GudangExport;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GudangController extends Controller
 {

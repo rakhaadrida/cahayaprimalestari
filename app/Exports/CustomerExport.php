@@ -2,18 +2,14 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Models\Customer;
+use Carbon\Carbon;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\Exportable;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Illuminate\Contracts\View\View;
-use App\Models\DetilSO;
-use App\Models\Customer;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class CustomerExport implements FromView, ShouldAutoSize, WithStyles
 {
@@ -30,7 +26,11 @@ class CustomerExport implements FromView, ShouldAutoSize, WithStyles
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
 
-        $items = Customer::withTrashed()->get();
+        $items = Customer::query()
+            ->select('customer.*', 'sales.nama AS namaSales')
+            ->leftJoin('sales', 'sales.id', 'customer.id_sales')
+            ->withTrashed()
+            ->get();
 
         $data = [
             'waktu' => $waktu,
@@ -38,12 +38,12 @@ class CustomerExport implements FromView, ShouldAutoSize, WithStyles
             'sejak' => $sejak,
             'items' => $items
         ];
-        
+
         return view('pages.customer.excel', $data);
     }
 
     public function styles(Worksheet $sheet)
-    {   
+    {
         $sheet->setTitle('Customer');
 
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -53,7 +53,7 @@ class CustomerExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(8);
-                
+
         $items = Customer::withTrashed()->get();
 
         $range = 4 + $items->count();
@@ -66,7 +66,7 @@ class CustomerExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($header)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
-        
+
         $sheet->mergeCells('A1:K1');
         $sheet->mergeCells('A2:K2');
         $title = 'A1:K2';
@@ -90,6 +90,6 @@ class CustomerExport implements FromView, ShouldAutoSize, WithStyles
 
         $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
-        
-    } 
+
+    }
 }

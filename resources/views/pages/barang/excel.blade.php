@@ -27,12 +27,12 @@
             <td align="center">{{ $i }}</td>
             <td align="center">{{ $item->id }}</td>
             <td>{{ $item->nama }}</td>
-            <td>{{ $item->jenis->nama }}</td>
-            <td>{{ $item->subjenis->nama }}</td>
+            <td>{{ $item->namaJenis }}</td>
+            <td>{{ $item->namaSub }}</td>
             <td align="left">{{ $item->satuan }}</td>
             <td align="right">{{ $item->ukuran }}</td>
             <td align="center">{{ $item->deleted_at == NULL ? 'Aktif' : 'Tidak Aktif' }}</td>
-          </tr> 
+          </tr>
           @php $i++ @endphp
         @endforeach
       </tbody>

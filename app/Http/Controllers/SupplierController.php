@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Exports\SupplierExport;
 use App\Http\Requests\SupplierRequest;
 use App\Models\Supplier;
-use App\Models\DetilBM;
-use App\Models\BarangMasuk;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\SupplierExport;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SupplierController extends Controller
 {
@@ -20,7 +17,7 @@ class SupplierController extends Controller
         $data = [
             'items' => $items
         ];
-        
+
         return view('pages.supplier.index', $data);
     }
 
@@ -47,7 +44,7 @@ class SupplierController extends Controller
             'telepon' => $request->telepon,
             'npwp' => $request->npwp
         ]);
-        
+
         return redirect()->route('supplier.index');
     }
 

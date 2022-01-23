@@ -71,7 +71,7 @@
                 <td width="80px" class="text-bold">Sales</td>
                 <td class="text-bold">:</td>
                 <td>
-                  @if($item->id_sales != '') {{ $item->sales->nama }} @else - @endif
+                  @if($item->id_sales != '') {{ $item->namaSales }} @else - @endif
                 </td>
               </tr>
               <tr>

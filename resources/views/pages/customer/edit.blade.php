@@ -37,7 +37,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" 
+                  <input type="text" class="form-control col-form-label-sm" name="nama"
                   value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
@@ -46,8 +46,8 @@
                 <label for="alamat" class="col-1 col-form-label text-bold">Alamat</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-7">
-                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2" required>{{$item->alamat}}</textarea>  
-                </div> 
+                  <textarea name="alamat" class="form-control col-form-label-sm" rows="2" required>{{$item->alamat}}</textarea>
+                </div>
               </div>
               <div class="form-group row">
                 <label for="telepon" class="col-1 col-form-label text-bold">Telepon</label>
@@ -63,7 +63,7 @@
                 <label for="npwp" class="col-1 col-form-label text-bold">NPWP</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="npwp" 
+                  <input type="text" class="form-control col-form-label-sm" name="npwp"
                   onkeypress="return angkaSaja(event, npwp)" id="npwp" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9"
                   value ="@if($item->npwp != ""){{ $item->npwp }}@else-@endif" autocomplete="off">
                 </div>
@@ -73,7 +73,7 @@
                 <label for="limit" class="col-1 col-form-label text-bold">Limit</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="limit" 
+                  <input type="text" class="form-control col-form-label-sm" name="limit"
                   value="{{ number_format($item->limit, 0, "", ".") }}" onkeypress="return angkaSaja(event, limit)" id="limit" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
               </div>
@@ -81,7 +81,7 @@
                 <label for="tempo" class="col-1 col-form-label text-bold">Tempo</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="tempo" 
+                  <input type="text" class="form-control col-form-label-sm" name="tempo"
                   value="{{ $item->tempo }}" onkeypress="return angkaSaja(event, tempo)" id="tempo" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" autocomplete="off" required>
                 </div>
               </div>
@@ -89,7 +89,7 @@
                 <label for="sales_cover" class="col-1 col-form-label text-bold" style="margin-top: -7px">Sales Cover</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" value="@if($item->id_sales != '') {{ $item->sales->nama }} @endif" required>
+                  <input type="text" class="form-control col-form-label-sm mt-1" name="namaSales" id="sales" value="@if($item->id_sales != '') {{ $item->namaSales }} @endif" required>
                   <input type="hidden" name="id_sales" id="kodeSales" value="{{ $item->id_sales != '' ? $item->id_sales : '' }}">
                 </div>
               </div>
@@ -120,7 +120,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection
@@ -165,7 +165,7 @@ function formatPhone(e){
   var kode = arrValue.join("");
 
   if((kode == "021") || (kode == "022") || (kode == "061") || (kode == "024") || (kode == "031")) {
-    if(value.length > 3 && value.length <= 6) 
+    if(value.length > 3 && value.length <= 6)
       value = value.slice(0,3) + "-" + value.slice(3);
     else if(value.length > 6 && value.length <= 9)
       value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6);
@@ -173,13 +173,13 @@ function formatPhone(e){
       value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6,9) + "-" + value.slice(9);
   }
   else
-    if(value.length > 4 && value.length <= 8) 
+    if(value.length > 4 && value.length <= 8)
       value = value.slice(0,4) + "-" + value.slice(4);
     else if(value.length > 8 && value.length <= 12)
       value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8);
     else if(value.length > 12)
       value = value.slice(0,4) + "-" + value.slice(4,8) + "-" + value.slice(8,12) + "-" + value.slice(12);
-  
+
   telepon.value = value;
 }
 

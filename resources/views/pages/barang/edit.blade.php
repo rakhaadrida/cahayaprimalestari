@@ -30,7 +30,7 @@
                 <label for="kode" class="col-1 col-form-label text-bold">Kode</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode"
                   value="{{ $item->id }}" readonly>
                 </div>
               </div>
@@ -38,7 +38,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" 
+                  <input type="text" class="form-control col-form-label-sm" name="nama"
                   value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
@@ -46,12 +46,12 @@
                 <label for="kategori" class="col-1 col-form-label text-bold">Kategori</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" @if($item->id_kategori != '') value="{{ $item->jenis->nama }}" @endif required>
+                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" @if($item->id_kategori != '') value="{{ $item->namaJenis }}" @endif required>
                 </div>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" @if($item->id_sub != '') value="{{$item->subjenis->nama}}" @endif required>
+                  <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" @if($item->id_sub != '') value="{{ $item->namaSub }}" @endif required>
                 </div>
-                <input type="hidden" name="kodeJenis" id="kodeJenis" 
+                <input type="hidden" name="kodeJenis" id="kodeJenis"
                 value="@if($item->id_kategori != '') {{$item->id_kategori}} @endif">
                 <input type="hidden" name="kodeSub" id="kodeSub"
                 value="@if($item->id_sub != '') {{$item->id_sub}} @endif">
@@ -62,22 +62,22 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
                   <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="radio" name="satuan" 
+                    <input class="form-check-input" type="radio" name="satuan"
                     value="Pcs / Dus" @if($item->satuan == "Pcs / Dus") checked @endif required >
                     <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Dus</label>
                   </div>
                   <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="radio" name="satuan" 
+                    <input class="form-check-input" type="radio" name="satuan"
                     value="Set" @if($item->satuan == "Set") checked @endif required >
                     <label class="form-check-label font-weight-normal" for="satuan4">Set</label>
                   </div>
                   <div class="form-check form-check-inline ml-4">
-                    <input class="form-check-input" type="radio" name="satuan" 
+                    <input class="form-check-input" type="radio" name="satuan"
                     value="Meter / Rol" @if($item->satuan == "Meter / Rol") checked @endif>
                     <label class="form-check-label font-weight-normal" for="satuan2">Rol</label>
                   </div>
                   <div class="form-check form-check-inline ml-4">
-                    <input class="form-check-input" type="radio" name="satuan" 
+                    <input class="form-check-input" type="radio" name="satuan"
                     value="Meter" @if($item->satuan == "Meter") checked @endif>
                     <label class="form-check-label font-weight-normal" for="satuan3">Meter</label>
                   </div>
@@ -100,7 +100,7 @@
                     <input type="text" tabindex="-1" class="form-control col-form-label-sm harga" id="harga" name="harga[]" readonly
                       @foreach($items as $it)
                         @if($it->id_harga == $h->id)
-                          value="{{ number_format($it->harga, 0, "", ".") }}" 
+                          value="{{ number_format($it->harga, 0, "", ".") }}"
                           @break
                         @endif
                       @endforeach
@@ -111,7 +111,7 @@
                     <input type="text" tabindex="-1" class="form-control col-form-label-sm ppn" id="ppn" name="ppn[]" readonly
                       @foreach($items as $it)
                         @if($it->id_harga == $h->id)
-                          value="{{ number_format($it->ppn, 0, "", ".") }}" 
+                          value="{{ number_format($it->ppn, 0, "", ".") }}"
                           @break
                         @endif
                       @endforeach
@@ -122,7 +122,7 @@
                     <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSajaHarga(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required @if($i == 0) autofocus @endif
                       @foreach($items as $it)
                         @if($it->id_harga == $h->id)
-                          value="{{ number_format($it->harga_ppn, 0, "", ".") }}" 
+                          value="{{ number_format($it->harga_ppn, 0, "", ".") }}"
                           @break
                         @endif
                       @endforeach
@@ -149,7 +149,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection
@@ -172,7 +172,7 @@ Array.prototype.forEach.call(radios, function(radio) {
 });
 
 kategori.addEventListener("keyup", displayKategori);
-kategori.addEventListener("blur", displayKategori); 
+kategori.addEventListener("blur", displayKategori);
 
 function displayKategori(e) {
   if(e.target.value == '') {
@@ -237,7 +237,7 @@ function displayKategori(e) {
 }
 
 subjenis.addEventListener("keyup", displaySubjenis);
-subjenis.addEventListener("blur", displaySubjenis); 
+subjenis.addEventListener("blur", displaySubjenis);
 
 function displaySubjenis(e) {
   @foreach($subjenis as $j)

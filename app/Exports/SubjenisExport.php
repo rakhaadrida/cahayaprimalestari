@@ -29,7 +29,11 @@ class SubjenisExport implements FromView, ShouldAutoSize, WithStyles
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
 
-        $items = Subjenis::withTrashed()->get();
+        $items = Subjenis::query()
+            ->select('subjenis.*', 'jenisbarang.nama AS namaJenis')
+            ->join('jenisbarang', 'jenisbarang.id', 'subjenis.id_kategori')
+            ->withTrashed()
+            ->get();
 
         $data = [
             'waktu' => $waktu,
@@ -37,12 +41,12 @@ class SubjenisExport implements FromView, ShouldAutoSize, WithStyles
             'sejak' => $sejak,
             'items' => $items
         ];
-        
+
         return view('pages.subjenis.excel', $data);
     }
 
     public function styles(Worksheet $sheet)
-    {   
+    {
         $sheet->setTitle('Subjenis');
 
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -52,7 +56,7 @@ class SubjenisExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
-                
+
         $items = Subjenis::withTrashed()->get();
 
         $range = 4 + $items->count();
@@ -65,7 +69,7 @@ class SubjenisExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($header)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
-        
+
         $sheet->mergeCells('A1:F1');
         $sheet->mergeCells('A2:F2');
         $title = 'A1:F2';
@@ -89,6 +93,6 @@ class SubjenisExport implements FromView, ShouldAutoSize, WithStyles
 
         $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
-        
-    } 
+
+    }
 }

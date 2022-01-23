@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\RequestS\HargaRequest;
 use App\Models\Harga;
 use App\Models\HargaBarang;
-use App\Models\AccReceivable;
-use App\Models\DetilAR;
-use App\Models\AR_Retur;
 
 class HargaController extends Controller
 {
     public function index()
-    {   
+    {
         $items = Harga::All();
         $data = [
             'items' => $items
@@ -32,7 +28,7 @@ class HargaController extends Controller
         $data = [
             'newcode' => $newcode
         ];
-        
+
         return view('pages.harga.create', $data);
     }
 

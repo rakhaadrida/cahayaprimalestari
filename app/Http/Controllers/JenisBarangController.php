@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Exports\JenisExport;
+use App\Models\Barang;
 use App\Models\JenisBarang;
 use App\Models\Subjenis;
-use App\Models\Barang;
-use App\Models\DetilRT;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\JenisExport;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class JenisBarangController extends Controller
 {
@@ -31,7 +30,7 @@ class JenisBarangController extends Controller
         $data = [
             'newcode' => $newcode
         ];
-        
+
         return view('pages.jenisbarang.create', $data);
     }
 

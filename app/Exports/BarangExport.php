@@ -29,7 +29,11 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
 
-        $items = Barang::withTrashed()->get();
+        $items = Barang::select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
+            ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
+            ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
+            ->withTrashed()
+            ->get();
 
         $data = [
             'waktu' => $waktu,
@@ -37,12 +41,12 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
             'sejak' => $sejak,
             'items' => $items
         ];
-        
+
         return view('pages.barang.excel', $data);
     }
 
     public function styles(Worksheet $sheet)
-    {   
+    {
         $sheet->setTitle('Barang');
 
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -52,7 +56,7 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(8);
-                
+
         $items = Barang::withTrashed()->get();
 
         $range = 4 + $items->count();
@@ -65,7 +69,7 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($header)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
-        
+
         $sheet->mergeCells('A1:H1');
         $sheet->mergeCells('A2:H2');
         $title = 'A1:H2';
@@ -89,6 +93,6 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
 
         $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
-        
-    } 
+
+    }
 }

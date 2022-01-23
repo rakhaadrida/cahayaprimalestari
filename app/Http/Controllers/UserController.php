@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\User;
-use App\Models\SalesOrder;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Session;
 
 class UserController extends Controller
@@ -17,13 +16,6 @@ class UserController extends Controller
         $data = [
             'items' => $items
         ];
-
-        $so = SalesOrder::where('id_sales', '')->get();
-        foreach($so as $s) {
-            $item = SalesOrder::where('id', $s->id)->first();
-            $item->{'id_sales'} = $item->customer->id_sales;
-            $item->save();
-        }
 
         return view('pages.user.index', $data);
     }
@@ -39,7 +31,7 @@ class UserController extends Controller
         $lastnumber = (int) substr($lastcode, 0, 2);
         $lastnumber++;
         $newcode = sprintf("%02s", $lastnumber);
-        
+
         User::create([
             'id' => $newcode,
             'name' => $request->name,

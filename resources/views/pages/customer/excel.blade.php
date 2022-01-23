@@ -36,9 +36,9 @@
             <td align="center">{{ $item->npwp }}</td>
             <td align="right">{{ $item->limit }}</td>
             <td align="center">{{ $item->tempo }} Hari</td>
-            <td align="center">{{ $item->sales->nama }}</td>
+            <td align="center">{{ $item->namaSales }}</td>
             <td align="center">{{ $item->deleted_at == NULL ? 'Aktif' : 'Tidak Aktif' }}</td>
-          </tr> 
+          </tr>
           @php $i++ @endphp
         @endforeach
       </tbody>

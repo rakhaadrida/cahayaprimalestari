@@ -45,14 +45,14 @@
                 <label for="kategori" class="col-2 col-form-label text-bold">Kategori</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" readonly class="form-control col-form-label-sm text-dark text-bold" value="{{ $item->first()->jenis->nama }}" >
+                  <input type="text" readonly class="form-control col-form-label-sm text-dark text-bold" value="{{ $item->first()->namaJenis }}" >
                 </div>
               </div>
               <div class="form-group row">
                 <label for="kategori" class="col-2 col-form-label text-bold">Sub Kategori</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" readonly class="form-control col-form-label-sm text-dark text-bold" value="{{$item->first()->subjenis->nama}}" >
+                  <input type="text" readonly class="form-control col-form-label-sm text-dark text-bold" value="{{ $item->first()->namaSub }}" >
                 </div>
               </div>
               <div class="form-group row">
@@ -78,16 +78,13 @@
                     </div>
                   </div>
                 @endforeach
-                <hr>  
+                <hr>
                 @foreach($gudang as $g)
                   @php
                     if($g->tipe == 'RETUR') {
-                      $stok = App\Models\StokBarang::withTrashed()->selectRaw('sum(stok) as stok')
-                              ->where('id_barang', $item->first()->id)
-                              ->where('id_gudang', $g->id)->get();   
+                      $stok = \App\Utilities\Helper::getStokGudangRetur($item->first()->id, $g->id);
                     } else {
-                      $stok = App\Models\StokBarang::withTrashed()->where('id_barang', $item->first()->id)
-                              ->where('id_gudang', $g->id)->get();  
+                      $stok = \App\Utilities\Helper::getStokGudangBiasa($item->first()->id, $g->id);
                     }
                   @endphp
                   <div class="form-group row">
@@ -120,7 +117,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection

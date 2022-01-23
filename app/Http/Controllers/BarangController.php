@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barang;
-use App\Models\JenisBarang;
-use App\Models\Subjenis;
-use App\Models\Harga;
-use App\Models\Gudang;
-use App\Models\HargaBarang;
-use App\Models\StokBarang;
-use Illuminate\Http\Request;
-use App\Http\Requests\BarangRequest;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BarangExport;
+use App\Http\Requests\BarangRequest;
+use App\Models\Barang;
+use App\Models\Gudang;
+use App\Models\Harga;
+use App\Models\HargaBarang;
+use App\Models\JenisBarang;
+use App\Models\StokBarang;
+use App\Models\Subjenis;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BarangController extends Controller
 {
@@ -21,17 +20,11 @@ class BarangController extends Controller
         $itemsBrg = Barang::All();
         $itemsBrgOff = Barang::whereIn('id_kategori', ['KAT03', 'KAT08'])->get();
         $gudang = Gudang::All();
-        $stok = StokBarang::All();
-        $harga = Harga::All();
-        $hargaBarang = HargaBarang::All();
-        // $items = Barang::with(['hargaBarang', 'stokBarang'])->get();
+
         $data =  [
             'itemsBrg' => $itemsBrg,
             'itemsBrgOff' => $itemsBrgOff,
             'gudang' => $gudang,
-            'stok' => $stok,
-            'harga' => $harga,
-            'hargaBarang' => $hargaBarang
         ];
 
         return view('pages.barang.index', $data);
@@ -42,6 +35,7 @@ class BarangController extends Controller
         $lastnumber = (int) substr($lastcode, 3, 4);
         $lastnumber++;
         $newcode = 'BRG'.sprintf("%04s", $lastnumber);
+
         $jenis = JenisBarang::All();
         $subjenis = Subjenis::All();
         $harga = Harga::All();
@@ -52,7 +46,7 @@ class BarangController extends Controller
             'subjenis' => $subjenis,
             'harga' => $harga
         ];
-        
+
         return view('pages.barang.create', $data);
     }
 
@@ -100,20 +94,23 @@ class BarangController extends Controller
     }
 
     public function show($id) {
-        
+
     }
 
     public function detail($id) {
-        $item = Barang::where('id', $id)->get();
+        $item = Barang::select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
+            ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
+            ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
+            ->where('barang.id', $id)
+            ->get();
+
         $hargaBarang = HargaBarang::where('id_barang', $id)->get();
-        $stok = StokBarang::where('id_barang', $id)->get();
         $harga = Harga::All();
         $gudang = Gudang::All();
 
         $data = [
             'item' => $item,
             'hargaBarang' => $hargaBarang,
-            'stok' => $stok,
             'harga' => $harga,
             'gudang' => $gudang
         ];
@@ -122,14 +119,12 @@ class BarangController extends Controller
     }
 
     public function harga($id) {
-        $items = HargaBarang::with(['hargaBarang', 'barang'])->where('id_barang', $id)->get();
-        $itemsRow = HargaBarang::where('id_barang', $id)->count();
+        $items = HargaBarang::where('id_barang', $id)->get();
         $harga = Harga::All();
         $barang = Barang::where('id', $id)->first();
 
         $data = [
             'items' => $items,
-            'itemsRow' => $itemsRow,
             'harga' => $harga,
             'barang' => $barang
         ];
@@ -150,7 +145,7 @@ class BarangController extends Controller
             }
             else if(($items->count() > 0) && ($j < $items->count())) {
                 if($items[$j]->id_harga == $harga[$i]->id) {
-                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], 
+                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i],
                     $request->ppn[$i], $request->hargaPPN[$i]);
                     $j++;
                 }
@@ -185,14 +180,12 @@ class BarangController extends Controller
     }
 
     public function stok($id) {
-        $items = StokBarang::with(['gudang', 'barang'])->where('id_barang', $id)->get();
-        $itemsRow = StokBarang::where('id_barang', $id)->count();
+        $items = StokBarang::where('id_barang', $id)->get();
         $gudang = Gudang::All();
         $barang = Barang::where('id', $id)->first();
 
         $data = [
             'items' => $items,
-            'itemsRow' => $itemsRow,
             'gudang' => $gudang,
             'barang' => $barang
         ];
@@ -244,11 +237,15 @@ class BarangController extends Controller
     }
 
     public function edit($id) {
-        $item = Barang::with(['jenis'])->findOrFail($id);
+        $item = Barang::select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
+            ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
+            ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
+            ->findOrFail($id);
+
         $jenis = JenisBarang::All();
         $subjenis = Subjenis::All();
         $harga = Harga::All();
-        $items = HargaBarang::with(['hargaBarang', 'barang'])->where('id_barang', $id)->get();
+        $items = HargaBarang::where('id_barang', $id)->get();
 
         $data = [
             'item' => $item,
@@ -257,7 +254,7 @@ class BarangController extends Controller
             'harga' => $harga,
             'items' => $items
         ];
-        
+
         return view('pages.barang.edit', $data);
     }
 
@@ -282,7 +279,7 @@ class BarangController extends Controller
             }
             else if(($items->count() > 0) && ($j < $items->count())) {
                 if($items[$j]->id_harga == $harga[$i]->id) {
-                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], 
+                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i],
                     $request->ppn[$i], $request->hargaPPN[$i]);
                     $j++;
                 }

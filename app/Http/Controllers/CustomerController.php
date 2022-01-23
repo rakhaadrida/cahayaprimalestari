@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Exports\CustomerExport;
 use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use App\Models\Sales;
-use App\Models\SuratJalan;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\CustomerExport;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
     public function index()
-    {   
-        $items = Customer::with(['sales'])->get();
+    {
+        $items = Customer::query()
+            ->select('customer.*', 'sales.nama AS namaSales')
+            ->join('sales', 'sales.id', 'customer.id_sales')
+            ->get();
+
         $data = [
             'items' => $items
         ];
@@ -44,7 +46,7 @@ class CustomerController extends Controller
         Customer::create([
             'id' => $request->kode,
             'nama' => $request->nama,
-            'alamat' => $request->alamat,
+            'alamat' => str_replace("\r\n"," ", $request->alamat),
             'telepon' => $request->telepon,
             'contact_person' => $request->contact_person,
             'npwp' => $request->npwp,
@@ -59,17 +61,16 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        // $item = Customer::findOrFail($id);
-        // $data = [
-        //     'item' => $item
-        // ];
-
-        // return view('pages.customer.show', $data);
+        //
     }
 
     public function edit($id)
     {
-        $item = Customer::with(['sales'])->findOrFail($id);
+        $item = Customer::query()
+            ->select('customer.*', 'sales.nama AS namaSales')
+            ->join('sales', 'sales.id', 'customer.id_sales')
+            ->findOrFail($id);
+
         $sales = Sales::All();
 
         $data = [
@@ -84,7 +85,7 @@ class CustomerController extends Controller
     {
         $item = Customer::where('id', $id)->first();
         $item->{'nama'} = $request->nama;
-        $item->{'alamat'} = $request->alamat;
+        $item->{'alamat'} = str_replace("\r\n"," ", $request->alamat);
         $item->{'telepon'} = $request->telepon;
         $item->{'contact_person'} = $request->contact_person;
         $item->{'npwp'} = $request->npwp;
@@ -110,7 +111,12 @@ class CustomerController extends Controller
     }
 
     public function trash() {
-        $items = Customer::onlyTrashed()->get();
+        $items = Customer::query()
+            ->select('customer.*', 'sales.nama AS namaSales')
+            ->join('sales', 'sales.id', 'customer.id_sales')
+            ->onlyTrashed()
+            ->get();
+
         $data = [
             'items' => $items
         ];

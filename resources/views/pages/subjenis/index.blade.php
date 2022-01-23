@@ -45,7 +45,7 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
-                <td class="text-center align-middle">@if($item->id_kategori != '') {{ $item->jenis->nama }} @endif</td>
+                <td class="text-center align-middle">@if($item->id_kategori != '') {{ $item->namaJenis }} @endif</td>
                 <td align="center">
                   <a href="{{ route('subjenis.edit', $item->id) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-fw fa-edit"></i>
@@ -57,7 +57,7 @@
                     @method('delete')
                     <button class="btn btn-sm btn-danger">
                       <i class="fas fa-fw fa-trash"></i>
-                    </button>  
+                    </button>
                   </form>
                 </td>
               </tr>
@@ -72,7 +72,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection

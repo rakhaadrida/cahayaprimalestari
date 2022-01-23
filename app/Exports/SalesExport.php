@@ -37,12 +37,12 @@ class SalesExport implements FromView, ShouldAutoSize, WithStyles
             'sejak' => $sejak,
             'items' => $items
         ];
-        
+
         return view('pages.sales.excel', $data);
     }
 
     public function styles(Worksheet $sheet)
-    {   
+    {
         $sheet->setTitle('Sales');
 
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -52,7 +52,7 @@ class SalesExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setCoordinates('A1');
         $drawing->setWorksheet($sheet);
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
-                
+
         $items = Sales::withTrashed()->get();
 
         $range = 4 + $items->count();
@@ -65,7 +65,7 @@ class SalesExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($header)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
-        
+
         $sheet->mergeCells('A1:D1');
         $sheet->mergeCells('A2:D2');
         $title = 'A1:D2';
@@ -81,14 +81,11 @@ class SalesExport implements FromView, ShouldAutoSize, WithStyles
             ],
         ];
 
-        // $rangeTot = 'H5:H'.$rangeStr;
-        // $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
-
         $rangeTable = 'A4:'.$rangeTab;
         $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
 
         $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
-        
-    } 
+
+    }
 }

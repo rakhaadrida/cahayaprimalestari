@@ -15,7 +15,29 @@ class Helper
     {
         $stok = StokBarang::selectRaw('sum(stok) as stok')
             ->where('id_barang', $idBarang)
-            ->where('id_gudang', $idGudang)->get();
+            ->where('id_gudang', $idGudang)
+            ->get();
+
+        return $stok;
+    }
+
+    public static function getStokGudangBiasa($idBarang, $idGudang)
+    {
+        $stok = StokBarang::where('id_barang', $idBarang)
+            ->where('id_gudang', $idGudang)
+            ->get();
+
+        return $stok;
+    }
+
+    public static function getStokBarangOffice($idBarang)
+    {
+        $stok = StokBarang::query()
+            ->selectRaw('sum(stok) as stok')
+            ->join('gudang', 'gudang.id', 'stok.id_gudang')
+            ->where('id_barang', $idBarang)
+            ->where('tipe', '!=', 'RETUR')
+            ->get();
 
         return $stok;
     }

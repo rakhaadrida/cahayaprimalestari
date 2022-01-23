@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Exports\SalesExport;
 use App\Http\Requests\SalesRequest;
 use App\Models\Sales;
-use App\Models\Customer;
-use App\Models\BarangMasuk;
-use App\Models\SalesOrder;
-use App\Models\TransferBarang;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\SalesExport;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SalesController extends Controller
 {
@@ -70,12 +65,6 @@ class SalesController extends Controller
     public function destroy($id) {
         $item = Sales::findOrFail($id);
         $item->delete();
-
-        // $item = Customer::where('id_sales', $id)->get();
-        // foreach($item as $i) {
-        //     $i->id_sales = '';
-        //     $i->save();
-        // }
 
         return redirect()->route('sales.index');
     }

@@ -30,7 +30,7 @@
                 <label for="kode" class="col-1 col-form-label text-bold">Kode</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode"
                   value="{{ $item->id }}" readonly>
                 </div>
               </div>
@@ -38,7 +38,7 @@
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" 
+                  <input type="text" class="form-control col-form-label-sm" name="nama"
                   value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
@@ -46,7 +46,7 @@
                 <label for="kategori" class="col-1 col-form-label text-bold">Kategori</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" @if($item->id_kategori != '') value="{{ $item->jenis->nama }}" @endif required>
+                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" @if($item->id_kategori != '') value="{{ $item->namaJenis }}" @endif required>
                 </div>
                 <input type="hidden" name="kodeJenis" id="kodeJenis" value="{{ $item->id_kategori }}">
               </div>
@@ -78,7 +78,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection

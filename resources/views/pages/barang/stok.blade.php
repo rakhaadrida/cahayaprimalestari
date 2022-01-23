@@ -29,7 +29,7 @@
                 <label for="kode" class="col-2 col-form-label text-bold">Kode Barang</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode"
                   value="{{ $barang->id }}" readonly>
                 </div>
               </div>
@@ -37,7 +37,7 @@
                 <label for="nama" class="col-2 col-form-label text-bold">Nama Barang</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="nama" 
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="nama"
                   value="{{ $barang->nama }}" readonly>
                 </div>
               </div>
@@ -49,13 +49,12 @@
                     {{ $g->nama }}</label>
                   <span class="col-form-label text-bold">:</span>
                   <div class="col-1">
-                    <input type="text" class="form-control col-form-label-sm text-right" 
+                    <input type="text" class="form-control col-form-label-sm text-right"
                     name="stok[]" required @if($g->id == $gudang[0]->id) autofocus @endif
                       @foreach($items as $item)
                         @if($item->id_gudang == $g->id)
-                          value="{{ $item->stok }}" 
+                          value="{{ $item->stok }}"
                           @break
-                          {{-- @if(Auth::user()->roles != 'SUPER') readonly @endif --}}
                         @endif
                       @endforeach
                       @if(Auth::user()->roles != 'SUPER') readonly @endif
@@ -85,7 +84,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection

@@ -53,8 +53,8 @@
             </tr>
           </thead>
           <tbody>
-            @php $i = 0; $j = 1; 
-              if(Auth::user()->roles != 'OFFICE02') 
+            @php $i = 0; $j = 1;
+              if(Auth::user()->roles != 'OFFICE02')
                 $items = $itemsBrg;
               else
                 $items = $itemsBrgOff;
@@ -67,12 +67,9 @@
                   @foreach($gudang as $g)
                     @php
                       if($g->tipe == 'RETUR') {
-                        $stok = App\Models\StokBarang::selectRaw('sum(stok) as stok')
-                                ->where('id_barang', $item->id)
-                                ->where('id_gudang', $g->id)->get();   
+                        $stok = \App\Utilities\Helper::getStokGudangRetur($item->id, $g->id);
                       } else {
-                        $stok = App\Models\StokBarang::where('id_barang', $item->id)
-                                ->where('id_gudang', $g->id)->get();  
+                        $stok = \App\Utilities\Helper::getStokGudangBiasa($item->id, $g->id);
                       }
                     @endphp
                     <td class="align-middle" align="center" style="width: 45px">
@@ -80,20 +77,14 @@
                     </td>
                   @endforeach
                 @else
-                  @php 
-                    $stok = App\Models\StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
-                            ->selectRaw('sum(stok) as stok')
-                            ->where('id_barang', $item->id)
-                            ->where('tipe', '!=', 'RETUR')->get();
+                  @php
+                    $stok = \App\Utilities\Helper::getStokBarangOffice($item->id);;
                   @endphp
                   <td class="align-middle" align="center" style="width: 45px">
                     {{ $stok->count() != 0 ? $stok[0]->stok : '' }}
                   </td>
                 @endif
                 <td align="center" style="width: 15px">
-                  {{-- <a href="#DetailBarang{{ $item->id }}" class="btn btn-sm btn-success" data-toggle="modal">
-                    <i class="fas fa-fw fa-eye"></i>
-                  </a> --}}
                   <a href="{{ route('detailBarang', $item->id) }}" class="btn btn-sm btn-success">
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
@@ -120,7 +111,7 @@
                       @method('delete')
                       <button class="btn btn-sm btn-danger">
                         <i class="fas fa-fw fa-trash"></i>
-                      </button>  
+                      </button>
                     </form>
                   </td>
                 @endif
@@ -136,7 +127,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection

@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Subjenis;
-use App\Models\JenisBarang;
-use App\Models\Barang;
-use App\Models\DetilBM;
-use App\Models\DetilSO;
-use App\Models\StokBarang;
-use App\Models\AccPayable;
-use App\Models\BarangMasuk;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SubjenisExport;
+use App\Models\Barang;
+use App\Models\JenisBarang;
+use App\Models\Subjenis;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SubjenisController extends Controller
 {
     public function index()
     {
-        $items = Subjenis::All();
+        $items = Subjenis::query()
+            ->select('subjenis.*', 'jenisbarang.nama AS namaJenis')
+            ->join('jenisbarang', 'jenisbarang.id', 'subjenis.id_kategori')
+            ->get();
+
         $data = [
             'items' => $items
         ];
@@ -39,7 +38,7 @@ class SubjenisController extends Controller
             'newcode' => $newcode,
             'jenis' => $jenis
         ];
-        
+
         return view('pages.subjenis.create', $data);
     }
 
@@ -62,7 +61,10 @@ class SubjenisController extends Controller
 
     public function edit($id)
     {
-        $item = Subjenis::findOrFail($id);
+        $item = Subjenis::query()
+            ->select('subjenis.*', 'jenisbarang.nama AS namaJenis')
+            ->join('jenisbarang', 'jenisbarang.id', 'subjenis.id_kategori')
+            ->findOrFail($id);
         $jenis = JenisBarang::All();
 
         $data = [
@@ -99,7 +101,11 @@ class SubjenisController extends Controller
     }
 
     public function trash() {
-        $items = Subjenis::onlyTrashed()->get();
+        $items = Subjenis::query()
+            ->select('subjenis.*', 'jenisbarang.nama AS namaJenis')
+            ->join('jenisbarang', 'jenisbarang.id', 'subjenis.id_kategori')
+            ->onlyTrashed()
+            ->get();
 
         $data = [
             'items' => $items,

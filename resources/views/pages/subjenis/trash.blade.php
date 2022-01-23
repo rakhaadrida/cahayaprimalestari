@@ -37,7 +37,7 @@
               <tr class="text-dark">
                 <td class="align-middle" align="center">{{ $i }}</td>
                 <td class="align-middle">{{ $item->nama }}</td>
-                <td class="text-center align-middle">{{ $item->id_kategori != '' ? $item->jenis->nama : '' }}</td>
+                <td class="text-center align-middle">{{ $item->id_kategori != '' ? $item->namaJenis : '' }}</td>
                 <td class="align-middle" align="center">
                   <a href="{{ route('sub-restore', $item->id) }}" class="btn btn-success btn-sm"><i class="fas fa-fw fa-undo"></i></a>
                 </td>
@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection

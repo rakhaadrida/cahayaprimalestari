@@ -53,7 +53,7 @@
                 <td class="align-middle">{{ $item->alamat }}</td>
                 <td class="align-middle">{{ $item->telepon }}</td>
                 <td class="align-middle">
-                  @if($item->id_sales != '') {{ $item->sales->nama }} @endif
+                  @if($item->id_sales != '') {{ $item->namaSales }} @endif
                 </td>
                 <td class="align-middle" align="center">
                   <a href="#DetailCustomer{{ $item->id }}" class="btn btn-success btn-sm" data-toggle="modal">
@@ -71,7 +71,7 @@
                     @method('delete')
                     <button class="btn btn-danger btn-sm">
                       <i class="fas fa-fw fa-trash"></i>
-                    </button>  
+                    </button>
                   </form>
                 </td>
               </tr>
@@ -86,7 +86,7 @@
       </div>
     </div>
   </div>
-  
+
 </div>
 <!-- /.container-fluid -->
 @endsection
