@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar toggled sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
     <div class="sidebar-brand-icon">CPL</div>
     <div class="sidebar-brand-text mx-3">Cahaya Prima Lestari</div>
   </a>
@@ -238,7 +238,7 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-    
+
   @endif
 
   @if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'AP'))

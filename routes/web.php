@@ -12,8 +12,10 @@
 */
 
 Route::middleware(['auth', 'admin', 'roles'])->group(function() {
+    Route::get('/', 'HomeController@index')->name('home');
+
     // Dashboard
-    Route::get('/', 'DashboardController@index')->name('dashboard');
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
     // Ganti Password
     Route::get('password', 'UserController@change')->name('user-change');
