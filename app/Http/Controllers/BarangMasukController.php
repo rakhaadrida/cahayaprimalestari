@@ -34,7 +34,7 @@ class BarangMasukController extends Controller
         $tahun = substr($waktu->year, -2);
 
         // autonumber
-        $lastcode = BarangMasuk::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastcode = BarangMasuk::selectRaw('max(id) as id')->whereYear('created_at', $waktu->year)->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcode = 'BM'.$tahun.$bulan.sprintf('%04s', $lastnumber);
@@ -73,7 +73,7 @@ class BarangMasukController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = BarangMasuk::selectRaw('max(id) as id')->whereMonth('tanggal', $month)->get();
+        $lastcode = BarangMasuk::selectRaw('max(id) as id')->whereYear('created_at', $waktu->year)->whereMonth('created_at', $month)->get();
         $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
         $lastnumber++;
         $newcodeBM = 'BM'.$tahun.$bulan.sprintf('%04s', $lastnumber);
