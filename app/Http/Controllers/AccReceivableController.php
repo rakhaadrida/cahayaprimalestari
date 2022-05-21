@@ -483,7 +483,7 @@ class AccReceivableController extends Controller
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                     ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'NOT LIKE', 'Extrana%')
-                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('so.id_sales')->orderBy('customer.nama')->get();
+                    ->where('kategori', 'NOT LIKE', '%Prime%')->orderBy('so.id_sales')->orderBy('customer.nama')->get();
                     // ->orderBy('so.id_sales')
 
             $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
@@ -494,7 +494,7 @@ class AccReceivableController extends Controller
         } else {
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                     ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'LIKE', 'Prime%')
+                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'LIKE', '%Prime%')
                     ->orderBy('so.id_sales')->orderBy('customer.nama')->get();
                     // ->orderBy('so.id_sales')
             $itemsEx = NULL;
@@ -523,7 +523,7 @@ class AccReceivableController extends Controller
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                     ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('tgl_so', $tanggal)->where('kategori', 'NOT LIKE', 'Extrana%')
-                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('so.id_sales')->orderBy('customer.nama')->get();
+                    ->where('kategori', 'NOT LIKE', '%Prime%')->orderBy('so.id_sales')->orderBy('customer.nama')->get();
                     // ->orderBy('so.id_sales')
 
             $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
@@ -535,7 +535,7 @@ class AccReceivableController extends Controller
         } else {
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
                     ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->where('tgl_so', $tanggal)->where('kategori', 'LIKE', 'Prime%')
+                    ->where('tgl_so', $tanggal)->where('kategori', 'LIKE', '%Prime%')
                     ->orderBy('so.id_sales')->orderBy('customer.nama')->get();
                     // ->orderBy('so.id_sales')
 
