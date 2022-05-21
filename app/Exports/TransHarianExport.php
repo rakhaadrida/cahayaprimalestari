@@ -42,7 +42,7 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])
                 ->where('tgl_so', $this->tanggal)
                 ->where('kategori', 'NOT LIKE', 'Extrana%')
-                ->where('kategori', 'NOT LIKE', 'Prime%')
+                ->where('kategori', 'NOT LIKE', '%Prime%')
                 ->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
 
@@ -61,7 +61,7 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'so.id_sales')
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', 'Prime%')
+                ->where('tgl_so', $this->tanggal)->where('kategori', 'LIKE', '%Prime%')
                 ->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
 
@@ -95,10 +95,10 @@ class TransHarianExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
 
         if($this->status == 'All') {
-            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'NOT LIKE', 'Prime%')
+            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'NOT LIKE', '%Prime%')
                     ->where('tgl_so', $this->tanggal)->get();
         } else {
-            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'LIKE', 'Prime%')
+            $so = SalesOrder::whereNotIn('status', ['BATAL', 'LIMIT'])->where('kategori', 'LIKE', '%Prime%')
                     ->where('tgl_so', $this->tanggal)->get();
         }
 

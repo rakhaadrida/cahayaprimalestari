@@ -93,7 +93,7 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                 ->where('kategori', 'NOT LIKE', 'Extrana%')
-                ->where('kategori', 'NOT LIKE', 'Prime%')
+                ->where('kategori', 'NOT LIKE', '%Prime%')
                 ->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
 
@@ -115,7 +115,7 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                 ->whereNotIn('status', ['BATAL', 'LIMIT'])
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                ->where('kategori', 'LIKE', 'Prime%')
+                ->where('kategori', 'LIKE', '%Prime%')
                 ->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
 
@@ -152,12 +152,12 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
             $so = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                    ->where('kategori', 'NOT LIKE', 'Prime%')->orderBy('tgl_so')->get();
+                    ->where('kategori', 'NOT LIKE', '%Prime%')->orderBy('tgl_so')->get();
         } else {
             $so = AccReceivable::join('so', 'so.id', 'ar.id_so')
                     ->select('ar.id as id', 'ar.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->whereBetween('tgl_so', [$this->awal, $this->akhir])
-                    ->where('kategori', 'LIKE', 'Prime%')->orderBy('tgl_so')->get();
+                    ->where('kategori', 'LIKE', '%Prime%')->orderBy('tgl_so')->get();
         }
 
         $range = 5 + $so->count();
