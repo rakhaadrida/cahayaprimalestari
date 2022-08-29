@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\GudangExport;
 use App\Http\Requests\GudangRequest;
 use App\Models\Gudang;
+use App\Models\SalesOrder;
 use App\Models\StokBarang;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,6 +14,17 @@ class GudangController extends Controller
 {
     public function index()
     {
+        $salesOrders = SalesOrder::query()
+            ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
+            ->where('tgl_so', '<', '2022-08-25')
+            ->whereNull('deleted_at')
+            ->get();
+
+        foreach($salesOrders as $salesOrder) {
+            $salesOrder->status = 'CETAK';
+            $salesOrder->save();
+        }
+
         $items = Gudang::All();
 
         $data = [
