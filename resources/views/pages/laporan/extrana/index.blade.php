@@ -31,7 +31,7 @@
             <form action="" method="">
               @csrf
               <!-- Inputan Data Id, Tanggal, Supplier PO -->
-              <div class="container so-container"> 
+              <div class="container so-container">
                 <div class="form-group row justify-content-center" style="margin-top: -10px">
                   <label for="status" class="col-auto col-form-label text-right text-bold">Nama Bulan</label>
                   <span class="col-form-label text-bold">:</span>
@@ -70,16 +70,12 @@
                     <th style="width: 30px" class="align-middle">No</th>
                     <th style="width: 60px" class="align-middle">Sales</th>
                     <th class="align-middle">Customer</th>
-                    {{-- <th style="width: 40px" class="align-middle">Kategori</th> --}}
-                    {{-- <th style="width: 80px" class="align-middle">No. Faktur</th>
-                    <th style="width: 60px" class="align-middle">Tgl. Faktur</th> --}}
                     <th class="align-middle">Barang</th>
                     <th style="width: 30px" class="align-middle">Qty</th>
                     <th style="width: 70px" class="align-middle">Harga</th>
                     <th style="width: 70px" class="align-middle">Total</th>
                     <th style="width: 70px" class="align-middle">Diskon</th>
                     <th style="width: 70px" class="align-middle">Netto</th>
-                    {{-- <th style="width: 60px" class="align-middle">Keterangan</th> --}}
                   </tr>
                 </thead>
                 <tbody class="table-ar">
@@ -89,18 +85,13 @@
                       <td align="center" class="align-middle">{{ $i }}</td>
                       <td align="center" class="align-middle">{{ $a->sales }}</td>
                       <td class="align-middle">{{ $a->cust }}</td>
-                      {{-- <td align="center" class="align-middle">{{ $a->id }}</td>
-                      <td align="center" class="align-middle">
-                        {{ \Carbon\Carbon::parse($a->tgl_so)->format('d-M-y') }}
-                      </td> --}}
-                      <td class="align-middle">{{ $a->barang->nama }}</td>
+                      <td class="align-middle">{{ $a->namaBarang }}</td>
                       <td align="right" class="align-middle">{{ number_format($a->qty, 0, "", ",") }}</td>
                       <td align="right" class="align-middle">{{ number_format($a->harga, 0, "", ",") }}</td>
                       <td align="right" class="align-middle">{{ number_format($a->qty * $a->harga, 0, "", ",") }}</td>
                       <td align="right" class="align-middle">{{ number_format($a->diskonRp, 0, "", ",") }}</td>
                       <td align="right" class="align-middle">{{ number_format($a->qty * $a->harga - $a->diskonRp, 0, "", ",") }}</td>
-                      {{-- <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>{{$a->keterangan}}</td> --}}
-                    </tr>     
+                    </tr>
                     @php $i++; @endphp
                   @empty
                     <tr>
@@ -111,7 +102,6 @@
                 <tfoot>
                   <tr class="text-right text-bold text-dark" style="background-color: lightgrey; font-size: 14px">
                     <td colspan="4" class="text-center">Total</td>
-                    {{-- <td colspan="6" class="text-center">Total</td> --}}
                     <td></td>
                     <td></td>
                     <td></td>
@@ -119,7 +109,7 @@
                     <td></td>
                   </tr>
                 </tfoot>
-              </table>              
+              </table>
             </form>
           </div>
         </div>
@@ -196,7 +186,7 @@ $('#dataTable').dataTable( {
 
       // Update footer
       $(api.column(value).footer()).html(addCommas(column));
-    }); 
+    });
   }
 });
 
