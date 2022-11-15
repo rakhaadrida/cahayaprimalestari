@@ -12,8 +12,8 @@ class ExtranaController extends Controller
 {
     public function index() {
         $date = Carbon::now('+07:00');
-        // $tahun = $date->year;
-        $tahun = '2021';
+        $tahun = $date->year;
+        // $tahun = '2021';
         $month = $date->month;
         $bulan = Carbon::parse($date)->isoFormat('MMMM');
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
@@ -53,8 +53,8 @@ class ExtranaController extends Controller
         }
 
         $date = Carbon::now('+07:00');
-        // $tahun = $date->year;
-        $tahun = '2021';
+        $tahun = $date->year;
+        // $tahun = '2021';
         $bulan = $request->bulan;
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
 
