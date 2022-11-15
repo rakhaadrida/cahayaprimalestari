@@ -4,7 +4,7 @@
       <h2 class="text-bold text-dark">Data Penjualan Extrana</h2>
       <h3 class="waktu-cetak">Bulan : {{$bulan}}</h3>
       <h5 class="waktu-cetak">Waktu Cetak : {{$waktu}}</h5>
-      
+
     </center>
     <br>
 
@@ -28,8 +28,8 @@
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($items as $item)
-          @php 
-            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so); 
+          @php
+            $tanggal = \Carbon\Carbon::createFromFormat('Y-m-d', $item->so->tgl_so);
           @endphp
           <tr class="text-dark">
             <td align="center">{{ $i }}</td>
@@ -44,13 +44,13 @@
             <td align="right">{{ $item->qty * $item->harga }}</td>
             <td align="right">{{ $item->diskonRp }}</td>
             <td align="right">{{ $item->qty * $item->harga - $item->diskonRp }}</td>
-          </tr> 
+          </tr>
           @php $i++ @endphp
         @endforeach
       </tbody>
     </table>
     <br>
     <!-- End Tabel Data Detil PO -->
-    <h4>Copyright &copy; {{$sejak}} @if($tahun->year != $sejak) - {{$tahun->year}} @endif | rakhaadrida</h4>
+    <h4>Copyright &copy; {{$sejak}} @if($tahun != $sejak) - {{$tahun}} @endif | rakhaadrida</h4>
   </body>
 </html>

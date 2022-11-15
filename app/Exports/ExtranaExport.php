@@ -31,7 +31,8 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
     public function view(): View
     {
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
-        $tahun = Carbon::now('+07:00');
+        // $tahun = Carbon::now('+07:00');
+        $tahun = '2021';
         $sejak = '2020';
 
         $bul = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
@@ -54,7 +55,7 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
                 ->select('id_so', 'sales.nama as sales', 'customer.nama as cust', 'id_barang', 'harga')
                 ->selectRaw('sum(qty) as qty, sum(diskonRp) as diskonRp')
                 ->where('id_kategori', 'KAT03')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->whereYear('tgl_so', $tahun->year)->whereMonth('tgl_so', $month)
+                ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $month)
                 ->groupBy('id_customer', 'id_barang', 'harga')->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
 
@@ -66,13 +67,14 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
             'bulan' => $this->bulan,
             'awal' => $awal
         ];
-        
+
         return view('pages.laporan.extrana.excel', $data);
     }
 
     public function styles(Worksheet $sheet)
-    {   
-        $tahun = Carbon::now('+07:00');
+    {
+        // $tahun = Carbon::now('+07:00');
+        $tahun = '2021';
         $bul = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
                 'September', 'Oktober', 'November', 'Desember'];
         for($i = 0; $i < sizeof($bul); $i++) {
@@ -83,7 +85,7 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
             else
                 $month = '';
         }
-        
+
         $sheet->setTitle('BK-'.$this->bulan);
 
         $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -94,7 +96,7 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setWorksheet($sheet);
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
         $sheet->getColumnDimension('B')->setAutoSize(false)->setWidth(13);
-                
+
         $items = DetilSO::join('so', 'so.id', 'detilso.id_so')
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'so.id_sales')
@@ -102,7 +104,7 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
                 ->select('id_so', 'sales.nama as sales', 'customer.nama as cust', 'id_barang', 'harga')
                 ->selectRaw('sum(qty) as qty, sum(diskonRp) as diskonRp')
                 ->where('id_kategori', 'KAT03')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                ->whereYear('tgl_so', $tahun->year)->whereMonth('tgl_so', $month)
+                ->whereYear('tgl_so', $tahun)->whereMonth('tgl_so', $month)
                 ->groupBy('id_customer', 'id_barang', 'harga')->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->get();
 
@@ -116,7 +118,7 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($header)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
-        
+
         $sheet->mergeCells('A1:K1');
         $sheet->mergeCells('A2:K2');
         $sheet->mergeCells('A3:K3');
@@ -143,6 +145,6 @@ class ExtranaExport implements FromView, ShouldAutoSize, WithStyles
 
         $rangeIsiTable = 'A6:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
-        
-    } 
+
+    }
 }
