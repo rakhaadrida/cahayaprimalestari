@@ -53,7 +53,8 @@ class ExtranaController extends Controller
         }
 
         $date = Carbon::now('+07:00');
-        $tahun = $date->year;
+        // $tahun = $date->year;
+        $tahun = '2021';
         $bulan = $request->bulan;
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
 
