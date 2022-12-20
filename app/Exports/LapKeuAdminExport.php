@@ -114,6 +114,13 @@ class LapKeuAdminExport implements FromView, ShouldAutoSize, WithStyles
         $range = 4 + ($sales->count() * 2) + 2;
         $rangeStr = strval($range);
         $rangeTot = 'C'.$rangeStr;
+
+        if($lastAlpha >= 26) {
+            foreach($alpha as $a) {
+                $alpha[] = 'A' . $a;
+            }
+        }
+
         $rangeTab = $alpha[$lastAlpha].$rangeStr;
 
         $header = 'A4:'.$alpha[$lastAlpha].'4';

@@ -30,7 +30,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
         $this->tahun = $tahun;
         $this->month = $month;
     }
-    
+
     public function view(): View
     {
         $jenis = JenisBarang::All();
@@ -56,18 +56,18 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id' , 'customer.id_sales')
                 ->select('so.id_sales', 'barang.id_kategori', DB::raw('sum((qty * harga) - diskonRp) as total'))
-                ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR']) 
+                ->whereNotIn('so.status', ['BATAL', 'LIMIT', 'RETUR'])
                 ->whereYear('so.tgl_so', $this->tahun)
                 ->whereMonth('so.tgl_so', $this->month)
                 ->groupBy('so.id_sales', 'barang.id_kategori')
                 ->get();
-        
+
         $kat = DetilSO::join('so', 'so.id', 'detilso.id_so')
                 ->join('barang', 'barang.id', 'detilso.id_barang')
                 ->whereNotIn('so.status', ['BATAL', 'LIMIT'])
                 ->whereYear('so.tgl_so', $this->tahun)->whereMonth('so.tgl_so', $this->month)
                 ->groupBy('id_kategori')->orderBy('id_kategori')->get();
-    
+
         $kategori = DetilSO::join('so', 'so.id', 'detilso.id_so')
                 ->join('barang', 'barang.id', 'detilso.id_barang')
                 ->where('id_sales', $this->id)
@@ -125,8 +125,8 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
             $drawing->setHeight(50);
             $drawing->setCoordinates('A1');
             $drawing->setWorksheet($sheet);
-            $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5); 
-            
+            $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
+
             $alpha = range('A', 'Z');
             $sales = Sales::All();
             $jenis = JenisBarang::All();
@@ -140,12 +140,18 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
             $range = 4 + ($sales->count() * 4) + 10 + $kat->count();
             $rangeStr = strval($range);
             $rangeTot = 'C'.$rangeStr;
+
+            if($lastAlpha >= 26) {
+                foreach($alpha as $a) {
+                    $alpha[] = 'A' . $a;
+                }
+            }
             $rangeTab = $alpha[$lastAlpha].$rangeStr;
 
             $header = 'A4:'.$alpha[$lastAlpha].'4';
             $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
-            
+
             $sheet->mergeCells('A1:'.$alpha[$lastAlpha].'1');
             $sheet->mergeCells('A2:'.$alpha[$lastAlpha].'2');
             $title = 'A1:'.$alpha[$lastAlpha].'2';
@@ -169,7 +175,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
 
             $rangeHarga = 'D5:'.$alpha[$lastAlpha].$rangeStr;
             $sheet->getStyle($rangeHarga)->getNumberFormat()->setFormatCode('#,##0');
-            
+
             $namaJenis = 'A4:'.$alpha[$lastAlpha].'4';
             $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
@@ -181,12 +187,12 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
             $rangeTotal = strval($total);
             $sheet->getStyle('A'.$rangeTotal.':'.$alpha[$lastAlpha].$rangeStr)->getAlignment()->setHorizontal('right');
             $sheet->getStyle('A'.$rangeTotal.':'.$alpha[$lastAlpha].$rangeStr)->getFont()->setBold(true)->setSize(12);
-            
+
             $nama = 4 + ($sales->count() * 4);
             $rangeNama = strval($nama);
             $sheet->getStyle('A5:B'.$rangeNama)->getAlignment()->setVertical('center');
-            
-            $strRev = '='.$alpha[$lastAlpha].'5'; $strHpp = '='.$alpha[$lastAlpha].'6'; 
+
+            $strRev = '='.$alpha[$lastAlpha].'5'; $strHpp = '='.$alpha[$lastAlpha].'6';
             $strRetur = '='.$alpha[$lastAlpha].'7';
             for($i = 8; $i <= (4 + ($sales->count() * 4)); $i += 4) {
                 $laba = 'C'.$i.':'.$alpha[$lastAlpha].$i;
@@ -209,10 +215,16 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                     // $strHpp = $strHpp.'+'.$alpha[$lastAlpha].$hpp;
                     $strRetur = $strRetur.'+'.$alpha[$lastAlpha].$retur;
                 }
-                
+
                 $sheet->setCellValue($alpha[$lastAlpha].$i, '=SUM(D'.$i.':O'.$i.')');
 
                 $urut = range('D', 'Z');
+                if($jenis->count() >= 23) {
+                    foreach(range('A', 'Z') as $a) {
+                        $urut[] = 'A' . $a;
+                    }
+                }
+
                 for($j = 0; $j < $jenis->count(); $j++) {
                     $sheet->setCellValue($urut[$j].$i, '='.$urut[$j].$revenue.'-'.$urut[$j].$hpp.'-'.$urut[$j].$retur);
                 }
@@ -269,9 +281,9 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
             $drawing->setHeight(50);
             $drawing->setCoordinates('A1');
             $drawing->setWorksheet($sheet);
-            $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5); 
-            $sheet->getColumnDimension('F')->setAutoSize(false)->setWidth(13); 
-            
+            $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
+            $sheet->getColumnDimension('F')->setAutoSize(false)->setWidth(13);
+
             $jenis = JenisBarang::All();
             $kategori = DetilSO::join('so', 'so.id', 'detilso.id_so')
                     ->join('barang', 'barang.id', 'detilso.id_barang')
@@ -303,7 +315,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
             $header = 'A4:H4';
             $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
-            
+
             $sheet->mergeCells('A1:H1');
             $sheet->mergeCells('A2:H2');
             $title = 'A1:H2';
@@ -330,7 +342,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
 
             $rangeDiskon = 'F5:F'.$rangeStr;
             $sheet->getStyle($rangeDiskon)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_PERCENTAGE_00);
-            
+
             $namaJenis = 'A4:H4';
             $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
             $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
@@ -340,6 +352,12 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
 
             // $lapKeu = range('D', 'Z'); $lapIndex = 0;
             $lapKeu = range('A', 'Z'); $lapIndex = 3 + $jenis->count();
+            if($lapIndex >= 26) {
+                foreach($lapKeu as $a) {
+                    $lapKeu[] = 'A' . $a;
+                }
+            }
+
             $TH = 4; $rowTotal = 5; $blankFirst = 5; $blankSecond = 5;
             // foreach($kategori as $k) {
                 $items = DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
@@ -354,10 +372,10 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                         // ->groupBy('id_barang', 'harga', 'diskon')
                         ->groupBy('id_barang', 'harga')
                         ->get();
-                
+
                 $TH += ($items->count() + 4);
                 $strTH = strval($TH);
-                
+
                 $TR = 'A'.$strTH.':H'.$strTH;
 
                 /* if($k->id_kategori != $kategori[$kategori->count()-1]->id_kategori) {
@@ -373,12 +391,12 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                 // $rowTotal += $items->count();
                 // $strTotal = strval($rowTotal);
                 // $strTotOne = strval($rowTotal-1);
-                // $RT = 'A'.$strTotal.':H'.$strTotal; 
+                // $RT = 'A'.$strTotal.':H'.$strTotal;
 
                 $rowTotal = $range;
                 $strTotal = $rangeStr;
                 $strTotOne = strval($rangeStr-1);
-                $RT = 'A'.$rangeStr.':H'.$rangeStr; 
+                $RT = 'A'.$rangeStr.':H'.$rangeStr;
 
                 $sheet->getStyle($RT)->getFont()->setBold(true)->setSize(12);
                 $sheet->getStyle($RT)->getAlignment()->setHorizontal('right');
@@ -401,7 +419,7 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                 $blankSecond += ($items->count() + 2);
                 $strBF = strval($blankFirst);
                 $strBS = strval($blankSecond);
-                $blank = 'A'.$strBF.':H'.$strBS; 
+                $blank = 'A'.$strBF.':H'.$strBS;
 
                 $styleBlank = [
                     'borders' => [
@@ -418,5 +436,5 @@ class LapKeuPerSalesExport implements FromView, ShouldAutoSize, WithStyles
                 // $lapIndex++;
             // }
         }
-    } 
+    }
 }
