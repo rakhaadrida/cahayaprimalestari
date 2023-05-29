@@ -25,6 +25,8 @@ use Illuminate\Support\Str;
 class AccPayableController extends Controller
 {
     public function index() {
+        ini_set('max_execution_time', 3000);
+
         $apLast = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
                 ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
                 ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')
@@ -41,7 +43,7 @@ class AccPayableController extends Controller
             $ap = AccPayable::join('barangmasuk', 'barangmasuk.id_faktur', 'ap.id_bm')
                 ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
                 ->select('ap.id as id', 'ap.*', 'barangmasuk.tanggal', 'barangmasuk.tempo', 'supplier.nama as namaSupp')->where('keterangan', 'BELUM LUNAS')->orWhere('diskon', 'F')
-                ->groupBy('ap.id_bm')->orderBy('ap.created_at', 'desc')->get();               
+                ->groupBy('ap.id_bm')->orderBy('ap.created_at', 'desc')->get();
 
         $barang = Barang::All();
         $harga = HargaBarang::All();
@@ -62,6 +64,8 @@ class AccPayableController extends Controller
     }
 
     public function show(Request $request) {
+        ini_set('max_execution_time', 3000);
+
         if($request->status == 'ALL')  {
             $status[0] = 'LUNAS';
             $status[1] = 'BELUM LUNAS';
@@ -109,7 +113,7 @@ class AccPayableController extends Controller
 
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        
+
         $data = [
             'ap' => $ap,
             'barang' => $barang,
@@ -206,7 +210,7 @@ class AccPayableController extends Controller
 
         if(str_replace(".", "", $request->kurangAkhir) - (int) str_replace(".", "", $request->bayar) == 0)
             $status = 'LUNAS';
-        else 
+        else
             $status = 'BELUM LUNAS';
 
         $items = DetilAP::where('id_ap', $request->kodeAP)->get();
