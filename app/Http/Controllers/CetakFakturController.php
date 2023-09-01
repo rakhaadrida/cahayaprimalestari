@@ -14,6 +14,8 @@ use PDF;
 class CetakFakturController extends Controller
 {
     public function index($status, $awal, $akhir) {
+        set_time_limit(600);
+
         $items = SalesOrder::join('users', 'users.id', 'so.id_user')
                 ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
                 ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
@@ -30,6 +32,8 @@ class CetakFakturController extends Controller
     }
 
     public function process(Request $request) {
+        set_time_limit(600);
+
         $data = [
             'awal' => $request->kodeAwal,
             'akhir' => $request->kodeAkhir,
@@ -41,6 +45,8 @@ class CetakFakturController extends Controller
     }
 
     public function cetak($awal, $akhir) {
+        set_time_limit(600);
+
         $items = SalesOrder::join('users', 'users.id', 'so.id_user')
                 ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
                 ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])

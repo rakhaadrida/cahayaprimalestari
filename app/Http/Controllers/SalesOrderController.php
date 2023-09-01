@@ -29,6 +29,8 @@ use Illuminate\Support\Facades\Auth;
 class SalesOrderController extends Controller
 {
     public function index($status) {
+        set_time_limit(600);
+
         $customer = Customer::with(['sales'])->get();
         $cust = Customer::pluck('nama')->toArray();
         $sales = Sales::All();
@@ -172,7 +174,6 @@ class SalesOrderController extends Controller
 
         SalesOrder::create([
             'id' => $kode,
-            // 'id' => $request->kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
             // 'total' => str_replace(".", "", $request->grandtotal),
