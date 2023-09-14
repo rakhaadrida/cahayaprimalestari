@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     public function index() {
+        set_time_limit(600);
+
         $tanggal = Carbon::now();
         $tahun = $tanggal->year;
         $bulan = $tanggal->month;
@@ -29,7 +31,7 @@ class DashboardController extends Controller
 
         $tipe = ['CASH', 'EXTRANA', 'PRIME'];
 
-        if(Auth::user()->roles == 'SUPER') {        
+        if(Auth::user()->roles == 'SUPER') {
             $salesMonthly = SalesOrder::selectRaw('sum(total) as sales')
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
                             ->where('id_customer', '!=', 'CUS1071')
@@ -90,14 +92,14 @@ class DashboardController extends Controller
                             ->whereYear('tanggal', $tahun)->groupBy('month')->get();
             // return response()->json($returPerMonth);
 
-            $arrTotal = []; $j = 0;               
+            $arrTotal = []; $j = 0;
             for($i = 1; $i <= 12; $i++) {
                 if(($j < $salesPerMonth->count()) && ($salesPerMonth[$j]->month == $i)) {
                     if(($returPerMonth->count() != 0) && ($j < $returPerMonth->count()) && ($returPerMonth[$j] != NULL))
                         // $int = (int) $salesPerMonth[$j]->sales - $returPerMonth[$j]->total;
                         $int = (int) $salesPerMonth[$j]->sales;
                     else
-                        $int = $salesPerMonth[$j]->sales;    
+                        $int = $salesPerMonth[$j]->sales;
 
                     array_push($arrTotal, $int);
                     $j++;
@@ -128,8 +130,8 @@ class DashboardController extends Controller
             $stillPendingKen = NeedApproval::join('users', 'users.id', 'need_approval.id_user')
                         ->where('roles', 'KENARI')->where('tipe', 'Faktur')->count();
         }
-                            
-        $barang = Barang::All(); 
+
+        $barang = Barang::All();
         $restok = 0; $restokKen = 0;
 
         if(Auth::user()->roles == 'ADMIN') {
@@ -137,7 +139,7 @@ class DashboardController extends Controller
                 $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                         ->selectRaw('id_barang, sum(stok) as total')
                         ->where('id_barang', $b->id)->where('tipe', 'BIASA')->get();
-                if($stok[0]->total <= $b->subjenis->limit) 
+                if($stok[0]->total <= $b->subjenis->limit)
                     $restok++;
             }
             $lastTrans = SalesOrder::latest()->take(6)->get();
@@ -151,31 +153,31 @@ class DashboardController extends Controller
                 $stokKen = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                             ->selectRaw('id_barang, sum(stok) as total')
                             ->where('id_barang', $b->id)->where('tipe', 'KENARI')->get();
-                if($stokKen[0]->total <= ($b->subjenis->limit / 2)) 
+                if($stokKen[0]->total <= ($b->subjenis->limit / 2))
                     $restokKen++;
-            }  
+            }
             $lastTransKen = SalesOrder::join('users', 'users.id', 'so.id_user')->select('so.id as id', 'so.*')
                         ->where('roles', 'KENARI')->latest('so.created_at')->take(6)->get();
             foreach($lastTransKen as $l) {
                 $totalQty = DetilSO::selectRaw('sum(qty) as qty')->where('id_so', $l->id)->get();
                 $l->{'qty'} = $totalQty[0]->qty;
                 $l->tgl_so = Carbon::parse($l->tgl_so)->format('d-M-y');
-            } 
+            }
         }
 
         /* foreach($barang as $b) {
             $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                     ->selectRaw('id_barang, sum(stok) as total')
                     ->where('id_barang', $b->id)->where('tipe', 'BIASA')->get();
-            if($stok[0]->total <= $b->subjenis->limit) 
+            if($stok[0]->total <= $b->subjenis->limit)
                 $restok++;
-            
+
             $stokKen = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                         ->selectRaw('id_barang, sum(stok) as total')
                         ->where('id_barang', $b->id)->where('tipe', 'KENARI')->get();
-            if($stok[0]->total <= ($b->subjenis->limit / 2)) 
+            if($stok[0]->total <= ($b->subjenis->limit / 2))
                 $restokKen++;
-        }  */ 
+        }  */
 
         $fakturCount = []; $fakturCountKen = [];
         $status = ['APPROVE_LIMIT', 'BATAL', 'CETAK', 'INPUT', 'UPDATE', 'LIMIT'];
@@ -193,7 +195,7 @@ class DashboardController extends Controller
                 }
             }
         }
-        
+
         if(Auth::user()->roles == 'AR') {
             $receivCount = AccReceivable::where('keterangan', 'BELUM LUNAS')->count();
             $receivTempo = AccReceivable::join('so', 'so.id', 'ar.id_so')
@@ -201,7 +203,7 @@ class DashboardController extends Controller
                             ->where('keterangan', 'BELUM LUNAS')->count();
 
             $q1 = 0; $q2 = 0; $q3 = 0; $q4 = 0;
-            $receiv = SalesOrder::join('ar', 'ar.id_so', 'so.id') 
+            $receiv = SalesOrder::join('ar', 'ar.id_so', 'so.id')
                     ->whereNotIn('status', ['BATAL', 'LIMIT'])
                     ->where('keterangan', 'BELUM LUNAS')->get();
             foreach($receiv as $s) {
@@ -248,7 +250,7 @@ class DashboardController extends Controller
             $payableDiskon = BarangMasuk::where('diskon', 'F')->count();
 
             $q1 = 0; $q2 = 0; $q3 = 0; $q4 = 0;
-            $tagihan = BarangMasuk::join('ap', 'ap.id_bm', 'barangmasuk.id_faktur') 
+            $tagihan = BarangMasuk::join('ap', 'ap.id_bm', 'barangmasuk.id_faktur')
                 ->select('barangmasuk.*')
                 ->selectRaw('sum(total) as total')
                 ->where('status', '!=', 'BATAL')
@@ -265,7 +267,7 @@ class DashboardController extends Controller
                 if($t->total != 0)
                     $total = round(($detil[0]->total * 100) / $t->total, 2);
                 else
-                    $total = round($detil[0]->total * 100, 2);    
+                    $total = round($detil[0]->total * 100, 2);
 
                 $utang = $t->total - $detil[0]->total;
                 $t->{'tagihan'} = $utang;
@@ -317,7 +319,7 @@ class DashboardController extends Controller
                         ->selectRaw('sum(cicil) as total')
                         ->where('id_sales', 'SLS03')
                         ->whereYear('tgl_so', $tahun)->get();
-                        
+
             $receivableOff = $salesAnnOff[0]->sales - $returOff[0]->total - $cicilOff[0]->total;
             $salesAnnOff[0]->sales -= $returOff[0]->total;
             $salesMonOff[0]->sales -= $returMonOff[0]->total;
@@ -328,7 +330,7 @@ class DashboardController extends Controller
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])->whereYear('tgl_so', $tahun)
                             ->groupBy('month')->get();
 
-            $arrTotalOff = []; $j = 0;               
+            $arrTotalOff = []; $j = 0;
             for($i = 1; $i <= 12; $i++) {
                 if(($j < $salesPerMonOff->count()) && ($salesPerMonOff[$j]->month == $i)) {
                     $int = (int) $salesPerMonOff[$j]->sales;
@@ -338,7 +340,7 @@ class DashboardController extends Controller
                     array_push($arrTotalOff, 0);
                 }
             }
-            
+
             $tipeCountOff = [];
             for($i = 0; $i < sizeof($tipe); $i++) {
                 $salesPerTypeOff = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
@@ -403,7 +405,7 @@ class DashboardController extends Controller
                 'lastTransKen' => $lastTransKen,
             ];
         } elseif(Auth::user()->roles == 'OFFICE02') {
-            $data = [  
+            $data = [
                 'salesAnnOff' => $salesAnnOff,
                 'salesMonOff' => $salesMonOff,
                 'transAnnOff' => $transAnnOff,
