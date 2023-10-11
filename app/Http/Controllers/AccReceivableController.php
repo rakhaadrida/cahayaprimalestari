@@ -559,6 +559,8 @@ class AccReceivableController extends Controller
     }
 
     public function excel(Request $request, $status) {
+        set_time_limit(600);
+
         $stat = $request->status;
 
         $tglAwal = $request->tglAwal;
@@ -604,6 +606,8 @@ class AccReceivableController extends Controller
     }
 
     public function excelNow($status) {
+        set_time_limit(600);
+
         $tanggal = Carbon::now()->toDateString();
         $tanggalStr = $this->formatTanggal($tanggal, 'd-M-y');
         $tglFile = $this->formatTanggal($tanggal, 'd-M');
