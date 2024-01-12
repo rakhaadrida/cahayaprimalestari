@@ -11,6 +11,41 @@
 |
 */
 
+use App\Models\ReturJual;
+use Carbon\Carbon;
+
+Route::get('test', function() {
+    $items = ReturJual::join('detilrj', 'detilrj.id_retur', 'returjual.id')
+        ->where('id_kirim', 'KRM23120052')->groupBy('id_kirim')->get();
+    $tabel = ceil($items->first()->detilrj->count() / 12);
+
+    if($tabel > 1) {
+        for($i = 1; $i < $tabel; $i++) {
+            $item = collect([
+                'id' => $items->first()->id,
+                'tanggal' => $items->first()->tanggal,
+                'id_customer' => $items->first()->id_customer,
+                'status' => $items->first()->status
+            ]);
+
+            $items->push($item);
+        }
+    }
+    $items = $items->values();
+
+    $today = Carbon::now()->isoFormat('dddd, D MMM Y');
+    $waktu = Carbon::now();
+    $waktu = Carbon::parse($waktu)->format('H:i:s');
+
+    $data = [
+        'items' => $items,
+        'today' => $today,
+        'waktu' => $waktu
+    ];
+
+    return view('pages.retur.cetakJualAlter', $data);
+});
+
 Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::get('/', 'HomeController@index')->name('home');
 

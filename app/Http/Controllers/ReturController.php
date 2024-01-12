@@ -455,7 +455,6 @@ class ReturController extends Controller
     public function cetakKirimJual(Request $request, $id) {
         $items = ReturJual::join('detilrj', 'detilrj.id_retur', 'returjual.id')
                 ->where('id_kirim', $id)->groupBy('id_kirim')->get();
-        // $items = DetilRJ::where('id_kirim', $id)->get();
         $tabel = ceil($items->first()->detilrj->count() / 12);
 
         if($tabel > 1) {
@@ -482,12 +481,11 @@ class ReturController extends Controller
             'waktu' => $waktu
         ];
 
-        return view('pages.retur.cetakJual', $data);
-
-        // $paper = array(0,0,686,394);
-        // $pdf = PDF::loadview('pages.retur.cetakJual', $data)->setPaper($paper);
-        // ob_end_clean();
-        // return $pdf->stream('cetak-so.pdf');
+        if(Auth::user()->name != 'Admin_mitra') {
+            return view('pages.retur.cetakJual', $data);
+        } else {
+            return view('pages.retur.cetakJualAlter', $data);
+        }
     }
 
     /* public function ttrKirimJual($id) {
