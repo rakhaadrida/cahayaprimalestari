@@ -516,6 +516,10 @@
         font-size: 12px !important;
       }
 
+      .power-title {
+          margin-top: -10px;
+      }
+
       @media print {
         @page {
           /* size: 24.2cm 13.8cm; */
@@ -562,9 +566,9 @@
           </div>
         </div>
         <div class="float-left logo-cetak-so">
-            <h2 class="text-bold">INVOICE</h2>
-            <h3 class="text-bold">POWER ELEKTRIK</h3>
-            <h4>Jakarta Pusat</h4>
+            <h2 class="text-bold power-title">INVOICE</h2>
+            <h3 class="text-bold power-title">POWER ELEKTRIK</h3>
+            <h4 class="power-title">Jakarta Pusat</h4>
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
