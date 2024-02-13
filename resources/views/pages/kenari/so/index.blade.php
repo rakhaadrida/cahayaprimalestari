@@ -1418,6 +1418,7 @@ function hitungQty(urutan, kode, angka, teks, ukuran) {
 /** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
+  angka = angka.replace(/\,/g, ".");
   var arrDiskon = angka.split('+');
   for(let i = 0; i < arrDiskon.length; i++) {
     totDiskon -= (arrDiskon[i] * totDiskon) / 100;
