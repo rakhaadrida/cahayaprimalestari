@@ -1835,7 +1835,7 @@ function angkaSajaHarga(evt, inputan) {
 function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
-  if (charCode > 31 && charCode != 43 && charCode != 44  && (charCode < 48 || charCode > 57)) {
+  if (charCode > 31 && charCode != 43 && charCode != 44 && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= diskon.length; i++) {
       if(inputan == i)
         $(diskon[inputan-1]).tooltip('show');

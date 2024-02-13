@@ -242,7 +242,7 @@
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 6 }}" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon"
-                        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
+                        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +, dan tanda koma" autocomplete="off">
                       </td>
                       <td>
                         <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp"
@@ -678,7 +678,7 @@ function displayRow(e) {
       </td>
       <td style="width: 60px">
         <input type="text" tabindex="${tab += 6}" name="diskon[]" id="diskonRow${newNum}" class="form-control form-control-sm text-bold text-right text-dark diskonRow"
-        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +" autocomplete="off">
+        value="{{ old('diskon[]') }}" onkeypress="return angkaPlus(event, ${newNum})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9 dan tanda +, dan tanda koma" autocomplete="off">
       </td>
       <td style="width: 120px">
         <input type="text" name="diskonRp[]" id="diskonRpRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRpRow"
@@ -1489,7 +1489,7 @@ function angkaSajaHarga(evt, inputan) {
 function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
-  if (charCode > 31 && charCode != 43  && (charCode < 48 || charCode > 57)) {
+  if (charCode > 31 && charCode != 43 && charCode != 44 && (charCode < 48 || charCode > 57)) {
     for(let i = 1; i <= diskon.length; i++) {
       if(inputan == i)
         $(diskon[inputan-1]).tooltip('show');
