@@ -43,7 +43,7 @@
                     <input type="text" tabindex="2" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
                     <input type="hidden" name="kode" id="kodeCustomer" value="{{ $kode }}">
                   </div>
-                </div>   
+                </div>
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
                   <span class="col-form-label text-bold">:</span>
@@ -58,7 +58,7 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('so-show-kenari') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                </div>  
+                </div>
               </div>
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
@@ -79,7 +79,7 @@
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $items->count() != 0 ? $item->id : '' }}" >
                             </div>
                           </div>
-                        </div> 
+                        </div>
                         <div class="col" style="margin-left: -450px">
                           <div class="form-group row">
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Customer</label>
@@ -99,7 +99,7 @@
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $items->count() != 0 ? \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y') : '' }}">
                             </div>
                           </div>
-                        </div> 
+                        </div>
                         <div class="col" style="margin-left: -450px">
                           <div class="form-group row customer-detail">
                             <label for="tanggal" class="col-4 form-control-sm text-bold mt-1">Nama Sales</label>
@@ -155,7 +155,7 @@
                       </thead>
                       <tbody>
                         @if($items->count() != 0)
-                          @php 
+                          @php
                             $i = 1; $subtotal = 0;
                             if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
                               $itemsDetail = \App\Models\NeedAppDetil::with(['barang'])
@@ -186,23 +186,24 @@
                                 {{number_format(($itemDet->qty * $itemDet->harga), 0, "", ".")}}
                               </td>
                               <td align="right">{{ $itemDet->diskon }}</td>
-                              @php 
+                              @php
                                 $diskon = 100;
+                                $itemDet->diskon = ($itemDet->diskon != NULL ? str_replace(",", ".", $itemDet->diskon) : 0);
                                 $arrDiskon = explode("+", $itemDet->diskon);
                                 for($j = 0; $j < sizeof($arrDiskon); $j++) {
                                   $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                                } 
+                                }
                                 $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                               @endphp
                               <td align="right">
                                 {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
                               </td>
                               <td align="right">
-                                {{ number_format(($itemDet->qty * $itemDet->harga) - 
+                                {{ number_format(($itemDet->qty * $itemDet->harga) -
                                 ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
                               </td>
                             </tr>
-                            @php $i++; $subtotal += (($itemDet->qty * $itemDet->harga) - 
+                            @php $i++; $subtotal += (($itemDet->qty * $itemDet->harga) -
                                 ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100)); @endphp
                           @endforeach
                         @else
@@ -288,7 +289,7 @@
                             </div>
                             <div class="form-group subtotal-so">
                               <label for="keterangan" class="col-form-label">Keterangan</label>
-                              <input type="text" class="form-control" name="ket{{$item->id}}" 
+                              <input type="text" class="form-control" name="ket{{$item->id}}"
                               id="ket{{$item->id}}" data-toogle="tooltip" data-placement="bottom" title="Form keterangan harus diisi">
                             </div>
                             <hr>
@@ -379,11 +380,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   if(e.target.id == 'tglAwal')
     tglAwal.value = value;
   else
@@ -416,7 +417,7 @@ $(function() {
   @foreach($so as $s)
     kodeFaktur.push('{{ $s->id }}');
   @endforeach
-    
+
   function split(val) {
     return val.split(/,\s*/);
   }
