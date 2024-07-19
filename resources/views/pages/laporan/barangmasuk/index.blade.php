@@ -30,7 +30,7 @@
             <form action="" method="">
               @csrf
 
-              <div class="container so-container">  
+              <div class="container so-container">
                 <div class="form-group row justify-content-center" style="margin-top: -10px">
                   <label for="tanggal" class="col-auto col-form-label text-bold">Tanggal Awal</label>
                   <span class="col-form-label text-bold">:</span>
@@ -47,8 +47,8 @@
                   <div class="col-auto mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="6" formaction="{{ route('bmk') }}" formmethod="GET" class="btn btn-outline-danger btn-sm btn-block text-bold">Reset Filter</button>
                   </div>
-                </div>  
-              </div>  
+                </div>
+              </div>
 
               <div class="row justify-content-center" style="margin-bottom: 15px">
                 {{-- <div class="col-2">
@@ -76,7 +76,6 @@
               <table class="table table-sm table-bordered table-responsive-sm table-hover">
                 <thead class="text-center text-dark text-bold">
                   <td style="width: 60px" class="align-middle">No</td>
-                  {{-- <td style="width: 130px">Kode Barang</td> --}}
                   <td style="width: 300px" class="align-middle">Supplier</td>
                   <td class="align-middle">Nama Barang</td>
                   <td style="width: 160px" class="align-middle">Gudang</td>
@@ -87,10 +86,9 @@
                   @forelse($items as $item)
                     <tr class="text-dark text-bold">
                       <td align="center">{{ $i }}</td>
-                      {{-- <td align="center">{{ $item->id_barang }}</td> --}}
-                      <td>{{ $item->bm->supplier->nama }}</td>
-                      <td>{{ $item->barang->nama }}</td>
-                      <td align="center">{{ $item->bm->gudang->nama }}</td>
+                      <td>{{ $item->namaSupplier }}</td>
+                      <td>{{ $item->namaBarang }}</td>
+                      <td align="center">{{ $item->namaGudang }}</td>
                       <td align="right" style="background-color: yellow">{{ $item->qty }}</td>
                     </tr>
                     @php $i++; @endphp
@@ -144,11 +142,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   tanggal.value = value;
 }
 </script>

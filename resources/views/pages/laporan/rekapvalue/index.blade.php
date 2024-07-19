@@ -30,19 +30,6 @@
             <form action="" method="">
               @csrf
 
-              {{-- <div class="container so-container">  
-                <div class="form-group row justify-content-center" style="margin-top: -10px">
-                  <label for="tanggal" class="col-auto col-form-label text-bold">Tanggal Rekap</label>
-                  <span class="col-form-label text-bold">:</span>
-                  <div class="col-2">
-                    <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tanggal" id="tanggal" placeholder="DD-MM-YYYY" autofocus>
-                  </div>
-                  <div class="col-1 mt-1" style="margin-left: -10px">
-                    <button type="submit" formaction="{{ route('rs-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
-                  </div>
-                </div>  
-              </div>   --}}
-
               <div class="row justify-content-center" style="margin-bottom: 15px">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                   <button type="submit" formaction="{{ route('val-pdf') }}" formmethod="POST" formtarget="_blank" class="btn btn-primary btn-block text-bold">Download PDF</>
@@ -77,7 +64,7 @@
                         <td style="width: 140px;" class="align-middle">Total Value</td>
                       </thead>
                       <tbody id="tablePO">
-                        @php $i = 1; 
+                        @php $i = 1;
                             $sub = \App\Models\Subjenis::where('id_kategori', $item->id)->get();
                         @endphp
                         @foreach($sub as $s)
@@ -168,11 +155,11 @@ function formatTanggal(e) {
   var arrValue = value.split("", 3);
   var kode = arrValue.join("");
 
-  if(value.length > 2 && value.length <= 4) 
+  if(value.length > 2 && value.length <= 4)
     value = value.slice(0,2) + "-" + value.slice(2);
   else if(value.length > 4 && value.length <= 8)
     value = value.slice(0,2) + "-" + value.slice(2,4) + "-" + value.slice(4);
-  
+
   tanggal.value = value;
 }
 </script>
