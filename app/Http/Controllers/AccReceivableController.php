@@ -62,6 +62,7 @@ class AccReceivableController extends Controller
     }
 
     public function show(Request $request) {
+        set_time_limit(600);
         if($request->status == 'ALL')  {
             $status[0] = 'LUNAS';
             $status[1] = 'BELUM LUNAS';
@@ -100,6 +101,7 @@ class AccReceivableController extends Controller
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'so.id_sales')
                 ->whereIn('keterangan', [$status[0], $status[1]])
+                ->where('so.id_sales', 'SLS01')
                 ->orderBy('ar.created_at', 'desc')->get();
 
             $arOffice = AccReceivable::select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
@@ -115,6 +117,7 @@ class AccReceivableController extends Controller
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'so.id_sales')
                 ->whereIn('keterangan', [$status[0], $status[1]])
+                ->where('so.id_sales', 'SLS01')
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);

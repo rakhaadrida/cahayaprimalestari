@@ -94,6 +94,7 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                 ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                 ->where('kategori', 'NOT LIKE', 'Extrana%')
                 ->where('kategori', 'NOT LIKE', '%Prime%')
+                ->where('so.id_sales', 'SLS01')
                 ->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
 
@@ -105,6 +106,7 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                 ->where('kategori', 'LIKE', 'Extrana%')
+                ->where('so.id_sales', 'SLS01')
                 ->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
         } else {
@@ -116,6 +118,7 @@ class TransAllExport implements FromView, ShouldAutoSize, WithStyles
                 ->whereIn('keterangan', [$status[0], $status[1]])
                 ->whereBetween('tgl_so', [$this->awal, $this->akhir])
                 ->where('kategori', 'LIKE', '%Prime%')
+                ->where('so.id_sales', 'SLS01')
                 ->orderBy('so.id_sales')
                 ->orderBy('customer.nama')->orderBy('id_so')->get();
 
