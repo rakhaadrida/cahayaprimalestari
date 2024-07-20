@@ -38,7 +38,6 @@ class SalesOrderController extends Controller
         $harga = HargaBarang::All();
         $kategori = JenisBarang::orderBy('nama')->get();
 
-        // $hrg = Harga::All();
         $hrg = Harga::pluck('tipe')->toArray();
         $kodeBarang = Barang::pluck('id')->toArray();
         $namaBarang = Barang::pluck('nama')->toArray();
@@ -51,13 +50,6 @@ class SalesOrderController extends Controller
         $bulan = $waktu->format('m');
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
-
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('created_at', $waktu->year)
-                    ->whereMonth('created_at', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
-        $lastnumber++;
-        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -109,10 +101,8 @@ class SalesOrderController extends Controller
             'hrg' => $hrg,
             'stok' => $stok,
             'gudang' => $gudang,
-            'newcode' => $newcode,
             'tanggal' => $tanggal,
             'status' => $status,
-            'lastcode' => $lastcode,
             'lastSO' => $lastSO,
             'totalKredit' => $totalPerCust
         ];
@@ -152,13 +142,7 @@ class SalesOrderController extends Controller
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('created_at', $waktu->year)
-                    ->whereMonth('created_at', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
-        $lastnumber++;
-        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
-        $kode = $newcode;
+        $kode = $request->kode;
 
         $statusHal = $status;
 
@@ -176,7 +160,6 @@ class SalesOrderController extends Controller
             'id' => $kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
-            // 'total' => str_replace(".", "", $request->grandtotal),
             'total' => $totNetto,
             'diskon' => str_replace(".", "", $diskon),
             'kategori' => $request->kategori.' '.$request->jenis,
@@ -245,13 +228,11 @@ class SalesOrderController extends Controller
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
                         'id_so' => $kode,
-                        // 'id_so' => $request->kode,
                         'id_barang' => $request->kodeBarang[$i],
                         'id_gudang' => $arrGudang[$j],
                         'harga' => str_replace(".", "", $request->harga[$i]),
                         'qty' => $arrStok[$j],
                         'diskon' => ($request->diskon[$i] != '' ? $request->diskon[$i] : '0'),
-                        // 'diskonRp' => $diskonRp
                         'diskonRp' => ($request->diskonRp[$i] != '' ? ($j == 0 ? str_replace(".", "", $request->diskonRp[$i]) : 0) : 0)
                     ]);
 
@@ -259,20 +240,7 @@ class SalesOrderController extends Controller
                                 ->where('id_gudang', $arrGudang[$j])->first();
                     $updateStok->{'stok'} -= $arrStok[$j];
                     $updateStok->save();
-
-                    /* foreach($updateStok as $us) {
-                        if($request->qty[$i] <= $us->stok) {
-                            $us->stok -= $request->qty[$i];
-                        }
-                        else {
-                            $qty -= $us->stok;
-                            $us->stok -= $us->stok;
-                        }
-                        $us->save();
-                    } */
                 }
-
-                // $totNetto += str_replace(".", "", $request->netto[$i]);
             }
         }
 
@@ -659,9 +627,9 @@ class SalesOrderController extends Controller
     }
 
     public function getStok(Request $request, $code) {
-        $gudang = Gudang::where('tipe', 'BIASA')->where('id', '!=', 'GDG01')->pluck('id')->toArray();
+        $gudang = Gudang::where('tipe', 'BIASA')->where('id', '!=', 'GDG06')->pluck('id')->toArray();
 
-        $stokJohar = StokBarang::where('id_barang', $code)->where('id_gudang', 'GDG01')->first();
+        $stokJohar = StokBarang::where('id_barang', $code)->where('id_gudang', 'GDG06')->first();
         $totalStok = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)->sum('stok');
         $stokLain = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)
             ->pluck('stok')->toArray();

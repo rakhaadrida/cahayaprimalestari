@@ -37,7 +37,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly required>
+                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="" required>
                       </div>
                       <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
@@ -93,51 +93,6 @@
                             @endforeach
                         </select>
                       </div>
-{{--                      <div class="col-auto" style="margin-top: -35px">--}}
-{{--                        <div class="form-check form-check-inline mt-2">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline" style="margin-left: -1px">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat8">Panasonic</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Ecolink">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat9">Ecolink</label>--}}
-{{--                        </div>--}}
-{{--                      </div>--}}
                     </div>
                   </div>
                   <div class="col" style="margin-left: -340px; margin-right:-40px; margin-top: -120px">
@@ -422,7 +377,7 @@
                       <p>Silahkan pilih untuk simpan atau batal.</p>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'LIMIT']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Simpan</button>
+                          <button type="submit" formaction="{{ route('so-process', ['id' => 1, 'status' => 'LIMIT']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Simpan</button>
                         </div>
                         <div class="col-3">
                           <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
@@ -442,17 +397,17 @@
                       <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="h2 text-bold">&times;</span>
                       </button>
-                      <h4 class="modal-title">Konfirmasi Faktur <b>{{$newcode}}</b></h4>
+                      <h4 class="modal-title">Konfirmasi Faktur</h4>
                     </div>
                     <div class="modal-body">
-                      <p>Faktur <strong>{{$newcode}}</strong> akan disimpan. Silahkan pilih cetak atau input faktur lagi.</p>
+                      <p>Faktur akan disimpan. Silahkan pilih cetak atau input faktur lagi.</p>
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                          <button type="submit" formaction="{{ route('so-process', ['id' => 1, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
                         </div>
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                          <button type="submit" formaction="{{ route('so-process', ['id' => 1, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
                         </div>
                       </div>
                     </div>
@@ -585,10 +540,6 @@ diskonFaktur.addEventListener('keyup', displayTotal);
 
 kategori.addEventListener('change', displayJenis);
 
-// Array.prototype.forEach.call(radios, function(radio) {
-//    radio.addEventListener('change', displayJenis);
-// });
-
 Array.prototype.forEach.call(radiosJen, function(radio) {
    radio.addEventListener('change', displayTempo);
 });
@@ -673,26 +624,6 @@ function displayJenis(e) {
         radiosJen[1].disabled = true;
     }
 }
-
-/* function displayJenis(e) {
-  if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
-    if((radios[4].checked) && (tempTempo == 0))
-      tempTempo = '30';
-
-    tempo.value = tempTempo;
-    radiosJen[0].checked = false;
-    radiosJen[0].disabled = false;
-    radiosJen[1].disabled = false;
-  }
-  else if(radios[0].checked) {
-    tempo.setAttribute('readonly', 'true');
-    tempo.removeAttribute('required');
-    tempo.value = '';
-    radiosJen[0].checked = true;
-    radiosJen[0].disabled = true;
-    radiosJen[1].disabled = true;
-  }
-} */
 
 /** Tampil Input Tempo **/
 function displayTempo(e) {
@@ -1021,10 +952,9 @@ function displayRow(e) {
           },
           dataType: 'json',
           success:function(data) {
-              stokJohar = data.stokJohar.stok;
               totStok = data.totalStok;
               stokLain = data.stokLain;
-              displayQtyRow(e.target.id, e.target.value, stokJohar, totStok, stokLain)
+              displayQtyRow(e.target.id, e.target.value, 0, totStok, stokLain)
           }
       });
     }
@@ -1507,7 +1437,6 @@ for(let i = 0; i < qty.length; i++) {
     satuan[i].addEventListener("change", checkQty);
 
   function checkQty(e) {
-    stokJohar = 0;
     stokLain = [];
     totStok = 0;
 
@@ -1523,7 +1452,6 @@ for(let i = 0; i < qty.length; i++) {
               stokJohar = data.stokJohar.stok;
               totStok = data.totalStok;
               stokLain = data.stokLain;
-              console.log(totStok);
               displayQty(e.target.id, e.target.value, stokJohar, totStok, stokLain)
           }
       });
