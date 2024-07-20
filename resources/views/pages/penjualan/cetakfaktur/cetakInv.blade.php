@@ -47,14 +47,14 @@
         font-weight: 800;
         color: black;
         src: url('{{ public_path('backend/fonts/Dotrice.ttf') }}');
-      } 
+      }
 
       @font-face {
         font-family: "Dotrice Bold";
         font-weight: 800;
         color: black;
         src: url('{{ public_path('backend/fonts/Dotrice-Bold.otf') }}');
-      } 
+      }
 
       @font-face {
         font-family: "buenard";
@@ -115,7 +115,7 @@
       .text-dark {
           color: #5a5c69 !important;
       }
-      
+
       .text-right {
           text-align: right !important;
       }
@@ -265,7 +265,7 @@
         margin-top: -99px;
         /* margin-left: 20px; */
       }
- 
+
       .logo-cetak-so img {
         /* width: 135px; */
         /* height: 50px; */
@@ -408,7 +408,7 @@
           border-left: 1px solid black;
           border-right: 1px solid black;
           margin-bottom: -40px;
-          margin-left: 0; 
+          margin-left: 0;
           /* margin-left: 20px; */
           margin-right: 30px;
           margin-top: -15px;
@@ -459,7 +459,7 @@
       .tgl-ttd {
         font-size: 13px;
         line-height: 3px;
-        padding-left: 0.4rem; 
+        padding-left: 0.4rem;
         padding-bottom: 0.01rem;
       }
 
@@ -501,7 +501,7 @@
         font-weight: 700;
         margin-left: 30px;
         /* margin-right: 100px; // Margin minimum */
-        margin-right: 100px; /* Margin custom */ 
+        margin-right: 100px; /* Margin custom */
         margin-top: 33px;
         /* border: solid black; */
       }
@@ -544,7 +544,7 @@
   <body>
     @php $i = 1; $no = 1; $kode = []; $det = 0; $urut = 0; $stat = 0; $kur = 0; $subtotal = 0; @endphp
     @foreach($items as $item)
-      @if(($items->first()->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 12)) 
+      @if(($items->first()->id != ($det <= 12 ? $item->id : $items[$urut-$kur]->id)) && ($det <= 12))
         @php $i = 1; $no = 1; $kur = 0; $kode = []; $subtotal = 0; @endphp
       @endif
       <div class="cetak-all-container" style="margin-bottom: -55px; page-break-after: always;">
@@ -567,9 +567,9 @@
           </div>
         </div>
         <div class="float-left logo-cetak-so">
-          <img src="{{ url('backend/img/Logo_CPL_Only.jpg') }}" alt="">
+          <img src="{{ Auth::user()->is_admin ? url('backend/img/Logo_CPL_Only.jpg') : url('backend/img/mustika.jpeg') }}" alt="">
           <br>
-          <span class="telpon-logo">Office : 021 - 428 78 662</span>
+          <span class="telpon-logo"></span>
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
@@ -611,8 +611,8 @@
             </tr>
           </tbody>
         </table>
-        
-        @php 
+
+        @php
         $stat = $det;
         if($det <= 12)
           $so = $item->id;
@@ -636,8 +636,6 @@
               <td style="width: 10px; border-left: 1px dotted">No</td>
               <td style="width: 340px">Nama Barang</td>
               <td style="width: 75px">Qty</td>
-              {{-- <td style="width: 65px" class="text-right">Qty</td>
-              <td style="width: 80px"></td> --}}
               <td style="width: 50px">Harga</td>
               <td style="width: 90px">Total</td>
               <td colspan="2">Diskon</td>
@@ -661,13 +659,13 @@
                 @endif
                 <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
-                @php 
+                @php
                   $diskon = 100;
                   $itemDet->diskon = str_replace(",", ".", $itemDet->diskon);
                   $arrDiskon = explode("+", $itemDet->diskon);
                   for($j = 0; $j < sizeof($arrDiskon); $j++) {
                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                  } 
+                  }
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
                 <td style="width: 55px; font-size: 14.5px" align="right">
@@ -692,12 +690,12 @@
             @endif
           </tbody>
         </table>
-        
-        @php 
+
+        @php
           $cetak = 1;
           if(($stat <= 12 ? $item->status : $items[$urut-$kur]->status) != 'INPUT') {
             $ubah = App\Models\Approval::where('id_dokumen', $so)->count();
-            $cetak += $ubah; 
+            $cetak += $ubah;
           }
         @endphp
 
@@ -705,7 +703,7 @@
           <table class="table-footer">
             <thead>
               <tr>
-                <td style="border-right: 1px dotted; width: 90px"> 
+                <td style="border-right: 1px dotted; width: 90px">
                   <div class="ttd-penerima">
                     <table style="font-size: 15px !important">
                       <tr>
@@ -719,24 +717,10 @@
                       </tr>
                     </table>
                   </div>
-                  {{-- <div class="ttd-penerima text-center">
-                    <span>Penerima,</span>
-                    <br><br><br>
-                    <span class="form-ttd">(___________)</span>
-                  </div> --}}
                 </td>
                 <td style="border-right: 1px dotted; width: 273px">
                   <div class="info_bayar">
-                    <span>Pembayaran Giro / Transfer</span>
-                    <br>
-                    <span>Rekening Bank BCA</span>
-                    <br>
-                    <span>a/n Indah Ramadhon 5790416491</span>
-                    {{-- <span>Waktu Cetak : </span>
-                    <br>
-                    <span>{{ $today }} - {{ $waktu }}</span>
-                    <br>
-                    <span>Cetak ke : 1</span> --}}
+                    <span>Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan apabila syarat retur tidak terpenuhi</span>
                   </div>
                 </td>
                 <td style="width: 90px">
@@ -752,16 +736,10 @@
                         <td class="text-center">(___________)</td>
                       </tr>
                     </table>
-                    {{-- <center><span class="nama-gudang">Gudang,</span></center>
-                    <br><br>
-                    <span class="form-ttd">(___________)</span> --}}
                   </div>
                 </td>
                 <td style="border-right: 1px dotted; width: 88px">
                   <div class="ttd-mengetahui">
-                    {{-- <span class="tgl-ttd">
-                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
-                    </span> --}}
                     <table style="font-size: 15px !important">
                       <tr>
                         <td class="tgl-ttd">{{ \Carbon\Carbon::parse(($stat <= 12 ? $item->tgl_so : $items[$urut-$kur]->tgl_so))->format('d-M-y')}}</td>
@@ -776,12 +754,6 @@
                         <td class="text-center">(__________)</td>
                       </tr>
                     </table>
-                    {{-- <span class="tgl-ttd">
-                      {{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')}}
-                    </span>
-                    <span>Mengetahui,</span> 
-                    <br><br><br><br>
-                    <span class="form-ttd">(__________)</span>  --}}
                   </div>
                 </td>
                 <td>
@@ -789,7 +761,6 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        {{-- <td class="text-right angka-total">{{ $det <= 12 ? number_format(($stat <= 12 ? $item->total + $item->diskon : $items[$urut-$kur]->total + $items[$urut-$kur]->diskon), 0, "", ".") : '' }}</td> --}}
                         <td class="text-right angka-total">{{ $det <= 12 ? number_format(($stat <= 12 ? $subtotal + $item->diskon : $subtotal + $items[$urut-$kur]->diskon), 0, "", ".") : '' }}</td>
                       </tr>
                       <tr>
@@ -798,8 +769,7 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
-                        {{-- <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format(($stat <= 12 ? $item->total : $items[$urut-$kur]->total), 0, "", ".") : 'ke halaman' }}</td> --}}
-                         <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
+                        <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
                       </tr>
                       <tr>
                         <td class="title-total text-bold">PPN</td>
@@ -814,7 +784,6 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>
-                        {{-- <td class="text-right angka-total-akhir">{{ $det <= 12 ? number_format(($stat <= 12 ?$item->total : $items[$urut-$kur]->total), 0, "", ".") : '' }}</td> --}}
                         <td class="text-right angka-total-akhir">{{ $det <= 12 ? number_format(($subtotal), 0, "", ".") : '' }}</td>
                       </tr>
                     </table>
@@ -826,10 +795,7 @@
         </div>
 
         @php $i++; $urut++; $kur++; @endphp
-        <div class="float-right waktu-cetak-so">
-          <span class="waktu-cetak">Waktu Cetak : {{ $today }} {{ $waktu }}</span>
-          <span class="cetak-ke">Cetak ke: {{ $cetak }}</span>
-        </div>
+
       </div>
     @endforeach
 
@@ -841,5 +807,5 @@
       window.print();
     </script>
   </body>
-  
+
 </html>

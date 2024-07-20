@@ -255,7 +255,7 @@
                             </div>
                             <label for="pilih" style="margin-bottom: -5px">Pilih Gudang Tambahan</label>
                             @foreach($gudang as $g)
-                              @if($g->id != "GDG01")
+                              @if($g->id != "GDG06")
                                 <div class="row">
                                 <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudang{{$i-1}}"></span><span class="col-form-label text-bold gudangSatuan{{$i-1}}"></span><span class="col-form-label text-bold stokGudangUkuran{{$i-1}}"></span><span class="col-form-label text-bold gudangUkuran{{$i-1}}"></span>)</label>
                                 <input type="hidden" class="kodeGud{{$i-1}}" value="{{$g->id}}">
@@ -734,7 +734,7 @@ function displayRow(e) {
             </div>
             <label for="pilih" style="margin-bottom: -5px">Pilih Gudang Tambahan</label>
             @foreach($gudang as $g)
-              @if($g->id != "GDG01")
+              @if($g->id != "GDG06")
                 <div class="row">
                 <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudangRow${newNum}"></span><span class="col-form-label text-bold gudangSatuanRow${newNum}"></span><span class="col-form-label text-bold stokGudangUkuranRow${newNum}"></span><span class="col-form-label text-bold gudangUkuranRow${newNum}"></span>)</label>
                 <input type="hidden" class="kodeGudRow${newNum}" value="{{$g->id}}">
@@ -880,7 +880,7 @@ function displayRow(e) {
   }
 
   function resetQtyRow(e) {
-    kodeGudangRow.value = 'GDG01';
+    kodeGudangRow.value = 'GDG06';
     qtyGudangRow.value = '';
     qtyRow.value = '';
     satuanRow.value = '';
@@ -968,7 +968,7 @@ function displayRow(e) {
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
       jumlahRow.value = "";
       nettoRow.value = "";
-      kodeGudangRow.value = "GDG01";
+      kodeGudangRow.value = "GDG06";
       qtyGudangRow.value = "";
       qtyRow.value = "";
       satuanRow.value = "";
@@ -1049,7 +1049,7 @@ function displayRow(e) {
         }
       }
       else {
-        kodeGudangRow.value = "GDG01";
+        kodeGudangRow.value = "GDG06";
         qtyGudangRow.value = qtyRow.value;
       }
 
@@ -1085,7 +1085,7 @@ function displayRow(e) {
     cekModal = 0;
     const kodeGudRow = document.querySelectorAll(".kodeGudRow"+newNum);
     const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
-    kodeGudangRow.value = 'GDG01';
+    kodeGudangRow.value = 'GDG06';
     qtyGudangRow.value = stokJohar;
 
     const btnPilihRow = document.querySelectorAll(".btnPilihRow"+newNum);
@@ -1395,7 +1395,7 @@ for(let i = 0; i < brgNama.length; i++) {
   }
 
   function resetQty(e) {
-    kodeGudang[i].value = 'GDG01';
+    kodeGudang[i].value = 'GDG06';
     qtyGudang[i].value = '';
     qty[i].value = '';
     satuan[i].value = '';
@@ -1467,7 +1467,7 @@ for(let i = 0; i < qty.length; i++) {
       jumlah[i].value = "";
       diskonRp[i].value = "";
       netto[i].value = "";
-      kodeGudang[i].value = "GDG01";
+      kodeGudang[i].value = "GDG06";
       qtyGudang[i].value = "";
       qty[i].value = "";
       satuan[i].value = "";
@@ -1549,7 +1549,7 @@ for(let i = 0; i < qty.length; i++) {
         }
       }
       else {
-        kodeGudang[i].value = "GDG01";
+        kodeGudang[i].value = "GDG06";
         qtyGudang[i].value = qty[i].value;
       }
 
@@ -1636,7 +1636,7 @@ for(let j = 0; j < modalGudang.length; j++) {
     cekModal = 0;
     const kodeGud = document.querySelectorAll(".kodeGud"+j);
     const stokGudang = document.querySelectorAll('.stokGudang'+j);
-    kodeGudang[j].value = 'GDG01';
+    kodeGudang[j].value = 'GDG06';
     qtyGudang[j].value = stokJohar;
 
     const btnPilih = document.querySelectorAll(".btnPilih"+j);

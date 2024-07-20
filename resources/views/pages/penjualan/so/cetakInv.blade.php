@@ -71,7 +71,7 @@
       .text-dark {
           color: #5a5c69 !important;
       }
-      
+
       .text-right {
           text-align: right !important;
       }
@@ -221,7 +221,7 @@
         margin-top: -99px;
         /* margin-left: 20px; */
       }
- 
+
       .logo-cetak-so img {
         /* width: 135px; */
         /* height: 50px; */
@@ -364,7 +364,7 @@
           border-left: 1px solid black;
           border-right: 1px solid black;
           margin-bottom: -40px;
-          margin-left: 0; 
+          margin-left: 0;
           /* margin-left: 20px; */
           margin-right: 30px;
           margin-top: -15px;
@@ -415,7 +415,7 @@
       .tgl-ttd {
         font-size: 13px;
         line-height: 3px;
-        padding-left: 0.4rem; 
+        padding-left: 0.4rem;
         padding-bottom: 0.01rem;
       }
 
@@ -457,7 +457,7 @@
         font-weight: 700;
         margin-left: 30px;
         /* margin-right: 100px; // Margin minimum */
-        margin-right: 100px; /* Margin custom */ 
+        margin-right: 100px; /* Margin custom */
         margin-top: 33px;
         /* border: solid black; */
       }
@@ -486,7 +486,7 @@
           margin: 0;
           zoom: 1.37;
         }
-      } 
+      }
     </style>
   </head>
   <body>
@@ -513,13 +513,12 @@
           </div>
         </div>
         <div class="float-left logo-cetak-so">
-          <img src="{{ url('backend/img/Logo_CPL_Only.jpg') }}" alt="">
+          <img src="{{ Auth::user()->is_admin ? url('backend/img/Logo_CPL_Only.jpg') : url('backend/img/mustika.jpeg') }}" alt="">
           <br>
-          <span class="telpon-logo">Office : 021 - 428 78 662</span>
+          <span class="telpon-logo"></span>
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
-          {{-- <span>{{ $item->id_customer }}</span> --}}
           <br>
           <span class="nama-cetak-so">{{ $items->first()->customer->nama }}</span>
           <br>
@@ -557,8 +556,8 @@
             </tr>
           </tbody>
         </table>
-        
-        @php 
+
+        @php
         // sum(diskonRp) as diskonRp
         $itemsDet = \App\Models\DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
                           ->select('id_barang', 'nama', 'satuan', 'diskon', 'diskonRp')
@@ -600,24 +599,15 @@
                 @endif
                 <td align="right">{{ number_format($itemDet->harga, 0, "", ".") }}</td>
                 <td align="right">{{ number_format($itemDet->qty * $itemDet->harga, 0, "", ".") }}</td>
-                @php 
+                @php
                   $diskon = 100;
                   $itemDet->diskon = str_replace(",", ".", $itemDet->diskon);
                   $arrDiskon = explode("+", $itemDet->diskon);
                   for($j = 0; $j < sizeof($arrDiskon); $j++) {
                     $diskon -= ($arrDiskon[$j] * $diskon) / 100;
-                  } 
+                  }
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
-                {{-- @if(sizeof($arrDiskon) == 1)
-                  <td style="width: 135px; font-size: 14.5px" align="right">
-                    {{ $diskon }}%
-                  </td>
-                @else
-                  <td style="width: 135px; font-size: 14.5px" align="right">
-                    {{ str_replace(".", ",", $itemDet->diskon) }} ({{ $diskon }}%)
-                  </td>
-                @endif --}}
                 <td style="width: 55px; font-size: 14.5px" align="right">
                   {{ $diskon }}%
                 </td>
@@ -636,18 +626,16 @@
             @if($itemsDet->count() < 12)
               <tr class="text-center">
                 <td colspan="8"></td>
-                {{-- <td></td>
-                <td colspan="2"></td> --}}
               </tr>
             @endif
           </tbody>
         </table>
-        
-        @php 
+
+        @php
           $cetak = 1;
           if($items->first()->status != 'INPUT') {
             $ubah = App\Models\Approval::where('id_dokumen', $items->first()->id)->count();
-            $cetak += $ubah; 
+            $cetak += $ubah;
           }
         @endphp
 
@@ -655,7 +643,7 @@
           <table class="table-footer">
             <thead>
               <tr>
-                <td style="border-right: 1px dotted; width: 90px"> 
+                <td style="border-right: 1px dotted; width: 90px">
                   <div class="ttd-penerima">
                     <table style="font-size: 15px !important;">
                       <tr>
@@ -672,11 +660,7 @@
                 </td>
                 <td style="border-right: 1px dotted; width: 273px">
                   <div class="info_bayar">
-                    <span>Pembayaran Giro / Transfer</span>
-                    <br>
-                    <span>Rekening Bank BCA</span>
-                    <br>
-                    <span>a/n Indah Ramadhon 5790416491</span>
+                    <span>Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan apabila syarat retur tidak terpenuhi</span>
                   </div>
                 </td>
                 <td style="width: 90px">
@@ -754,10 +738,6 @@
         </div>
 
         @php $i++; @endphp
-        <div class="float-right waktu-cetak-so">
-          <span class="waktu-cetak">Waktu Cetak : {{ $today }} {{ $waktu }}</span>
-          <span class="cetak-ke">Cetak ke: {{ $cetak }}</span>
-        </div>
       </div>
     @endforeach
 
@@ -769,5 +749,5 @@
       window.print();
     </script>
   </body>
-  
+
 </html>

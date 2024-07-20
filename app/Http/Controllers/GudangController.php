@@ -8,24 +8,22 @@ use App\Models\Gudang;
 use App\Models\SalesOrder;
 use App\Models\StokBarang;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class GudangController extends Controller
 {
     public function index()
     {
-        $salesOrders = SalesOrder::query()
-            ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-            ->where('tgl_so', '<', '2022-08-25')
-            ->whereNull('deleted_at')
-            ->get();
+        $items = Gudang::where('id', 'GDG06');
 
-        foreach($salesOrders as $salesOrder) {
-            $salesOrder->status = 'CETAK';
-            $salesOrder->save();
+        if(Auth::user()->is_admin) {
+            $items = $items->orWhere('id', 'GDG02');
+        } else {
+            $items = $items->orWhere('id', 'GDG08');
         }
 
-        $items = Gudang::All();
+        $items = $items->get();
 
         $data = [
             'items' => $items
