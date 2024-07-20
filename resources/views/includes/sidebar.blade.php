@@ -3,8 +3,8 @@
 
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
-    <div class="sidebar-brand-icon">CPL</div>
-    <div class="sidebar-brand-text mx-3">Cahaya Prima Lestari</div>
+    <div class="sidebar-brand-icon">@if(Auth::user()->is_admin)CPL @else MCA @endif</div>
+    <div class="sidebar-brand-text mx-3">@if(Auth::user()->is_admin)Cahaya Pesona Lestari @else Mustika Cahaya Abadi @endif</div>
   </a>
 
   <!-- Divider -->

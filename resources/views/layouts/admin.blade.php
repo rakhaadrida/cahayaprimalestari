@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Cahaya Prima Lestari</title>
+  <title>@if(Auth::user()->is_admin)Cahaya Pesona Lestari @else Mustika Cahaya Abadi @endif</title>
 
   @stack('prepend-style')
   @include('includes.style')
