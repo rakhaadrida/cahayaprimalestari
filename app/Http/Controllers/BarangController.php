@@ -12,6 +12,7 @@ use App\Models\JenisBarang;
 use App\Models\StokBarang;
 use App\Models\Subjenis;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BarangController extends Controller
@@ -19,7 +20,15 @@ class BarangController extends Controller
     public function index() {
         $itemsBrg = Barang::All();
         $itemsBrgOff = Barang::whereIn('id_kategori', ['KAT03', 'KAT08'])->get();
-        $gudang = Gudang::All();
+        $gudang = Gudang::where('id', 'GDG06');
+
+        if(Auth::user()->is_admin) {
+            $gudang = $gudang->orWhere('id', 'GDG02');
+        } else {
+            $gudang = $gudang->orWhere('id', 'GDG08');
+        }
+
+        $gudang = $gudang->get();
 
         $data =  [
             'itemsBrg' => $itemsBrg,
