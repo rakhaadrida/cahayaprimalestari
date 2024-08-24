@@ -483,7 +483,7 @@
       }
 
       .angka-total {
-        width: 180px;
+        width: 95px;
         /* font-family: "epson1"; */
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         font-size: 16px;
@@ -491,7 +491,7 @@
       }
 
       .angka-total-akhir {
-        width: 145px;
+        width: 95px;
         /* font-family: "epson1"; */
         /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         font-size: 17px;
@@ -718,11 +718,23 @@
                     </table>
                   </div>
                 </td>
-                <td style="border-right: 1px dotted; width: 273px">
-                  <div class="info_bayar">
-                    <span>Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan apabila syarat retur tidak terpenuhi</span>
-                  </div>
-                </td>
+                  @if(($stat <= 12 ? $item->is_cpl : $items[$urut-$kur]->is_cpl) == 0)
+                      <td style="border-right: 1px dotted; width: 273px">
+                          <div class="info_bayar">
+                              <span>Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan apabila syarat retur tidak terpenuhi</span>
+                          </div>
+                      </td>
+                  @else
+                      <td style="border-right: 1px dotted; width: 273px">
+                          <div class="info_bayar">
+                              <span>Pembayaran Giro / Transfer</span>
+                              <br>
+                              <span>Rekening Bank BCA</span>
+                              <br>
+                              <span>a/n Indah Ramadhon 5790416491</span>
+                          </div>
+                      </td>
+                  @endif
                 <td style="width: 90px">
                   <div class="ttd-gudang">
                     <table style="font-size: 15px !important">
@@ -772,7 +784,7 @@
                         <td class="text-right angka-total" @if($det > 12) style="letter-spacing: 0.7px;" @endif>{{ $det <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
                       </tr>
                       <tr>
-                        <td class="title-total text-bold">PPN</td>
+                        <td class="title-total text-bold">Harga Sudah Termasuk PPN</td>
                         <td class="text-right angka-total">{{ $det <= 12 ? '' : 'berikutnya...' }}</td>
                       </tr>
                       <tr>
