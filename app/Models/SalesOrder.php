@@ -11,7 +11,7 @@ class SalesOrder extends Model
 
     protected $table = "so";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'diskon', 'kategori', 'tempo', 'pkp', 'status', 'id_customer', 'id_sales', 'id_user'];
+    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'diskon', 'kategori', 'tempo', 'pkp', 'status', 'id_customer', 'id_sales', 'id_user', 'is_cpl'];
 
     public $incrementing = false;
 
@@ -50,7 +50,7 @@ class SalesOrder extends Model
     public function ar() {
         return $this->hasOne('App\Models\AccReceivable', 'id_so', 'id');
     }
-    
+
     // public function retur() {
     //     return $this->hasMany('App\Models\Retur', 'id_faktur', 'id');
     // }

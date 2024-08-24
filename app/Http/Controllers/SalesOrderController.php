@@ -168,7 +168,8 @@ class SalesOrderController extends Controller
             'status' => $status,
             'id_customer' => $request->kodeCustomer,
             'id_sales' => $request->kodeSales,
-            'id_user' => Auth::user()->id
+            'id_user' => Auth::user()->id,
+            'is_cpl' => Auth::user()->is_admin
         ]);
 
         $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')

@@ -25,42 +25,42 @@
         font-family: "epson1regular";
         font-weight: 900;
         color: black;
-        src: url('{{ public_path('backend/fonts/epson1regular.ttf') }}');
+        src: url('{{ url('backend/fonts/epson1regular.ttf') }}');
       } */
 
       @font-face {
         font-family: "epson1";
         font-weight: 900;
         color: black;
-        src: url('{{ public_path('backend/fonts/epson1.woff') }}');
+        src: url('{{ url('backend/fonts/epson1.woff') }}');
       }
 
       /* @font-face {
         font-family: "bpdots";
         font-weight: 800;
         color: black;
-        src: url('{{ public_path('backend/fonts/BPdots.otf') }}');
+        src: url('{{ url('backend/fonts/BPdots.otf') }}');
       } */
 
       @font-face {
         font-family: "Dotrice";
         font-weight: 800;
         color: black;
-        src: url('{{ public_path('backend/fonts/Dotrice.ttf') }}');
+        src: url('{{ url('backend/fonts/Dotrice.ttf') }}');
       }
 
       @font-face {
         font-family: "Dotrice Bold";
         font-weight: 800;
         color: black;
-        src: url('{{ public_path('backend/fonts/Dotrice-Bold.otf') }}');
+        src: url('{{ url('backend/fonts/Dotrice-Bold.otf') }}');
       }
 
       @font-face {
         font-family: "buenard";
         font-weight: 800;
         color: black;
-        src: url('{{ public_path('backend/fonts/Buenard-Regular.ttf') }}');
+        src: url('{{ url('backend/fonts/Buenard-Regular.ttf') }}');
       }
 
       h1,
