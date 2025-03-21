@@ -37,7 +37,7 @@
                       <label for="kode" class="col-2 col-form-label text-bold ">Nomor SO</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2">
-                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly required>
+                        <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" required>
                       </div>
                       <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                       <span class="col-form-label text-bold">:</span>
@@ -442,10 +442,10 @@
                       <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="h2 text-bold">&times;</span>
                       </button>
-                      <h4 class="modal-title">Konfirmasi Faktur <b>{{$newcode}}</b></h4>
+                      <h4 class="modal-title">Konfirmasi Faktur</h4>
                     </div>
                     <div class="modal-body">
-                      <p>Faktur <strong>{{$newcode}}</strong> akan disimpan. Silahkan pilih cetak atau input faktur lagi.</p>
+                      <p>Faktur akan disimpan. Silahkan pilih cetak atau input faktur lagi.</p>
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
