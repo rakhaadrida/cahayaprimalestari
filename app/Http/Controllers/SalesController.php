@@ -14,47 +14,6 @@ use Maatwebsite\Excel\Facades\Excel;
 class SalesController extends Controller
 {
     public function index() {
-        $waktu = Carbon::now('+07:00');
-        $bulan = $waktu->format('m');
-        $month = $waktu->month;
-        $tahun = substr($waktu->year, -2);
-
-        $salesOrders = SalesOrder::query()
-            ->whereBetween('tgl_so', ['2025-01-01', '2025-01-31'])
-            ->get();
-        // dd($salesOrders[0]->id);
-
-        foreach($salesOrders as $salesOrder) {
-            // dd(empty($salesOrder->ar));
-            if(empty($salesOrder->ar)) {
-                $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
-                    ->selectRaw('max(ar.id) as id')->where('ar.id', 'LIKE', '%' . $tahun . $bulan . '%')->get();
-                $lastnumber = (int)substr($lastcode[0]->id, 6, 4);
-                $lastnumber++;
-                $newcode = 'AR' . $tahun . $bulan . sprintf('%04s', $lastnumber);
-                $arKode = $newcode;
-
-                AccReceivable::create([
-                    'id' => $newcode,
-                    'id_so' => $salesOrder->id,
-                    'keterangan' => 'LUNAS'
-                ]);
-
-                $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('created_at', $waktu->year)
-                    ->whereMonth('created_at', $month)->get();
-                $lastnumber = (int)substr($lastcode->first()->id, 7, 4);
-                $lastnumber++;
-                $newcode = 'CIC' . $tahun . $bulan . sprintf("%04s", $lastnumber);
-
-                DetilAR::create([
-                    'id_ar' => $arKode,
-                    'id_cicil' => $newcode,
-                    'tgl_bayar' => '2025-03-19',
-                    'cicil' => $salesOrder->total
-                ]);
-            }
-        }
-
         $items = Sales::All();
         $data = [
             'items' => $items
