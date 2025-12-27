@@ -628,7 +628,7 @@
             </tr>
           </thead>
           <tbody class="tr-detail-cetak-so">
-            @php $i = 1; @endphp
+            @php $cek = 0; @endphp
             @foreach($itemsDet as $it)
               <tr class="baris-so">
                 <td align="center">{{ $no }}</td>
@@ -650,6 +650,7 @@
               </tr>
               @php $no++; array_push($kode, $it->id_barang); @endphp
               @if($no > (12 * $i))
+                @php $cek = 1; @endphp
                 @break
               @endif
             @endforeach
