@@ -2,8 +2,6 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    {{-- <link href="backend/css/sb-admin-2.css" rel="stylesheet">
-    <link href="backend/css/main.css" rel="stylesheet"> --}}
     <style>
       body {
           margin: 0;
@@ -67,7 +65,7 @@
       .text-dark {
           color: #292a2b !important;
       }
-      
+
       .text-right {
           text-align: right !important;
       }
@@ -88,7 +86,7 @@
           border-collapse: collapse;
           font-size: 8px;
       }
-      
+
       .table {
           width: 100%;
           margin-bottom: 1rem;
@@ -171,7 +169,7 @@
           <h6 class="text-dark waktu-cetak">Waktu Cetak : {{$waktu}}</h6>
         </div>
       </center>
-      
+
         <!-- Tabel Data Detil BM-->
       <table class="table table-sm table-bordered table-cetak" style="page-break-inside: always">
         <thead class="text-center text-dark text-bold" >
@@ -208,7 +206,7 @@
                 {{ number_format($item->total, 0, "", ",") }}
               </td>
               <td></td>
-            </tr> 
+            </tr>
             @php $i++ @endphp
           @endforeach
           @if($itemsEx != NULL)
@@ -231,7 +229,7 @@
                   {{ number_format($item->total, 0, "", ",") }}
                 </td>
                 <td></td>
-              </tr> 
+              </tr>
               @php $i++ @endphp
             @endforeach
           @endif
@@ -246,7 +244,7 @@
               <td align="center" class="align-middle"></td>
               <td align="right" class="align-middle"></td>
               <td></td>
-            </tr> 
+            </tr>
           @endfor --}}
         </tbody>
       </table>

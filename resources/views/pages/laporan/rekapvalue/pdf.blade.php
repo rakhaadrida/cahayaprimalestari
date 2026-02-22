@@ -31,29 +31,14 @@
       h3,
       h4,
       h5,
-      h6,
-      .h1,
-      .h2,
-      .h3,
-      .h4,
-      .h5,
-      .h6 {
+      h6 {
           margin-bottom: 0.5rem;
           font-weight: 400;
           line-height: 1.2;
       }
 
-      h5,
-      .h5 {
+      h5 {
           font-size: 1.25rem;
-      }
-
-      .container-fluid {
-          width: 100%;
-          padding-right: 0.75rem;
-          padding-left: 0.75rem;
-          margin-right: auto;
-          margin-left: auto;
       }
 
       .text-center {
@@ -67,18 +52,6 @@
       .text-dark {
           color: black !important;
       }
-      
-      .text-right {
-          text-align: right !important;
-      }
-
-      .text-wrap {
-          white-space: normal !important;
-      }
-
-      .float-right {
-          float: right !important;
-      }
 
       .align-middle {
           vertical-align: middle !important;
@@ -88,7 +61,7 @@
           border-collapse: collapse;
           font-size: 8px;
       }
-      
+
       .table {
           width: 100%;
           margin-bottom: 1rem;
@@ -133,10 +106,6 @@
           border-bottom-width: 2px;
       }
 
-      .kode-cetak-stok {
-          margin-top: -8px;
-      }
-
       .title-rekap {
         margin-top: -30px;
       }
@@ -146,15 +115,6 @@
         margin-top: -10px !important;
       }
 
-      /* #container {
-        column-count: 2 !important;
-        -moz-column-count: 2 !important;
-        -webkit-column-count: 2 !important;
-        
-        width: 200px;
-        height: 200px;
-      } */
-
       .table-cetak {
         left: 0%;
         width: 50%;
@@ -163,7 +123,6 @@
         margin-right: 3px;
         margin-top: -28px;
         position: absolute;
-        /* border: 0.5px solid #292a2b !important; */
         border-width: thin !important;
       }
 
@@ -181,9 +140,7 @@
         font-size: 8.5px;
         margin-left: 3px;
         margin-right: -15px;
-        /* margin-top: -0px; */
         position: absolute;
-        /* border: 0.5px solid #292a2b !important; */
         border-width: thin !important;
       }
 
@@ -209,7 +166,7 @@
           </div>
         </center>
         <br>
-        
+
         <div id="container">
           <!-- Tabel Data Detil BM-->
           <table class="table table-sm table-bordered table-cetak">
@@ -223,7 +180,7 @@
               </tr>
             </thead>
             <tbody>
-              @php 
+              @php
                 $i = 1; $baris = 1; $kode = []; $status = 0; $kodeBrg = [];
                 $sub = \App\Models\Subjenis::whereIn('id_kategori', $kodeJen)->get();
               @endphp
@@ -231,7 +188,7 @@
                 @if($status != 1)
                   @php
                     $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
-                  @endphp 
+                  @endphp
                   @if($baris <= 67)
                     @if($baris != 67)
                       <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
@@ -239,17 +196,17 @@
                       </tr>
                       @php $kodeSub = $s->id; @endphp
                     @endif
-                    @php 
+                    @php
                       if(($baris + $barang->count()) <= 67)
-                        array_push($kode, $s->id); 
-                      $baris++; 
+                        array_push($kode, $s->id);
+                      $baris++;
                     @endphp
                     @foreach($barang as $b)
                       @if($baris <= 67)
                         @php
                           $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
                                   ->where('id_harga', 'HRG01')->get();
-                          $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                          $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang',
                                     DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
                                     ->where('status', 'T')->get();
                         @endphp
@@ -296,7 +253,7 @@
                     @php
                       $barang = \App\Models\Barang::where('id_sub', $s->id)
                                 ->whereNotIn('id', $kodeBrg)->get();
-                    @endphp 
+                    @endphp
                     @if($baris <= 134)
                       @if(($s->id != $kodeSub) && ($baris != 134))
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
@@ -304,17 +261,17 @@
                         </tr>
                         @php $kodeSub = $s->id; $baris++; @endphp
                       @endif
-                      @php 
+                      @php
                         if(($baris + $barang->count()) <= 134)
-                          array_push($kode, $s->id); 
-                        
+                          array_push($kode, $s->id);
+
                       @endphp
                       @foreach($barang as $b)
                         @if($baris <= 134)
                           @php
                             $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
                                     ->where('id_harga', 'HRG01')->get();
-                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang',
                                     DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
                                     ->where('status', 'T')->get();
                           @endphp
@@ -363,7 +320,7 @@
                     @php
                       $barang = \App\Models\Barang::where('id_sub', $s->id)
                                 ->whereNotIn('id', $kodeBrg)->get();
-                    @endphp 
+                    @endphp
                     @if($baris <= 201)
                       @if(($s->id != $kodeSub) && ($baris != 201))
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
@@ -371,16 +328,16 @@
                         </tr>
                         @php $kodeSub = $s->id; $baris++; @endphp
                       @endif
-                      @php 
+                      @php
                         if(($baris + $barang->count()) <= 201)
-                          array_push($kode, $s->id); 
+                          array_push($kode, $s->id);
                       @endphp
                       @foreach($barang as $b)
                         @if($baris <= 201)
                           @php
                             $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
                                     ->where('id_harga', 'HRG01')->get();
-                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang',
                                     DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
                                     ->where('status', 'T')->get();
                           @endphp
@@ -429,7 +386,7 @@
                     @php
                       $barang = \App\Models\Barang::where('id_sub', $s->id)
                                 ->whereNotIn('id', $kodeBrg)->get();
-                    @endphp 
+                    @endphp
                     @if($baris <= 268)
                       @if(($s->id != $kodeSub) && ($baris != 268))
                         <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
@@ -437,16 +394,16 @@
                         </tr>
                         @php $kodeSub = $s->id; $baris++; @endphp
                       @endif
-                      @php 
+                      @php
                         if(($baris + $barang->count()) <= 268)
-                          array_push($kode, $s->id); 
+                          array_push($kode, $s->id);
                       @endphp
                       @foreach($barang as $b)
                         @if($baris <= 268)
                           @php
                             $harga = \App\Models\HargaBarang::where('id_barang', $b->id)
                                     ->where('id_harga', 'HRG01')->get();
-                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang', 
+                            $stok = \App\Models\StokBarang::with(['barang'])->select('id_barang',
                                     DB::raw('sum(stok) as total'))->where('id_barang', $b->id)
                                     ->where('status', 'T')->get();
                           @endphp
