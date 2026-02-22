@@ -16,10 +16,15 @@ class CetakFakturController extends Controller
     public function index($status, $awal, $akhir) {
         set_time_limit(600);
 
-        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
-                ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->orderBy('tgl_so', 'asc')->get();
+        $baseQuery = SalesOrder::select('so.id as id', 'so.*')
+            ->where('id_cabang', '!=', 2)
+            ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT']);
+
+        if(Auth::user()->roles == 'CIANJUR') {
+            $baseQuery = $baseQuery->where('id_cabang', 3);
+        }
+
+        $items = $baseQuery->orderBy('tgl_so', 'asc')->get();
 
         $data = [
             'items' => $items,
@@ -40,7 +45,6 @@ class CetakFakturController extends Controller
             'status' => 'true'
         ];
 
-        // return redirect()->route('cetak-faktur', $data);
         return redirect()->route('cetak-all', ['awal' => $request->kodeAwal, 'akhir' => $request->kodeAkhir]);
     }
 
@@ -87,8 +91,6 @@ class CetakFakturController extends Controller
                 });
         $items = $items->values();
 
-        // return response()->json($items);
-
         $today = Carbon::now()->isoFormat('dddd, D MMM Y');
         $waktu = Carbon::now();
         $waktu = Carbon::parse($waktu)->format('H:i:s');
@@ -101,7 +103,7 @@ class CetakFakturController extends Controller
             'akhir' => $akhir
         ];
 
-        if(Auth::user()->name != 'Admin_mitra') {
+        if((Auth::user()->name != 'Admin_mitra') && (Auth::user()->roles != 'CIANJUR')) {
             return view('pages.penjualan.cetakfaktur.cetakInv', $data);
         } else {
             return view('pages.penjualan.cetakfaktur.cetakInvAlter', $data);
@@ -109,10 +111,16 @@ class CetakFakturController extends Controller
     }
 
      public function update($awal, $akhir) {
-        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.id as id', 'so.*')->where('roles', '!=', 'KENARI')
+        $baseQuery = SalesOrder::select('so.id as id', 'so.*')
+                ->where('id_cabang', '!=', 2)
                 ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->whereBetween('so.id', [$awal, $akhir])->get();
+                ->whereBetween('so.id', [$awal, $akhir]);
+
+         if(Auth::user()->roles == 'CIANJUR') {
+             $baseQuery = $baseQuery->where('id_cabang', 3);
+         }
+
+        $items = $baseQuery->get();
 
         foreach($items as $item) {
             $item->status = 'CETAK';

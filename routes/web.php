@@ -56,7 +56,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::get('password', 'UserController@change')->name('user-change');
     Route::post('password/process', 'UserController@process')->name('user-process');
 
-    Route::group(['roles'=>['ADMIN', 'SUPER']], function() {
+    Route::group(['roles' => ['ADMIN', 'SUPER']], function() {
         //CRUD Master
         Route::resource('supplier', 'SupplierController');
         Route::resource('sales', 'SalesController');
@@ -229,11 +229,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/so/change/update', 'SalesOrderController@update')->name('so-update');
         Route::post('/so/check/stock/{code}', 'SalesOrderController@getStok')->name('so-stock');
 
-        // Transaksi Harian
-        Route::get('/transaksi', 'TransaksiController@index')->name('trans');
-        Route::post('/transaksi', 'TransaksiController@index')->name('trans-home');
-        Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
-
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
         Route::post('/tandaterima/show', 'TandaTerimaController@show')->name('ttr-show');
@@ -249,16 +244,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('ttr-update');
 
         // Cetak Faktur
-        Route::get('/cetak-faktur/{status}/{awal}/{akhir}', 'CetakFakturController@index')
-            ->name('cetak-faktur');
-        Route::post('/cetak-faktur/process', 'CetakFakturController@process')
-            ->name('cetak-process');
-        Route::get('/cetak/{awal}/{akhir}', 'CetakFakturController@cetak')
-            ->name('cetak-all');
         Route::get('/cetak-ttr/{awal}/{akhir}', 'CetakFakturController@tandaterima')
             ->name('cetak-ttr');
-        Route::get('/cetak-update/{awal}/{akhir}', 'CetakFakturController@update')
-            ->name('cetak-update');
 
         // Surat Jalan
         Route::get('/sj', 'SuratJalanController@index')->name('sj');
@@ -315,7 +302,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('qty-sales/show', 'RekapSalesPrimeController@show')->name('qs-show');
     });
 
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'KENARI']], function() {
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'KENARI']], function() {
         Route::get('/transfer/{status}', 'TransferBarangController@index')->name('tb');
         Route::post('/transfer/stok', 'TransferBarangController@cekStok')->name('tb-stok');
         Route::post('/transfer/process/{id}/{status}', 'TransferBarangController@process')
@@ -340,7 +327,22 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-tb-update');
     });
 
-    Route::group(['roles'=>'SUPER'], function() {
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'CIANJUR']], function() {
+        Route::get('/transaksi', 'TransaksiController@index')->name('trans');
+        Route::post('/transaksi', 'TransaksiController@index')->name('trans-home');
+        Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
+
+        Route::get('/cetak-faktur/{status}/{awal}/{akhir}', 'CetakFakturController@index')
+            ->name('cetak-faktur');
+        Route::post('/cetak-faktur/process', 'CetakFakturController@process')
+            ->name('cetak-process');
+        Route::get('/cetak/{awal}/{akhir}', 'CetakFakturController@cetak')
+            ->name('cetak-all');
+        Route::get('/cetak-update/{awal}/{akhir}', 'CetakFakturController@update')
+            ->name('cetak-update');
+    });
+
+    Route::group(['roles' => 'SUPER'], function() {
         // Approval
         Route::get('approval', 'ApprovalController@index')->name('approval');
         Route::get('approval/show/{id}', 'ApprovalController@show')->name('app-show');
@@ -381,7 +383,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('prime/excel-filter', 'ProgramPrimeController@excelFilter')->name('prime-excel-filter');
     });
 
-    Route::group(['roles'=>['ADMIN', 'AR']], function() {
+    Route::group(['roles' => ['ADMIN', 'AR']], function() {
         // Notif
         Route::get('notif', 'NotifController@index')->name('notif');
         Route::get('notif/show/{id}', 'NotifController@show')->name('notif-show');
@@ -390,7 +392,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('notif/afterPrint/{id}/{kode}', 'NotifController@afterPrint')->name('notif-after-print');
     });
 
-    Route::group(['roles'=>['AR', 'SUPER', 'OFFICE02']], function() {
+    Route::group(['roles' => ['AR', 'SUPER', 'OFFICE02']], function() {
         // Account Receivable
         Route::get('ar', 'AccReceivableController@index')->name('ar');
         Route::post('ar', 'AccReceivableController@index')->name('ar-home');
@@ -400,7 +402,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ar/retur', 'AccReceivableController@retur')->name('ar-retur');
     });
 
-    Route::group(['roles'=>['AR', 'SUPER']], function() {
+    Route::group(['roles' => ['AR', 'SUPER']], function() {
         // Account Receivable
         Route::get('ar/retur/{id}', 'AccReceivableController@createRetur')->name('ar-retur-create');
         Route::get('ar/cicil/{id}', 'AccReceivableController@createCicil')->name('ar-cicil-create');
@@ -409,7 +411,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ar/double-data', 'AccReceivableController@deleteDoubleData')->name('ar-double-data');
     });
 
-    Route::group(['roles'=>['AP', 'SUPER']], function() {
+    Route::group(['roles' => ['AP', 'SUPER']], function() {
         // Account Payable
         Route::get('ap', 'AccPayableController@index')->name('ap');
         Route::post('ap', 'AccPayableController@index')->name('ap-home');
@@ -425,7 +427,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('ap/transfer/{id}', 'AccPayableController@createTransfer')->where('id', '(.*)')->name('ap-transfer-create');
     });
 
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR']], function() {
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'AR']], function() {
         // Ubah dan Cek Faktur
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
@@ -434,16 +436,19 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('ar/cetakNow/{status}', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
     });
 
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02']], function() {
-        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02']], function() {
         Route::get('barang/detail/{id}', 'BarangController@detail')->name('detailBarang');
     });
 
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'GUDANG']], function() {
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'AR', 'KENARI', 'OFFICE02', 'CIANJUR']], function() {
+        Route::post('/transaksi/detail/{id}', 'TransaksiController@detail')->name('trans-detail');
+    });
+
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'GUDANG']], function() {
         Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
     });
 
-    Route::group(['roles'=>['ADMIN', 'GUDANG', 'SUPER', 'AR']], function() {
+    Route::group(['roles' => ['ADMIN', 'GUDANG', 'SUPER', 'AR']], function() {
         // Retur
         Route::get('/retur/index-jual', 'ReturController@createPenjualan')
             ->name('ret-index-jual');
@@ -467,7 +472,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('retur/penjualan/batal/{id}', 'ReturController@batalReturJual')->name('retur-jual-batal');
     });
 
-    Route::group(['roles'=>['ADMIN', 'GUDANG', 'SUPER', 'AP']], function() {
+    Route::group(['roles' => ['ADMIN', 'GUDANG', 'SUPER', 'AP']], function() {
         // Retur Pembelian
         Route::get('/retur/index-beli', 'ReturController@createPembelian')
             ->name('ret-index-beli');
@@ -493,12 +498,12 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('retur/pembelian/batal/{id}', 'ReturController@batalReturBeli')->name('retur-beli-batal');
     });
 
-    Route::group(['roles'=>['OFFICE02', 'GUDANG', 'AR']], function() {
+    Route::group(['roles' => ['OFFICE02', 'GUDANG', 'AR']], function() {
         // Account Payable
         Route::get('stok/index', 'BarangController@index')->name('stok-office');
     });
 
-    Route::group(['roles'=>['ADMIN', 'SUPER', 'OFFICE02']], function() {
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'OFFICE02']], function() {
         // Laporan Keuangan
         Route::get('keuangan', 'LapKeuController@index')->name('lap-keu');
         Route::get('keuangan/show/{tah}/{mo}', 'LapKeuController@show')->name('lap-keu-show');
@@ -507,7 +512,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('lap-keu-index-hpp');
     });
 
-    Route::group(['roles'=>'KENARI'], function() {
+    Route::group(['roles' => 'KENARI'], function() {
         // Notif
         Route::get('kenari/notif', 'KenariController@indexNotif')->name('notif-kenari');
         Route::get('kenari/notif/show/{id}', 'KenariController@showNotif')->name('notif-show-kenari');

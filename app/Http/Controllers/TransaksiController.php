@@ -6,12 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\SalesOrder;
 use App\Models\Gudang;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
 {
     public function index() {
         $tanggal = Carbon::now()->toDateString();
-        $items = SalesOrder::where('tgl_so', $tanggal)->get(); 
+        $baseQuery = SalesOrder::where('tgl_so', $tanggal);
+
+        if(Auth::user()->roles == 'CIANJUR') {
+            $baseQuery = $baseQuery->where('id_cabang', 3);
+        }
+
+        $items = $baseQuery->get();
 
         $data = [
             'items' => $items

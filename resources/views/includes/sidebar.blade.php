@@ -93,6 +93,41 @@
     </li>
   @endif
 
+  @if(Auth::user()->roles == 'CIANJUR')
+    <hr class="sidebar-divider">
+    <li class="nav-item sidebar-menu-icon" >
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCianjur" aria-expanded="true" aria-controls="collapseCianjur">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Penjualan</span>
+      </a>
+      <div id="collapseCianjur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div class="py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
+          <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
+        </div>
+      </div>
+    </li>
+    <li class="nav-item sidebar-menu-icon">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseLaporan">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Laporan</span>
+      </a>
+      <div id="collapseLaporan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div class="py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('price') }}">Price List</a>
+          <a class="collapse-item" href="{{ route('kartu') }}">Kartu Stok</a>
+          <a class="collapse-item" href="{{ route('rekap') }}">Rekap Stok</a>
+        </div>
+      </div>
+    </li>
+    <li class="nav-item sidebar-menu-icon">
+      <a class="nav-link collapsed" href="{{ route('ar') }}">
+        <i class="fas fa-fw fa-folder"></i>
+        <span>Account Receivable</span>
+      </a>
+    </li>
+  @endif
+
   <!-- Divider -->
   <hr class="sidebar-divider">
 
@@ -168,15 +203,6 @@
             <a class="collapse-item" href="{{route('ttr-index-cetak', ['status' => 'false', 'awal' => '0', 'akhir' => '0'])}}">Cetak Tanda Terima</a>
             <a class="collapse-item" href="{{ route('ttr') }}">Data Tanda Terima</a>
             <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
-            {{-- <a class="collapse-item" data-toggle="collapse" data-target="#collapseRetur" aria-expanded="true" aria-controls="collapseRetur">Retur Barang</a>
-              <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#collapsePenjualan">
-                <div class="py-2 collapse-sub-inner rounded">
-                  <a class="collapse-item" href="{{ route('retur-stok') }}">Input Retur</a>
-                  <a class="collapse-item" href="{{ route('retur-jual') }}">Retur Penjualan</a>
-                  <a class="collapse-item" href="{{ route('retur-beli') }}">Retur Pembelian</a>
-                </div>
-              </div> --}}
-            {{-- <a class="collapse-item" href="{{ route('sj') }}">Surat Jalan</a> --}}
           </div>
         </div>
       </li>
