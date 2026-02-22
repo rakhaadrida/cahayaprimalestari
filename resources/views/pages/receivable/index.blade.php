@@ -47,12 +47,14 @@
                       <option value="BELUM LUNAS">BELUM LUNAS</option>
                     </select>
                   </div>
-                  <div class="col-auto mt-1" style="margin-left: 215px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
-                  </div>
-                  <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
-                  </div>
+                  @if(Auth::user()->roles != 'CIANJUR')
+                    <div class="col-auto mt-1" style="margin-left: 215px">
+                      <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Print Prime</button>
+                    </div>
+                    <div class="col-auto mt-1" style="margin-left: -10px">
+                      <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'Prime') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-primary btn-sm btn-block text-bold">Excel Prime</button>
+                    </div>
+                  @endif
                 </div>
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-auto col-form-label text-right text-bold">Dari Tanggal</label>
@@ -67,15 +69,17 @@
                   <div class="col-1 mt-1" style="margin-left: -10px">
                     <button type="submit" tabindex="5" formaction="{{ route('ar-show') }}" formmethod="GET" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                   </div>
-                  <div class="col-auto mt-1" style="margin-left: 155px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print All</button>
-                  </div>
-                  <div class="col-auto mt-1" style="margin-left: -10px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
-                  </div>
-                  <div class="col-auto mt-1" style="margin-left: 35px; margin-right: -100px">
-                    <button type="submit" tabindex="5" formaction="{{ route('ar-double-data') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Hapus Double</button>
-                  </div>
+                  @if(Auth::user()->roles != 'CIANJUR')
+                    <div class="col-auto mt-1" style="margin-left: 155px">
+                      <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold">Print All</button>
+                    </div>
+                    <div class="col-auto mt-1" style="margin-left: -10px">
+                      <button type="submit" tabindex="5" formaction="{{ route('ar-excel-now', 'All') }}" formmethod="POST" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold">Excel All</button>
+                    </div>
+                    <div class="col-auto mt-1" style="margin-left: 35px; margin-right: -100px">
+                      <button type="submit" tabindex="5" formaction="{{ route('ar-double-data') }}" formmethod="POST" id="btn-cari" class="btn btn-outline-danger btn-sm btn-block text-bold">Hapus Double</button>
+                    </div>
+                  @endif
                 </div>
               </div>
               <hr>
@@ -101,7 +105,7 @@
                 </thead>
                 <tbody class="table-ar">
                   @php $i = 1; $tab = 5;
-                    if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR'))
+                    if((Auth::user()->roles == 'SUPER') || (Auth::user()->roles == 'AR') || (Auth::user()->roles == 'CIANJUR'))
                       $items = $ar;
                     elseif(Auth::user()->roles == 'OFFICE02')
                       $items = $arOffice
@@ -136,7 +140,11 @@
                       </td>
                       <td align="right" class="align-middle">{{ number_format($arLast->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($arLast->keterangan != null) && ($arLast->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        <a href="{{ route('ar-cicil-create', $arLast->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$arLast->keterangan}}</a>
+                        @if(Auth::user()->roles != 'CIANJUR')
+                          <a href="{{ route('ar-cicil-create', $arLast->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$arLast->keterangan}}</a>
+                        @else
+                          {{$arLast->keterangan}}
+                        @endif
                       </td>
                     </tr>
                     @php $i++; @endphp
@@ -171,8 +179,11 @@
                       </td>
                       <td align="right" class="align-middle">{{ number_format($a->total - $total[0]->totCicil - $retur[0]->total, 0, "", ",") }}</td>
                       <td align="center" class="align-middle text-bold" @if(($a->keterangan != null) && ($a->keterangan == "LUNAS")) style="background-color: lightgreen" @else style="background-color: lightpink" @endif>
-                        {{-- <a href="#Detail{{ $a->id_so }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" data-toggle="modal" style="font-size: 13px">{{$a->keterangan}}</a> --}}
-                        <a href="{{ route('ar-cicil-create', $a->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$a->keterangan}}</a>
+                        @if(Auth::user()->roles != 'CIANJUR')
+                          <a href="{{ route('ar-cicil-create', $a->id_so) }}" tabindex="{{ $tab += 3 }}" class="btn btn-link btn-sm text-bold btnDetail" style="font-size: 13px">{{$a->keterangan}}</a>
+                        @else
+                          {{$a->keterangan}}
+                        @endif
                       </td>
                     </tr>
                     @php $i++; @endphp

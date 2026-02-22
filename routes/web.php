@@ -253,7 +253,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/sj/process/{id}', 'SuratJalanController@process')->name('sj-process');
 
         // Price List
-        Route::get('price', 'RekapPriceController@index')->name('price');
         Route::post('price/pdf', 'RekapPriceController@cetak_pdf')->name('price-pdf');
         Route::post('price/excel', 'RekapPriceController@cetak_excel')->name('price-excel');
 
@@ -272,18 +271,9 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('bk/show', 'RekapBKController@show')->name('bk-show');
         Route::post('bk/excel', 'RekapBKController@excel')->name('bk-excel');
 
-        // Kartu Stok
-        Route::get('kartu', 'KartuStokController@index')->name('kartu');
-        Route::post('kartu/show', 'KartuStokController@show')->name('ks-show');
-        Route::post('kartu/excel', 'KartuStokController@cetak_excel')->name('ks-excel');
-
         // Rekap Stok
-        Route::get('rekap', 'RekapStokController@index')->name('rekap');
-        Route::post('rekap/show', 'RekapStokController@show')->name('rs-show');
         Route::get('rekap/cetak', 'RekapStokController@cetak')->name('rs-cetak');
-        Route::post('rekap/pdf', 'RekapStokController@cetak_pdf')->name('rs-pdf');
         Route::post('rekap/excel', 'RekapStokController@cetak_excel')->name('rs-excel');
-        Route::post('rekap/pdf/filter', 'RekapStokController@pdf_filter')->name('rs-pdf-filter');
         Route::post('rekap/excel/filter', 'RekapStokController@excel_filter')->name('rs-excel-filter');
 
         // Rekap Value
@@ -340,6 +330,21 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-all');
         Route::get('/cetak-update/{awal}/{akhir}', 'CetakFakturController@update')
             ->name('cetak-update');
+
+        Route::get('price', 'RekapPriceController@index')->name('price');
+
+        Route::get('kartu', 'KartuStokController@index')->name('kartu');
+        Route::post('kartu/show', 'KartuStokController@show')->name('ks-show');
+        Route::post('kartu/excel', 'KartuStokController@cetak_excel')->name('ks-excel');
+
+        Route::get('rekap', 'RekapStokController@index')->name('rekap');
+        Route::post('rekap/show', 'RekapStokController@show')->name('rs-show');
+        Route::post('rekap/pdf', 'RekapStokController@cetak_pdf')->name('rs-pdf');
+        Route::post('rekap/pdf/filter', 'RekapStokController@pdf_filter')->name('rs-pdf-filter');
+
+        Route::get('ar', 'AccReceivableController@index')->name('ar');
+        Route::post('ar', 'AccReceivableController@index')->name('ar-home');
+        Route::get('ar/show', 'AccReceivableController@show')->name('ar-show');
     });
 
     Route::group(['roles' => 'SUPER'], function() {
@@ -394,9 +399,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
     Route::group(['roles' => ['AR', 'SUPER', 'OFFICE02']], function() {
         // Account Receivable
-        Route::get('ar', 'AccReceivableController@index')->name('ar');
-        Route::post('ar', 'AccReceivableController@index')->name('ar-home');
-        Route::get('ar/show', 'AccReceivableController@show')->name('ar-show');
         Route::post('ar/process', 'AccReceivableController@process')->name('ar-process');
         Route::post('ar/batal', 'AccReceivableController@batalCicil')->name('ar-batal-cicil');
         Route::post('ar/retur', 'AccReceivableController@retur')->name('ar-retur');

@@ -39,7 +39,11 @@ class AccReceivableController extends Controller
             ->join('sales', 'sales.id', 'so.id_sales')
             ->where('ar.id', '!=', $arLast->id)
             ->where('keterangan', 'BELUM LUNAS')
+            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                $q->where('so.id_cabang', 3);
+            })
             ->orderBy('ar.created_at', 'desc')->get();
+
         $arOffice = AccReceivable::select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
             ->join('so', 'so.id', 'ar.id_so')
             ->join('customer', 'customer.id', 'so.id_customer')
@@ -100,6 +104,9 @@ class AccReceivableController extends Controller
                 ->join('customer', 'customer.id', 'so.id_customer')
                 ->join('sales', 'sales.id', 'so.id_sales')
                 ->whereIn('keterangan', [$status[0], $status[1]])
+                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    $q->where('so.id_cabang', 3);
+                })
                 ->orderBy('ar.created_at', 'desc')->get();
 
             $arOffice = AccReceivable::select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
@@ -118,6 +125,9 @@ class AccReceivableController extends Controller
                 ->where(function ($q) use ($awal, $akhir, $month) {
                     $q->whereMonth('so.tgl_so', $month)
                     ->orWhereBetween('so.tgl_so', [$awal, $akhir]);
+                })
+                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    $q->where('so.id_cabang', 3);
                 })->orderBy('tgl_so', 'desc')->get();
 
             $arOffice = AccReceivable::select('ar.id as id', 'ar.*', 'so.kategori', 'so.tgl_so', 'so.tempo', 'so.total', 'customer.nama as namaCust', 'sales.nama as namaSales')
