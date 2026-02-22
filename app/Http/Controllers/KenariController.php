@@ -182,7 +182,6 @@ class KenariController extends Controller
             'id' => $kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
-            // 'total' => str_replace(".", "", $request->grandtotal),
             'total' => $totNetto,
             'diskon' => str_replace(".", "", $diskon),
             'kategori' => $request->kategori.' '.$request->jenis,
@@ -191,7 +190,8 @@ class KenariController extends Controller
             'status' => $status,
             'id_customer' => $request->kodeCustomer,
             'id_sales' => $request->kodeSales,
-            'id_user' => Auth::user()->id
+            'id_user' => Auth::user()->id,
+            'id_cabang' => 2
         ]);
 
         $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
@@ -205,7 +205,6 @@ class KenariController extends Controller
             AccReceivable::create([
                 'id' => $newcode,
                 'id_so' => $kode,
-                // 'keterangan' => 'BELUM LUNAS'
                 'keterangan' => ($request->namaCustomer != 'REVISI' ? 'BELUM LUNAS' : 'LUNAS')
             ]);
         }

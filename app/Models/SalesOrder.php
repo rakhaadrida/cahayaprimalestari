@@ -11,7 +11,7 @@ class SalesOrder extends Model
 
     protected $table = "so";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'diskon', 'kategori', 'tempo', 'pkp', 'status', 'id_customer', 'id_sales', 'id_user'];
+    protected $fillable = ['id', 'tgl_so', 'tgl_kirim', 'total', 'diskon', 'kategori', 'tempo', 'pkp', 'status', 'id_customer', 'id_sales', 'id_user', 'id_cabang'];
 
     public $incrementing = false;
 
@@ -25,6 +25,10 @@ class SalesOrder extends Model
 
     public function user() {
         return $this->belongsTo('App\User', 'id_user', 'id')->withTrashed();
+    }
+
+    public function cabang() {
+        return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
     }
 
     public function detilso() {

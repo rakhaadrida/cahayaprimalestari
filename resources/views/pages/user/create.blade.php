@@ -54,6 +54,7 @@
                   <option value="AP">AP</option>
                   <option value="GUDANG">GUDANG</option>
                   <option value="KENARI">KENARI</option>
+                  <option value="CIANJUR">CIANJUR</option>
                   <option value="OFFICE02">OFFICE02</option>
                 </select>
 

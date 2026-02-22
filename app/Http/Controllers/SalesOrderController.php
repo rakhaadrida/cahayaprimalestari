@@ -159,7 +159,6 @@ class SalesOrderController extends Controller
         $lastnumber++;
         $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
         $kode = $newcode;
-        // $kode = $request->kode;
 
         $statusHal = $status;
 
@@ -177,7 +176,6 @@ class SalesOrderController extends Controller
             'id' => $kode,
             'tgl_so' => $tanggal,
             'tgl_kirim' => $tglKirim,
-            // 'total' => str_replace(".", "", $request->grandtotal),
             'total' => $totNetto,
             'diskon' => str_replace(".", "", $diskon),
             'kategori' => $request->kategori.' '.$request->jenis,
@@ -186,7 +184,8 @@ class SalesOrderController extends Controller
             'status' => $status,
             'id_customer' => $request->kodeCustomer,
             'id_sales' => $request->kodeSales,
-            'id_user' => Auth::user()->id
+            'id_user' => Auth::user()->id,
+            'id_cabang' => Auth::user()->name != 'Admin_mitra' ? 1 : 3
         ]);
 
         $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
@@ -246,13 +245,11 @@ class SalesOrderController extends Controller
                 for($j = 0; $j < sizeof($arrGudang); $j++) {
                     DetilSO::create([
                         'id_so' => $kode,
-                        // 'id_so' => $request->kode,
                         'id_barang' => $request->kodeBarang[$i],
                         'id_gudang' => $arrGudang[$j],
                         'harga' => str_replace(".", "", $request->harga[$i]),
                         'qty' => $arrStok[$j],
                         'diskon' => ($request->diskon[$i] != '' ? $request->diskon[$i] : '0'),
-                        // 'diskonRp' => $diskonRp
                         'diskonRp' => ($request->diskonRp[$i] != '' ? ($j == 0 ? str_replace(".", "", $request->diskonRp[$i]) : 0) : 0)
                     ]);
 
@@ -260,20 +257,7 @@ class SalesOrderController extends Controller
                                 ->where('id_gudang', $arrGudang[$j])->first();
                     $updateStok->{'stok'} -= $arrStok[$j];
                     $updateStok->save();
-
-                    /* foreach($updateStok as $us) {
-                        if($request->qty[$i] <= $us->stok) {
-                            $us->stok -= $request->qty[$i];
-                        }
-                        else {
-                            $qty -= $us->stok;
-                            $us->stok -= $us->stok;
-                        }
-                        $us->save();
-                    } */
                 }
-
-                // $totNetto += str_replace(".", "", $request->netto[$i]);
             }
         }
 
@@ -287,7 +271,6 @@ class SalesOrderController extends Controller
             return redirect()->route('so', 'false');
         else
             return redirect()->route('so-cetak', $kode);
-        // return redirect()->route('so', $cetak);
     }
 
     public function cetak(Request $request, $id) {
