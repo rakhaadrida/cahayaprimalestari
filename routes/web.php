@@ -434,6 +434,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
 
+//        Route::post('ar/cetak/{status}', 'AccReceivableController@cetak')->name('ar-cetak');
+//        Route::post('ar/cetakNow/{status}', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
+    });
+
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'AR', 'CIANJUR']], function() {
         Route::post('ar/cetak/{status}', 'AccReceivableController@cetak')->name('ar-cetak');
         Route::post('ar/cetakNow/{status}', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
     });

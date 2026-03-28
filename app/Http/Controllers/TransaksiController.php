@@ -37,10 +37,15 @@ class TransaksiController extends Controller
         $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
         $tglAkhir = $request->tglAkhir;
         $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
-        
-        $items = SalesOrder::with('customer')
-                ->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
-                ->orderBy('id', 'asc')->get();
+
+        $baseQuery = SalesOrder::with('customer')
+            ->whereBetween('tgl_so', [$tglAwal, $tglAkhir]);
+
+        if(Auth::user()->roles == 'CIANJUR') {
+            $baseQuery = $baseQuery->where('id_cabang', 3);
+        }
+
+        $items = $baseQuery->orderBy('id', 'asc')->get();
         
         $data = [
             'items' => $items,

@@ -491,28 +491,58 @@ class AccReceivableController extends Controller
 
         if($status == 'All') {
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'NOT LIKE', 'Extrana%')
-                    ->where('kategori', 'NOT LIKE', '%Prime%')->orderBy('so.id_sales')->orderBy('customer.nama')->get();
-                    // ->orderBy('so.id_sales')
+                ->select('so.id as id', 'so.*')
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->whereBetween('tgl_so', [$awal, $akhir])
+                ->where('kategori', 'NOT LIKE', 'Extrana%')
+                ->where('kategori', 'NOT LIKE', '%Prime%')
+                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    $q->where('so.id_cabang', 3);
+                })
+                ->orderBy('so.id_sales')
+                ->orderBy('customer.nama')
+                ->get();
 
             $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'LIKE', 'Extrana%')
-                    ->orderBy('so.id_sales')->orderBy('customer.nama')->get();
-                    // ->orderBy('so.id_sales')
+                ->select('so.id as id', 'so.*')
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->whereBetween('tgl_so', [$awal, $akhir])
+                ->where('kategori', 'LIKE', 'Extrana%')
+                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    $q->where('so.id_cabang', 3);
+                })
+                ->orderBy('so.id_sales')
+                ->orderBy('customer.nama')
+                ->get();
+
+            if(Auth::user()->roles == 'CIANJUR') {
+                $itemsPrime = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')
+                    ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->whereBetween('tgl_so', [$awal, $akhir])
+                    ->where('kategori', 'LIKE', '%Prime%')
+                    ->where('so.id_cabang', 3)
+                    ->orderBy('so.id_sales')
+                    ->orderBy('customer.nama')
+                    ->get();
+            }
         } else {
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->whereBetween('tgl_so', [$awal, $akhir])->where('kategori', 'LIKE', '%Prime%')
-                    ->orderBy('so.id_sales')->orderBy('customer.nama')->get();
-                    // ->orderBy('so.id_sales')
+                ->select('so.id as id', 'so.*')
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->whereBetween('tgl_so', [$awal, $akhir])
+                ->where('kategori', 'LIKE', '%Prime%')
+                ->orderBy('so.id_sales')
+                ->orderBy('customer.nama')
+                ->get();
+
             $itemsEx = NULL;
         }
 
         $data = [
             'items' => $items,
             'itemsEx' => $itemsEx,
+            'itemsPrime' => $itemsPrime ?? null,
             'awal' => $request->tglAwal,
             'akhir' => $request->tglAkhir,
             'waktu' => $waktu
@@ -531,23 +561,50 @@ class AccReceivableController extends Controller
 
         if($status == 'All') {
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->where('tgl_so', $tanggal)->where('kategori', 'NOT LIKE', 'Extrana%')
-                    ->where('kategori', 'NOT LIKE', '%Prime%')->orderBy('so.id_sales')->orderBy('customer.nama')->get();
-                    // ->orderBy('so.id_sales')
+                ->select('so.id as id', 'so.*')
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('tgl_so', $tanggal)
+                ->where('kategori', 'NOT LIKE', 'Extrana%')
+                ->where('kategori', 'NOT LIKE', '%Prime%')
+                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    $q->where('so.id_cabang', 3);
+                })
+                ->orderBy('so.id_sales')
+                ->orderBy('customer.nama')
+                ->get();
 
             $itemsEx = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->where('tgl_so', $tanggal)->where('kategori', 'LIKE', 'Extrana%')
-                    ->orderBy('so.id_sales')->orderBy('customer.nama')->get();
-                    // ->orderBy('so.id_sales')
+                ->select('so.id as id', 'so.*')
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('tgl_so', $tanggal)
+                ->where('kategori', 'LIKE', 'Extrana%')
+                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    $q->where('so.id_cabang', 3);
+                })
+                ->orderBy('so.id_sales')
+                ->orderBy('customer.nama')
+                ->get();
 
+            if(Auth::user()->roles == 'CIANJUR') {
+                $itemsPrime = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
+                    ->select('so.id as id', 'so.*')
+                    ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                    ->where('tgl_so', $tanggal)
+                    ->where('kategori', 'LIKE', '%Prime%')
+                    ->where('so.id_cabang', 3)
+                    ->orderBy('so.id_sales')
+                    ->orderBy('customer.nama')
+                    ->get();
+            }
         } else {
             $items = SalesOrder::join('customer', 'customer.id', 'so.id_customer')
-                    ->select('so.id as id', 'so.*')->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->where('tgl_so', $tanggal)->where('kategori', 'LIKE', '%Prime%')
-                    ->orderBy('so.id_sales')->orderBy('customer.nama')->get();
-                    // ->orderBy('so.id_sales')
+                ->select('so.id as id', 'so.*')
+                ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                ->where('tgl_so', $tanggal)
+                ->where('kategori', 'LIKE', '%Prime%')
+                ->orderBy('so.id_sales')
+                ->orderBy('customer.nama')
+                ->get();
 
             $itemsEx = NULL;
         }
@@ -557,6 +614,7 @@ class AccReceivableController extends Controller
         $data = [
             'items' => $items,
             'itemsEx' => $itemsEx,
+            'itemsPrime' => $itemsPrime ?? null,
             'awal' => $tanggal,
             'akhir' => $tanggal,
             'waktu' => $waktu
