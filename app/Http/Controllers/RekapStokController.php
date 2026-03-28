@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\StokBarang;
-use App\Models\Gudang;
-use App\Models\Barang;
-use App\Models\JenisBarang;
-use App\Models\Subjenis;
-use App\Models\DetilBM;
-use App\Models\DetilSO;
-use App\Models\DetilRT;
-use App\Models\DetilRB;
-use Illuminate\Support\Facades\DB;
-use PDF;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapStokExport;
 use App\Exports\RekapStokFilterExport;
+use App\Models\Barang;
+use App\Models\Gudang;
+use App\Models\JenisBarang;
+use App\Models\StokBarang;
+use App\Models\Subjenis;
 use Carbon\Carbon;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF;
 
 class RekapStokController extends Controller
 {
     public function index() {
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
+
+        if(Auth::user()->roles == 'CIANJUR') {
+            $gudang = Gudang::query()
+                ->where('id', 'GDG09')
+                ->get();
+        }
 
         $data = [
             'jenis' => $jenis,
@@ -46,6 +48,12 @@ class RekapStokController extends Controller
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
         $kemarin = Carbon::yesterday()->toDateString();
+
+        if(Auth::user()->roles == 'CIANJUR') {
+            $gudang = Gudang::query()
+                ->where('id', 'GDG09')
+                ->get();
+        }
 
         $data = [
             'awal' => $tglAwal,
@@ -96,19 +104,19 @@ class RekapStokController extends Controller
             if($j->total <= 80) {
                 for($i = $el+1; $i < $k; $i++) {
                     if($jenis[$el]->total + $jenis[$i]->total <= 127) {
-                        // if($jenis[$i]->nama != 'PRIME') {
-                            $jenis[$el]->total += $jenis[$i]->total;
-                            $jenis[$el]->id = $jenis[$el]->id.','.$jenis[$i]->id;
-                            $jenis[$el]->nama = $jenis[$el]->nama.', '.$jenis[$i]->nama;
-                            $kode = $jenis[$i]->id;
+                        $jenis[$el]->total += $jenis[$i]->total;
+                        $jenis[$el]->id = $jenis[$el]->id.','.$jenis[$i]->id;
+                        $jenis[$el]->nama = $jenis[$el]->nama.', '.$jenis[$i]->nama;
+                        $kode = $jenis[$i]->id;
 
-                            $jenis = $jenis->filter(function($item) use($kode) {
-                                return $item->id != $kode;
-                            });
-                        // }
+                        $jenis = $jenis->filter(function($item) use($kode) {
+                            return $item->id != $kode;
+                        });
+
                         $gabung++;
                     }
                 }
+                
                 $jenis = $jenis->values();
                 $k -= $gabung;
             }
