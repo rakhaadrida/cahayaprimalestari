@@ -104,11 +104,17 @@
                                                                         ->selectRaw('sum(qty) as qty')
                                                                         ->where('id_barang', $b->id)
                                                                         ->whereBetween('tgl_so', [$awal, $kemarin])
+                                                                        ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                            $q->where('so.id_cabang', 3);
+                                                                        })
                                                                         ->get();
                                                                     $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                                                                         ->selectRaw('sum(qty) as qty')
                                                                         ->where('id_barang', $b->id)
                                                                         ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                        ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                            $q->where('barangmasuk.id_gudang', 'GDG09');
+                                                                        })
                                                                         ->get();
 
                                                                     if(Auth::user()->roles != 'CIANJUR') {

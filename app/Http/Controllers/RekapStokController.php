@@ -88,8 +88,18 @@ class RekapStokController extends Controller
     public function cetak_pdf() {
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
-        $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
-                        ->groupBy('id_barang')->get();
+
+        if(Auth::user()->roles == 'CIANJUR') {
+            $gudang = Gudang::query()
+                ->where('id', 'GDG09')
+                ->get();
+        }
+
+        $stok = StokBarang::with(['barang'])
+            ->select('id_barang', DB::raw('sum(stok) as total'))
+            ->groupBy('id_barang')
+            ->get();
+
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
 
         foreach($jenis as $j) {
@@ -116,7 +126,7 @@ class RekapStokController extends Controller
                         $gabung++;
                     }
                 }
-                
+
                 $jenis = $jenis->values();
                 $k -= $gabung;
             }
@@ -147,8 +157,18 @@ class RekapStokController extends Controller
     public function pdf_filter(Request $request) {
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
-        $stok = StokBarang::with(['barang'])->select('id_barang', DB::raw('sum(stok) as total'))
-                        ->groupBy('id_barang')->get();
+
+        if(Auth::user()->roles == 'CIANJUR') {
+            $gudang = Gudang::query()
+                ->where('id', 'GDG09')
+                ->get();
+        }
+
+        $stok = StokBarang::with(['barang'])
+            ->select('id_barang', DB::raw('sum(stok) as total'))
+            ->groupBy('id_barang')
+            ->get();
+
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
 
         foreach($jenis as $j) {
@@ -163,16 +183,14 @@ class RekapStokController extends Controller
             if($j->total <= 80) {
                 for($i = $el+1; $i < $k; $i++) {
                     if($jenis[$el]->total + $jenis[$i]->total <= 127) {
-                        // if($jenis[$i]->nama != 'PRIME') {
-                            $jenis[$el]->total += $jenis[$i]->total;
-                            $jenis[$el]->id = $jenis[$el]->id.','.$jenis[$i]->id;
-                            $jenis[$el]->nama = $jenis[$el]->nama.', '.$jenis[$i]->nama;
-                            $kode = $jenis[$i]->id;
+                        $jenis[$el]->total += $jenis[$i]->total;
+                        $jenis[$el]->id = $jenis[$el]->id.','.$jenis[$i]->id;
+                        $jenis[$el]->nama = $jenis[$el]->nama.', '.$jenis[$i]->nama;
+                        $kode = $jenis[$i]->id;
 
-                            $jenis = $jenis->filter(function($item) use($kode) {
-                                return $item->id != $kode;
-                            });
-                        // }
+                        $jenis = $jenis->filter(function($item) use($kode) {
+                            return $item->id != $kode;
+                        });
                         $gabung++;
                     }
                 }
