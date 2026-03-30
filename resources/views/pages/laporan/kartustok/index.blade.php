@@ -48,10 +48,27 @@
                                         <div class="col-2">
                                             <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" autocomplete="off" placeholder="DD-MM-YYYY" required>
                                         </div>
-                                        <div class="col-1 mt-1" style="margin-left: -10px">
-                                            <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
-                                        </div>
+                                        @if(Auth::user()->roles == 'CIANJUR')
+                                            <div class="col-1 mt-1" style="margin-left: -10px">
+                                                <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                                            </div>
+                                        @endif
                                     </div>
+                                    @if(Auth::user()->roles != 'CIANJUR')
+                                        <div class="form-group row" style="margin-top: -10px">
+                                            <label for="cabang" class="col-2 col-form-label text-right text-bold">Cabang</label>
+                                            <span class="col-form-label text-bold">:</span>
+                                            <div class="col-2 mt-1">
+                                                <select class="form-control form-control-sm" id="cabang" name="cabang">
+                                                    <option value="0" selected>Semua Cabang</option>
+                                                    <option value="3">Cianjur</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-1 mt-1" style="margin-left: -10px">
+                                                <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                                 <hr>
                              </form>

@@ -25,10 +25,11 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    public function __construct(String $kode, String $awal, String $akhir) {
+    public function __construct(String $kode, String $awal, String $akhir, int $cabang) {
         $this->kode = $kode;
         $this->awal = $awal;
         $this->akhir = $akhir;
+        $this->cabang = $cabang;
     }
     
     public function view(): View {
@@ -38,11 +39,12 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
 
         $tglAwal = $this->awal;
         $tglAkhir = $this->akhir;
+        $cabang = $this->cabang;
 
         $barang = Barang::All();
         $gudang = Gudang::All();
 
-        if(Auth::user()->roles == 'CIANJUR') {
+        if(Auth::user()->roles == 'CIANJUR' || $cabang > 0) {
             $gudang = Gudang::query()
                 ->where('id', 'GDG09')
                 ->get();
@@ -52,20 +54,20 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $itemsBM = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
             ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'qty')
             ->where('id_barang', $this->kode)
-            ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
+            ->whereHas('bm', function($q) use($tglAwal, $tglAkhir, $cabang) {
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                     ->where('status', '!=', 'BATAL')
-                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                         $q->where('id_gudang', 'GDG09');
                     });
             });
 
         $itemsSO = DetilSO::join('so', 'so.id', 'detilso.id_so')
             ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan')->selectRaw('sum(qty) as qty')->where('id_barang', $this->kode)
-            ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
+            ->whereHas('so', function($q) use($tglAwal, $tglAkhir, $cabang) {
                 $q->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->whereNotIn('status', ['BATAL', 'LIMIT'])
-                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                         $q->where('id_cabang', 3);
                     });
             })->groupBy('id_so', 'id_barang');
@@ -77,7 +79,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                 ->where('status', '!=', 'BATAL');
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                 $q->where('returjual.id', 'RTRW00');
             });
 
@@ -87,7 +89,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                 ->where('status', '!=', 'BATAL');
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                 $q->where('returjual.id', 'RTRW00');
             });
 
@@ -98,7 +100,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                 ->where('status', '!=', 'BATAL');
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                 $q->where('returbeli.id', 'RTRW00');
             });
 
@@ -116,7 +118,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->whereHas('tb', function($q) use($tglAwal, $tglAkhir) {
                 $q->whereBetween('tgl_tb', [$this->awal, $this->akhir]);
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                 $q->where(function ($where) {
                     $where->where('detiltb.id_asal', 'GDG09')
                         ->orWhere('detiltb.id_tujuan', 'GDG09');
@@ -134,7 +136,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $stok = StokBarang::with(['barang'])
             ->select('id_barang', DB::raw('sum(stok) as total'))
             ->where('id_barang', $this->kode)
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                 $q->where('id_gudang', 'GDG09');
             })
             ->groupBy('id_barang')->get();
@@ -144,10 +146,10 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             $stokAwal = $s->total;
             $itemsBM = DetilBM::selectRaw('sum(qty) as qty')
                 ->where('id_barang', $s->id_barang)
-                ->whereHas('bm', function($q) use($tglAwal, $now) {
+                ->whereHas('bm', function($q) use($tglAwal, $now, $cabang) {
                     $q->whereBetween('tanggal', [$tglAwal, $now])
                         ->where('status', '!=', 'BATAL')
-                        ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                        ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                             $q->where('id_gudang', 'GDG09');
                         });
                 })->get();
@@ -158,10 +160,10 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
 
             $itemsSO = DetilSO::selectRaw('sum(qty) as qty')
                 ->where('id_barang', $s->id_barang)
-                ->whereHas('so', function($q) use($tglAwal, $now) {
+                ->whereHas('so', function($q) use($tglAwal, $now, $cabang) {
                     $q->whereBetween('tgl_so', [$tglAwal, $now])
                         ->whereNotIn('status', ['BATAL', 'LIMIT'])
-                        ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                        ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                             $q->where('id_cabang', 3);
                         });
                 })->get();
@@ -176,7 +178,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                     $q->whereBetween('tanggal', [$tglAwal, $now])
                     ->where('status', '!=', 'BATAL');
                 })
-                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                     $q->where('id_retur', 'RTRW00');
                 })
                 ->get();
@@ -191,7 +193,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                     $q->whereBetween('tanggal', [$tglAwal, $now])
                     ->where('status', '!=', 'BATAL');
                 })
-                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                     $q->where('id_retur', 'RTRW00');
                 })->get();
 
@@ -201,7 +203,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                     ->selectRaw('sum(qty_terima + qty_batal) as qty')
                     ->where('id_barang', $s->id_barang)
                     ->whereBetween('returbeli.tanggal', [$tglAwal, $now])
-                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                         $q->where('returterima.id', 'RTRW00');
                     })
                     ->get();
@@ -268,7 +270,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->whereHas('bm', function($q) {
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                     ->where('status', '!=', 'BATAL')
-                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
                         $q->where('id_gudang', 'GDG09');
                     });
             })->count();
@@ -280,7 +282,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->whereHas('so', function($q) {
                 $q->whereBetween('tgl_so', [$this->awal, $this->akhir])
                     ->where('status', '!=', 'BATAL')
-                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
                         $q->where('id_cabang', 3);
                     });
             })
@@ -291,7 +293,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->whereHas('tb', function($q) {
                 $q->whereBetween('tgl_tb', [$this->awal, $this->akhir]);
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
                 $q->where(function ($where) {
                     $where->where('detiltb.id_asal', 'GDG09')
                         ->orWhere('detiltb.id_tujuan', 'GDG09');
@@ -303,7 +305,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                 ->where('status', '!=', 'BATAL');
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
                 $q->where('id_retur', 'RTRW00');
             });
 
@@ -312,7 +314,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                 ->where('status', '!=', 'BATAL');
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
                 $q->where('id_retur', 'RTRW00');
             });
 
@@ -321,7 +323,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
                 ->where('status', '!=', 'BATAL');
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
                 $q->where('id_retur', 'RTRW00');
             });
 
@@ -329,7 +331,7 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->whereHas('returterima', function($q) {
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir]);
             })
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
                 $q->where('id_terima', 'RTRW00');
             });
 

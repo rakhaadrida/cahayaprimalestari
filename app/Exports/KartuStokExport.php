@@ -10,12 +10,13 @@ class KartuStokExport implements WithMultipleSheets
 {
     use Exportable;
 
-    public function __construct(String $awal, String $akhir, String $kodeAwal, String $kodeAkhir)
+    public function __construct(String $awal, String $akhir, String $kodeAwal, String $kodeAkhir, int $cabang)
     {
         $this->awal = $awal;
         $this->akhir = $akhir;
         $this->kodeAwal = $kodeAwal;
         $this->kodeAkhir = $kodeAkhir;
+        $this->cabang = $cabang;
     }
 
     public function sheets(): array
@@ -26,7 +27,7 @@ class KartuStokExport implements WithMultipleSheets
                     ->get();
 
         foreach($itemsBRG as $item) {
-            $sheets[] = new KartuPerBarangExport($item->id, $this->awal, $this->akhir);
+            $sheets[] = new KartuPerBarangExport($item->id, $this->awal, $this->akhir, $this->cabang);
         }
 
         return $sheets;

@@ -39,10 +39,12 @@ class KartuStokController extends Controller
         $tglAkhir = $request->tglAkhir;
         $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
 
+        $cabang = (int) $request->cabang ?? 0;
+
         $barang = Barang::All();
         $gudang = Gudang::where('tipe', '!=', 'RETUR')->get();
 
-        if(Auth::user()->roles == 'CIANJUR') {
+        if(Auth::user()->roles == 'CIANJUR' || $cabang > 0) {
             $gudang = Gudang::query()
                 ->where('tipe', '!=', 'RETUR')
                 ->where('id', 'GDG09')
@@ -68,7 +70,7 @@ class KartuStokController extends Controller
         $stok = StokBarang::select('id_barang', DB::raw('sum(stok) as total'))
             ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
             ->where('status', '!=', 'F')
-            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                 $q->where('id_gudang', 'GDG09');
             })
             ->groupBy('id_barang')
@@ -81,10 +83,10 @@ class KartuStokController extends Controller
 
             $itemsBM = \App\Models\DetilBM::selectRaw('sum(qty) as qty')
                 ->where('id_barang', $s->id_barang)
-                ->whereHas('bm', function($q) use($tglAwal, $now) {
+                ->whereHas('bm', function($q) use($tglAwal, $now, $cabang) {
                     $q->whereBetween('tanggal', [$tglAwal, $now])
                     ->where('status', '!=', 'BATAL')
-                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                    ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                         $q->where('id_gudang', 'GDG09');
                     });
                 })
@@ -96,10 +98,10 @@ class KartuStokController extends Controller
 
             $itemsSO = \App\Models\DetilSO::selectRaw('sum(qty) as qty')
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('so', function($q) use($tglAwal, $now) {
+                        ->whereHas('so', function($q) use($tglAwal, $now, $cabang) {
                             $q->whereBetween('tgl_so', [$tglAwal, $now])
                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
-                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                                 $q->where('id_cabang', 3);
                             });
                         })->get();
@@ -147,6 +149,8 @@ class KartuStokController extends Controller
             'rowSO' => $rowSO,
             'awal' => $tglAwal,
             'akhir' => $tglAkhir,
+            'cabang' => $cabang,
+            'isOtherBranch' => $cabang > 0,
             'stok' => $stok,
             'stokAwal' => $stokAwal
         ];
@@ -161,7 +165,8 @@ class KartuStokController extends Controller
         $akhir = $this->formatTanggal($akhir, 'Y-m-d');
         $kodeAwal = $request->kodeAwal;
         $kodeAkhir = $request->kodeAkhir;
+        $cabang = (int) $request->cabang ?? 0;
 
-        return Excel::download(new KartuStokExport($awal, $akhir, $kodeAwal, $kodeAkhir), 'kartu-stok.xlsx');
+        return Excel::download(new KartuStokExport($awal, $akhir, $kodeAwal, $kodeAkhir, $cabang), 'kartu-stok.xlsx');
     }
 }

@@ -93,51 +93,6 @@
                             @endforeach
                         </select>
                       </div>
-{{--                      <div class="col-auto" style="margin-top: -35px">--}}
-{{--                        <div class="form-check form-check-inline mt-2">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat6">Pipa</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat7">Maspion</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline" style="margin-left: -1px">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat8">Panasonic</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Ecolink">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat9">Ecolink</label>--}}
-{{--                        </div>--}}
-{{--                      </div>--}}
                     </div>
                   </div>
                   <div class="col" style="margin-left: -340px; margin-right:-40px; margin-top: -120px">

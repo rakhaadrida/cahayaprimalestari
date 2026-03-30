@@ -48,10 +48,27 @@
                                         <div class="col-2">
                                             <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" value="{{ \Carbon\Carbon::parse($akhir)->format('d-m-Y') }}" autocomplete="off" required>
                                         </div>
-                                        <div class="col-1 mt-1" style="margin-left: -10px">
-                                            <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
-                                        </div>
+                                        @if(Auth::user()->roles == 'CIANJUR')
+                                            <div class="col-1 mt-1" style="margin-left: -10px">
+                                                <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                                            </div>
+                                        @endif
                                     </div>
+                                    @if(Auth::user()->roles != 'CIANJUR')
+                                        <div class="form-group row" style="margin-top: -10px">
+                                            <label for="cabang" class="col-2 col-form-label text-right text-bold">Cabang</label>
+                                            <span class="col-form-label text-bold">:</span>
+                                            <div class="col-2 mt-1">
+                                                <select class="form-control form-control-sm" id="cabang" name="cabang">
+                                                    <option value="0" @if(!$isOtherBranch) selected @endif>Semua Cabang</option>
+                                                    <option value="3" @if($isOtherBranch) selected @endif>Cianjur</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-1 mt-1" style="margin-left: -10px">
+                                                <button type="submit" formaction="{{ route('ks-show') }}" formmethod="POST" id="btn-cari" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                                 <hr>
                                 <div class="container">
@@ -122,10 +139,10 @@
                                                         $itemsBM = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                                                             ->select('id', 'id_bm', 'id_barang', 'tanggal', 'barangmasuk.created_at', 'detilbm.diskon as id_asal', 'disPersen as id_tujuan', 'qty')
                                                             ->where('id_barang', $item->id)
-                                                            ->whereHas('bm', function($q) use($awal, $akhir) {
+                                                            ->whereHas('bm', function($q) use($awal, $akhir, $cabang) {
                                                                 $q->whereBetween('tanggal', [$awal, $akhir])
                                                                 ->where('status', '!=', 'BATAL')
-                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                                                                     $q->where('id_gudang', 'GDG09');
                                                                 });
                                                             });
@@ -133,10 +150,10 @@
                                                         $itemsSO = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                                                             ->select('id', 'id_so', 'id_barang', 'tgl_so as tanggal', 'so.created_at', 'detilso.diskon as id_asal', 'diskonRp as id_tujuan')->selectRaw('sum(qty) as qty')
                                                             ->where('id_barang', $item->id)
-                                                            ->whereHas('so', function($q) use($awal, $akhir) {
+                                                            ->whereHas('so', function($q) use($awal, $akhir, $cabang) {
                                                                 $q->whereBetween('tgl_so', [$awal, $akhir])
                                                                 ->where('status', '!=', 'BATAL')
-                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                                                                     $q->where('id_cabang', 3);
                                                                 });
                                                             })
@@ -157,9 +174,9 @@
 
                                                         $items = \App\Models\DetilTB::join('transferbarang', 'transferbarang.id', 'detiltb.id_tb')
                                                             ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', $item->id)
-                                                            ->whereHas('tb', function($q) use($awal, $akhir) {
+                                                            ->whereHas('tb', function($q) use($awal, $akhir, $cabang) {
                                                                 $q->whereBetween('tgl_tb', [$awal, $akhir])
-                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                                                                     $q->where(function ($where) {
                                                                         $where->where('detiltb.id_asal', 'GDG09')
                                                                             ->orWhere('detiltb.id_tujuan', 'GDG09');
@@ -174,43 +191,45 @@
                                                             ->get();
 
                                                         $tambahGd = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                                                                    ->selectRaw('sum(qty) as qty')
-                                                                    ->where('id_barang', $item->id)
-                                                                    ->where('tgl_so', '>', $akhir)
-                                                                    ->whereNotIn('status', ['BATAL', 'LIMIT'])
-                                                                    ->get();
+                                                            ->selectRaw('sum(qty) as qty')
+                                                            ->where('id_barang', $item->id)
+                                                            ->where('tgl_so', '>', $akhir)
+                                                            ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                                                            ->get();
 
                                                         $kurangGd = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                                                                    ->selectRaw('sum(qty) as qty')
-                                                                    ->where('id_barang', $item->id)
-                                                                    ->where('tanggal', '>', $akhir)
-                                                                    ->where('status', '!=', 'BATAL')
-                                                                    ->get();
+                                                            ->selectRaw('sum(qty) as qty')
+                                                            ->where('id_barang', $item->id)
+                                                            ->where('tanggal', '>', $akhir)
+                                                            ->where('status', '!=', 'BATAL')
+                                                            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                                                                $q->where('id_gudang', 'GDG09');
+                                                            })
+                                                            ->get();
 
                                                         $kurangRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
-                                                                    ->selectRaw('sum(qty_kirim) as qty')
-                                                                    ->where('status', 'INPUT')
-                                                                    ->where('id_barang', $item->id)
-                                                                    ->where('tanggal', '>', $akhir)
-                                                                    ->get();
+                                                            ->selectRaw('sum(qty_kirim) as qty')
+                                                            ->where('status', 'INPUT')
+                                                            ->where('id_barang', $item->id)
+                                                            ->where('tanggal', '>', $akhir)
+                                                            ->get();
 
                                                         $detilRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
-                                                                    ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
-                                                                    ->selectRaw('sum(qty_terima + qty_batal) as qty')
-                                                                    ->where('status', 'INPUT')
-                                                                    ->where('id_barang', $item->id)
-                                                                    ->where('returbeli.tanggal', '>', $akhir)
-                                                                    ->get();
+                                                            ->join('returbeli', 'returbeli.id', 'returterima.id_retur')
+                                                            ->selectRaw('sum(qty_terima + qty_batal) as qty')
+                                                            ->where('status', 'INPUT')
+                                                            ->where('id_barang', $item->id)
+                                                            ->where('returbeli.tanggal', '>', $akhir)
+                                                            ->get();
 
                                                         $detilRB = \App\Models\DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
-                                                                    ->selectRaw('sum(qty_retur) as retur')
-                                                                    ->where('status', 'INPUT')
-                                                                    ->where('id_barang', $item->id)
-                                                                    ->where('tanggal', '>', $akhir)
-                                                                    ->get();
+                                                            ->selectRaw('sum(qty_retur) as retur')
+                                                            ->where('status', 'INPUT')
+                                                            ->where('id_barang', $item->id)
+                                                            ->where('tanggal', '>', $akhir)
+                                                            ->get();
 
                                                         $tambahRB = $detilRT->first()->qty;
-
                                                     @endphp
                                                     @if($items->count() != 0)
                                                         <tr>
