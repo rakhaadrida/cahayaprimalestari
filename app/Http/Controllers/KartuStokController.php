@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\SalesOrder;
-use App\Models\PurchaseOrder;
-use App\Models\BarangMasuk;
-use App\Models\TransferBarang;
-use App\Models\StokBarang;
+use App\Exports\KartuStokExport;
 use App\Models\Barang;
-use App\Models\Gudang;
 use App\Models\DetilBM;
 use App\Models\DetilSO;
+use App\Models\Gudang;
+use App\Models\StokBarang;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\KartuStokExport;
-use Carbon\Carbon;
 
 class KartuStokController extends Controller
 {
@@ -36,42 +33,63 @@ class KartuStokController extends Controller
 
     public function show(Request $request) {
         $now = Carbon::now('+07:00')->toDateString();
+
         $tglAwal = $request->tglAwal;
         $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
         $tglAkhir = $request->tglAkhir;
         $tglAkhir = $this->formatTanggal($tglAkhir, 'Y-m-d');
+
         $barang = Barang::All();
         $gudang = Gudang::where('tipe', '!=', 'RETUR')->get();
 
+        if(Auth::user()->roles == 'CIANJUR') {
+            $gudang = Gudang::query()
+                ->where('tipe', '!=', 'RETUR')
+                ->where('id', 'GDG09')
+                ->get();
+        }
+
         $rowBM = DetilBM::with(['bm', 'barang'])
-                    ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
-                    ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tanggal', [$tglAwal, $tglAkhir])
-                        ->where('status', '!=', 'BATAL');
-                    })->count();
+            ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
+            ->whereHas('bm', function($q) use($tglAwal, $tglAkhir) {
+                $q->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                ->where('status', '!=', 'BATAL');
+            })->count();
+
         $rowSO = DetilSO::with(['so', 'barang'])
-                    ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
-                    ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
-                        $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
-                        ->where('status', '!=', 'BATAL');
-                    })->count();
-        $itemsBRG = Barang::whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])
-                        ->get();
+            ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
+            ->whereHas('so', function($q) use($tglAwal, $tglAkhir) {
+                $q->whereBetween('tgl_so', [$tglAwal, $tglAkhir])
+                ->where('status', '!=', 'BATAL');
+            })->count();
+
+        $itemsBRG = Barang::whereBetween('id', [$request->kodeAwal, $request->kodeAkhir])->get();
+
         $stok = StokBarang::select('id_barang', DB::raw('sum(stok) as total'))
-                        ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
-                        ->where('status', '!=', 'F')
-                        ->groupBy('id_barang')->get();
+            ->whereBetween('id_barang', [$request->kodeAwal, $request->kodeAkhir])
+            ->where('status', '!=', 'F')
+            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                $q->where('id_gudang', 'GDG09');
+            })
+            ->groupBy('id_barang')
+            ->get();
 
         $i = 0;
         $stokAwal = [];
         foreach($stok as $s) {
             $stokAwal[$i] = $s->total;
+
             $itemsBM = \App\Models\DetilBM::selectRaw('sum(qty) as qty')
-                        ->where('id_barang', $s->id_barang)
-                        ->whereHas('bm', function($q) use($tglAwal, $now) {
-                            $q->whereBetween('tanggal', [$tglAwal, $now])
-                            ->where('status', '!=', 'BATAL');
-                        })->get();
+                ->where('id_barang', $s->id_barang)
+                ->whereHas('bm', function($q) use($tglAwal, $now) {
+                    $q->whereBetween('tanggal', [$tglAwal, $now])
+                    ->where('status', '!=', 'BATAL')
+                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                        $q->where('id_gudang', 'GDG09');
+                    });
+                })
+                ->get();
+
             foreach($itemsBM as $bm) {
                 $stokAwal[$i] -= $bm->qty;
             }
@@ -80,19 +98,23 @@ class KartuStokController extends Controller
                         ->where('id_barang', $s->id_barang)
                         ->whereHas('so', function($q) use($tglAwal, $now) {
                             $q->whereBetween('tgl_so', [$tglAwal, $now])
-                            ->whereNotIn('status', ['BATAL', 'LIMIT']);
+                            ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                $q->where('id_cabang', 3);
+                            });
                         })->get();
+
             foreach($itemsSO as $so) {
                 $stokAwal[$i] += $so->qty;
             }
 
             $itemsRJ = \App\Models\DetilRJ::selectRaw('sum(qty_kirim) as qty')
-//                        \App\Models\DetilRJ::selectRaw('sum(qty_retur - qty_kirim) as qty')
                         ->where('id_barang', $s->id_barang)
                         ->whereHas('retur', function($q) use($tglAwal, $now) {
                             $q->whereBetween('tanggal', [$tglAwal, $now])
                             ->where('status', '!=', 'BATAL');
                         })->get();
+
             foreach($itemsRJ as $rj) {
                 $stokAwal[$i] -= $rj->qty;
             }
@@ -103,6 +125,7 @@ class KartuStokController extends Controller
                             $q->whereBetween('tanggal', [$tglAwal, $now])
                             ->where('status', '!=', 'BATAL');
                         })->get();
+
             foreach($itemsRB as $rb) {
                 $itemsRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
                         ->join('returbeli', 'returbeli.id', 'returterima.id_retur')

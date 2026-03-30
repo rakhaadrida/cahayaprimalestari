@@ -100,6 +100,7 @@
                                                                         })
                                                                         ->groupBy('id_barang')
                                                                         ->get();
+
                                                                     $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
                                                                         ->selectRaw('sum(qty) as qty')
                                                                         ->where('id_barang', $b->id)
@@ -108,6 +109,7 @@
                                                                             $q->where('so.id_cabang', 3);
                                                                         })
                                                                         ->get();
+
                                                                     $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
                                                                         ->selectRaw('sum(qty) as qty')
                                                                         ->where('id_barang', $b->id)
