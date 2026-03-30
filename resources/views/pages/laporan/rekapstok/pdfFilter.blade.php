@@ -271,7 +271,7 @@
                                                 <td align="center">{{ $i }}</td>
                                                 <td class="text-truncate">{{ $b->nama }}</td>
                                                 @if(Auth::user()->roles == 'CIANJUR')
-                                                    <td class="text-right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
+                                                    <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
                                                 @else
                                                     <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty + $tambahRet->first()->qty - $kurang->first()->qty - $kurangRet->first()->qty : ''}}</td>
                                                     @foreach($stokGdg as $g)
@@ -453,7 +453,7 @@
                                                         <td align="center">{{ $j }}</td>
                                                         <td>{{ $b->nama }}</td>
                                                         @if(Auth::user()->roles == 'CIANJUR')
-                                                            <td class="text-right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
+                                                            <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
                                                         @else
                                                             <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty + $tambahRet->first()->qty - $kurang->first()->qty - $kurangRet->first()->qty : ''}}</td>
                                                             @foreach($stokGdg as $sg)
@@ -636,7 +636,7 @@
                                                         <td align="center">{{ $j }}</td>
                                                         <td>{{ $b->nama }}</td>
                                                         @if(Auth::user()->roles == 'CIANJUR')
-                                                            <td class="text-right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
+                                                            <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
                                                         @else
                                                             <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty + $tambahRet->first()->qty - $kurang->first()->qty - $kurangRet->first()->qty : ''}}</td>
                                                             @foreach($stokGdg as $sg)
@@ -810,7 +810,7 @@
                                                         <td align="center">{{ $j }}</td>
                                                         <td>{{ $b->nama }}</td>
                                                         @if(Auth::user()->roles == 'CIANJUR')
-                                                            <td class="text-right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
+                                                            <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty - $kurang->first()->qty : '' }}</td>
                                                         @else
                                                             <td align="right" style="background-color: yellow">{{ $stok->count() != 0 ? $stok[0]->total + $tambah->first()->qty + $tambahRet->first()->qty - $kurang->first()->qty - $kurangRet->first()->qty : ''}}</td>
                                                             @foreach($stokGdg as $sg)
