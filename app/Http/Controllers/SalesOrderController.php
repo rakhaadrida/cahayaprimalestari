@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-// use PDF;
 
 class SalesOrderController extends Controller
 {
@@ -38,7 +37,6 @@ class SalesOrderController extends Controller
         $harga = HargaBarang::All();
         $kategori = JenisBarang::orderBy('nama')->get();
 
-        // $hrg = Harga::All();
         $hrg = Harga::pluck('tipe')->toArray();
         $kodeBarang = Barang::pluck('id')->toArray();
         $namaBarang = Barang::pluck('nama')->toArray();
@@ -132,6 +130,8 @@ class SalesOrderController extends Controller
         $tglKirim = $this->formatTanggal($tglKirim, 'Y-m-d');
         $jumlah = $request->jumBaris;
 
+        $cabang = (int) $request->cabang ?? 0;
+
         if($request->tempo == "")
             $tempo = 0;
         else
@@ -172,6 +172,12 @@ class SalesOrderController extends Controller
             }
         }
 
+        $cabangId = 1;
+
+        if($cabang > 0 || Auth::user()->name == 'Admin_mitra') {
+            $cabangId = 3;
+        }
+
         SalesOrder::create([
             'id' => $kode,
             'tgl_so' => $tanggal,
@@ -185,7 +191,7 @@ class SalesOrderController extends Controller
             'id_customer' => $request->kodeCustomer,
             'id_sales' => $request->kodeSales,
             'id_user' => Auth::user()->id,
-            'id_cabang' => Auth::user()->name != 'Admin_mitra' ? 1 : 3
+            'id_cabang' => $cabangId
         ]);
 
         $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
