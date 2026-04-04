@@ -71,21 +71,9 @@ class ReturController extends Controller
         return view('pages.retur.createJual', $data);
     }
 
-    /* public function showCreateJual(Request $request) {
-        $items = DetilSO::select('id_so', 'id_barang', DB::raw('sum(qty) as qty'))
-                ->where('id_so', $request->kode)->groupBy('id_barang')->get();
-        $so = SalesOrder::All();
-
-        $data = [
-            'items' => $items,
-            'tanggal' => $request->tanggal,
-            'so' => $so
-        ];
-
-        return view('pages.retur.detailJual', $data);
-    } */
-
     public function storeJual(Request $request, $id) {
+        $cabang = (int) $request->cabang ?? 0;
+
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
@@ -106,7 +94,8 @@ class ReturController extends Controller
             'id' => $newcode,
             'tanggal' => $tanggal,
             'id_customer' => $request->kodeCustomer,
-            'status' => 'INPUT'
+            'status' => 'INPUT',
+            'id_cabang' => $cabang > 0 ? 3 : 1
         ]);
 
         for($i = 0; $i < $request->jumBaris; $i++) {
@@ -195,7 +184,13 @@ class ReturController extends Controller
     }
 
     public function dataReturJual($status, $id) {
-        $retur = ReturJual::where('status', '!=', 'BATAL')->orderBy('tanggal', 'desc')->get();
+        $retur = ReturJual::where('status', '!=', 'BATAL')
+            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                $q->where('id_cabang', 3);
+            })
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
         $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [
@@ -487,31 +482,6 @@ class ReturController extends Controller
             return view('pages.retur.cetakJualAlter', $data);
         }
     }
-
-    /* public function ttrKirimJual($id) {
-        $items = ReturJual::where('id', $id)->get();
-
-        $lastcode = TandaTerima::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
-        $lastnumber++;
-        $newcode = 'TTR'.sprintf('%04s', $lastnumber);
-
-        $today = Carbon::now()->isoFormat('dddd, D MMMM Y');
-        $waktu = Carbon::now();
-        $waktu = Carbon::parse($waktu)->format('H:i:s');
-
-        $data = [
-            'items' => $items,
-            'newcode' => $newcode,
-            'today' => $today,
-            'waktu' => $waktu
-        ];
-
-        $paper = array(0,0,612,394);
-        $pdf = PDF::loadview('pages.penjualan.tandaterima.cetak', $data)->setPaper($paper);
-        ob_end_clean();
-        return $pdf->stream('cetak-ttr.pdf');
-    } */
 
     public function createPembelian() {
         $gudang = Gudang::where('tipe', 'RETUR')->get();

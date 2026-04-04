@@ -455,7 +455,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('/retur/stok', 'ReturController@index')->name('retur-stok');
     });
 
-    Route::group(['roles' => ['ADMIN', 'GUDANG', 'SUPER', 'AR']], function() {
+    Route::group(['roles' => ['ADMIN', 'GUDANG', 'SUPER', 'AR', 'CIANJUR']], function() {
         // Retur
         Route::get('/retur/index-jual', 'ReturController@createPenjualan')
             ->name('ret-index-jual');
