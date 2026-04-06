@@ -161,9 +161,12 @@
 
                                                         $itemsKRJ = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
                                                             ->select('id_kirim as id', 'id_retur', 'id_barang', 'tgl_kirim as tanggal', 'returjual.created_at', 'tanggal as id_asal', 'potong as id_tujuan', 'qty_kirim as qty')->where('id_barang', $item->id)->where('qty_kirim', '!=', 0)
-                                                            ->whereHas('retur', function($q) use($awal, $akhir) {
+                                                            ->whereHas('retur', function($q) use($awal, $akhir, $cabang) {
                                                                 $q->whereBetween('tanggal', [$awal, $akhir])
-                                                                ->where('status', '!=', 'BATAL');
+                                                                ->where('status', '!=', 'BATAL')
+                                                                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                                                                    $q->where('id_cabang', 3);
+                                                                });
                                                             });
 
                                                         $itemsTRB = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')
@@ -195,6 +198,9 @@
                                                             ->where('id_barang', $item->id)
                                                             ->where('tgl_so', '>', $akhir)
                                                             ->whereNotIn('status', ['BATAL', 'LIMIT'])
+                                                            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                                                                $q->where('id_cabang', 3);
+                                                            })
                                                             ->get();
 
                                                         $kurangGd = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
@@ -212,6 +218,9 @@
                                                             ->where('status', 'INPUT')
                                                             ->where('id_barang', $item->id)
                                                             ->where('tanggal', '>', $akhir)
+                                                            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                                                                $q->where('id_cabang', 3);
+                                                            })
                                                             ->get();
 
                                                         $detilRT = \App\Models\DetilRT::join('returterima', 'returterima.id', 'detilrt.id_terima')

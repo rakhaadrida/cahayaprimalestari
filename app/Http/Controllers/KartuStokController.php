@@ -112,9 +112,12 @@ class KartuStokController extends Controller
 
             $itemsRJ = \App\Models\DetilRJ::selectRaw('sum(qty_kirim) as qty')
                         ->where('id_barang', $s->id_barang)
-                        ->whereHas('retur', function($q) use($tglAwal, $now) {
+                        ->whereHas('retur', function($q) use($tglAwal, $now, $cabang) {
                             $q->whereBetween('tanggal', [$tglAwal, $now])
-                            ->where('status', '!=', 'BATAL');
+                            ->where('status', '!=', 'BATAL')
+                            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                                $q->where('id_cabang', 3);
+                            });;
                         })->get();
 
             foreach($itemsRJ as $rj) {

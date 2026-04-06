@@ -75,22 +75,22 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $itemsRJ = DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
             ->select('id', 'id_retur', 'id_barang', 'tanggal', 'returjual.created_at', 'tgl_kirim as id_asal', 'id_kirim as id_tujuan', 'qty_retur as qty')
             ->where('id_barang', $this->kode)
-            ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
+            ->whereHas('retur', function($q) use($tglAwal, $tglAkhir, $cabang) {
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
-                ->where('status', '!=', 'BATAL');
-            })
-            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
-                $q->where('returjual.id', 'RTRW00');
+                ->where('status', '!=', 'BATAL')
+                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                    $q->where('id_cabang', 3);
+                });
             });
 
         $itemsKRJ = DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
             ->select('id_kirim as id', 'id_retur', 'id_barang', 'tgl_kirim as tanggal', 'returjual.created_at', 'tanggal as id_asal', 'potong as id_tujuan', 'qty_kirim as qty')->where('id_barang', $this->kode)->where('qty_kirim', '!=', 0)
-            ->whereHas('retur', function($q) use($tglAwal, $tglAkhir) {
+            ->whereHas('retur', function($q) use($tglAwal, $tglAkhir, $cabang) {
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
-                ->where('status', '!=', 'BATAL');
-            })
-            ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
-                $q->where('returjual.id', 'RTRW00');
+                ->where('status', '!=', 'BATAL')
+                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                    $q->where('id_cabang', 3);
+                });
             });
 
         $itemsRB = DetilRB::join('returbeli', 'returbeli.id', 'detilrb.id_retur')
@@ -137,7 +137,10 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             ->select('id_barang', DB::raw('sum(stok) as total'))
             ->where('id_barang', $this->kode)
             ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
-                $q->where('id_gudang', 'GDG09');
+                $q->where(function ($where) {
+                    $where->where('id_gudang', 'GDG09')
+                        ->orWhere('status', 'F');
+                });
             })
             ->groupBy('id_barang')->get();
 
@@ -174,12 +177,12 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
 
             $itemsRJ = DetilRJ::selectRaw('sum(qty_retur - qty_kirim) as qty')
                 ->where('id_barang', $s->id_barang)
-                ->whereHas('retur', function($q) use($tglAwal, $now) {
+                ->whereHas('retur', function($q) use($tglAwal, $now, $cabang) {
                     $q->whereBetween('tanggal', [$tglAwal, $now])
-                    ->where('status', '!=', 'BATAL');
-                })
-                ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
-                    $q->where('id_retur', 'RTRW00');
+                    ->where('status', '!=', 'BATAL')
+                    ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
+                        $q->where('id_cabang', 3);
+                    });
                 })
                 ->get();
 
@@ -303,19 +306,19 @@ class KartuPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $rowRJ = DetilRJ::where('id_barang', $this->kode)
             ->whereHas('retur', function($q) {
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
-                ->where('status', '!=', 'BATAL');
-            })
-            ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
-                $q->where('id_retur', 'RTRW00');
+                    ->where('status', '!=', 'BATAL')
+                    ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
+                        $q->where('id_cabang', 3);
+                    });
             });
 
         $rowKRJ = DetilRJ::where('id_barang', $this->kode)->where('qty_kirim', '!=', 0)
             ->whereHas('retur', function($q) {
                 $q->whereBetween('tanggal', [$this->awal, $this->akhir])
-                ->where('status', '!=', 'BATAL');
-            })
-            ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
-                $q->where('id_retur', 'RTRW00');
+                    ->where('status', '!=', 'BATAL')
+                    ->when(Auth::user()->roles == 'CIANJUR' || $this->cabang > 0, function ($q) {
+                        $q->where('id_cabang', 3);
+                    });
             });
 
         $rowRB = DetilRB::where('id_barang', $this->kode)
