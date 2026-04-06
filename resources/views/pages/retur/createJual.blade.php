@@ -192,24 +192,24 @@
             var newNum = +lastRow + 1;
             var newNo = +lastNo + 1;
             const newTr = `
-    <tr class="text-bold text-dark" id="${newNum}">
-      <td align="center" class="align-middle">${newNo}</td>
-      <td>
-        <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
-      </td>
-      <td>
-        <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
-      </td>
-      <td>
-        <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
-      </td>
-      <td align="center" class="align-middle">
-        <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
-          <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
-        </a>
-      </td>
-    </tr>
-  `;
+                <tr class="text-bold text-dark" id="${newNum}">
+                  <td align="center" class="align-middle">${newNo}</td>
+                  <td>
+                    <input type="text" tabindex="${tab++}" name="kodeBarang[]" id="kdBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark kdBrgRow">
+                  </td>
+                  <td>
+                    <input type="text" tabindex="${tab += 2}" name="namaBarang[]" id="nmBrgRow${newNum}" class="form-control form-control-sm text-bold text-dark nmBrgRow">
+                  </td>
+                  <td>
+                    <input type="text" tabindex="${tab += 3}" name="qty[]" id="qtyRow${newNum}" class="form-control form-control-sm text-bold text-dark text-center qtyRow" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                  </td>
+                  <td align="center" class="align-middle">
+                    <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
+                      <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
+                    </a>
+                  </td>
+                </tr>
+            `;
 
             $(tablePO).append(newTr);
             jumBaris.value = newNum;

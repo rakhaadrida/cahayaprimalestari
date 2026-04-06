@@ -8,11 +8,15 @@ class ReturBeli extends Model
 {
     protected $table = "returbeli";
     protected $keyType = "string";
-    protected $fillable = ['id', 'tanggal', 'id_supplier', 'status'];
+    protected $fillable = ['id', 'tanggal', 'id_supplier', 'status', 'id_cabang'];
     public $incrementing = false;
 
     public function supplier() {
         return $this->belongsTo('App\Models\Supplier', 'id_supplier', 'id')->withTrashed();
+    }
+
+    public function cabang() {
+        return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
     }
 
     public function detilrb() {

@@ -90,6 +90,10 @@ class ReturController extends Controller
         $lastnumber++;
         $newcode = 'RTJ'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
+        if(Auth::user()->roles == 'CIANJUR') {
+            $cabang = 3;
+        }
+
         ReturJual::create([
             'id' => $newcode,
             'tanggal' => $tanggal,
@@ -529,6 +533,8 @@ class ReturController extends Controller
     }
 
     public function storeBeli(Request $request, $id) {
+        $cabang = (int) $request->cabang ?? 0;
+
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $tanggal = $this->formatTanggal($request->tanggal, 'Y-m-d');
 
@@ -542,11 +548,16 @@ class ReturController extends Controller
         $lastnumber++;
         $newcode = 'RTB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
+        if(Auth::user()->roles == 'CIANJUR') {
+            $cabang = 3;
+        }
+
         ReturBeli::create([
             'id' => $newcode,
             'tanggal' => $tanggal,
             'id_supplier' => $request->kodeSupplier,
-            'status' => 'INPUT'
+            'status' => 'INPUT',
+            'id_cabang' => $cabang > 0 ? 3 : 1
         ]);
 
         for($i = 0; $i < $request->jumBaris; $i++) {
@@ -635,7 +646,13 @@ class ReturController extends Controller
     }
 
     public function dataReturBeli($status, $id) {
-        $retur = ReturBeli::where('status', '!=', 'BATAL')->orderBy('id', 'desc')->get();
+        $retur = ReturBeli::where('status', '!=', 'BATAL')
+            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                $q->where('id_cabang', 3);
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
         $gudang = Gudang::where('tipe', 'RETUR')->get();
 
         $data = [
@@ -728,7 +745,6 @@ class ReturController extends Controller
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');
-        $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
         $id = [];
@@ -769,7 +785,6 @@ class ReturController extends Controller
                     }
                 }
                 array_push($id, '0');
-                $stat = 0;
             }
         } else {
             if($request->jumBaris != $rb->count()) {
@@ -791,7 +806,6 @@ class ReturController extends Controller
 
                 DetilRB::where('id_retur', $request->kode)->whereNotIn('id_barang', $kodeBarang)->delete();
                 array_push($id, '0');
-                $stat = 0;
             }
         }
 

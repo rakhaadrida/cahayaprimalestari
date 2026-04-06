@@ -130,15 +130,11 @@
                     <td></td>
                     <td></td>
                     <td></td>
-{{--                    <td></td>--}}
-{{--                    <td></td>--}}
-{{--                    <td></td>--}}
                   </tr>
                 </tfoot>
               </table>
 
               @if($status == 'true')
-                <!-- Tampilan Cetak -->
                 <iframe src="{{url('retur/pembelian/cetak/'.$id)}}" id="frameCetak" frameborder="0" hidden></iframe>
               @endif
             </form>

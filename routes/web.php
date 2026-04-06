@@ -479,7 +479,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('retur/penjualan/batal/{id}', 'ReturController@batalReturJual')->name('retur-jual-batal');
     });
 
-    Route::group(['roles' => ['ADMIN', 'GUDANG', 'SUPER', 'AP']], function() {
+    Route::group(['roles' => ['ADMIN', 'GUDANG', 'SUPER', 'AP', 'CIANJUR']], function() {
         // Retur Pembelian
         Route::get('/retur/index-beli', 'ReturController@createPembelian')
             ->name('ret-index-beli');
