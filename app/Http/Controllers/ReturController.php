@@ -285,7 +285,6 @@ class ReturController extends Controller
         $gudang = Gudang::where('tipe', 'RETUR')->get();
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');
-        $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
         $retur = ReturJual::where('id', $request->kode)->first();
@@ -449,7 +448,10 @@ class ReturController extends Controller
 
     public function cetakKirimJual(Request $request, $id) {
         $items = ReturJual::join('detilrj', 'detilrj.id_retur', 'returjual.id')
-                ->where('id_kirim', $id)->groupBy('id_kirim')->get();
+            ->where('id_kirim', $id)
+            ->groupBy('id_kirim')
+            ->get();
+
         $tabel = ceil($items->first()->detilrj->count() / 12);
 
         if($tabel > 1) {
@@ -476,7 +478,7 @@ class ReturController extends Controller
             'waktu' => $waktu
         ];
 
-        if(Auth::user()->name != 'Admin_mitra') {
+        if(Auth::user()->name != 'Admin_mitra' && Auth::user()->roles != 'CIANJUR') {
             return view('pages.retur.cetakJual', $data);
         } else {
             return view('pages.retur.cetakJualAlter', $data);
