@@ -304,7 +304,7 @@ class AccReceivableController extends Controller
             $lastnumber++;
             $newcode = 'RTT'.$tahun.$bulan.sprintf("%04s", $lastnumber);
 
-            AR_Retur::create([
+            $data = AR_Retur::create([
                 'id' => $newcode,
                 'id_ar' => $request->kode,
                 'tanggal' => $tanggal,
@@ -312,11 +312,14 @@ class AccReceivableController extends Controller
                 'id_user' => Auth::user()->id
             ]);
 
+            $cabang = $data->ar->so->id_cabang;
+
             ReturJual::create([
                 'id' => $newcode,
                 'tanggal' => Carbon::now('+07:00')->toDateString(),
                 'id_customer' => $request->kodeCustomer,
-                'status' => 'LENGKAP'
+                'status' => 'LENGKAP',
+                'id_cabang' => $cabang ?? 1
             ]);
 
             $kodeAR = $newcode;

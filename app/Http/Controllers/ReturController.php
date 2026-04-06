@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Harga;
-use Illuminate\Http\Request;
-use App\Models\Gudang;
-use App\Models\StokBarang;
-use App\Models\Customer;
-use App\Models\Supplier;
 use App\Models\Barang;
-use App\Models\ReturJual;
-use App\Models\DetilRJ;
-use App\Models\ReturBeli;
+use App\Models\Customer;
 use App\Models\DetilRB;
-use App\Models\ReturTerima;
+use App\Models\DetilRJ;
 use App\Models\DetilRT;
+use App\Models\Gudang;
 use App\Models\NeedApproval;
+use App\Models\ReturBeli;
+use App\Models\ReturJual;
+use App\Models\ReturTerima;
+use App\Models\StokBarang;
+use App\Models\Supplier;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PDF;
 
 class ReturController extends Controller
