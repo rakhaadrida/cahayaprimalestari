@@ -108,16 +108,10 @@
             </div>
         </li>
         <li class="nav-item sidebar-menu-icon">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRetur" aria-expanded="true" aria-controls="collapseRetur">
+            <a class="nav-link collapsed" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">
                 <i class="fas fa-fw fa-recycle"></i>
                 <span>Retur</span>
             </a>
-            <div id="collapseRetur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-                <div class="py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">Retur Customer</a>
-                    <a class="collapse-item" href="{{ route('retur-beli', ['status' => 'false', 'id'=> '0']) }}">Retur Supplier</a>
-                </div>
-            </div>
         </li>
         <li class="nav-item sidebar-menu-icon">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseLaporan">
