@@ -235,7 +235,7 @@ class KenariController extends Controller
                 'tanggal' => Carbon::now('+07:00'),
                 'status' => 'LIMIT',
                 'keterangan' => 'Melebihi limit',
-                'id_dokumen' => $id,
+                'id_dokumen' => $kode,
                 'tipe' => 'Faktur',
                 'id_user' => Auth::user()->id
             ]);
