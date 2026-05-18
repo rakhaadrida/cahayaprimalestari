@@ -317,7 +317,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
             ->name('cetak-tb-update');
     });
 
-    Route::group(['roles' => ['ADMIN', 'SUPER', 'CIANJUR']], function() {
+    Route::group(['roles' => ['ADMIN', 'SUPER', 'AR', 'CIANJUR']], function() {
         Route::get('/transaksi', 'TransaksiController@index')->name('trans');
         Route::post('/transaksi', 'TransaksiController@index')->name('trans-home');
         Route::get('/transaksi/show', 'TransaksiController@show')->name('trans-show');
