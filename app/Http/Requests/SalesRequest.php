@@ -24,8 +24,9 @@ class SalesRequest extends FormRequest
     public function rules()
     {
         return [
-            'kode' => 'required|max:10',
-            'nama' => 'required|max:50'
+            'kode' => ['required', 'max:10'],
+            'nama' => ['required', 'max:50'],
+            'cabang' => ['required', 'exists:cabang,id,deleted_at,NULL']
         ];
     }
 }
