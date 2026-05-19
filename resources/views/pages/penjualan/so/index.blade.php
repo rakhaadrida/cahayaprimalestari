@@ -18,7 +18,6 @@
                 </ul>
             </div>
         @endif
-
         <div class="row">
             <div class="card-body">
                 <div class="table-responsive">
@@ -533,8 +532,9 @@
             radio.addEventListener('change', displayTempo);
         });
 
-        /** Tampil Id Supplier **/
         function displayCust(e) {
+            let idCabang = 0;
+
             @foreach($customer as $c)
                 if('{{ $c->nama }} ({{ $c->alamat }})' == e.target.value) {
                     kodeCust.value = '{{ $c->id }}';
@@ -545,6 +545,8 @@
                     tempo.value = '{{ $c->tempo }}';
                     tempTempo = '{{ $c->tempo }}';
                     namaCust.value = '{{ $c->nama }}';
+
+                    idCabang = {{ $c->sales->id_cabang }};
                 }
                 else if(e.target.value == '') {
                     kodeCust.value = '';
@@ -556,6 +558,8 @@
                     tempo.value = '';
                     tempTempo = '';
                     namaCust.value = '';
+
+                    idCabang = 0;
                 }
 
                 radiosJen[0].checked = false;
@@ -568,7 +572,7 @@
                 }
             @endforeach
 
-            if(kodeSales.value === 'SLS23') {
+            if(idCabang === 3) {
                 $('#cabang').val('3').change();
             } else {
                 $('#cabang').val('0').change();
@@ -577,16 +581,20 @@
 
         /** Tampil Id Sales **/
         function displaySales(e) {
+           let idCabang = 0;
+
             @foreach($sales as $s)
                 if('{{ $s->nama }}' == e.target.value) {
                     kodeSales.value = '{{ $s->id }}';
+                    idCabang = {{ $s->id_cabang }}
                 }
                 else if(e.target.value == '') {
                     kodeSales.value = '';
+                    idCabang = 0;
                 }
             @endforeach
 
-            if(kodeSales.value === 'SLS23') {
+            if(idCabang === 3) {
                 $('#cabang').val('3').change();
             } else {
                 $('#cabang').val('0').change();
