@@ -32,7 +32,7 @@
                                                 <label for="kode" class="col-2 col-form-label text-bold text-right">Nomor SO</label>
                                                 <span class="col-form-label text-bold">:</span>
                                                 <div class="col-2">
-                                                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newcode }}" readonly>
+                                                    <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="kode" value="{{ $newNumber }}" readonly>
                                                 </div>
                                                 <label for="tanggal" class="col-2 col-form-label text-bold text-right">Tanggal SO</label>
                                                 <span class="col-form-label text-bold">:</span>
@@ -121,7 +121,7 @@
                                     </tbody>
                                 </table>
                                 <div class="form-group row justify-content-end subtotal-so so-info-total">
-                                    <label for="totalNotPPN" class="col-3 col-form-label text-bold text-right text-dark">Grand Total</label>
+                                    <label for="subtotal" class="col-3 col-form-label text-bold text-right text-dark">Grand Total</label>
                                     <span class="col-form-label text-bold">:</span>
                                     <span class="col-form-label text-bold ml-2">Rp</span>
                                     <div class="col-2">
@@ -144,17 +144,17 @@
                                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true" class="h2 text-bold">&times;</span>
                                                 </button>
-                                                <h4 class="modal-title">Konfirmasi Faktur <b>{{$newcode}}</b></h4>
+                                                <h4 class="modal-title">Konfirmasi Faktur <b>{{$newNumber}}</b></h4>
                                             </div>
                                             <div class="modal-body">
-                                                <p>Faktur <strong>{{$newcode}}</strong> akan disimpan. Silahkan pilih cetak atau input faktur lagi.</p>
+                                                <p>Faktur <strong>{{$newNumber}}</strong> akan disimpan. Silahkan klik submit atau batal jika ada yg masih ingin diubah.</p>
                                                 <hr>
                                                 <div class="form-row justify-content-center">
                                                     <div class="col-3">
-                                                        <button type="submit" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                                                        <button type="submit" formaction="{{ route('so-process-cianjur', ['id' => $newNumber]) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Submit</button>
                                                     </div>
                                                     <div class="col-3">
-                                                        <button type="submit" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                                                        <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -219,7 +219,7 @@
         const harga = document.querySelectorAll(".harga");
         const jumlah = document.querySelectorAll(".jumlah");
         const hapusBaris = document.querySelectorAll(".icRemove");
-        const subTotal = document.getElementById('subtotal');
+        const subtotal = document.getElementById('subtotal');
         const newRow = document.getElementsByClassName('table-add')[0];
         const jumBaris = document.getElementById('jumBaris');
         const totalstok = document.querySelectorAll(".totalstok");
@@ -237,6 +237,7 @@
             const lastNo = $(tablePO).find('tr:last td:first-child').text();
             var newNum = +lastRow + 1;
             var newNo = +lastNo + 1;
+            
             const newTr = `
                 <tr class="text-bold text-dark" id="${newNum}">
                   <td align="center" class="align-middle nomor">${newNo}</td>
@@ -397,7 +398,6 @@
                 checkSubtotal(netPast, +jumlahRow.value.replace(/\./g, ""));
             }
 
-            /** Inputan hanya bisa angka **/
             qtyRow.addEventListener("keypress", function (e, evt) {
                 evt = (evt) ? evt : window.event;
                 var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
@@ -420,7 +420,6 @@
                 return true;
             });
 
-            /** Tampil Jumlah **/
             qtyRow.addEventListener("blur", displayQtyRow);
             if(teksSatRow.value == 'Pcs')
                 satuanRow.addEventListener("blur", displayQtyRow);
@@ -432,7 +431,7 @@
                 stokLain = [];
                 totStok = 0;
                 @foreach($stok as $s)
-                if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->gudang->tipe }}' == 'KENARI'))
+                if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->gudang->tipe }}' == 'TOKO'))
                     totStok = '{{ $s->stok }}';
 
                 @endforeach
@@ -689,14 +688,14 @@
                 stokLain = [];
                 totStok = 0;
                 @foreach($stok as $s)
-                if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->gudang->tipe }}' == 'KENARI'))
+                if(('{{ $s->id_barang }}' == kodeBarang[i].value) && ('{{ $s->gudang->tipe }}' == 'TOKO'))
                     totStok = '{{ $s->stok }}';
                 @endforeach
 
                 hitungQty(i, e.target.id, e.target.value, teksSat[i].value, ukuran[i].value);
 
                 if(e.target.value == "") {
-                    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
+                    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
                     jumlah[i].value = "";
                     kodeGudang[i].value = '{{ $gudang[0]->id }}';
                     qtyGudang[i].value = "";
@@ -752,7 +751,6 @@
             }
         }
 
-        /** Inputan hanya bisa angka **/
         function angkaSaja(evt, inputan, teks) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -771,7 +769,6 @@
             return true;
         }
 
-        /** Inputan hanya bisa angka **/
         function angkaSajaHarga(evt, inputan) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -785,7 +782,6 @@
             return true;
         }
 
-        /** Add Nominal Separators **/
         function formatNominal(e){
             $(this).val(function(index, value) {
                 return value
@@ -795,7 +791,6 @@
             });
         }
 
-        /** Add Thousand Separators **/
         function addCommas(nStr) {
             nStr += '';
             x = nStr.split(',');
@@ -808,23 +803,16 @@
             return x1 + x2;
         }
 
-        /** Delete Baris Pada Tabel **/
         for(let i = 0; i < hapusBaris.length; i++) {
             hapusBaris[i].addEventListener("click", function (e) {
                 if(qty[i].value != "") {
-                    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
-                    totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
-                    grandtotal.value = totalNotPPN.value;
+                    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
                 }
 
                 for(let j = i; j < hapusBaris.length; j++) {
                     if(j+1 != hapusBaris.length) {
-                        netto[j].value = netto[j+1].value;
-                        diskonRp[j].value = diskonRp[j+1].value;
-                        diskon[j].value = diskon[j+1].value;
                         jumlah[j].value = jumlah[j+1].value;
                         harga[j].value = harga[j+1].value;
-                        tipe[j].value = tipe[j+1].value;
                         satuan[j].value = satuan[j+1].value;
                         teksSat[j].value = teksSat[j+1].value;
                         qtyGudang[j].value = qtyGudang[j+1].value;
@@ -837,12 +825,8 @@
                         else
                             qty[j+1].removeAttribute('required');
                     } else {
-                        netto[j].value = '';
-                        diskonRp[j].value = '';
-                        diskon[j].value = '';
                         jumlah[j].value = '';
                         harga[j].value = '';
-                        tipe[j].value = '';
                         satuan[j].value = '';
                         teksSat[j].value = '';
                         qtyGudang[j].value = '';
@@ -853,7 +837,6 @@
                     }
                 }
 
-                // $(this).parents('tr').next().find('input').val('');
                 for(let j = 0; j < kodeBarang.length; j++) {
                     if(kodeBarang[j].value == '') {
                         kodeBarang[j].focus();
@@ -892,29 +875,6 @@
                     document.getElementById("submitSO").dataset.target = "#modalDuplikat";
                     return false;
                 }
-                else if((+grandtotal.value.replace(/\./g, "") + +piutang.value) > +limit.value) {
-                    document.getElementById("submitSO").dataset.toggle = "modal";
-                    document.getElementById("submitSO").dataset.target = "#modalLimit";
-                    limitTitle.textContent = namaCust.value;
-                    limitNama.textContent = namaCust.value;
-                    limitAngka.textContent = addCommas(limit.value);
-                    totalSO.textContent = grandtotal.value;
-                    var cek = 0;
-                    @foreach($totalKredit as $t)
-                    if('{{ $t->id_customer }}' == kodeCust.value) {
-                        totalKredit.textContent = addCommas('{{ $t->total }}');
-                        totalTagihan.textContent = addCommas(+'{{ $t->total }}' + +grandtotal.value.replace(/\./g, ""));
-                        cek = 1;
-                    }
-                    @endforeach
-
-                    if(cek == 0) {
-                        totalKredit.textContent = 0;
-                        totalTagihan.textContent = addCommas(0 + +grandtotal.value.replace(/\./g, ""));
-                    }
-
-                    return false;
-                }
                 else {
                     document.getElementById("submitSO").dataset.toggle = "modal";
                     document.getElementById("submitSO").dataset.target = "#modalKonfirm";
@@ -923,7 +883,6 @@
             }
         }
 
-        /** Autocomplete Input Text **/
         $(function() {
             var barangKode = [];
             var barangNama = [];
@@ -998,6 +957,5 @@
                     }
                 });
         });
-
     </script>
 @endpush

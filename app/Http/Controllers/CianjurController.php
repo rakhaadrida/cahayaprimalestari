@@ -15,42 +15,45 @@ use App\Models\HargaBarang;
 use App\Models\NeedAppDetil;
 use App\Models\NeedApproval;
 use App\Models\SalesOrder;
+use App\Models\Faktur;
+use App\Models\FakturItem;
 use App\Models\StokBarang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 
 class CianjurController extends Controller
 {
-    public function so($status) {
+    public function so() {
         $barang = Barang::All();
         $harga = HargaBarang::All();
-        $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
-                ->where('tipe', 'TOKO')->get();
+
+        $stok = StokBarang::query()
+            ->join('gudang', 'gudang.id', 'stok.id_gudang')
+            ->where('tipe', 'TOKO')
+            ->get();
+
         $gudang = Gudang::where('tipe', 'TOKO')->get();
-
-
-        $lastSO = SalesOrder::join('users', 'users.id', 'so.id_user')
-                    ->select('so.id as id', 'so.*')->where('roles', 'KENARI')
-                    ->where('so.created_at', '!=', NULL)->latest('so.created_at')->take(1)->get();
 
         $waktu = Carbon::now('+07:00');
         $bulan = $waktu->format('m');
         $month = $waktu->month;
         $tahun = substr($waktu->year, -2);
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('created_at', $waktu->year)->whereMonth('created_at', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
-        $lastnumber++;
-        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+        $lastInvoice = Faktur::query()
+            ->selectRaw('max(nomor) as number')
+            ->whereYear('created_at', $waktu->year)
+            ->whereMonth('created_at', $month)
+            ->get();
 
-        $lastcodeKen = SalesOrder::join('users', 'users.id', 'so.id_user')
-                        ->selectRaw('max(so.id) as id')->where('roles', 'KENARI')
-                        ->whereYear('so.created_at', $waktu->year)->whereMonth('so.created_at', $month)->get();
+        $lastnumber = (int) substr($lastInvoice[0]->number, 6, 4);
+        $lastnumber++;
+
+        $newNumber = 'FT'.$tahun.$bulan.sprintf('%04s', $lastnumber);
 
         $tanggal = Carbon::now()->toDateString();
         $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
@@ -60,11 +63,8 @@ class CianjurController extends Controller
             'harga' => $harga,
             'stok' => $stok,
             'gudang' => $gudang,
-            'newcode' => $newcode,
-            'tanggal' => $tanggal,
-            'status' => $status,
-            'lastSO' => $lastSO,
-            'lastcode' => $lastcodeKen
+            'newNumber' => $newNumber,
+            'tanggal' => $tanggal
         ];
 
         return view('pages.cianjur.so.index', $data);
@@ -75,148 +75,81 @@ class CianjurController extends Controller
         return $formatTanggal;
     }
 
-    public function process(Request $request, $id, $status) {
-        $tanggal = $request->tanggal;
-        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
-        $tglKirim = $request->tanggalKirim;
-        $tglKirim = $this->formatTanggal($tglKirim, 'Y-m-d');
-        $jumlah = $request->jumBaris;
+    public function process(Request $request, $id) {
+        try {
+            DB::beginTransaction();
 
-        if($request->tempo == "")
-            $tempo = 0;
-        else
-            $tempo = $request->tempo;
+            $jumlah = $request->jumBaris;
 
-        if($request->pkp == "")
-            $pkp = 0;
-        else
-            $pkp = $request->pkp;
+            $tanggal = $request->tanggal;
+            $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
 
-        if($request->diskonFaktur == "")
-            $diskon = 0;
-        else
-            $diskon = $request->diskonFaktur;
+            $waktu = Carbon::now('+07:00');
+            $bulan = $waktu->format('m');
+            $month = $waktu->month;
+            $tahun = substr($waktu->year, -2);
 
-        $waktu = Carbon::now('+07:00');
-        $bulan = $waktu->format('m');
-        $month = $waktu->month;
-        $tahun = substr($waktu->year, -2);
+            $lastInvoice = Faktur::query()
+                ->selectRaw('MAX(nomor) as number')
+                ->whereYear('created_at', $waktu->year)
+                ->whereMonth('created_at', $month)
+                ->get();
 
-        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
-                    ->whereYear('created_at', $waktu->year)
-                    ->whereMonth('created_at', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
-        $lastnumber++;
-        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
-        $kode = $newcode;
+            $lastnumber = (int) substr($lastInvoice[0]->number, 6, 4);
+            $lastnumber++;
 
-        $statusHal = $status;
+            $newNumber = 'FT'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+            $number = $newNumber;
 
-        if($status != 'LIMIT')
-            $status = 'INPUT';
+            $invoice = Faktur::create([
+                'nomor' => $number,
+                'tanggal' => $tanggal,
+                'total' => 0,
+                'id_user' => Auth::user()->id,
+                'id_cabang' => 3
+            ]);
 
-        $totNetto = 0;
-        for($i = 0; $i < $jumlah; $i++) {
-            if(($request->kodeBarang[$i] != "") && ($request->qty[$i] != "")) {
-                $totNetto += str_replace(".", "", $request->netto[$i]);
+            $subtotal = 0;
+            for($i = 0; $i < $jumlah; $i++) {
+                if(($request->kodeBarang[$i] != "") && ($request->qty[$i] != "")) {
+                    $quantity = $request->qty[$i];
+                    $price = str_replace(".", "", $request->harga[$i]);
+                    $total = $quantity * $price;    
+
+                    $invoice->items()->create([
+                        'id_barang' => $request->kodeBarang[$i],
+                        'qty' => $quantity,
+                        'harga' => $price,
+                        'jumlah' => $total
+                    ]);
+
+                    $subtotal += $total;
+
+                    $updateStok = StokBarang::query()
+                        ->where('id_barang', $request->kodeBarang[$i])
+                        ->where('id_gudang', $request->kodeGudang[$i])
+                        ->first();
+
+                    $updateStok->{'stok'} -= $request->qty[$i];
+                    $updateStok->save();
+                }
             }
-        }
 
-        SalesOrder::create([
-            'id' => $kode,
-            'tgl_so' => $tanggal,
-            'tgl_kirim' => $tglKirim,
-            'total' => $totNetto,
-            'diskon' => str_replace(".", "", $diskon),
-            'kategori' => $request->kategori.' '.$request->jenis,
-            'tempo' => $tempo,
-            'pkp' => $pkp,
-            'status' => $status,
-            'id_customer' => $request->kodeCustomer,
-            'id_sales' => $request->kodeSales,
-            'id_user' => Auth::user()->id,
-            'id_cabang' => 2
-        ]);
+            $invoice->update([
+                'total' => $subtotal
+            ]);
 
-        $lastcode = AccReceivable::join('so', 'so.id', 'ar.id_so')
-                    ->selectRaw('max(ar.id) as id')->where('ar.id', 'LIKE', '%'.$tahun.$bulan.'%')->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
-        $lastnumber++;
-        $newcode = 'AR'.$tahun.$bulan.sprintf('%04s', $lastnumber);
-        $arKode = $newcode;
+            DB::commit();
 
-        if($status != 'LIMIT') {
-            AccReceivable::create([
-                'id' => $newcode,
-                'id_so' => $kode,
-                'keterangan' => ($request->namaCustomer != 'REVISI' ? 'BELUM LUNAS' : 'LUNAS')
+            return redirect()->route('so-cianjur');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while saving data'
             ]);
         }
-
-        $lastcode = DetilAR::selectRaw('max(id_cicil) as id')->whereYear('created_at', $waktu->year)
-                    ->whereMonth('created_at', $month)->get();
-        $lastnumber = (int) substr($lastcode->first()->id, 7, 4);
-        $lastnumber++;
-        $newcode = 'CIC'.$tahun.$bulan.sprintf("%04s", $lastnumber);
-
-        if($request->namaCustomer == 'REVISI') {
-            DetilAR::create([
-                'id_ar' => $arKode,
-                'id_cicil' => $newcode,
-                'tgl_bayar' => Carbon::now()->toDateString(),
-                'cicil' => $totNetto
-            ]);
-        }
-
-        $lastcode = NeedApproval::max('id');
-        $lastnumber = (int) substr($lastcode, 3, 4);
-        $lastnumber++;
-        $newcode = 'APP'.sprintf('%04s', $lastnumber);
-
-        if($status == 'LIMIT') {
-            NeedApproval::create([
-                'id' => $newcode,
-                'tanggal' => Carbon::now('+07:00'),
-                'status' => 'LIMIT',
-                'keterangan' => 'Melebihi limit',
-                'id_dokumen' => $id,
-                'tipe' => 'Faktur',
-                'id_user' => Auth::user()->id
-            ]);
-        }
-
-        $totNetto = 0;
-        for($i = 0; $i < $jumlah; $i++) {
-            if(($request->kodeBarang[$i] != "") && ($request->qty[$i] != "")) {
-                DetilSO::create([
-                    'id_so' => $kode,
-                    'id_barang' => $request->kodeBarang[$i],
-                    'id_gudang' => $request->kodeGudang[$i],
-                    'harga' => str_replace(".", "", $request->harga[$i]),
-                    'qty' => $request->qty[$i],
-                    'diskon' => ($request->diskon[$i] != '' ? $request->diskon[$i] : '0'),
-                    'diskonRp' =>  str_replace(".", "", $request->diskonRp[$i])
-                ]);
-
-                $totNetto += str_replace(".", "", $request->netto[$i]);
-
-                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                            ->where('id_gudang', $request->kodeGudang[$i])->first();
-                $updateStok->{'stok'} -= $request->qty[$i];
-                $updateStok->save();
-            }
-        }
-
-        if($statusHal != 'CETAK')
-            $cetak = 'false';
-        else {
-            $cetak = 'true';
-        }
-
-        if($statusHal != 'CETAK')
-            return redirect()->route('so-kenari', 'false');
-        else
-            return redirect()->route('so-cetak-kenari', $kode);
     }
 
     public function cetak(Request $request, $id) {

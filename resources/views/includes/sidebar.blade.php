@@ -94,7 +94,7 @@
             </a>
             <div id="collapseCianjur" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
                 <div class="py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="{{ route('so-cianjur', 'false') }}">Input Faktur</a>
+                    <a class="collapse-item" href="{{ route('so-cianjur') }}">Input Faktur Toko</a>
                     <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
                     <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
                 </div>

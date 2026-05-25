@@ -544,8 +544,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
     Route::group(['roles' => 'CIANJUR'], function() {
         // Faktur
-        Route::get('cianjur/so/index/{status}', 'CianjurController@so')->name('so-cianjur');
-        Route::post('cianjur/so/process/{id}/{status}', 'CianjurController@process')->name('so-process-cianjur');
+        Route::get('cianjur/so/index', 'CianjurController@so')->name('so-cianjur');
+        Route::post('cianjur/so/process/{id}', 'CianjurController@process')->name('so-process-cianjur');
     });
 });
 
