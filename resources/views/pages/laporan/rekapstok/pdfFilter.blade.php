@@ -213,32 +213,54 @@
                                     @foreach($barang as $b)
                                         @if($baris <= 67)
                                             @php
-                                                $stok = \App\Models\StokBarang::with(['barang'])
-                                                    ->select('id_barang', DB::raw('sum(stok) as total'))
-                                                    ->where('id_barang', $b->id)
-                                                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                        $q->where('id_gudang', 'GDG09');
-                                                    })
-                                                    ->groupBy('id_barang')
-                                                    ->get();
+                                                if($idGudang == 0) {
+                                                    $stok = \App\Models\StokBarang::with(['barang'])
+                                                        ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                        ->where('id_barang', $b->id)
+                                                        ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                            $q->where('id_gudang', 'GDG09');
+                                                        })
+                                                        ->groupBy('id_barang')
+                                                        ->get();
 
-                                                $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                                                    ->selectRaw('sum(qty) as qty')
-                                                    ->where('id_barang', $b->id)
-                                                    ->whereBetween('tgl_so', [$awal, $kemarin])
-                                                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                        $q->where('so.id_cabang', 3);
-                                                    })
-                                                    ->get();
+                                                    $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                                        ->selectRaw('sum(qty) as qty')
+                                                        ->where('id_barang', $b->id)
+                                                        ->whereBetween('tgl_so', [$awal, $kemarin])
+                                                        ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                            $q->where('so.id_cabang', 3);
+                                                        })
+                                                        ->get();
 
-                                                $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                                                    ->selectRaw('sum(qty) as qty')
-                                                    ->where('id_barang', $b->id)
-                                                    ->whereBetween('tanggal', [$awal, $kemarin])
-                                                    ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                        $q->where('barangmasuk.id_gudang', 'GDG09');
-                                                    })
-                                                    ->get();
+                                                    $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                        ->selectRaw('sum(qty) as qty')
+                                                        ->where('id_barang', $b->id)
+                                                        ->whereBetween('tanggal', [$awal, $kemarin])
+                                                        ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                            $q->where('barangmasuk.id_gudang', 'GDG09');
+                                                        })
+                                                        ->get();
+                                                } else {
+                                                    $stok = \App\Models\StokBarang::with(['barang'])
+                                                        ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                        ->where('id_barang', $b->id)
+                                                        ->where('id_gudang', 'GDG10')
+                                                        ->groupBy('id_barang')
+                                                        ->get();
+
+                                                    $tambah = \App\Models\FakturItem::join('faktur', 'faktur.id', 'faktur_item.id_faktur')
+                                                        ->selectRaw('sum(qty) as qty')
+                                                        ->where('id_barang', $b->id)
+                                                        ->whereBetween('tanggal', [$awal, $kemarin])
+                                                        ->get();
+
+                                                    $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                        ->selectRaw('sum(qty) as qty')
+                                                        ->where('id_barang', $b->id)
+                                                        ->whereBetween('tanggal', [$awal, $kemarin])
+                                                        ->where('barangmasuk.id_gudang', 'GDG10')
+                                                        ->get();
+                                                }
 
                                                 if(Auth::user()->roles != 'CIANJUR') {
                                                     $kurangRet = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
@@ -395,32 +417,54 @@
                                             @foreach($barang as $b)
                                                 @if($baris <= 134)
                                                     @php
-                                                        $stok = \App\Models\StokBarang::with(['barang'])
-                                                            ->select('id_barang', DB::raw('sum(stok) as total'))
-                                                            ->where('id_barang', $b->id)
-                                                            ->groupBy('id_barang')
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('id_gudang', 'GDG09');
-                                                            })
-                                                            ->get();
+                                                        if($idGudang == 0) {
+                                                            $stok = \App\Models\StokBarang::with(['barang'])
+                                                                ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                                ->where('id_barang', $b->id)
+                                                                ->groupBy('id_barang')
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('id_gudang', 'GDG09');
+                                                                })
+                                                                ->get();
 
-                                                        $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                                                            ->selectRaw('sum(qty) as qty')
-                                                            ->where('id_barang', $b->id)
-                                                            ->whereBetween('tgl_so', [$awal, $kemarin])
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('so.id_cabang', 3);
-                                                            })
-                                                            ->get();
+                                                            $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tgl_so', [$awal, $kemarin])
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('so.id_cabang', 3);
+                                                                })
+                                                                ->get();
 
-                                                        $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                                                            ->selectRaw('sum(qty) as qty')
-                                                            ->where('id_barang', $b->id)
-                                                            ->whereBetween('tanggal', [$awal, $kemarin])
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('barangmasuk.id_gudang', 'GDG09');
-                                                            })
-                                                            ->get();
+                                                            $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('barangmasuk.id_gudang', 'GDG09');
+                                                                })
+                                                                ->get();
+                                                        } else {
+                                                            $stok = \App\Models\StokBarang::with(['barang'])
+                                                                ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                                ->where('id_barang', $b->id)
+                                                                ->where('id_gudang', 'GDG10')
+                                                                ->groupBy('id_barang')
+                                                                ->get();
+
+                                                            $tambah = \App\Models\FakturItem::join('faktur', 'faktur.id', 'faktur_item.id_faktur')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->get();
+
+                                                            $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->where('barangmasuk.id_gudang', 'GDG10')
+                                                                ->get();
+                                                        }
 
                                                         if(Auth::user()->roles != 'CIANJUR') {
                                                             $kurangRet = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
@@ -578,32 +622,54 @@
                                             @foreach($barang as $b)
                                                 @if($baris <= 202)
                                                     @php
-                                                        $stok = \App\Models\StokBarang::with(['barang'])
-                                                            ->select('id_barang', DB::raw('sum(stok) as total'))
-                                                            ->where('id_barang', $b->id)
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('id_gudang', 'GDG09');
-                                                            })
-                                                            ->groupBy('id_barang')
-                                                            ->get();
+                                                        if($idGudang == 0) {
+                                                            $stok = \App\Models\StokBarang::with(['barang'])
+                                                                ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                                ->where('id_barang', $b->id)
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('id_gudang', 'GDG09');
+                                                                })
+                                                                ->groupBy('id_barang')
+                                                                ->get();
 
-                                                        $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                                                            ->selectRaw('sum(qty) as qty')
-                                                            ->where('id_barang', $b->id)
-                                                            ->whereBetween('tgl_so', [$awal, $kemarin])
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('so.id_cabang', 3);
-                                                            })
-                                                            ->get();
+                                                            $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tgl_so', [$awal, $kemarin])
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('so.id_cabang', 3);
+                                                                })
+                                                                ->get();
 
-                                                        $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                                                            ->selectRaw('sum(qty) as qty')
-                                                            ->where('id_barang', $b->id)
-                                                            ->whereBetween('tanggal', [$awal, $kemarin])
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('barangmasuk.id_gudang', 'GDG09');
-                                                            })
-                                                            ->get();
+                                                            $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('barangmasuk.id_gudang', 'GDG09');
+                                                                })
+                                                                ->get();
+                                                        } else {
+                                                            $stok = \App\Models\StokBarang::with(['barang'])
+                                                                ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                                ->where('id_barang', $b->id)
+                                                                ->where('id_gudang', 'GDG10')
+                                                                ->groupBy('id_barang')
+                                                                ->get();
+
+                                                            $tambah = \App\Models\FakturItem::join('faktur', 'faktur.id', 'faktur_item.id_faktur')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->get();
+
+                                                            $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->where('barangmasuk.id_gudang', 'GDG10')
+                                                                ->get();
+                                                        }
 
                                                         if(Auth::user()->roles != 'CIANJUR') {
                                                             $kurangRet = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
@@ -752,32 +818,54 @@
                                             @foreach($barang as $b)
                                                 @if($baris <= 268)
                                                     @php
-                                                        $stok = \App\Models\StokBarang::with(['barang'])
-                                                            ->select('id_barang', DB::raw('sum(stok) as total'))
-                                                            ->where('id_barang', $b->id)
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('id_gudang', 'GDG09');
-                                                            })
-                                                            ->groupBy('id_barang')
-                                                            ->get();
+                                                        if($idGudang == 0) {
+                                                            $stok = \App\Models\StokBarang::with(['barang'])
+                                                                ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                                ->where('id_barang', $b->id)
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('id_gudang', 'GDG09');
+                                                                })
+                                                                ->groupBy('id_barang')
+                                                                ->get();
 
-                                                        $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
-                                                            ->selectRaw('sum(qty) as qty')
-                                                            ->where('id_barang', $b->id)
-                                                            ->whereBetween('tgl_so', [$awal, $kemarin])
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('so.id_cabang', 3);
-                                                            })
-                                                            ->get();
+                                                            $tambah = \App\Models\DetilSO::join('so', 'so.id', 'detilso.id_so')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tgl_so', [$awal, $kemarin])
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('so.id_cabang', 3);
+                                                                })
+                                                                ->get();
 
-                                                        $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
-                                                            ->selectRaw('sum(qty) as qty')
-                                                            ->where('id_barang', $b->id)
-                                                            ->whereBetween('tanggal', [$awal, $kemarin])
-                                                            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
-                                                                $q->where('barangmasuk.id_gudang', 'GDG09');
-                                                            })
-                                                            ->get();
+                                                            $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                                                                    $q->where('barangmasuk.id_gudang', 'GDG09');
+                                                                })
+                                                                ->get();
+                                                        } else {
+                                                            $stok = \App\Models\StokBarang::with(['barang'])
+                                                                ->select('id_barang', DB::raw('sum(stok) as total'))
+                                                                ->where('id_barang', $b->id)
+                                                                ->where('id_gudang', 'GDG10')
+                                                                ->groupBy('id_barang')
+                                                                ->get();
+
+                                                            $tambah = \App\Models\FakturItem::join('faktur', 'faktur.id', 'faktur_item.id_faktur')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->get();
+
+                                                            $kurang = \App\Models\DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                                                                ->selectRaw('sum(qty) as qty')
+                                                                ->where('id_barang', $b->id)
+                                                                ->whereBetween('tanggal', [$awal, $kemarin])
+                                                                ->where('barangmasuk.id_gudang', 'GDG10')
+                                                                ->get();
+                                                        }
 
                                                         if(Auth::user()->roles != 'CIANJUR') {
                                                             $kurangRet = \App\Models\DetilRJ::join('returjual', 'returjual.id', 'detilrj.id_retur')
