@@ -8,7 +8,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-0">
-        <h1 class="h3 mb-0 text-gray-800 menu-title">Transaksi Harian @if(Auth::user()->roles == 'CIANJUR') Supplier @endif</h1>
+        <h1 class="h3 mb-0 text-gray-800 menu-title">Transaksi Harian Toko</h1>
     </div>
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -32,27 +32,18 @@
                                     <label for="kode" class="col-auto col-form-label text-bold">Tanggal</label>
                                     <span class="col-form-label text-bold">:</span>
                                     <div class="col-2">
-                                        <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAwal" id="tglAwal" placeholder="DD-MM-YYYY" autocomplete="off" autofocus>
+                                        <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="start_date" id="tglAwal" value="{{ $startDate }}" required autocomplete="off" autofocus>
                                     </div>
                                     <label for="tanggal" class="col-auto col-form-label text-bold ">s/d</label>
                                     <div class="col-2">
-                                        <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="tglAkhir" id="tglAkhir" placeholder="DD-MM-YYYY" autocomplete="off">
+                                        <input type="text" class="form-control datepicker form-control-sm text-bold mt-1" name="final_date" id="tglAkhir" value="{{ $finalDate }}" autocomplete="off">
                                     </div>
                                     <div class="col-1 mt-1" style="margin-left: -10px">
-                                        <button type="submit" id="btn-cari" formaction="{{ route('trans-show') }}" formmethod="GET" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
+                                        <button type="submit" id="btn-cari" formaction="{{ route('trans-cianjur') }}" formmethod="GET" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                                     </div>
-                                    @if(Auth::user()->roles != 'CIANJUR')
-                                        <div class="col-auto mt-1" style="margin-left: 30px">
-                                            <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold ">Print All</button>
-                                        </div>
-                                        <div class="col-auto mt-1" style="margin-left: -10px">
-                                            <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'Prime') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-success btn-sm btn-block text-bold ">Print Prime</button>
-                                        </div>
-                                    @else
-                                        <div class="col-auto mt-1" style="margin-left: 30px">
-                                            <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold ">Print All</button>
-                                        </div>
-                                    @endif
+                                    <div class="col-auto mt-1" style="margin-left: 30px">
+                                        <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold ">Print All</button>
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -60,12 +51,8 @@
                                 <thead class="text-center text-bold text-dark">
                                     <th style="width: 20px" class="align-middle">No</th>
                                     <th style="width: 70px" class="align-middle">Nomor Faktur</th>
-                                    <th style="width: 80px" class="align-middle">Tgl Faktur</th>
-                                    <th class="align-middle">Customer</th>
+                                    <th style="width: 80px" class="align-middle">Tanggal Faktur</th>
                                     <th style="width: 80px" class="align-middle">Total</th>
-                                    <th style="width: 80px" class="align-middle">Kategori</th>
-                                    <th class="align-middle">Tempo</th>
-                                    <th style="width: 100px" class="align-middle">Status</th>
                                     <th style="width: 60px" class="align-middle">User</th>
                                 </thead>
                                 <tbody>
@@ -73,19 +60,15 @@
                                     @forelse ($items as $item)
                                         <tr class="text-dark">
                                             <td align="center" class="align-middle">{{ $i }}</td>
-                                            <td class="text-center"><button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('trans-detail', $item->id) }}" formmethod="POST" class="btn btn-link btn-sm text-bold">{{ $item->id }}</button></td>
-                                            <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tgl_so)->format('d-M-y')  }}</td>
-                                            <td class="align-middle">{{ $item->customer->nama }}</td>
+                                            <td class="text-center"><a href="{{ route('trans-show-cianjur', $item->id) }}" target="_blank" class="btn btn-link btn-sm text-bold">{{ $item->nomor }}</a></td>
+                                            <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-y')  }}</td>
                                             <td class="text-right align-middle">{{ number_format($item->total, 0, "", ",") }}</td>
-                                            <td class="text-center align-middle">{{ $item->kategori }}</td>
-                                            <td class="text-center align-middle">{{ $item->tempo }} Hari</td>
-                                            <td class="text-center align-middle">{{ $item->status }}</td>
                                             <td class="text-center align-middle">{{ $item->user->name }}</td>
                                         </tr>
                                         @php $i++; @endphp
                                     @empty
                                         <tr>
-                                            <td colspan="9" class="text-center text-bold text-dark h4 py-2">Tidak Ada Data Transaksi pada Tanggal Ini</td>
+                                            <td colspan="5" class="text-center text-bold text-dark h4 py-2">Tidak Ada Data Transaksi pada Tanggal Ini</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

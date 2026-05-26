@@ -546,6 +546,9 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Faktur
         Route::get('cianjur/so/index', 'CianjurController@so')->name('so-cianjur');
         Route::post('cianjur/so/process/{id}', 'CianjurController@process')->name('so-process-cianjur');
+
+        Route::get('cianjur/transaksi', 'CianjurController@indexTransaction')->name('trans-cianjur');
+        Route::get('cianjur/transaksi/{id}', 'CianjurController@showTransaction')->name('trans-show-cianjur');
     });
 });
 

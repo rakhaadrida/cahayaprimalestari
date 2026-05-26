@@ -96,7 +96,15 @@
                 <div class="py-2 collapse-inner rounded">
                     <a class="collapse-item" href="{{ route('so-cianjur') }}">Input Faktur Toko</a>
                     <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
-                    <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a>
+                    {{-- <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a> --}}
+                    <a class="collapse-item d-flex justify-content-between align-items-center border-bottom-0" href="#" data-toggle="collapse" data-target="#collapseTransaction">
+                        <span>Transaksi Harian</span>
+                        <i class="fas fa-angle-down"></i>
+                    </a>
+                    <div id="collapseTransaction" class="collapse collapse-inner rounded ml-4 transaction-submenu">
+                        <a class="collapse-item" href="{{ route('trans') }}">Supplier</a>
+                        <a class="collapse-item" href="{{ route('trans-cianjur') }}">Toko</a>
+                    </div>
                 </div>
             </div>
         </li>
