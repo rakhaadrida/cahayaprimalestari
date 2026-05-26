@@ -151,7 +151,7 @@
                                                 <hr>
                                                 <div class="form-row justify-content-center">
                                                     <div class="col-3">
-                                                        <button type="submit" formaction="{{ route('so-process-cianjur', ['id' => $newNumber]) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Submit</button>
+                                                        <button type="submit" id="btnSubmit" formaction="{{ route('so-process-cianjur', ['id' => $newNumber]) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Submit</button>
                                                     </div>
                                                     <div class="col-3">
                                                         <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
@@ -880,6 +880,10 @@
                 }
             }
         }
+
+        $('form').on('submit', function() {
+            $('#btnSubmit', this).prop('disabled', true);
+        });
 
         $(function() {
             var barangKode = [];
