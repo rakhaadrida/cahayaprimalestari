@@ -152,60 +152,6 @@ class CianjurController extends Controller
         }
     }
 
-    public function cetak(Request $request, $id) {
-        $items = SalesOrder::with(['customer'])->where('id', $id)->get();
-        $tabel = ceil($items->first()->detilso->count() / 12);
-
-        if($tabel > 1) {
-            for($i = 1; $i < $tabel; $i++) {
-                $item = collect([
-                    'id' => $items->first()->id,
-                    'tgl_so' => $items->first()->tgl_so,
-                    'tgl_kirim' => $items->first()->tgl_kirim,
-                    'total' => $items->first()->total,
-                    'diskon' => $items->first()->diskon,
-                    'kategori' => $items->first()->kategori,
-                    'tempo' => $items->first()->tempo,
-                    'pkp' => $items->first()->pkp,
-                    'status' => $items->first()->status,
-                    'id_customer' => $items->first()->id_customer,
-                    'id_sales' => $items->first()->id_sales,
-                    'id_user' => $items->first()->id_user
-                ]);
-
-                $items->push($item);
-            }
-        }
-
-        $items = $items->values();
-
-        $today = Carbon::now()->isoFormat('dddd, D MMM Y');
-        $waktu = Carbon::now();
-        $waktu = Carbon::parse($waktu)->format('H:i:s');
-
-        $data = [
-            'items' => $items,
-            'today' => $today,
-            'waktu' => $waktu,
-            'id' => $id
-        ];
-
-        return view('pages.kenari.so.cetakInv', $data);
-        // return view('pages.kenari.so.cetakPdf', $data);
-    }
-
-    public function afterPrint($id) {
-        $item = SalesOrder::where('id', $id)->first();
-        $item->{'status'} = 'CETAK';
-        $item->save();
-
-        $data = [
-            'status' => 'false'
-        ];
-
-        return redirect()->route('so-kenari', $data);
-    }
-
     public function change() {
         $so = SalesOrder::join('users', 'users.id', 'so.id_user')
                 ->select('so.id as id', 'so.*')->where('tgl_so', '>', Carbon::now()->subMonths(1))
@@ -253,8 +199,6 @@ class CianjurController extends Controller
                         ->orWhere('so.id', $id);
                     })->orderBy('so.id', 'asc')->get();
         }
-
-        // return response()->json($items);
 
         $customer = Customer::All();
         $stok = StokBarang::All();
@@ -453,15 +397,6 @@ class CianjurController extends Controller
                     $updateStok->save();
                 }
             }
-
-            /* for($i = 0; $i < $items->count(); $i++) {
-                if($items[$i]->id_barang != $detil[$i]->id_barang) {
-                    $updateStok = StokBarang::where('id_barang', $items[$i]->id_barang)
-                                ->where('id_gudang', $items[$i]->id_gudang)->first();
-                    $updateStok->{'stok'} += $items[$i]->qty;
-                    $updateStok->save();
-                }
-            } */
         }
 
         $data = [
@@ -473,103 +408,6 @@ class CianjurController extends Controller
 
         $url = Route('so-show-kenari', $data);
         return redirect($url);
-    }
-
-    public function indexCetak($status, $awal, $akhir) {
-        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.*')->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->where('roles', 'KENARI')->get();
-
-        $data = [
-            'items' => $items,
-            'status' => $status,
-            'awal' => $awal,
-            'akhir' => $akhir
-        ];
-
-        return view('pages.kenari.cetakfaktur.index', $data);
-    }
-
-    public function processFaktur(Request $request) {
-        $data = [
-            'awal' => $request->kodeAwal,
-            'akhir' => $request->kodeAkhir,
-            'status' => 'true'
-        ];
-
-        // return redirect()->route('cetak-faktur-kenari', $data);
-        return redirect()->route('cetak-all-kenari', ['awal' => $request->kodeAwal, 'akhir' => $request->kodeAkhir]);
-    }
-
-    public function cetakFaktur($awal, $akhir) {
-        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.id as id', 'so.*')->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->whereBetween('so.id', [$awal, $akhir])->where('roles', 'KENARI')
-                ->orderBy('tgl_so', 'asc')->get();
-
-        foreach($items as $i) {
-            $item = SalesOrder::where('id', $i->id)->get();
-            $tabel = ceil($item->first()->detilso->count() / 12);
-
-            if($tabel > 1) {
-                for($j = 1; $j < $tabel; $j++) {
-                    $newItem = collect([
-                        'id' => $item->first()->id.'Z',
-                        'tgl_so' => $item->first()->tgl_so,
-                        'tgl_kirim' => $item->first()->tgl_kirim,
-                        'total' => $item->first()->total,
-                        'diskon' => $item->first()->diskon,
-                        'kategori' => $item->first()->kategori,
-                        'tempo' => $item->first()->tempo,
-                        'id_customer' => $item->first()->id_customer,
-                        'id_sales' => $item->first()->id_sales,
-                        'id_user' => $item->first()->id_user,
-                    ]);
-
-                    $items->push($newItem);
-                }
-            }
-        }
-
-        $items = $items->sortBy(function ($product, $key) {
-                    return $product['tgl_so'].$product['id'];
-                });
-        $items = $items->values();
-
-        $today = Carbon::now()->isoFormat('dddd, D MMM Y');
-        $waktu = Carbon::now();
-        $waktu = Carbon::parse($waktu)->format('H:i:s');
-
-        $data = [
-            'items' => $items,
-            'today' => $today,
-            'waktu' => $waktu,
-            'awal' => $awal,
-            'akhir' => $akhir
-        ];
-
-        return view('pages.kenari.cetakfaktur.cetakInv', $data);
-        // return view('pages.kenari.cetakfaktur.cetakPdf', $data);
-    }
-
-    public function updateFaktur($awal, $akhir) {
-        $items = SalesOrder::join('users', 'users.id', 'so.id_user')
-                ->select('so.id as id', 'so.*')->where('roles', 'KENARI')
-                ->whereIn('status', ['INPUT', 'UPDATE', 'APPROVE_LIMIT'])
-                ->whereBetween('so.id', [$awal, $akhir])->get();
-
-        foreach($items as $item) {
-            $item->status = 'CETAK';
-            $item->save();
-        }
-
-        $data = [
-            'status' => 'false',
-            'awal' => 0,
-            'akhir' => 0
-        ];
-
-        return redirect()->route('cetak-faktur-kenari', $data);
     }
 
     public function indexTrans() {

@@ -91,10 +91,10 @@
                                                    value="{{ old('satuan[]') }}" onkeypress="return angkaSaja(event, {{$i}}, 'sat')" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                                             </td>
                                             <td>
-                                                <input type="text" name="harga[]" id="harga" readonly class="form-control form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}" onkeypress="return angkaSajaHarga(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                                                <input type="text" tabindex="{{ $tab += 5 }}" name="harga[]" id="harga" class="form-control form-control-sm text-bold text-dark text-right harga" value="{{ old('harga[]') }}" onkeypress="return angkaSajaHarga(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                                             </td>
                                             <td>
-                                                <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
+                                                <input type="text" name="jumlah[]" id="jumlah" class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" readonly>
                                             </td>
                                             <td align="center" class="align-middle">
                                                 <a href="#" class="icRemove">
@@ -258,10 +258,10 @@
                     autocomplete="off">
                   </td>
                   <td>
-                    <input type="text" name="harga[]" id="hargaRow${newNum}" readonly class="form-control form-control-sm text-bold text-dark text-right hargaRow" onkeypress="return angkaSajaHarga(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
+                    <input type="text" tabindex="${tab += 5}" name="harga[]" id="hargaRow${newNum}" class="form-control form-control-sm text-bold text-dark text-right hargaRow" onkeypress="return angkaSajaHarga(event, {{$i}})" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">
                   </td>
                   <td>
-                    <input type="text" name="jumlah[]" id="jumlahRow${newNum}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow">
+                    <input type="text" name="jumlah[]" id="jumlahRow${newNum}" class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlahRow" readonly>
                   </td>
                   <td align="center" class="align-middle">
                     <a href="#" class="icRemoveRow" id="icRemoveRow${newNum}">
@@ -330,43 +330,37 @@
                 }
 
                 @foreach($barang as $br)
-                if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-                    kodeRow.value = '{{ $br->id }}';
-                    brgRow.value = '{{ $br->nama }}';
-                    satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
-                    if(satuanUkuran.innerHTML == 'Dus') {
-                        pcs.innerHTML = 'Pcs';
-                        teksSatRow.value = 'Pcs';
-                        satuanRow.removeAttribute('readonly');
+                    if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+                        kodeRow.value = '{{ $br->id }}';
+                        brgRow.value = '{{ $br->nama }}';
+                        satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
+                        if(satuanUkuran.innerHTML == 'Dus') {
+                            pcs.innerHTML = 'Pcs';
+                            teksSatRow.value = 'Pcs';
+                            satuanRow.removeAttribute('readonly');
+                        }
+                        else if(satuanUkuran.innerHTML == 'Rol') {
+                            pcs.innerHTML = 'Rol';
+                            teksSatRow.value = 'Rol';
+                            satuanUkuran.innerHTML = 'Meter';
+                            satuanRow.value = '{{ $br->ukuran }}';
+                            satuanRow.setAttribute('readonly', 'true');
+                        }
+                        else if(satuanUkuran.innerHTML == 'Set') {
+                            pcs.innerHTML = 'Set';
+                            satuanUkuran.innerHTML = 'Dus';
+                            teksSatUkRow.value = 'Dus';
+                            teksSatRow.value = 'Set';
+                        }
+                        else {
+                            pcs.innerHTML = 'Meter';
+                            teksSatRow.value = 'Meter';
+                            satuanUkuran.innerHTML = '';
+                            satuanRow.value = '{{ $br->ukuran }}';
+                            satuanRow.setAttribute('readonly', 'true');
+                        }
+                        ukuranRow = '{{ $br->ukuran }}';
                     }
-                    else if(satuanUkuran.innerHTML == 'Rol') {
-                        pcs.innerHTML = 'Rol';
-                        teksSatRow.value = 'Rol';
-                        satuanUkuran.innerHTML = 'Meter';
-                        satuanRow.value = '{{ $br->ukuran }}';
-                        satuanRow.setAttribute('readonly', 'true');
-                    }
-                    else if(satuanUkuran.innerHTML == 'Set') {
-                        pcs.innerHTML = 'Set';
-                        satuanUkuran.innerHTML = 'Dus';
-                        teksSatUkRow.value = 'Dus';
-                        teksSatRow.value = 'Set';
-                    }
-                    else {
-                        pcs.innerHTML = 'Meter';
-                        teksSatRow.value = 'Meter';
-                        satuanUkuran.innerHTML = '';
-                        satuanRow.value = '{{ $br->ukuran }}';
-                        satuanRow.setAttribute('readonly', 'true');
-                    }
-                    ukuranRow = '{{ $br->ukuran }}';
-
-                    if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}') || ('{{ $br->jenis->nama == 'POWERLINDO' }}')) {
-                        hargaRow.removeAttribute('readonly');
-                    } else {
-                        hargaRow.setAttribute('readonly', 'true');
-                    }
-                }
                 @endforeach
 
                 @foreach($harga as $hb)
@@ -382,6 +376,11 @@
                 qtyGudangRow.value = '';
                 qtyRow.value = '';
                 satuanRow.value = '';
+
+                if(qtyRow.value === "") {
+                    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
+                    jumlahRow.value = '';
+                }
             }
 
             hargaRow.addEventListener("keyup", displayHargaCustomRow);
@@ -602,45 +601,39 @@
                 }
 
                 @foreach($barang as $br)
-                if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-                    kodeBarang[i].value = '{{ $br->id }}';
-                    brgNama[i].value = '{{ $br->nama }}';
-                    satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
-                    if(satuanUkuran.innerHTML == 'Dus') {
-                        pcs.innerHTML = 'Pcs';
-                        teksSatUk[i].value = 'Dus';
-                        teksSat[i].value = 'Pcs';
+                    if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+                        kodeBarang[i].value = '{{ $br->id }}';
+                        brgNama[i].value = '{{ $br->nama }}';
+                        satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
+                        if(satuanUkuran.innerHTML == 'Dus') {
+                            pcs.innerHTML = 'Pcs';
+                            teksSatUk[i].value = 'Dus';
+                            teksSat[i].value = 'Pcs';
+                        }
+                        else if(satuanUkuran.innerHTML == 'Rol') {
+                            pcs.innerHTML = 'Rol';
+                            teksSat[i].value = 'Rol';
+                            teksSatUk[i].value = 'Meter';
+                            satuanUkuran.innerHTML = 'Meter';
+                            satuan[i].value = '{{ $br->ukuran }}';
+                            satuan[i].setAttribute('readonly', 'true');
+                        }
+                        else if(satuanUkuran.innerHTML == 'Set') {
+                            pcs.innerHTML = 'Set';
+                            satuanUkuran.innerHTML = 'Dus';
+                            teksSatUk[i].value = 'Dus';
+                            teksSat[i].value = 'Set';
+                        }
+                        else {
+                            pcs.innerHTML = 'Meter';
+                            teksSat[i].value = 'Meter';
+                            teksSatUk[i].value = '';
+                            satuanUkuran.innerHTML = '';
+                            satuan[i].value = '{{ $br->ukuran }}';
+                            satuan[i].setAttribute('readonly', 'true');
+                        }
+                        ukuran[i].value = '{{ $br->ukuran }}';
                     }
-                    else if(satuanUkuran.innerHTML == 'Rol') {
-                        pcs.innerHTML = 'Rol';
-                        teksSat[i].value = 'Rol';
-                        teksSatUk[i].value = 'Meter';
-                        satuanUkuran.innerHTML = 'Meter';
-                        satuan[i].value = '{{ $br->ukuran }}';
-                        satuan[i].setAttribute('readonly', 'true');
-                    }
-                    else if(satuanUkuran.innerHTML == 'Set') {
-                        pcs.innerHTML = 'Set';
-                        satuanUkuran.innerHTML = 'Dus';
-                        teksSatUk[i].value = 'Dus';
-                        teksSat[i].value = 'Set';
-                    }
-                    else {
-                        pcs.innerHTML = 'Meter';
-                        teksSat[i].value = 'Meter';
-                        teksSatUk[i].value = '';
-                        satuanUkuran.innerHTML = '';
-                        satuan[i].value = '{{ $br->ukuran }}';
-                        satuan[i].setAttribute('readonly', 'true');
-                    }
-                    ukuran[i].value = '{{ $br->ukuran }}';
-
-                    if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}') || ('{{ $br->jenis->nama == 'POWERLINDO' }}')) {
-                        harga[i].removeAttribute('readonly');
-                    } else {
-                        harga[i].setAttribute('readonly', 'true');
-                    }
-                }
                 @endforeach
 
                 @foreach($harga as $hb)
@@ -656,6 +649,11 @@
                 qtyGudang[i].value = '';
                 qty[i].value = '';
                 satuan[i].value = '';
+
+                if(qty[i].value === "") {
+                    subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlah[i].value.replace(/\./g, ""));
+                    jumlah[i].value = '';
+                }
             }
         }
 
