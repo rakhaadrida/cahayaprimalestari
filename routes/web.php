@@ -549,6 +549,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
         Route::get('cianjur/transaksi', 'CianjurController@indexTransaction')->name('trans-cianjur');
         Route::get('cianjur/transaksi/{id}', 'CianjurController@showTransaction')->name('trans-show-cianjur');
+        Route::post('cianjur/cetak-transaksi', 'CianjurController@printTransaction')->name('trans-print-cianjur');
     });
 });
 

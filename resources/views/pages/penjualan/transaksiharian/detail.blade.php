@@ -7,7 +7,7 @@
 @section('content')
 <div class="container-fluid">
   	<div class="d-sm-flex align-items-center justify-content-between mb-0">
-      	<h1 class="h3 mb-0 text-gray-800 menu-title">Transaksi Harian</h1>
+      	<h1 class="h3 mb-0 text-gray-800 menu-title">Transaksi Harian @if(Auth::user()->roles == 'CIANJUR') Supplier @endif</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">

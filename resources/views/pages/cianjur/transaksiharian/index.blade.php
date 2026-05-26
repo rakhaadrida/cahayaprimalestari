@@ -42,7 +42,7 @@
                                         <button type="submit" id="btn-cari" formaction="{{ route('trans-cianjur') }}" formmethod="GET" class="btn btn-primary btn-sm btn-block text-bold">Cari</button>
                                     </div>
                                     <div class="col-auto mt-1" style="margin-left: 30px">
-                                        <button type="submit" tabindex="5" formaction="{{ route('ar-cetak-now', 'All') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold ">Print All</button>
+                                        <button type="submit" tabindex="5" formaction="{{ route('trans-print-cianjur') }}" formmethod="POST" formtarget="_blank" id="btn-cari" class="btn btn-danger btn-sm btn-block text-bold ">Print All</button>
                                     </div>
                                 </div>
                             </div>

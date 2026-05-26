@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use PDF;
 
 class CianjurController extends Controller
 {
@@ -194,5 +195,47 @@ class CianjurController extends Controller
         ];
 
         return view('pages.cianjur.transaksiharian.detail', $data);
+    }
+
+    public function printTransaction(Request $request) {
+        $filter = (object) $request->all();
+
+        $startDate = $filter->start_date ?? Carbon::now()->format('d-m-Y');
+        $finalDate = $filter->final_date ?? null;
+
+        if(!$finalDate) {
+            $finalDate = $startDate;
+        }
+
+        $baseQuery = Faktur::query();
+
+        if($startDate) {
+            $baseQuery = $baseQuery->where('faktur.tanggal', '>=',  Carbon::parse($startDate)->startOfDay());
+        }
+
+        if($finalDate) {
+            $baseQuery = $baseQuery->where('faktur.tanggal', '<=', Carbon::parse($finalDate)->endOfDay());
+        }
+
+        $items = $baseQuery
+            ->orderBy('faktur.tanggal')
+            ->get();
+
+        $printTime = Carbon::now('+07:00')->format('d F Y, H:i:s');
+
+        $startDate = $this->formatTanggal($startDate, 'd-M-y');
+        $finalDate = $this->formatTanggal($finalDate, 'd-M-y');
+
+        $data = [
+            'items' => $items,
+            'startDate' => $startDate,
+            'finalDate' => $finalDate,
+            'printTime' => $printTime
+        ];
+
+        $pdf = PDF::loadview('pages.cianjur.transaksiharian.print', $data)->setPaper('a4', 'landscape');
+        ob_end_clean();
+
+        return $pdf->stream('cetak-faktur-toko.pdf');
     }
 }
