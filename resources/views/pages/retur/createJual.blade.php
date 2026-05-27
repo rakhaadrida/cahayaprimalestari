@@ -185,7 +185,6 @@
             }
         }
 
-        /** Add New Table Line **/
         function displayRow(e) {
             const lastRow = $(tablePO).find('tr:last').attr("id");
             const lastNo = $(tablePO).find('tr:last td:first-child').text();
@@ -358,7 +357,6 @@
             tglRetur.value = value;
         }
 
-        /** Tampil Id Supp **/
         function displayCust(e) {
             @foreach($customer as $c)
             if('{{ $c->nama }} ({{ $c->alamat }})' == e.target.value) {
@@ -371,7 +369,6 @@
             @endforeach
         }
 
-        /** Tampil Harga Barang **/
         for(let i = 0; i < brgNama.length; i++) {
             kodeBarang[i].addEventListener("keyup", displayBarang);
             brgNama[i].addEventListener("keyup", displayBarang);
@@ -394,7 +391,6 @@
             }
         }
 
-        /** Inputan hanya bisa angka **/
         function angkaSaja(evt, inputan) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -409,7 +405,6 @@
             return true;
         }
 
-        /** Delete Baris Pada Tabel **/
         for(let i = 0; i < hapusBaris.length; i++) {
             hapusBaris[i].addEventListener("click", function (e) {
                 for(let j = i; j < hapusBaris.length; j++) {
@@ -428,7 +423,6 @@
                     }
                 }
 
-                // $(this).parents('tr').next().find('input').val('');
                 for(let j = 0; j < kodeBarang.length; j++) {
                     if(kodeBarang[j].value == '') {
                         kodeBarang[j].focus();
@@ -463,11 +457,15 @@
                 document.getElementById("submitRJ").dataset.target = "#modalNotif";
                 return false;
             }
-            else {
+            else {    
                 document.getElementById("submitRJ").formMethod = "POST";
                 document.getElementById("submitRJ").formAction = "{{ route('ret-process-jual', $newcode) }}";
             }
         }
+
+        $('form').on('submit', function() {
+            $('#submitRJ', this).prop('disabled', true);
+        });
 
         /** Autocomplete Input Kode PO **/
         $(function() {

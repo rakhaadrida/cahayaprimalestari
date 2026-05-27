@@ -193,7 +193,6 @@
             }
         }
 
-        /** Add New Table Line **/
         function displayRow(e) {
             const lastRow = $(tablePO).find('tr:last').attr("id");
             const lastNo = $(tablePO).find('tr:last td:first-child').text();
@@ -378,7 +377,6 @@
             tglRetur.value = value;
         }
 
-        /** Tampil Id Supp **/
         function displaySupp(e) {
             @foreach($supplier as $s)
             if('{{ $s->nama }}' == e.target.value) {
@@ -390,7 +388,6 @@
             @endforeach
         }
 
-        /** Tampil Harga Barang **/
         for(let i = 0; i < brgNama.length; i++) {
             kodeBarang[i].addEventListener("keyup", displayBarang);
             brgNama[i].addEventListener("keyup", displayBarang);
@@ -425,7 +422,6 @@
             }
         }
 
-        /** Inputan hanya bisa angka **/
         function angkaSaja(evt, inputan) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -440,7 +436,6 @@
             return true;
         }
 
-        /** Delete Baris Pada Tabel **/
         for(let i = 0; i < hapusBaris.length; i++) {
             hapusBaris[i].addEventListener("click", function (e) {
                 for(let j = i; j < hapusBaris.length; j++) {
@@ -461,7 +456,6 @@
                     }
                 }
 
-                // $(this).parents('tr').next().find('input').val('');
                 for(let j = 0; j < kodeBarang.length; j++) {
                     if(kodeBarang[j].value == '') {
                         kodeBarang[j].focus();
@@ -502,7 +496,10 @@
             }
         }
 
-        /** Autocomplete Input Kode PO **/
+        $('form').on('submit', function() {
+            $('#submitRB', this).prop('disabled', true);
+        });
+
         $(function() {
             var supplier = [];
             @foreach($supplier as $s)
