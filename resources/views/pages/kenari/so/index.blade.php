@@ -5,10 +5,7 @@
 @endpush
 
 @section('content')
-<!-- Begin Page Content -->
 <div class="container-fluid">
-
-  <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Sales Order</h1>
   </div>
@@ -29,7 +26,6 @@
           <div class="card-body">
             <form action="" method="">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container" style="margin-bottom: -20px">
                 <div class="row">
                   <div class="col-12">
@@ -94,46 +90,6 @@
                                 @endforeach
                             </select>
                         </div>
-{{--                      <div class="col-auto" style="margin-top: -35px">--}}
-{{--                        <div class="form-check form-check-inline mt-2">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="CPL" id="kategori" required>--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat1">CPL</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline mt-2" style="margin-left: 5px">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Phillips" id="kategori" required>--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat2">Phillips</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Prime">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat3">Prime</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="MCB">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat6">MCB</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Extrana">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat4">Extrana</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Nitto">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat5">Nitto</label>--}}
-{{--                        </div>--}}
-{{--                        <br>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="BOSS">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat7">Pipa</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori"  value="Maspion">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat8">Maspion</label>--}}
-{{--                        </div>--}}
-{{--                        <div class="form-check form-check-inline" style="margin-left: -1px">--}}
-{{--                          <input class="form-check-input" tabindex="5" type="radio" name="kategori" value="Panasonic">--}}
-{{--                          <label class="form-check-label text-bold text-dark" for="kat7">Panasonic</label>--}}
-{{--                        </div>--}}
-{{--                      </div>--}}
                     </div>
                   </div>
                   <div class="col" style="margin-left: -350px; margin-right:-40px; margin-top: -120px">
@@ -177,9 +133,6 @@
                 </div>
               </div>
               <hr>
-              <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-
-              <!-- Tabel Data Detil PO -->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" tabindex="-1" class="text-primary text-bold">
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
               </span>
@@ -320,9 +273,6 @@
                 </div>
               </div>
               <hr>
-              <!-- End Tabel Data Detil PO -->
-
-              <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" tabindex="{{ $tab++ }}" class="btn btn-success btn-block text-bold" onclick="return checkRequired(event)" id="submitSO" >Submit</button>
@@ -331,9 +281,7 @@
                   <button type="reset" tabindex="{{ $tab += 2 }}" class="btn btn-outline-secondary btn-block text-bold" id="resetSO">Reset</button>
                 </div>
               </div>
-              <!-- End Button Submit dan Reset -->
-
-              <!-- Modal Konfirmasi Limit -->
+              
               <div class="modal" id="modalLimit" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -365,8 +313,7 @@
                       <p>Silahkan pilih untuk simpan atau batal.</p>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          {{-- <a href="{{ url('/so/process/'.$newcode.'/CETAK') }}" class="btn btn-success btn-block text-bold btnCetak">Cetak</a> --}}
-                          <button type="submit" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'LIMIT']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Simpan</button>
+                          <button type="submit" id="btnCetakLimit" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'LIMIT']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Simpan</button>
                         </div>
                         <div class="col-3">
                           <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
@@ -376,9 +323,6 @@
                   </div>
                 </div>
               </div>
-              <!-- End Modal Konfirmasi -->
-
-              <!-- Modal Konfirmasi Cetak atau Input -->
               <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -393,19 +337,16 @@
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          {{-- <a href="{{ url('/so/process/'.$newcode.'/CETAK') }}" class="btn btn-success btn-block text-bold btnCetak">Cetak</a> --}}
-                          <button type="submit" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                          <button type="submit" id="btnCetak" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
                         </div>
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                          <button type="submit" id="btnInput" formaction="{{ route('so-process-kenari', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- End Modal Konfirmasi -->
-
               <div class="modal" id="modalDuplikat" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -421,12 +362,6 @@
                   </div>
                 </div>
               </div>
-
-              {{-- @if($status == 'true')
-                <!-- Tampilan Cetak -->
-                <iframe src="{{url('kenari/so/cetak/'.$lastSO[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-              @endif --}}
-
             </form>
           </div>
         </div>
@@ -440,17 +375,6 @@
 @push('addon-script')
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
-/* @if($status == 'true')
-  const printFrame = document.getElementById("frameCetak").contentWindow;
-
-  printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('so-after-print-kenari', $lastSO[0]->id) }}";
-  }
-
-  printFrame.window.focus();
-  printFrame.window.print();
-@endif */
-
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
@@ -520,7 +444,6 @@ var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
 var kodeModal; var totPast;
 var sisa; var stokJohar; var stokLain; var totStok;
 
-/** Call Fungsi Setelah Inputan Terisi **/
 namaCust.addEventListener('keyup', displayCust);
 namaCust.addEventListener('blur', displayCust);
 tanggalKirim.addEventListener("keyup", formatTanggal);
@@ -531,15 +454,10 @@ diskonFaktur.addEventListener('keyup', displayTotal);
 
 kategori.addEventListener('change', displayJenis);
 
-// Array.prototype.forEach.call(radios, function(radio) {
-//    radio.addEventListener('change', displayJenis);
-// });
-
 Array.prototype.forEach.call(radiosJen, function(radio) {
    radio.addEventListener('change', displayTempo);
 });
 
-/** Tampil Id Supplier **/
 function displayCust(e) {
   @foreach($customer as $c)
     if('{{ $c->nama }} ({{ $c->alamat }})' == e.target.value) {
@@ -588,7 +506,6 @@ function formatTanggal(e) {
   tanggalKirim.value = value;
 }
 
-/** Tampil Input Tempo **/
 function displayJenis(e) {
     if(e.target.value != 'CPL') {
         if((e.target.value == 'Extrana') && (tempTempo == 0))
@@ -607,27 +524,8 @@ function displayJenis(e) {
         radiosJen[0].disabled = true;
         radiosJen[1].disabled = true;
     }
-
-  /* if((radios[1].checked) || (radios[2].checked) || (radios[3].checked) || (radios[4].checked) || (radios[5].checked) || (radios[6].checked) || (radios[7].checked) || (radios[8].checked)) {
-    if((radios[4].checked) && (tempTempo == 0))
-      tempTempo = '30';
-
-    tempo.value = tempTempo;
-    radiosJen[0].checked = false;
-    radiosJen[0].disabled = false;
-    radiosJen[1].disabled = false;
-  }
-  else if(radios[0].checked) {
-    tempo.setAttribute('readonly', 'true');
-    tempo.removeAttribute('required');
-    tempo.value = '';
-    radiosJen[0].checked = true;
-    radiosJen[0].disabled = true;
-    radiosJen[1].disabled = true;
-  } */
 }
 
-/** Tampil Input Tempo **/
 function displayTempo(e) {
   if(radiosJen[1].checked) {
     tempo.removeAttribute('readonly');
@@ -641,7 +539,6 @@ function displayTempo(e) {
   }
 }
 
-/** Add New Table Line **/
 function displayRow(e) {
   const lastRow = $(tablePO).find('tr:last').attr("id");
   const lastNo = $(tablePO).find('tr:last td:first-child').text();
@@ -715,7 +612,7 @@ function displayRow(e) {
 
   $(tablePO).append(newTr);
   $(tablePO).append(newModal);
-  // jumBaris.value = newNum;
+
   jumBaris.value = +jumBaris.value + 1;
   const newRow = document.getElementById(newNum);
   const newMod = document.getElementById("gud"+newNum);
@@ -742,7 +639,6 @@ function displayRow(e) {
   document.getElementById("submitSO").tabIndex = tab++;
   document.getElementById("resetSO").tabIndex = tab++;
 
-  /** Tampil Harga **/
   brgRow.addEventListener("keyup", displayHargaRow);
   kodeRow.addEventListener("keyup", displayHargaRow);
   brgRow.addEventListener("blur", displayHargaRow);
@@ -769,7 +665,6 @@ function displayRow(e) {
         if(satuanUkuran.innerHTML == 'Dus') {
           pcs.innerHTML = 'Pcs';
           teksSatRow.value = 'Pcs';
-          // satuanRow.value = '';
           satuanRow.removeAttribute('readonly');
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
@@ -784,7 +679,6 @@ function displayRow(e) {
           satuanUkuran.innerHTML = 'Dus';
           teksSatUkRow.value = 'Dus';
           teksSatRow.value = 'Set';
-          // satuanRow.value = '';
         }
         else {
           pcs.innerHTML = 'Meter';
@@ -811,10 +705,6 @@ function displayRow(e) {
         diskonRow.setAttribute('required', true);
       }
     @endforeach
-
-    // kodeGudangRow.value = '{{ $gudang[0]->id }}';
-    // qtyGudangRow.value = '';
-    // qtyRow.value = '';
   }
 
   function resetQtyRow(e) {
@@ -846,7 +736,6 @@ function displayRow(e) {
     grandtotal.value = totalNotPPN.value;
   }
 
-  /** Inputan hanya bisa angka **/
   qtyRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
@@ -869,7 +758,6 @@ function displayRow(e) {
     return true;
   });
 
-  /** Tampil Jumlah **/
   qtyRow.addEventListener("blur", displayQtyRow);
   if(teksSatRow.value == 'Pcs')
     satuanRow.addEventListener("blur", displayQtyRow);
@@ -983,7 +871,6 @@ function displayRow(e) {
     @endforeach
   }
 
-  /** Inputan hanya bisa angka **/
   diskonRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
@@ -996,7 +883,6 @@ function displayRow(e) {
     return true;
   });
 
-  /** Tampil Diskon Rp **/
   diskonRow.addEventListener("keyup", displayDiskonRow);
   diskonRow.addEventListener("blur", displayDiskonRow);
 
@@ -1014,13 +900,12 @@ function displayRow(e) {
       nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""))
       checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
     }
-    // total_ppn(subtotal.value.replace(/\./g, ""));
+
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
 
-  /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     if(qtyRow.value != "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
@@ -1030,9 +915,9 @@ function displayRow(e) {
     }
 
     const curNum = $(this).closest('tr').find('td:first-child').text();
-    // const lastNum = $(tablePO).find('tr:last').attr("id");
     const lastNum = $(tablePO).find('tr:last td:first-child').text();
     var numRow;
+
     if(+curNum < +lastNum) {
       $(newRow).remove();
       $(newMod).remove();
@@ -1041,7 +926,6 @@ function displayRow(e) {
       var selisih = +lastNum - +curNum;
       var nomor = document.querySelectorAll('.nomor');
       for(let i = +curNum; i < +lastNum; i++) {
-        // $(tablePO).find('tr:nth-child('+i+') td:first-child').html(i);
         nomor[i-6].innerHTML = i;
       }
       numRow = lastNum;
@@ -1053,13 +937,11 @@ function displayRow(e) {
     jumBaris.value -= 1;
     var kdBrg = document.querySelectorAll('.kdBrgRow');
     if(jumBaris.value > 5)
-      // document.getElementById("kdBrgRow"+numRow).focus();
       kdBrg[lastNum-7].focus();
     else
       kodeBarang[4].focus();
   })
 
-  /** Autocomplete Nama  Barang **/
   $(function() {
     var idBarang = [];
     var nmBarang = [];
@@ -1158,7 +1040,6 @@ function displayRow(e) {
   });
 }
 
-/** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
@@ -1189,7 +1070,6 @@ for(let i = 0; i < brgNama.length; i++) {
           pcs.innerHTML = 'Pcs';
           teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Pcs';
-          // satuan[i].value = '';
         }
         else if(satuanUkuran.innerHTML == 'Rol') {
           pcs.innerHTML = 'Rol';
@@ -1204,7 +1084,6 @@ for(let i = 0; i < brgNama.length; i++) {
           satuanUkuran.innerHTML = 'Dus';
           teksSatUk[i].value = 'Dus';
           teksSat[i].value = 'Set';
-          // satuan[i].value = '';
         }
         else {
           pcs.innerHTML = 'Meter';
@@ -1266,7 +1145,6 @@ for(let i = 0; i < harga.length; i++) {
   }
 }
 
-/** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("blur", displayQty);
 
@@ -1307,7 +1185,6 @@ for(let i = 0; i < qty.length; i++) {
       else
         totalsatuan[i].textContent = ``;
 
-      // netPast = +netto[i].value.replace(/\./g, "");
       checkSubtotal(+netto[i].value.replace(/\./g, ""), 0);
       ppn.value = 0;
       totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
@@ -1335,14 +1212,13 @@ for(let i = 0; i < qty.length; i++) {
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    // total_ppn(subtotal.value.replace(/\./g, ""));
+
     ppn.value = 0;
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
 }
 
-// Pilih Tipe
 for(let i = 0; i < tipe.length; i++) {
   tipe[i].addEventListener("keyup", displayTipe);
   tipe[i].addEventListener("blur", displayTipe);
@@ -1377,7 +1253,6 @@ for(let i = 0; i < tipe.length; i++) {
   }
 }
 
-/** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
   diskon[i].addEventListener("keyup", displayDiskon);
   diskon[i].addEventListener("blur", displayDiskon);
@@ -1396,13 +1271,12 @@ for(let i = 0; i < diskon.length; i++) {
       netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""))
       checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
     }
-    // total_ppn(subtotal.value.replace(/\./g, ""));
+
     totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
     grandtotal.value = totalNotPPN.value;
   }
 }
 
-/** Hitung Qty **/
 function hitungQty(urutan, kode, angka, teks, ukuran) {
   if(kode == 'qty') {
     if((teks == 'Pcs') || (teks == 'Set'))
@@ -1415,7 +1289,6 @@ function hitungQty(urutan, kode, angka, teks, ukuran) {
   }
 }
 
-/** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
   angka = angka.replace(/\,/g, ".");
@@ -1427,7 +1300,6 @@ function hitungDiskon(angka) {
   return totDiskon;
 }
 
-/** Check Jumlah Netto onChange **/
 function checkSubtotal(Past, Now) {
   if(Past > Now) {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
@@ -1438,9 +1310,7 @@ function checkSubtotal(Past, Now) {
   }
 }
 
-/** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  // ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
 }
 
@@ -1449,7 +1319,6 @@ function displayTotal(e) {
   grandtotal.value = totalNotPPN.value;
 }
 
-/** Inputan hanya bisa angka **/
 function angkaSaja(evt, inputan, teks) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1472,7 +1341,6 @@ function angkaSaja(evt, inputan, teks) {
   return true;
 }
 
-/** Inputan hanya bisa angka **/
 function angkaSajaHarga(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1486,7 +1354,6 @@ function angkaSajaHarga(evt, inputan) {
   return true;
 }
 
-/** Inputan hanya bisa angka dan plus **/
 function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1500,7 +1367,6 @@ function angkaPlus(evt, inputan) {
   return true;
 }
 
-/** Add Nominal Separators **/
 function formatNominal(e){
   $(this).val(function(index, value) {
     return value
@@ -1510,7 +1376,6 @@ function formatNominal(e){
   });
 }
 
-/** Add Thousand Separators **/
 function addCommas(nStr) {
 	nStr += '';
 	x = nStr.split(',');
@@ -1523,14 +1388,12 @@ function addCommas(nStr) {
 	return x1 + x2;
 }
 
-/** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
       subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
       grandtotal.value = totalNotPPN.value;
-      // total_ppn(totalNotPPN.value.replace(/\./g, ""));
     }
 
     for(let j = i; j < hapusBaris.length; j++) {
@@ -1569,7 +1432,6 @@ for(let i = 0; i < hapusBaris.length; i++) {
       }
     }
 
-    // $(this).parents('tr').next().find('input').val('');
     for(let j = 0; j < kodeBarang.length; j++) {
       if(kodeBarang[j].value == '') {
         kodeBarang[j].focus();
@@ -1580,8 +1442,6 @@ for(let i = 0; i < hapusBaris.length; i++) {
 }
 
 function checkRequired(e) {
-  // if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) ||
-  // (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
   if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") ||
       (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
     e.stopPropagation();
@@ -1639,13 +1499,15 @@ function checkRequired(e) {
       document.getElementById("submitSO").dataset.target = "#modalKonfirm";
       return false;
     }
-    /* document.getElementById("submitSO").dataset.toggle = "modal";
-    document.getElementById("submitSO").dataset.target = "#modalKonfirm";
-    return false; */
   }
 }
 
-/** Autocomplete Input Text **/
+$('form').on('submit', function() {
+    $('#btnCetak', this).prop('disabled', true);
+    $('#btnInput', this).prop('disabled', true);
+    $('#btnCetakLimit', this).prop('disabled', true);
+});
+
 $(function() {
   var barangKode = [];
   var barangNama = [];
@@ -1789,6 +1651,5 @@ $(function() {
     }
   });
 });
-
 </script>
 @endpush
