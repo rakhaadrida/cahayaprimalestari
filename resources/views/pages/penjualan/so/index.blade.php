@@ -372,7 +372,7 @@
                                                 <p>Silahkan pilih untuk simpan atau batal.</p>
                                                 <div class="form-row justify-content-center">
                                                     <div class="col-3">
-                                                        <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'LIMIT']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Simpan</button>
+                                                        <button type="submit" id="btnCetakLimit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'LIMIT']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Simpan</button>
                                                     </div>
                                                     <div class="col-3">
                                                         <button type="button" data-dismiss="modal" class="btn btn-outline-secondary btn-block text-bold">Batal</button>
@@ -396,10 +396,10 @@
                                                 <hr>
                                                 <div class="form-row justify-content-center">
                                                     <div class="col-3">
-                                                        <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                                                        <button type="submit" id="btnCetak" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
                                                     </div>
                                                     <div class="col-3">
-                                                        <button type="submit" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                                                        <button type="submit" id="btnInput" formaction="{{ route('so-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1923,6 +1923,13 @@
                 }
             }
         }
+
+        $('form').on('submit', function() {
+            $('#btnCetak', this).prop('disabled', true);
+            $('#btnInput', this).prop('disabled', true);
+
+            $('#btnCetakLimit', this).prop('disabled', true);
+        });
 
         /** Autocomplete Input Text **/
         $(function() {
