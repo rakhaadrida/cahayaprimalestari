@@ -100,7 +100,7 @@ class BarangMasukController extends Controller
             $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
             $lastnumber++;
             $newcode = 'AP'.$tahun.$bulan.sprintf('%04s', $lastnumber);
-            $apKode = $newNumber;
+            $apKode = $newcode;
 
             $items = AccPayable::where('id_bm', $request->kode)->count();
             if($items != 1) {
