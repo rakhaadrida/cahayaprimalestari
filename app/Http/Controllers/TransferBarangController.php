@@ -11,7 +11,8 @@ use App\Models\DetilTB;
 use App\Models\NeedApproval;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransferBarangController extends Controller
 {
@@ -47,19 +48,6 @@ class TransferBarangController extends Controller
         return view('pages.pembelian.transferbarang.index', $data);
     }
 
-    /* public function cekStok(Request $request) {
-        $gudang = Gudang::where('nama', $request->name)->get();
-
-        $item = StokBarang::where('id_barang', $request->barang)->where('id_gudang', $gudang->first()->id)
-                ->where('status', $request->status)->get();
-        $data = [
-            'stok' => $item->first()->stok,
-            'kode' => $item->first()->id_gudang
-        ];
-
-        return response()->json($data);
-    } */
-
     public function cekStok(Request $request) {
         $jumlah = $request->jumBrs;
         $cek = $jumlah; $qtyAsal = [];
@@ -90,73 +78,84 @@ class TransferBarangController extends Controller
     }
 
     public function process(Request $request, $id, $status) {
-        $tanggal = $request->tanggal;
-        $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
-        $jumlah = $request->jumBaris;
+        try {
+            DB::beginTransaction();
 
-        $waktu = Carbon::now('+07:00');
-        $bulan = $waktu->format('m');
-        $month = $waktu->month;
-        $tahun = substr($waktu->year, -2);
+            $tanggal = $request->tanggal;
+            $tanggal = $this->formatTanggal($tanggal, 'Y-m-d');
+            $jumlah = $request->jumBaris;
 
-        // return redirect()->back()->withInput($request->all());
+            $waktu = Carbon::now('+07:00');
+            $bulan = $waktu->format('m');
+            $month = $waktu->month;
+            $tahun = substr($waktu->year, -2);
 
-        $lastcode = TransferBarang::selectRaw('max(id) as id')->whereMonth('tgl_tb', $month)->get();
-        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
-        $lastnumber++;
-        $newcode = 'TB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
-        
-        TransferBarang::create([
-            'id' => $newcode,
-            'tgl_tb' => $tanggal,
-            'status' => $status,
-            'id_user' => Auth::user()->id
-        ]);
+            $lastcode = TransferBarang::selectRaw('max(id) as id')->whereMonth('tgl_tb', $month)->get();
+            $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
+            $lastnumber++;
+            $newcode = 'TB'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+            
+            TransferBarang::create([
+                'id' => $newcode,
+                'tgl_tb' => $tanggal,
+                'status' => $status,
+                'id_user' => Auth::user()->id
+            ]);
 
-        for($i = 0; $i < $jumlah; $i++) {
-            if($request->kodeBarang[$i] != "") {
-                DetilTB::create([
-                    'id_tb' => $newcode,
-                    'id_barang' => $request->kodeBarang[$i],
-                    'id_asal' => $request->kodeAsal[$i],
-                    'id_tujuan' => $request->kodeTujuan[$i],
-                    'qty' => $request->qtyTransfer[$i]
-                ]);
-
-                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                                ->where('id_gudang', $request->kodeAsal[$i])
-                                ->where('status', $request->statusAsal[$i])->first();
-                $updateStok->{'stok'} -= $request->qtyTransfer[$i];
-                $updateStok->save();
-
-                $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
-                                ->where('id_gudang', $request->kodeTujuan[$i])
-                                ->where('status', $request->statusTujuan[$i])->first();
-                
-                if($updateStok == NULL) {
-                    StokBarang::create([
+            for($i = 0; $i < $jumlah; $i++) {
+                if($request->kodeBarang[$i] != "") {
+                    DetilTB::create([
+                        'id_tb' => $newcode,
                         'id_barang' => $request->kodeBarang[$i],
-                        'id_gudang' => $request->kodeTujuan[$i],
-                        'status' => $request->statusTujuan[$i],
-                        'stok' => $request->qtyTransfer[$i]
+                        'id_asal' => $request->kodeAsal[$i],
+                        'id_tujuan' => $request->kodeTujuan[$i],
+                        'qty' => $request->qtyTransfer[$i]
                     ]);
-                } else {
-                    $updateStok->{'stok'} += $request->qtyTransfer[$i];
+
+                    $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                                    ->where('id_gudang', $request->kodeAsal[$i])
+                                    ->where('status', $request->statusAsal[$i])->first();
+                    $updateStok->{'stok'} -= $request->qtyTransfer[$i];
                     $updateStok->save();
+
+                    $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
+                                    ->where('id_gudang', $request->kodeTujuan[$i])
+                                    ->where('status', $request->statusTujuan[$i])->first();
+                    
+                    if($updateStok == NULL) {
+                        StokBarang::create([
+                            'id_barang' => $request->kodeBarang[$i],
+                            'id_gudang' => $request->kodeTujuan[$i],
+                            'status' => $request->statusTujuan[$i],
+                            'stok' => $request->qtyTransfer[$i]
+                        ]);
+                    } else {
+                        $updateStok->{'stok'} += $request->qtyTransfer[$i];
+                        $updateStok->save();
+                    }
                 }
             }
-        }
 
-        if($status != 'CETAK')
-            $cetak = 'false';
-        else {
-            $cetak = 'true';
-        }
+            DB::commit();
 
-        if($status != 'CETAK')
-            return redirect()->route('tb', 'false');
-        else
-            return redirect()->route('tb-cetak', $newcode);
+            if($status != 'CETAK')
+                $cetak = 'false';
+            else {
+                $cetak = 'true';
+            }
+
+            if($status != 'CETAK')
+                return redirect()->route('tb', 'false');
+            else
+                return redirect()->route('tb-cetak', $newcode);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while saving data'
+            ]);
+        }
     }
 
     public function cetak(Request $request, $id) {
