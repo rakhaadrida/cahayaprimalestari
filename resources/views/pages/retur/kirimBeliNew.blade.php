@@ -430,8 +430,26 @@ function addCommas(nStr) {
 
 $('form').on('submit', function() {
     $('#submitRB', this).prop('disabled', true);
-    $('#backRJ', this).prop('disabled', true);
     $('#submitSelesai', this).prop('disabled', true);
+
+    $('#backRJ').addClass('disabled')
+      .css('pointer-events', 'none')
+      .on('click', function(e) {
+          e.preventDefault();
+      });
+});
+
+$('#backRJ').on('click', function(e) {
+    e.preventDefault(); 
+
+    $('#submitRB').prop('disabled', true);
+    $('#submitSelesai').prop('disabled', true);
+
+    $(this).addClass('disabled')
+      .css('pointer-events', 'none')
+      .off('click');
+
+    window.location.href = $(this).attr('href');
 });
 
 $(function() {
