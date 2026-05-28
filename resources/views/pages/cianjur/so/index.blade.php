@@ -430,9 +430,9 @@
                 stokLain = [];
                 totStok = 0;
                 @foreach($stok as $s)
-                if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->gudang->tipe }}' == 'TOKO'))
-                    totStok = '{{ $s->stok }}';
-
+                    if(('{{ $s->id_barang }}' == kodeRow.value) && ('{{ $s->gudang->tipe }}' == 'TOKO')) {
+                        totStok = '{{ $s->stok }}';
+                    }
                 @endforeach
 
                 hitungQtyRow(e.target.id, e.target.value, teksSatRow.value, ukuranRow);

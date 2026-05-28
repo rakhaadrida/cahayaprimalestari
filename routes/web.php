@@ -223,6 +223,8 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/so/change/update', 'SalesOrderController@update')->name('so-update');
         Route::post('/so/check/stock/{code}', 'SalesOrderController@getStok')->name('so-stock');
 
+        Route::get('/so/index-mitra/{status}', 'CianjurController@salesOrderMitra')->name('so-mitra');
+
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
         Route::post('/tandaterima/show', 'TandaTerimaController@show')->name('ttr-show');

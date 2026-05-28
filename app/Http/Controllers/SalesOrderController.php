@@ -273,10 +273,15 @@ class SalesOrderController extends Controller
             $cetak = 'true';
         }
 
-        if($statusHal != 'CETAK')
-            return redirect()->route('so', 'false');
-        else
+        if($statusHal != 'CETAK') {
+            if(Auth::user()->name != 'Admin_mitra') {
+                return redirect()->route('so', 'false');
+            } else {
+                return redirect()->route('so-mitra', 'false');
+            }
+        } else {
             return redirect()->route('so-cetak', $kode);
+        }
     }
 
     public function cetak(Request $request, $id) {
@@ -358,7 +363,12 @@ class SalesOrderController extends Controller
             'status' => 'false'
         ];
 
-        return redirect()->route('so', $data);
+        if(Auth::user()->name != 'Admin_mitra') {
+            return redirect()->route('so', $data);
+        } else {
+            return redirect()->route('so-mitra', $data);
+        }
+            
     }
 
     public function change() {

@@ -195,7 +195,11 @@
                 </a>
                 <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
                     <div class="py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ route('so', 'false') }}">Input Faktur</a>
+                        @if(Auth::user()->name != 'Admin_mitra') 
+                            <a class="collapse-item" href="{{ route('so', 'false') }}">Input Faktur</a>
+                        @else
+                            <a class="collapse-item" href="{{ route('so-mitra', 'false') }}">Input Faktur</a>
+                        @endif
                         <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
                         <a class="collapse-item" href="{{ route('so-change') }}">Ubah Faktur</a>
                         <a class="collapse-item" href="{{route('ttr-index-cetak', ['status' => 'false', 'awal' => '0', 'akhir' => '0'])}}">Cetak Tanda Terima</a>

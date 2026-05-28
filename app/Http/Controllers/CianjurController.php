@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccReceivable;
+use App\Models\AR_Retur;
 use App\Models\Barang;
-use App\Models\Gudang;
-use App\Models\HargaBarang;
+use App\Models\Customer;
+use App\Models\DetilAR;
 use App\Models\Faktur;
 use App\Models\FakturItem;
+use App\Models\Gudang;
+use App\Models\Harga;
+use App\Models\HargaBarang;
+use App\Models\JenisBarang;
+use App\Models\Sales;
+use App\Models\SalesOrder;
 use App\Models\StokBarang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -237,5 +245,99 @@ class CianjurController extends Controller
         ob_end_clean();
 
         return $pdf->stream('cetak-faktur-toko.pdf');
+    }
+
+    public function salesOrderMitra($status) {
+        set_time_limit(600);
+
+        $customer = Customer::with(['sales'])->get();
+        $cust = Customer::pluck('nama')->toArray();
+        $sales = Sales::All();
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
+        $kategori = JenisBarang::orderBy('nama')->get();
+
+        $hrg = Harga::pluck('tipe')->toArray();
+        $kodeBarang = Barang::pluck('id')->toArray();
+        $namaBarang = Barang::pluck('nama')->toArray();
+
+        $stok = StokBarang::query()
+            ->join('gudang', 'gudang.id', 'stok.id_gudang')
+            ->where('id_gudang', 'GDG09')->get();
+
+        $gudang = Gudang::query()->where('id', 'GDG09')->get();
+        $lastSO = SalesOrder::where('created_at', '!=', NULL)->latest()->take(1)->get();
+
+        $waktu = Carbon::now('+07:00');
+        $bulan = $waktu->format('m');
+        $month = $waktu->month;
+        $tahun = substr($waktu->year, -2);
+
+        $lastcode = SalesOrder::selectRaw('max(id) as id')->where('id', 'LIKE', 'IV%')
+                    ->whereYear('created_at', $waktu->year)
+                    ->whereMonth('created_at', $month)->get();
+        $lastnumber = (int) substr($lastcode[0]->id, 6, 4);
+        $lastnumber++;
+        $newcode = 'IV'.$tahun.$bulan.sprintf('%04s', $lastnumber);
+
+        $tanggal = Carbon::now()->toDateString();
+        $tanggal = $this->formatTanggal($tanggal, 'd-m-Y');
+
+        $cicilPerCust = DetilAR::join('ar', 'ar.id', '=', 'detilar.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(cicil) as totCicil'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')
+                        ->get();
+
+        $totalPerCust = AccReceivable::join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(total) as totKredit'))
+                        ->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')->get();
+
+        $returPerCust = AR_Retur::join('ar', 'ar.id', 'ar_retur.id_ar')
+                        ->join('so', 'so.id', '=', 'ar.id_so')
+                        ->select('id_customer', DB::raw('sum(ar_retur.total) as totRetur'))->where('keterangan', 'BELUM LUNAS')
+                        ->groupBy('id_customer')->get();
+
+        foreach($totalPerCust as $q) {
+            foreach($cicilPerCust as $h) {
+                if($q->id_customer == $h->id_customer) {
+                    $q['total'] = $q->totKredit - $h->totCicil;
+                } else {
+                    $q['total'] = $q->totKredit - 0;
+                }
+            }
+
+            foreach($returPerCust as $r) {
+                if($q->id_customer == $r->id_customer) {
+                    $q['total'] -= $r->totRetur;
+                } else {
+                    $q['total'] -= 0;
+                }
+            }
+        }
+
+        $data = [
+            'customer' => $customer,
+            'cust' => $cust,
+            'sales' => $sales,
+            'barang' => $barang,
+            'kodeBarang' => $kodeBarang,
+            'namaBarang' => $namaBarang,
+            'harga' => $harga,
+            'kategori' => $kategori,
+            'hrg' => $hrg,
+            'stok' => $stok,
+            'gudang' => $gudang,
+            'newcode' => $newcode,
+            'tanggal' => $tanggal,
+            'status' => $status,
+            'lastcode' => $lastcode,
+            'lastSO' => $lastSO,
+            'totalKredit' => $totalPerCust
+        ];
+
+        return view('pages.cianjur.so.index-mitra', $data);
     }
 }
