@@ -494,7 +494,6 @@ class SalesOrderController extends Controller
         $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
                 ->where('tipe', 'BIASA')->get();
         $gudang = Gudang::where('tipe', 'BIASA')->get();
-        // return response()->json($id);
 
         $data = [
             'items' => $items,

@@ -5,10 +5,7 @@
 @endpush
 
 @section('content')
-<!-- Begin Page Content -->
 <div class="container-fluid">
-
-  <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">
         @if(Auth::user()->roles == 'AR') Cek Faktur @else Ubah Faktur @endif
@@ -31,7 +28,6 @@
           <div class="card-body">
             <form action="" method="">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container">
                 <div class="form-group row">
                   <label for="kode" class="col-2 col-form-label text-bold">Nomor SO</label>
@@ -39,14 +35,12 @@
                   <div class="col-2">
                     <input type="text" tabindex="1" class="form-control form-control-sm text-bold mt-1" name="id" id="kode" value="{{ $id }}" autofocus>
                   </div>
-                  {{-- @if(Auth::user()->roles != 'AR') --}}
-                    <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
-                    <span class="col-form-label text-bold">:</span>
-                    <div class="col-4">
-                      <input type="text" tabindex="2" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
-                      <input type="hidden" name="kode" id="kodeCustomer" value="{{ $kode }}">
-                    </div>
-                  {{-- @endif --}}
+                  <label for="tanggal" class="col-auto col-form-label text-bold ">Nama Customer</label>
+                  <span class="col-form-label text-bold">:</span>
+                  <div class="col-4">
+                    <input type="text" tabindex="2" class="form-control form-control-sm text-bold mt-1" name="nama" id="namaCustomer" value="{{ $nama }}" >
+                    <input type="hidden" name="kode" id="kodeCustomer" value="{{ $kode }}">
+                  </div>
                 </div>   
                 <div class="form-group row" style="margin-top: -10px">
                   <label for="kode" class="col-2 col-form-label text-bold">Tanggal Awal</label>
@@ -65,8 +59,6 @@
                 </div>  
               </div>
               <hr>
-              <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($items as $item)
@@ -121,7 +113,6 @@
                               <div class="col-4">
                                 <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" 
                                 @if($items->count() != 0)
-                                  {{-- value="{{ $item->customer->sales->nama }}" --}}
                                   value="{{ $item->sales->nama }}"
                                 @endif
                                 >
@@ -162,22 +153,6 @@
                           </div>
                         </div>
                       </div>
-
-                      {{-- <table class="table table-sm table-responsive-sm table-hover" style="width: 40%">
-                        <thead class="text-center text-bold text-dark" style="border: dotted">
-                          <td style="border: dotted">Jatuh Tempo</td>
-                          <td>Sales</td>
-                        </thead>
-                        <tbody class="text-bold">
-                          <td align="center" style="border: dotted">
-                            @if($items->count() != 0) {{ $item->tempo }} @endif
-                          </td>
-                          <td align="center"> 
-                            @if($items->count() != 0) {{ $item->customer->sales->nama }} @endif
-                          </td>
-                        </tbody>
-                      </table> --}}
-
                       @php 
                         if(($item->need_approval->count() != 0) && ($item->need_approval->last()->status == 'PENDING_UPDATE')) {
                           $itemsGudang = \App\Models\NeedAppDetil::with(['barang'])
@@ -189,8 +164,6 @@
                                     ->groupBy('id_gudang')->get();
                         }
                       @endphp
-
-                      <!-- Tabel Data Detil PO -->
                       <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                         <thead class="text-center text-bold text-dark">
                           <td style="width: 30px">No</td>
@@ -200,9 +173,6 @@
                           @foreach($gudang as $g)
                             <td style="width: 50px">{{ substr($g->nama, 0, 3) }}</td>
                           @endforeach
-                          {{-- @foreach($itemsGudang as $g)
-                            <td style="width: 50px">{{ $g->gudang->nama }}</td>
-                          @endforeach --}}
                           <td>Harga</td>
                           <td>Jumlah</td>
                           <td style="width: 100px">Diskon(%)</td>
@@ -254,7 +224,6 @@
                                     <td></td>
                                   @endif
                                 @endforeach
-                                {{-- <td align="right">{{ $itemDet->qty }}</td> --}}
                                 <td align="right">
                                   {{ number_format($itemDet->harga, 0, "", ".") }}
                                 </td>
@@ -271,22 +240,13 @@
                                   } 
                                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                                 @endphp
-                                {{-- <td align="right">
-                                  {{ number_format((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}
-                                </td> --}}
                                 <td align="right">
                                   {{ number_format($itemDet->diskonRp, 0, "", ".") }}
                                 </td>
                                 <td align="right">
                                   {{ number_format((($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp), 0, "", ".") }}
                                 </td>
-                                {{-- <td align="right">
-                                  {{ number_format(($itemDet->qty * $itemDet->harga) - 
-                                  ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}
-                                </td> --}}
                                 @php 
-                                  // $subtotal += ($itemDet->qty * $itemDet->harga) - 
-                                  // ((($itemDet->qty * $itemDet->harga) * str_replace(",", ".", $diskon)) / 100); 
                                   $subtotal += ($itemDet->qty * $itemDet->harga) - $itemDet->diskonRp; 
                                 @endphp
                               </tr>
@@ -304,8 +264,6 @@
                         <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2 mr-1">
-                          {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal, 0, "", ".") }}"
-                          /> --}}
                           <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal, 0, "", ".") }}</span>
                         </div>
                       </div>
@@ -313,7 +271,6 @@
                         <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Diskon Faktur</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2 mr-1">
-                          {{-- <input type="text" name="diskonFaktur" id="diskonFaktur" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($item->diskon, 0, "", ".") }}" /> --}}
                           <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($item->diskon, 0, "", ".") }}</span>
                         </div>
                       </div>
@@ -321,7 +278,6 @@
                         <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Total Sebelum PPN</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2 mr-1">
-                          {{-- <input type="text" name="totalNotPPN" id="totalNotPPN" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="{{ number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
                           <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
                         </div>
                       </div>
@@ -329,7 +285,6 @@
                         <label for="ppn" class="col-1 col-form-label text-bold text-right text-dark">PPN</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2 mr-1">
-                          {{-- <input type="text" name="ppn" id="ppn" readonly class="form-control-plaintext col-form-label-sm text-bold text-danger text-right" value="0"/> --}}
                           <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-danger text-right">0</span>
                         </div>
                       </div>
@@ -337,29 +292,27 @@
                         <label for="grandtotal" class="col-2 col-form-label text-bold text-right text-dark">Total Tagihan</label>
                         <span class="col-form-label text-bold">:</span>
                         <div class="col-2 mr-1">
-                          {{-- <input type="text" name="grandtotal" id="grandtotal" readonly class="form-control-plaintext text-bold text-secondary text-lg text-right" value=" {{number_format($subtotal - $item->diskon, 0, "", ".") }}" /> --}}
                           <span id="totalNotPPN" class="form-control-plaintext col-form-label-sm text-bold text-secondary text-lg text-right">{{ number_format($subtotal - $item->diskon, 0, "", ".") }}</span>
                         </div>
                       </div>
                       <hr>
-                      <!-- End Tabel Data Detil PO -->
 
                       @if((Auth::user()->roles != 'AR') && (($status != 'BATAL') && ($status != 'PENDING_BATAL') && ($status != 'LIMIT')))
-                        <!-- Button Submit dan Reset -->
                         <div class="form-row justify-content-center">
                           <div class="col-2">
                             <a href="" tabindex="6" data-toggle="modal" data-target="#{{$item->id}}" class="btn btn-danger btn-block text-bold">Batal</a>
-                            {{-- <button type="submit" formaction="" formmethod="POST" class="btn btn-danger btn-block text-bold">Ganti Status /> --}}
                           </div>
                           <div class="col-2">
-                            <button type="submit" tabindex="7" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah</button>
+                            @if(Auth::user()->name != 'Admin_mitra')
+                              <button type="submit" tabindex="7" formaction="{{ route('so-edit', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah</button>
+                            @else
+                              <button type="submit" tabindex="7" formaction="{{ route('so-edit-mitra', $item->id) }}" formmethod="POST" class="btn btn-info btn-block text-bold">Ubah</button>
+                            @endif
                           </div>
                         </div>
-                        <!-- End Button Submit dan Reset -->
                       @endif
                     </div>
 
-                    <!-- Modal Ganti Status -->
                     <div class="modal" id="{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="{{$item->id}}" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -386,7 +339,6 @@
                               <div class="form-row justify-content-center">
                                 <div class="col-3">
                                   <button type="submit" class="btn btn-success btn-block text-bold" id="btn{{$item->id}}" onclick="return checkEditable({{$item->id}})">Simpan</button>
-                                  {{-- formaction="{{ route('so-status', $item->id) }}" formmethod="POST" --}}
                                 </div>
                                 <div class="col-3">
                                   <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
@@ -403,12 +355,10 @@
                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                       <span class="sr-only">Previous</span>
                     </a>
-                  {{-- @if($item->id != $items[$items->count()-1]->id) --}}
                     <a class="carousel-control-next " href="#so-carousel" role="button" data-slide="next">
                       <span class="carousel-control-next-icon" aria-hidden="true"></span>
                       <span class="sr-only">Next</span>
                     </a>
-                  {{-- @endif --}}
                 @endif
               </div>
 
@@ -419,7 +369,6 @@
     </div>
   </div>
 </div>
-<!-- /.container-fluid -->
 @endsection
 
 @push('addon-script')

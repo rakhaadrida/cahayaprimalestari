@@ -7,6 +7,7 @@ use App\Models\AR_Retur;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\DetilAR;
+use App\Models\DetilSO;
 use App\Models\Faktur;
 use App\Models\FakturItem;
 use App\Models\Gudang;
@@ -340,4 +341,40 @@ class CianjurController extends Controller
 
         return view('pages.cianjur.so.index-mitra', $data);
     }
+
+    public function editSalesOrderMitra(Request $request, $id) {
+        $items = SalesOrder::with(['customer', 'need_approval'])->where('id', $id)->get();
+        $itemsRow = DetilSO::where('id_so', $id)->groupBy('id_barang')->get();
+        $tanggal = Carbon::now()->toDateString();
+        $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
+        $barang = Barang::All();
+        $harga = HargaBarang::All();
+        $kategori = JenisBarang::orderBy('nama')->get();
+        $hrg = Harga::All();
+        $sales = Sales::All();
+        $customer = Customer::All();
+        $stok = StokBarang::join('gudang', 'gudang.id', 'stok.id_gudang')
+                ->where('tipe', 'BIASA')->get();
+        $gudang = Gudang::where('tipe', 'BIASA')->get();
+
+        $data = [
+            'items' => $items,
+            'itemsRow' => $itemsRow,
+            'tanggal' => $tanggal,
+            'barang' => $barang,
+            'harga' => $harga,
+            'kategori' => $kategori,
+            'hrg' => $hrg,
+            'sales' => $sales,
+            'customer' => $customer,
+            'gudang' => $gudang,
+            'stok' => $stok,
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'tglAwal' => $request->tglAwal,
+            'tglAkhir' => $request->tglAkhir
+        ];
+
+        return view('pages.cianjur.so.edit', $data);
+     }
 }

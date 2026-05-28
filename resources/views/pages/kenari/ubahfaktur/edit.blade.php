@@ -1,10 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<!-- Begin Page Content -->
 <div class="container-fluid">
-
-  <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Ubah Faktur</h1>
   </div>
@@ -25,7 +22,6 @@
           <div class="card-body">
             <form action="" method="">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier PO -->
               <div class="container so-container">
                 <div class="row">
                   <div class="col-12">
@@ -90,9 +86,6 @@
                 </div>
               </div>
               <hr>
-              <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-
-              <!-- Tabel Data Detil PO -->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" >
                 <thead class="text-center text-bold text-dark">
                   <tr>
@@ -137,7 +130,6 @@
                       </td>
                       <td>
                         <input type="text" tabindex="{{ $tab += 2 }}" name="namaBarang[]" class="form-control form-control-sm text-bold text-dark namaBarang" value="{{ $item->barang->nama }}" required>
-                        {{-- <input type="text" name="qtyAwal" class="text-bold text-dark qtyAwal" value="{{ $item->qty }}"> --}}
                         <span class="qtyAwal" hidden>{{ $item->qty }}</span>
                       </td>
                       <td>
@@ -256,9 +248,6 @@
                 </div>
               </div>
               <hr>
-              <!-- End Tabel Data Detil PO -->
-
-              <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" tabindex="{{ $tab++ }}" formaction="{{ route('so-update-kenari') }}" formmethod="POST" class="btn btn-success btn-block text-bold">Submit</>
@@ -270,8 +259,6 @@
                   <a href="{{ url()->previous() }}" tabindex="{{ $tab += 3 }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                 </div>
               </div>
-              <!-- End Button Submit dan Reset -->
-
             </form>
           </div>
         </div>
@@ -313,7 +300,6 @@ var kodeModal; var arrKodeGud; var arrQtyAwal; var arrQtyGud;
 var totTemp; var qtyJohar; var qtyLebih;
 var sisa; var stokJohar; var stokLain; var kodeLain; var totStok;
 
-/** Tampil Nama dan Kode Barang Otomatis **/
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
@@ -358,7 +344,6 @@ for(let i = 0; i < brgNama.length; i++) {
   }
 }
 
-/** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("blur", function (e) {
     stokJohar = 0;
@@ -420,7 +405,6 @@ for(let i = 0; i < qty.length; i++) {
   });
 }
 
-// Pilih Tipe
 for(let i = 0; i < tipe.length; i++) {
   tipe[i].addEventListener("keyup", displayTipe);
   tipe[i].addEventListener("blur", displayTipe);
@@ -432,7 +416,6 @@ for(let i = 0; i < tipe.length; i++) {
       grandtotal.value = totalNotPPN.value;
       harga[i].value = "";
       jumlah[i].value = "";
-      // diskonRp[i].value = "";
       netto[i].value = "";
     }
 
@@ -456,7 +439,6 @@ for(let i = 0; i < tipe.length; i++) {
   }
 }
 
-/** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
   diskon[i].addEventListener("keyup", function (e) {
     if(e.target.value == "") {
@@ -477,7 +459,6 @@ for(let i = 0; i < diskon.length; i++) {
   });
 }
 
-/** Check Jumlah Netto onChange **/
 function checkSubtotal(Past, Now) {
   if(Past > Now) {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
@@ -486,7 +467,6 @@ function checkSubtotal(Past, Now) {
   }
 }
 
-/** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
   angka = angka.replace(/\,/g, ".");
@@ -498,13 +478,11 @@ function hitungDiskon(angka) {
   return totDiskon;
 }
 
-/** Hitung PPN Dan Total **/
 function total_ppn(sub) {
   ppn.value = addCommas(sub * 10 / 100);
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
 }
 
-/** Inputan hanya bisa angka **/
 function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -519,7 +497,6 @@ function angkaSaja(evt, inputan) {
   return true;
 }
 
-/** Inputan hanya bisa angka dan plus **/
 function angkaPlus(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -533,7 +510,6 @@ function angkaPlus(evt, inputan) {
   return true;
 }
 
-/** Add Thousand Separators **/
 function addCommas(nStr) {
 	nStr += '';
 	x = nStr.split(',');
@@ -546,7 +522,6 @@ function addCommas(nStr) {
 	return x1 + x2;
 }
 
-/** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
@@ -581,7 +556,6 @@ for(let i = 0; i < hapusBaris.length; i++) {
   });
 }
 
-/** Autocomplete Input Text **/
 $(function() {
   var kodeBrg = [];
   var namaBrg = [];
