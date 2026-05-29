@@ -5,10 +5,7 @@
 @endpush
 
 @section('content')
-<!-- Begin Page Content -->
 <div class="container-fluid">
-
-  <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Penerimaan Barang</h1>
   </div>
@@ -27,9 +24,9 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="" method="" id="formBM">
+            <form action="" method="">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier BM -->
+              <i class="mdi mdi-cursor-default-gesture-outline:"></i>
                <div class="container">
                 <div class="row">
                   <div class="col-12">
@@ -39,7 +36,6 @@
                       <div class="col-2 mt-1">
                         <input type="text" tabindex="1" class="form-control form-control-sm text-bold" name="kode" id="kode" value="" autofocus autocomplete="off" required >
                       </div>
-                      {{-- <div class="col-1"></div> --}}
                       <label for="nama" class="col-auto col-form-label text-bold ">Tanggal BM</label>
                       <span class="col-form-label text-bold">:</span>
                       <div class="col-2 mt-1">
@@ -96,51 +92,9 @@
                     <input type="hidden" name="kodeSupplier" id="kodeSupplier" />
                   </div>
                   <input type="hidden" name="jumBaris" id="jumBaris" value="5">
-
-                  <!-- Button Reset Supplier -->
-                  {{-- @if($itemsRow != 0)
-                    <div class="col-auto mt-1" style="margin-left: -15px">
-                      <button type="submit" onclick="return resetSupplier()" 
-                      id="resetSupp" class="btn btn-info btn-sm btn-block text-bold form-control form-control-sm">Reset</button>
-                    </div>
-                  @endif --}}
-
                 </div>
               </div>
               <hr>
-              <!-- End Inputan Data Id, Tanggal, Supplier BM -->
-              
-              <!-- Inputan Detil BM -->
-              {{-- <div class="form-row">
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Kode</label>
-                  <input type="text" name="kodeBarang" id="kodeBarang" placeholder="Kd Brg" class="form-control form-control-sm text-bold">
-                </div>
-                <div class="form-group col-sm-3">
-                  <label for="kode" class="col-form-label text-bold ">Nama Barang</label>
-                  <input type="text" name="namaBarang" id="namaBarang" placeholder="Nama Barang" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Harga</label>
-                  <input type="text" name="harga" id="harga" placeholder="Harga Satuan" class="form-control form-control-sm text-bold" readonly>
-                </div>
-                <div class="form-group col-sm-1">
-                  <label for="kode" class="col-form-label text-bold ">Qty</label>
-                  <input type="text" name="pcs" id="qty" placeholder="Pcs" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-sm-2">
-                  <label for="kode" class="col-form-label text-bold ">Keterangan</label>
-                  <input type="text" name="ket" id="ket" placeholder="Keterangan Barang" class="form-control form-control-sm">
-                </div>
-                <div class="form-group col-auto">
-                  <label for="" class="col-form-label text-bold " ></label>
-                  <button type="submit" formaction="{{ route('bm-create', $newcode) }}" formmethod="POST" class="btn btn-primary btn-block btn-md form-control form-control-md text-bold mt-2">Tambah</button>
-                </div>
-              </div>          
-              <hr> --}}
-              <!-- End Inputan Detil BM -->
-
-              <!-- Tabel Data Detil BM-->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
               </span>
@@ -153,22 +107,12 @@
                     <td colspan="2" class="align-middle">Qty</td>
                     <td rowspan="2" style="width: 80px" class="align-middle">Harga</td>
                     <td rowspan="2" style="width: 80px" class="align-middle">Jumlah</td>
-                    {{-- @if(Auth::user()->roles == 'SUPER')
-                      <td colspan="2">Diskon</td>
-                      <td rowspan="2" style="width: 120px" class="align-middle">Netto (Rp)</td>
-                    @endif --}}
                     <td rowspan="2" style="width: 50px" class="align-middle">Hapus</td>
                   </tr>
                   <tr>
                     <td style="width: 105px">Pcs / Set / Rol / Mtr</td>
                     <td style="width: 60px">Dus / Mtr</td>
                   </tr>
-                  {{-- @if(Auth::user()->roles == 'SUPER')
-                    <tr>
-                      <td>%</td>
-                      <td>Rupiah</td>
-                    </tr>
-                  @endif --}}
                 </thead>
                 <tbody id="tablePO">
                   @php $tab = 5; @endphp
@@ -195,19 +139,6 @@
                       <td>
                         <input type="text" name="jumlah[]" id="jumlah" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right jumlah" value="{{ old('jumlah[]') }}" >
                       </td>
-                      {{-- @if(Auth::user()->roles == 'SUPER')
-                        <td style="width: 90px">
-                          <input type="text" name="diskon[]" id="diskon" class="form-control form-control-sm text-bold text-right text-dark diskon" 
-                          value="{{ old('diskon[]') }}" >
-                        </td>
-                        <td style="width: 100px">
-                          <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp" 
-                          value="{{ old('diskonRp[]') }}" >
-                        </td>
-                        <td>
-                          <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ old('netto[]') }}" >
-                        </td>
-                      @endif --}}
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
@@ -215,69 +146,17 @@
                       </td>
                     </tr>
                   @endfor
-
-                  <!-- Tabel Tampil Detil BM (Bukan Diinput di Tabel) -->
-                  {{-- @if($itemsRow != 0)
-                    @php $i = 1; @endphp
-                    @foreach($items as $item)
-                      <tr class="text-bold barisBM">
-                        <td align="center">{{ $i }}</td>
-                        <td align="center">{{ $item->barang->id }}</td>
-                        <td>{{ $item->barang->nama }}</td>
-                        <td align="right">{{ $item->harga }}</td>
-                        <td align="right" class="editQty{{$i}}" id="editableQty{{$i}}">
-                          {{ $item->qty }}
-                        </td>
-                        <td align="right">{{ $item->qty * $item->harga }}</td>
-                        <td align="center" class="editKet{{$i}}" id="editableKet{{$i}}">
-                          {{ $item->keterangan }}
-                        </td>
-                        <td align="center">
-                          <a href="" id="editButton{{$i}}" 
-                          onclick="return displayEditable({{$i}})">
-                            <i class="fas fa-fw fa-edit fa-lg ic-edit mt-1"></i>
-                          </a>
-                          <button type="submit" formaction="{{ route('bm-update', ['bm' => $item->id_bm, 'barang' => $item->id_barang, 'id' => $i]) }}" formmethod="POST"
-                          id="updateButton{{$i}}" class=" btn btn-md ic-update">
-                            <i class="fas fa-fw fa-save fa-lg mt-1"></i>
-                          </button>
-                        </td>
-                        <td align="center">
-                          <a href="{{ route('bm-remove', ['bm' => $item->id_bm, 'barang' => $item->id_barang]) }}" id="removeButton{{$i}}">
-                            <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
-                          </a>
-                          <a href="" id="cancelButton{{$i}}" class="ic-cancel" 
-                          onclick="return cancelEditable({{$i}})">
-                            <i class="fas fa-fw fa-history fa-lg mt-1"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      @php $i++; @endphp
-                    @endforeach
-                  @else
-                    <tr>
-                      <td colspan=9 class="text-center text-bold h4 p-2"><i>Silahkan Input Detil Barang Masuk</i></td>
-                    </tr>
-                  @endif --}}
-
                 </tbody>
               </table>
               <hr>
-              <!-- End Tabel Data Detil PO -->
-
-              <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" tabindex="{{ $tab++ }}" onclick="return checkRequired(event)" id="submitBM"  class="btn btn-success btn-block text-bold" >Submit</button>
-                  {{-- id="submitBM" onclick="return checkEditable()" 
-                  formaction="{{ route('bm-process', $newcode) }}" formmethod="POST"--}}
                 </div>
                 <div class="col-2">
                   <button type="reset" tabindex="{{ $tab++ }}" id="resetBM" class="btn btn-outline-danger btn-block text-bold">Reset All </button> 
-                  {{-- formaction="{{ route('bm-reset', $newcode) }}" formmethod="GET" --}}
                 </div>
               </div>
-              <!-- End Button Submit dan Reset -->
 
               <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -294,8 +173,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Modal Konfirmasi Cetak atau Input -->
               <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -310,23 +187,16 @@
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('bm-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                          <button type="submit" id="btnCetak" formaction="{{ route('bm-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
                         </div>
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('bm-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                          <button type="submit" id="btnInput" formaction="{{ route('bm-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- End Modal Konfirmasi -->
-
-              {{-- @if($status == 'true')
-                <!-- Tampilan Cetak -->
-                <iframe src="{{url('barangmasuk/cetak/'.$lastcode[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-              @endif --}}
-
             </form>
           </div>
         </div>
@@ -340,16 +210,6 @@
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 
 <script type="text/javascript">
-/* @if($status == 'true')
-  const printFrame = document.getElementById("frameCetak").contentWindow;
-
-  printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('bm-after-print', $lastcode[0]->id) }}";
-  }
-  
-  printFrame.window.print();
-@endif */
-
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
@@ -392,7 +252,6 @@ const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
 var netPast; var tab = '{{ $tab }}'; var satuanUkuran;
-// const keterangan = document.querySelectorAll(".keterangan");
 
 tanggal.addEventListener("keyup", formatTanggal);
 gudang.addEventListener("keyup", displayGud);
@@ -401,15 +260,6 @@ namaSup.addEventListener("keyup", displaySupp);
 namaSup.addEventListener("blur", displaySupp);
 newRow.addEventListener('click', displayRow);
 
-/* document.getElementById("formBM").onkeypress = function(e) {
-  var key = e.charCode || e.keyCode || 0;     
-  if (key == 13) {
-    // alert("I told you not to, why did you do it?");
-    e.preventDefault();
-  }
-} */
-
-/** Add New Table Line **/
 function displayRow(e) {
   const lastRow = $(tablePO).find('tr:last').attr("id");
   const lastNo = $(tablePO).find('tr:last td:first-child').text();
@@ -463,7 +313,6 @@ function displayRow(e) {
   document.getElementById("submitBM").tabIndex = tab++;
   document.getElementById("resetBM").tabIndex = tab++;
 
-  /** Tampil Harga **/
   brgRow.addEventListener("keyup", displayHargaRow);
   kodeRow.addEventListener("keyup", displayHargaRow);
   brgRow.addEventListener("blur", displayHargaRow);
@@ -507,11 +356,8 @@ function displayRow(e) {
         qtyRow.setAttribute('required', true);
       }
     @endforeach
-
-    // qtyRow.value = '';
   }
 
-  /** Inputan hanya bisa angka **/
   qtyRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
@@ -534,7 +380,6 @@ function displayRow(e) {
     return true;
   });
 
-  /** Tampil Jumlah **/
   qtyRow.addEventListener("blur", displayQtyRow);
   if(teksSatRow.value == 'Pcs')
     satuanRow.addEventListener("blur", displayQtyRow);
@@ -566,21 +411,7 @@ function displayRow(e) {
     else if(kode == 'satuanRow'+newNum) 
       qtyRow.value = +angka * +ukuran;
   }
-
-  /* qtyRow.addEventListener("change", function (e) {
-    if(e.target.value == "") {
-      subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +jumlahRow.value.replace(/\./g, ""));
-      jumlahRow.value = "";
-    }
-    else {  
-      netPast = +jumlahRow.value.replace(/\./g, "");
-      jumlahRow.value = addCommas(e.target.value * hargaRow.value.replace(/\./g, ""));
-      checkSubtotal(netPast, +jumlahRow.value.replace(/\./g, ""));
-    }
-    total_ppn(subtotal.value.replace(/\./g, ""));
-  }); */
   
-  /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
@@ -608,7 +439,6 @@ function displayRow(e) {
       kodeBarang[4].focus();
   });
 
-  /** Autocomplete Nama  Barang **/
   $(function() {
     var idBarang = [];
     var nmBarang = [];
@@ -686,7 +516,6 @@ function formatTanggal(e) {
   tanggal.value = value;
 }
 
-/** Tampil Id Supp **/
 function displayGud(e) {
   @foreach($gudang as $g)
     if('{{ $g->nama }}' == e.target.value) {
@@ -698,7 +527,6 @@ function displayGud(e) {
   @endforeach
 }
 
-/** Tampil Id Supp **/
 function displaySupp(e) {
   @foreach($supplier as $s)
     if('{{ $s->nama }}' == e.target.value) {
@@ -710,7 +538,6 @@ function displaySupp(e) {
   @endforeach
 }
 
-/** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayHarga) ;
   kodeBarang[i].addEventListener("keyup", displayHarga);
@@ -746,7 +573,6 @@ for(let i = 0; i < brgNama.length; i++) {
         }
         else {
           teksSat[i].value = 'Meter';
-          // satuan[i].value = '{{ $br->ukuran }}';
           satuan[i].setAttribute('readonly', 'true');
         }
         ukuran[i].value = '{{ $br->ukuran }}';
@@ -759,12 +585,9 @@ for(let i = 0; i < brgNama.length; i++) {
         qty[i].setAttribute('required', 'true');
       }
     @endforeach
-
-    // qty[i].value = '';
   }
 }
 
-/** Tampil Jumlah Harga Otomatis **/
 for(let i = 0; i < qty.length; i++) {
   qty[i].addEventListener("blur", displayQty);
   
@@ -787,15 +610,8 @@ for(let i = 0; i < qty.length; i++) {
     }
     total_ppn(subtotal.value.replace(/\./g, ""));
   }
-
-  // qty[i].addEventListener("focusout", focusKode);
-  
-  // function focusKode(e) {
-  //   kodeBarang[i+1].focus();
-  // }
 } 
 
-/** Hitung Qty **/
 function hitungQty(urutan, kode, angka, teks, ukuran) {
   if(kode == 'qty') {
     if((teks == 'Pcs')  || (teks == 'Set'))
@@ -808,7 +624,6 @@ function hitungQty(urutan, kode, angka, teks, ukuran) {
   }
 }
 
-/** Tampil Diskon Rupiah Otomatis **/
 for(let i = 0; i < diskon.length; i++) {
   diskon[i].addEventListener("keydown", function (e) {
     if(e.target.value == "") {
@@ -828,7 +643,6 @@ for(let i = 0; i < diskon.length; i++) {
   });
 }
 
-/** Hitung Diskon **/
 function hitungDiskon(angka) {
   var totDiskon = 100;
   var arrDiskon = angka.split('+');
@@ -839,7 +653,6 @@ function hitungDiskon(angka) {
   return totDiskon;
 }
 
-/** Check Jumlah Netto onChange **/
 function checkSubtotal(Past, Now) {
   if(Past > Now) {
     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
@@ -848,13 +661,10 @@ function checkSubtotal(Past, Now) {
   }
 }
 
-/** Hitung PPN Dan Total **/
 function total_ppn(sub) {
-  // ppn.value = addCommas(Math.floor(sub * 10 / 100));
   grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
 }
 
-/** Add Thousand Separators **/
 function addCommas(nStr) {
 	nStr += '';
 	x = nStr.split(',');
@@ -867,7 +677,6 @@ function addCommas(nStr) {
 	return x1 + x2;
 }
 
-/** Inputan hanya bisa angka **/
 function angkaSaja(evt, inputan, jenis) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -891,7 +700,6 @@ function angkaSaja(evt, inputan, jenis) {
   return true;
 }
 
-/** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     if(qty[i].value != "") {
@@ -919,7 +727,6 @@ for(let i = 0; i < hapusBaris.length; i++) {
       }
     }
 
-    // $(this).parents('tr').next().find('input').val('');
     for(let j = 0; j < kodeBarang.length; j++) {
       if(kodeBarang[j].value == '') {
         kodeBarang[j].focus();
@@ -964,7 +771,11 @@ function checkRequired(e) {
   }
 }
 
-/** Autocomplete Input Text **/
+$('form').on('submit', function() {
+    $('#btnCetak', this).prop('disabled', true);
+    $('#btnInput', this).prop('disabled', true);
+});
+
 $(function() {
   var kode = [];
   var nama = [];

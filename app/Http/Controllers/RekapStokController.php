@@ -42,17 +42,26 @@ class RekapStokController extends Controller
     }
 
     public function show(Request $request) {
+        set_time_limit(300);
+
         $awal = $request->tanggal;
         $tglAwal = Carbon::parse($awal)->format('Y-m-d');
         $tglRekap = Carbon::parse($awal)->isoFormat('dddd, D MMMM Y');
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
         $kemarin = Carbon::yesterday()->toDateString();
+        $idGudang = (int) $request->gudang ?? 0;
 
         if(Auth::user()->roles == 'CIANJUR') {
-            $gudang = Gudang::query()
-                ->where('id', 'GDG09')
-                ->get();
+            if((int) $idGudang > 0) {
+                $gudang = Gudang::query()
+                    ->where('tipe', 'TOKO')
+                    ->get();
+            } else {
+                $gudang = Gudang::query()
+                    ->where('id', 'GDG09')
+                    ->get();
+            } 
         }
 
         $data = [
@@ -61,7 +70,8 @@ class RekapStokController extends Controller
             'gudang' => $gudang,
             'kemarin' => $kemarin,
             'tanggal' => $request->tanggal,
-            'tglRekap' => $tglRekap
+            'tglRekap' => $tglRekap,
+            'idGudang' => $idGudang
         ];
 
         return view('pages.laporan.rekapstok.show', $data);
@@ -155,13 +165,22 @@ class RekapStokController extends Controller
     }
 
     public function pdf_filter(Request $request) {
+        set_time_limit(600);
+
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
+        $idGudang = (int) $request->gudang ?? 0;
 
         if(Auth::user()->roles == 'CIANJUR') {
-            $gudang = Gudang::query()
-                ->where('id', 'GDG09')
-                ->get();
+            if((int) $idGudang > 0) {
+                $gudang = Gudang::query()
+                    ->where('tipe', 'TOKO')
+                    ->get();
+            } else {
+                $gudang = Gudang::query()
+                    ->where('id', 'GDG09')
+                    ->get();
+            } 
         }
 
         $stok = StokBarang::with(['barang'])
@@ -216,7 +235,8 @@ class RekapStokController extends Controller
             'waktu' => $waktu,
             'awal' => $tglAwal,
             'kemarin' => $kemarin,
-            'tglRekap' => $tglRekap
+            'tglRekap' => $tglRekap,
+            'idGudang' => $idGudang
         ];
 
         $pdf = PDF::loadview('pages.laporan.rekapstok.pdfFilter', $data)->setPaper('A4', 'portrait');

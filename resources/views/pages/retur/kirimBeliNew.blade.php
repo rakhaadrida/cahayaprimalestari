@@ -5,10 +5,7 @@
 @endpush
 
 @section('content')
-<!-- Begin Page Content -->
 <div class="container-fluid">
-
-  <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Detail Terima Retur {{ $item->first()->id}}</h1>
   </div>
@@ -29,7 +26,6 @@
           <div class="card-body">
             <form action="" method="" id="kirimRB">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier BM -->
                <div class="container">
                 <div class="row">
                   <div class="col-12">
@@ -58,9 +54,6 @@
                 </div>
               </div>
               <hr>
-              <!-- End Inputan Data Id, Tanggal, Supplier BM -->
-
-              <!-- Tabel Data Detil BM-->
               <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover">
                 <thead class="text-center text-bold text-dark">
                   <tr class="text-center">
@@ -68,11 +61,6 @@
                     <th class="align-middle" style="width: 90px">Kode Barang</th>
                     <th class="align-middle" style="width: 335px">Nama Barang</th>
                     <th class="align-middle" style="width: 60px">Qty Retur</th>
-{{--                    <th class="align-middle" style="width: 100px">Tgl. Terima</th>--}}
-{{--                    <th class="align-middle" style="width: 70px">Qty Terima</th>--}}
-{{--                    <th class="align-middle" style="width: 70px">Qty Ditolak</th>--}}
-{{--                    <th class="align-middle" style="width: 70px">Potong Tagihan</th>--}}
-{{--                    <th class="align-middle" style="width: 50px">Qty Kurang</th>--}}
                     <th class="align-middle"style="width: 50px">Hapus</th>
                   </tr>
                 </thead>
@@ -93,7 +81,6 @@
                           <td class="text-center align-middle">
                             <input type="hidden" name="kodeTerima" value="{{ $dr->id_terima }}">
                             <input type="text" class="form-control-plaintext form-control-sm text-bold text-dark text-center kodeDetil" name="kodeDetil[]" readonly value="{{ $dr->id_barang }}">
-                            {{-- @if((($no == 0) && ($dr->id_barang == $d->id_barang)) || (($no > 0) && ($dr->id_barang != $returTerima[$no-1]->id_barang))) --}}
                             @if(($dr->id_barang == $d->id_barang) && ($dr->qty_terima + $dr->qty_batal + $dr->potong == $d->qty_retur))
                               <input type="hidden" name="kodeBarang[]" value="{{ $dr->id_barang }}">
                               <input type="hidden" name="qty[]" value="{{ $d->qty_retur }}">
@@ -106,18 +93,7 @@
                           <td class="text-center align-middle">
                             <input type="text" name="qtyDetil[]" id="qtyDetil{{$dr->id_barang}}" class="form-control-plaintext form-control-sm text-bold text-dark text-center qtyDetil" onkeypress="return angkaSaja(event)" autocomplete="off" value ="{{ $d->qty_retur }}" readonly>
                           </td>
-{{--                          <td class="text-center">--}}
-{{--                            <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglDetil" name="tglDetil[]" id="tglDetil{{$dr->id_barang}}" autocomplete="off" @if($dr->tanggal != '') value ="{{ \Carbon\Carbon::parse($dr->tanggal)->format('d-m-Y') }}" @endif>--}}
-{{--                          </td>--}}
-{{--                          <td class="text-right">--}}
-{{--                            <input type="text" name="terimaDetil[]" id="terimaDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right terimaDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_terima != 0) value ="{{ $dr->qty_terima }}" @endif>--}}
-{{--                          </td>--}}
-{{--                          <td class="text-right">--}}
-{{--                            <input type="text" name="batalDetil[]" id="batalDetil{{$dr->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalDetil" onkeypress="return angkaSaja(event)" autocomplete="off" @if($dr->qty_batal != 0) value ="{{ $dr->qty_batal }}" @endif>--}}
-{{--                          </td>--}}
-{{--                          <td class="text-right align-middle">{{ $dr->potong != 0 ? $dr->potong : '' }}</td>--}}
                           @php $kurang -= ($dr->qty_terima + $dr->qty_batal + $dr->potong); @endphp
-{{--                          <td class="text-right align-middle">{{ number_format($kurang, 0, "", ".") }}</td>--}}
                           <td align="center" class="align-middle">
                             <a href="#" class="icRemove">
                               <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
@@ -142,19 +118,6 @@
                         <td class="align-middle text-center">
                           <input type="text" name="qty[]" id="qty{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-center qty" onkeypress="return angkaSaja(event)" autocomplete="off" value ="{{ $d->qty_retur }}" >
                         </td>
-{{--                        <td class="text-center align-middle">--}}
-{{--                          <input type="text" class="form-control datepicker form-control-sm text-bold text-dark text-center tglBayar" name="tgl[]" id="tglBayar{{$d->id_barang}}" placeholder="DD-MM-YYYY" autocomplete="off">--}}
-{{--                        </td>--}}
-{{--                        <td class="text-right align-middle">--}}
-{{--                          <input type="text" name="terima[]" id="bayar{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right kirimModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">--}}
-{{--                        </td>--}}
-{{--                        <td class="text-right align-middle">--}}
-{{--                          <input type="text" name="batal[]" id="batal{{$d->id_barang}}" class="form-control form-control-sm text-bold text-dark text-right batalModal" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="bottom" title="Hanya input angka 0-9" autocomplete="off">--}}
-{{--                        </td>--}}
-{{--                        <td class="text-right align-middle"></td>--}}
-{{--                        <td class="text-right align-middle">--}}
-{{--                          <input type="text" name="kurang[]" id="kurang{{$d->id_barang}}" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right kurang">--}}
-{{--                        </td>--}}
                         <td align="center" class="align-middle">
                           <a href="#" class="icRemove" >
                             <i class="fas fa-fw fa-times fa-lg ic-remove mt-1" @if($returTerima->count() != 0) hidden @endif></i>
@@ -170,34 +133,24 @@
                   <tr class="text-right text-bold text-dark" style="font-size: 16px">
                     <td colspan="3" class="text-center">Total</td>
                     <td class="text-center">{{ number_format($retur->sum('qty_retur'), 0, "", ".") }}</td>
-{{--                    <td class="text-right">{{ number_format($totalTerima, 0, "", ".") }}</td>--}}
-{{--                    <td class="text-right">{{ number_format($totalBatal, 0, "", ".") }}</td>--}}
-{{--                    <td class="text-right">{{ number_format($totalPotong, 0, "", ".") }}</td>--}}
-{{--                    <td class="text-right">{{ number_format($kurang, 0, "", ".") }}</td>--}}
                     <td></td>
                   </tr>
                 </tfoot>
               </table>
               <input type="hidden" name="jumBaris" id="jumBaris" value="{{ $totalDRT + $retur->count() }}">
               <hr>
-              <!-- End Tabel Data Detil PO -->
-
-              <!-- Button Submit dan Reset -->
               @if($item->first()->status == 'INPUT')
                 <div class="form-row justify-content-center">
                   <div class="col-2">
                     <button type="submit" class="btn btn-success btn-block text-bold" id="submitRB" onclick="return checkLimit(event)">Update</button>
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-outline-dark btn-block text-bold" formaction="{{ route('retur-selesai-beli', $item->first()->id) }}" formmethod="GET">Selesai Retur</button>
-{{--                    <button type="submit" class="btn btn-success btn-block text-bold" id="submitRB" onclick="return checkLimit(event)">Submit</button>--}}
-                    {{-- formaction="{{ route('retur-beli-process') }}" formmethod="POST" --}}
+                    <button type="submit" class="btn btn-outline-dark btn-block text-bold" id="submitSelesai" formaction="{{ route('retur-selesai-beli', $item->first()->id) }}" formmethod="GET">Selesai Retur</button>
                   </div>
                   <div class="col-2">
                     <a href="{{ route('retur-potong-beli', $item->first()->id) }}" id="backRJ" class="btn btn-outline-primary btn-block text-bold">Potong Tagihan</a>
                   </div>
                   <div class="col-2">
-                    {{-- <button type="submit" class="btn btn-outline-danger btn-block text-bold" formaction="{{ route('retur-beli-batal', $item->first()->id) }}" formmethod="POST">Batal Retur</button> --}}
                     <a href="" data-toggle="modal" data-target="#batalRetur" class="btn btn-outline-danger btn-block text-bold">Batal Retur</a>
                   </div>
                   <div class="col-2">
@@ -211,7 +164,6 @@
                   </div>
                 </div>
               @endif
-              <!-- End Button Submit dan Reset -->
 
               <div class="modal" id="batalRetur" tabindex="-1" role="dialog" aria-labelledby="batalRetur" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -239,7 +191,6 @@
                         <div class="form-row justify-content-center">
                           <div class="col-3">
                             <button type="submit" class="btn btn-success btn-block text-bold" id="btn" onclick="return checkEditable()">Simpan</button>
-                            {{-- formaction="{{ route('so-status', $item->id) }}" formmethod="POST" --}}
                           </div>
                           <div class="col-3">
                             <button button type="button" class="btn btn-outline-secondary btn-block text-bold" data-dismiss="modal">Batal</button>
@@ -306,7 +257,6 @@ const kirimModal = document.querySelectorAll('.kirimModal');
 const batalModal = document.querySelectorAll('.batalModal');
 const kurang = document.querySelectorAll('.kurang');
 const kurangAwal = document.querySelectorAll('.kurangAwal');
-// const hapusBaris = document.querySelectorAll(".icRemoveDetil");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const btnCetak = document.querySelectorAll('.btnCetak');
 const kodeRB = document.getElementById('angka');
@@ -377,7 +327,6 @@ for(let i = 0; i < batalModal.length; i++) {
   });
 }
 
-/** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     const delRow = document.getElementById(i);
@@ -402,7 +351,6 @@ for(let i = 0; i < btnCetak.length; i++) {
     }
 
     printFrame.window.print();
-    // window.print();
   });
 }
 
@@ -414,8 +362,6 @@ function checkLimit(e) {
     if((+kirimModal[i].value + +batalModal[i].value) > +qty[i].value) {
       cek = 1;
       urut.push(i);
-      // kirimModal[i].style.borderColor = "red";
-      // kirimModal[i].style.borderWidth = "2px";
     }
   }
 
@@ -423,8 +369,6 @@ function checkLimit(e) {
     if((+terimaDetil[i].value + +batalDetil[i].value) > +qtyDetil[i].value) {
       cek = 1;
       urutDetil.push(i);
-      // kirimModal[i].style.borderColor = "red";
-      // kirimModal[i].style.borderWidth = "2px";
     }
   }
 
@@ -463,7 +407,6 @@ function checkEditable() {
   }
 }
 
-/** Inputan hanya bisa angka **/
 function angkaSaja(evt, nomor, inputan, jenis) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -473,7 +416,6 @@ function angkaSaja(evt, nomor, inputan, jenis) {
   return true;
 }
 
-/** Add Thousand Separators **/
 function addCommas(nStr) {
 	nStr += '';
 	x = nStr.split(',');
@@ -486,7 +428,30 @@ function addCommas(nStr) {
 	return x1 + x2;
 }
 
-/** Autocomplete Input Kode PO **/
+$('form').on('submit', function() {
+    $('#submitRB', this).prop('disabled', true);
+    $('#submitSelesai', this).prop('disabled', true);
+
+    $('#backRJ').addClass('disabled')
+      .css('pointer-events', 'none')
+      .on('click', function(e) {
+          e.preventDefault();
+      });
+});
+
+$('#backRJ').on('click', function(e) {
+    e.preventDefault(); 
+
+    $('#submitRB').prop('disabled', true);
+    $('#submitSelesai').prop('disabled', true);
+
+    $(this).addClass('disabled')
+      .css('pointer-events', 'none')
+      .off('click');
+
+    window.location.href = $(this).attr('href');
+});
+
 $(function() {
   var kode = [];
   var nama = [];

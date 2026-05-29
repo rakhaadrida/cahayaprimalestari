@@ -48,16 +48,11 @@ Route::get('test', function() {
 
 Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::get('/', 'HomeController@index')->name('home');
-
-    // Dashboard
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
-
-    // Ganti Password
     Route::get('password', 'UserController@change')->name('user-change');
     Route::post('password/process', 'UserController@process')->name('user-process');
 
     Route::group(['roles' => ['ADMIN', 'SUPER']], function() {
-        //CRUD Master
         Route::resource('supplier', 'SupplierController');
         Route::resource('sales', 'SalesController');
         Route::resource('customer', 'CustomerController');
@@ -67,7 +62,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::resource('gudang', 'GudangController');
         Route::resource('harga', 'HargaController');
 
-        // Soft Deletes Suppllier
         Route::get('supplier/trash/all', 'SupplierController@trash')->name('sup-trash');
         Route::get('supplier/restore/{id}', 'SupplierController@restore')->name('sup-restore');
         Route::get('supplier/restore-all/all', 'SupplierController@restoreAll')
@@ -228,6 +222,9 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::post('/so/change/edit/{id}', 'SalesOrderController@edit')->name('so-edit');
         Route::post('/so/change/update', 'SalesOrderController@update')->name('so-update');
         Route::post('/so/check/stock/{code}', 'SalesOrderController@getStok')->name('so-stock');
+
+        Route::get('/so/index-mitra/{status}', 'CianjurController@salesOrderMitra')->name('so-mitra');
+        Route::post('/so/change/edit-mitra/{id}', 'CianjurController@editSalesOrderMitra')->name('so-edit-mitra');
 
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');
@@ -433,9 +430,6 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Ubah dan Cek Faktur
         Route::get('/so/change', 'SalesOrderController@change')->name('so-change');
         Route::get('/so/change/show', 'SalesOrderController@show')->name('so-show');
-
-//        Route::post('ar/cetak/{status}', 'AccReceivableController@cetak')->name('ar-cetak');
-//        Route::post('ar/cetakNow/{status}', 'AccReceivableController@cetakNow')->name('ar-cetak-now');
     });
 
     Route::group(['roles' => ['ADMIN', 'SUPER', 'AR', 'CIANJUR']], function() {
@@ -549,6 +543,16 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         // Transaksi Harian
         Route::get('kenari/transaksi', 'KenariController@indexTrans')->name('trans-kenari');
         Route::get('kenari/transaksi/show', 'KenariController@showTrans')->name('trans-show-kenari');
+    });
+
+    Route::group(['roles' => 'CIANJUR'], function() {
+        // Faktur
+        Route::get('cianjur/so/index', 'CianjurController@so')->name('so-cianjur');
+        Route::post('cianjur/so/process/{id}', 'CianjurController@process')->name('so-process-cianjur');
+
+        Route::get('cianjur/transaksi', 'CianjurController@indexTransaction')->name('trans-cianjur');
+        Route::get('cianjur/transaksi/{id}', 'CianjurController@showTransaction')->name('trans-show-cianjur');
+        Route::post('cianjur/cetak-transaksi', 'CianjurController@printTransaction')->name('trans-print-cianjur');
     });
 });
 

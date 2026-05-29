@@ -5,12 +5,9 @@
 @endpush
 
 @section('content')
-<!-- Begin Page Content -->
 <div class="container-fluid">
-
-  <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-0">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Transaksi Harian</h1>
+  	<div class="d-sm-flex align-items-center justify-content-between mb-0">
+      	<h1 class="h3 mb-0 text-gray-800 menu-title">Transaksi Harian @if(Auth::user()->roles == 'CIANJUR') Supplier @endif</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -29,7 +26,6 @@
           <div class="card-body">
             <form action="" method="">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier PO -->
               @if((Auth::user()->roles != 'AR') && (Auth::user()->roles != 'OFFICE02'))
                 <div class="container so-container">  
                   <div class="form-group row justify-content-center" >
@@ -49,14 +45,10 @@
                 </div>
                 <hr>
               @endif
-              <!-- End Inputan Data Id, Tanggal, Supplier PO -->
-
               <div id="so-carousel" class="carousel slide" data-interval="false" wrap="false">
                 <div class="carousel-inner">
                   @foreach($items as $item)
-                  <div class="carousel-item @if($item->id == $kode) active
-                    @endif "
-                  />
+                  <div class="carousel-item @if($item->id == $kode) active @endif "/>
                     <div class="container so-update-container text-dark">
                       <div class="row">
                         <div class="col-12">
@@ -94,7 +86,6 @@
                             <span class="col-form-label text-bold">:</span>
                             <div class="col-4">
                               <input type="text" readonly class="form-control-plaintext col-form-label-sm text-bold text-dark" value="{{ $item->sales->nama }}">
-                              {{-- value="{{ $item->customer->sales->nama }}"> --}}
                             </div>
                           </div>
                         </div>
@@ -120,8 +111,6 @@
                         </div>
                       </div>
                     </div>
-
-                    <!-- Tabel Data Detil PO -->
                     <table class="table table-sm table-bordered table-striped table-responsive-sm table-hover" id="tablePO">
                       <thead class="text-center text-bold text-dark">
                         <td style="width: 30px">No</td>
@@ -200,7 +189,6 @@
                         @endforeach
                       </tbody>
                     </table>
-
                     <div class="form-group row justify-content-end subtotal-so">
                       <label for="totalNotPPN" class="col-2 col-form-label text-bold text-right text-dark">Sub Total</label>
                       <span class="col-form-label text-bold">:</span>
@@ -237,29 +225,23 @@
                       </div>
                     </div>
                     <hr>
-                    <!-- End Tabel Data Detil PO -->
-
-                    <!-- Button Submit dan Reset -->
                     <div class="form-row justify-content-center">
                       <div class="col-2">
                         <a href="{{ url()->previous() }}" class="btn btn-outline-primary btn-block text-bold">Kembali</a>
                       </div>
                     </div>
-                    <!-- End Button Submit dan Reset -->
                   </div>
                   @endforeach
                 </div>
                 @if(($items->count() > 0) && ($items->count() != 1))
                   <a class="carousel-control-prev" href="#so-carousel" role="button" data-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  {{-- @if($item->id != $items[$itemsRow-1]->id) --}}
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
                   <a class="carousel-control-next " href="#so-carousel" role="button" data-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                   </a>
-                  {{-- @endif --}}
                 @endif
               </div>
 
@@ -270,7 +252,6 @@
     </div>
   </div>
 </div>
-<!-- /.container-fluid -->
 @endsection
 
 @push('addon-script')

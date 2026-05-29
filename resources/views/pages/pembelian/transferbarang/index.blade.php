@@ -5,10 +5,7 @@
 @endpush
 
 @section('content')
-<!-- Begin Page Content -->
 <div class="container-fluid">
-
-  <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-0">
       <h1 class="h3 mb-0 text-gray-800 menu-title">Transfer Barang</h1>
   </div>
@@ -29,7 +26,6 @@
           <div class="card-body">
             <form action="" method="" id="formTB">
               @csrf
-              <!-- Inputan Data Id, Tanggal, Supplier BM -->
                <div class="container">
                 <div class="col-12">
                   <div class="form-group row">
@@ -48,9 +44,6 @@
                 </div>
               </div>
               <hr>
-              <!-- End Inputan Data Id, Tanggal, Supplier BM -->
-
-              <!-- Tabel Data Detil BM-->
               <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-primary text-bold">
                 Tambah Baris <i class="fas fa-plus fa-lg ml-2" aria-hidden="true"></i></a>
               </span>
@@ -108,21 +101,14 @@
                 </tbody>
               </table>
               <hr>
-              <!-- End Tabel Data Detil PO -->
-
-              <!-- Button Submit dan Reset -->
               <div class="form-row justify-content-center">
                 <div class="col-2">
                   <button type="submit" tabindex="{{ $tab++ }}" id="submitTB" onclick="return checkUnique(event)"  class="btn btn-success btn-block text-bold">Submit</>
-                  {{-- formaction="{{ route('tb-process', $newcode) }}" formmethod="POST" --}}
                 </div>
                 <div class="col-2">
                   <button type="reset" tabindex="{{ $tab++ }}" id="resetTB" class="btn btn-outline-secondary btn-block text-bold">Reset</button>
                 </div>
               </div>
-              <!-- End Button Submit dan Reset -->
-
-              <!-- Modal Konfirmasi Cetak atau Input -->
               <div class="modal" id="modalKonfirm" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -137,18 +123,16 @@
                       <hr>
                       <div class="form-row justify-content-center">
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('tb-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
+                          <button type="submit" id="btnCetak" formaction="{{ route('tb-process', ['id' => $newcode, 'status' => 'CETAK']) }}" formmethod="POST" class="btn btn-success btn-block text-bold btnCetak">Cetak</button>
                         </div>
                         <div class="col-3">
-                          <button type="submit" formaction="{{ route('tb-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
+                          <button type="submit" id="btnInput" formaction="{{ route('tb-process', ['id' => $newcode, 'status' => 'INPUT']) }}" formmethod="POST" class="btn btn-outline-secondary btn-block text-bold">Input Lagi</button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!-- End Modal Konfirmasi -->
-
               <div class="modal" id="modalNotif" tabindex="-1" role="dialog" aria-labelledby="modalNotif" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -164,11 +148,6 @@
                   </div>
                 </div>
               </div>
-
-              {{-- @if($status == 'true')
-                <!-- Tampilan Cetak -->
-                <iframe src="{{url('transfer/cetak/'.$lastTB[0]->id)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-              @endif --}}
             </form>
           </div>
         </div>
@@ -181,17 +160,6 @@
 @push('addon-script')
 <script src="{{ url('backend/vendor/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
 <script type="text/javascript">
-/* @if($status == 'true')
-  const printFrame = document.getElementById("frameCetak").contentWindow;
-
-  printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('tb-after-print', $lastTB[0]->id) }}";
-  }
-  
-  printFrame.window.focus();
-  printFrame.window.print();
-@endif */ 
-
 $.fn.datepicker.dates['id'] = {
   days:["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],
   daysShort:["Mgu","Sen","Sel","Rab","Kam","Jum","Sab"],
@@ -225,8 +193,7 @@ const qtyTransfer = document.querySelectorAll(".qtyTransfer");
 const hapusBaris = document.querySelectorAll(".icRemove");
 const newRow = document.getElementsByClassName('table-add')[0];
 const jumBaris = document.getElementById('jumBaris');
-var tab = '{{ $tab }}'; 
-// var cek; var qtyAsalNow = [];
+var tab = '{{ $tab }}';
 
 newRow.addEventListener('click', displayRow);
 tanggal.addEventListener("keyup", formatTanggal);
@@ -253,7 +220,6 @@ function formatTanggal(e) {
   tanggal.value = value;
 }
 
-/** Add New Table Line **/
 function displayRow(e) {
   const lastRow = $(tablePO).find('tr:last').attr("id");
   const lastNo = $(tablePO).find('tr:last td:first-child').text();
@@ -314,7 +280,6 @@ function displayRow(e) {
   document.getElementById("submitTB").tabIndex = tab++;
   document.getElementById("resetTB").tabIndex = tab++;
 
-  /** Tampil Harga **/
   kodeRow.addEventListener("keyup", displayBarangRow);
   brgRow.addEventListener("keyup", displayBarangRow);
   kodeRow.addEventListener("blur", displayBarangRow);
@@ -408,7 +373,6 @@ function displayRow(e) {
     }
   }
 
-  /** Inputan hanya bisa angka **/
   qtyTransferRow.addEventListener("keypress", function (e, evt) {
     evt = (evt) ? evt : window.event;
     var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
@@ -421,7 +385,6 @@ function displayRow(e) {
     return true;
   });
   
-  /** Delete Table Row **/
   hapusRow.addEventListener("click", function (e) {
     const curNum = $(this).closest('tr').find('td:first-child').text();
     const lastNum = $(tablePO).find('tr:last').attr("id");
@@ -444,7 +407,6 @@ function displayRow(e) {
       kodeBarang[4].focus();
   });
 
-  /** Autocomplete Nama  Barang **/
   $(function() {
     var idBarang = [];
     var nmBarang = [];
@@ -574,7 +536,6 @@ function displayRow(e) {
   }); 
 }
 
-/** Tampil Harga Barang **/
 for(let i = 0; i < brgNama.length; i++) {
   brgNama[i].addEventListener("keyup", displayBarang);
   kodeBarang[i].addEventListener("keyup", displayBarang);
@@ -610,7 +571,6 @@ for(let i = 0; i < brgNama.length; i++) {
   }
 }
 
-/** Tampil Stok Gudang **/
 for(let i = 0; i < gdgAsal.length; i++) {
   gdgAsal[i].addEventListener("keyup", displayAsal);
   gdgAsal[i].addEventListener("blur", displayAsal);
@@ -636,9 +596,6 @@ for(let i = 0; i < gdgAsal.length; i++) {
       }
     @endforeach
     displayStok(kodeAsal[i].value, statusAsal[i].value, stokAsal[i]);
-
-    /* if(e.target.value != '')
-      displayStok(e.target.value, kodeBarang[i].value, stokAsal[i], kodeAsal[i], statusAsal[i]); */
   }
 
   gdgTujuan[i].addEventListener("keyup", displayTujuan);
@@ -665,43 +622,7 @@ for(let i = 0; i < gdgAsal.length; i++) {
       }
     @endforeach
     displayStok(kodeTujuan[i].value, statusTujuan[i].value, stokTujuan[i]); 
-
-    /* if(e.target.value != '')
-      displayStok(e.target.value, kodeBarang[i].value, stokTujuan[i], kodeTujuan[i], statusTujuan[i]); */
   }
-
-  /* function displayStok(gudang, kode, stok, kodeGudang, statusGudang) {
-    var status; var namaGudang; 
-    if(gudang == 'Retur Jelek') {
-      namaGudang = 'Retur';
-      status = 'F';
-    } else if(gudang == 'Retur Bagus') {
-      namaGudang = 'Retur';
-      status = 'T';
-    } else {
-      namaGudang = gudang;
-      status = 'T';
-    }
-
-    statusGudang.value = status;
-
-    if(gudang != "") {
-      $.ajax({
-        type: 'POST',
-        url: '/transfer/stok',
-        data: {
-          _token: '{{ csrf_token() }}', 
-          barang: kode,
-          name: namaGudang,
-          status: status,
-        },
-        success:function(data) {
-          stok.value = data.stok;
-          kodeGudang.value = data.kode;
-        }
-      });
-    }
-  } */
 
   function displayStok(kode, status, stok) {
     @foreach($stok as $s)
@@ -723,7 +644,6 @@ for(let i = 0; i < qtyTransfer.length; i++) {
   }
 }
 
-/** Inputan hanya bisa angka **/
 function angkaSaja(evt, inputan) {
   evt = (evt) ? evt : window.event;
   var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -738,7 +658,6 @@ function angkaSaja(evt, inputan) {
   return true;
 }
 
-/** Delete Baris Pada Tabel **/
 for(let i = 0; i < hapusBaris.length; i++) {
   hapusBaris[i].addEventListener("click", function (e) {
     for(let j = i; j < hapusBaris.length; j++) {
@@ -774,8 +693,6 @@ for(let i = 0; i < hapusBaris.length; i++) {
       }
     }
 
-    // $(this).parents('tr').next().find('input').val('');
-    // kodeBarang[i].focus();
     for(let j = 0; j < kodeBarang.length; j++) {
       if(kodeBarang[j].value == '') {
         kodeBarang[j].focus();
@@ -829,67 +746,22 @@ function checkUnique(e) {
   }
 }
 
-/* function checkStock() {
-  var kodeBrg = $('.kodeBarang').serialize();
-  var kodeAs = $('.kodeAsal').serialize();
-  var statusAs = $('.statusAsal').serialize();
-  var qtyTrans = $('.qtyTransfer').serialize();
-
-  $.ajax({
-    type: 'POST',
-    url: '/transfer/stok',
-    data: {
-      _token: '{{ csrf_token() }}', 
-      kodeBarang: kodeBrg,
-      kodeAsal: kodeAs,
-      statusAsal: statusAs,
-      qtyTransfer: qtyTrans,
-      jumBrs: jumBaris.value,
-    },
-    success:function(data) {
-      cek = data.cek;
-      qtyAsalNow = data.qtyAsal;
-      // console.log(cek);
-    }
-  });
-
-  if(cek == 1) {
-    for(let i = 0; i < kodeBarang.length; i++) {
-      if(kodeBarang[i].value != '') {
-        stokAsal[i].value = qtyAsalNow[i];     
-      }          
-    }
-    
-    return false;
-  } else {
-    checkRequired();
-    return false;
-  }
-} */
-
 function checkRequired(e) {
   if((tanggal.value == "") || (kodeBarang[0].value == "") || (qtyTransfer[0].value == "")) {
     e.stopPropagation();
   }
   else {
-    /* for(let i = 0; i < brgNama.length; i++) {
-      if((gdgAsal[i].value != '') && (gdgTujuan[i].value != '') && (qtyTransfer[i].value != '')) {
-        displayStok(gdgAsal[i].value, kodeBarang[i].value, stokAsal[i], kodeAsal[i], statusAsal[i]);
-        displayStok(gdgTujuan[i].value, kodeBarang[i].value, stokTujuan[i], kodeTujuan[i], statusTujuan[i]);
-        if(+qtyTransfer[i].value > +stokAsal[i].value) {
-          qtyTransfer[i].value = '';
-          $(qtyTransfer[i]).tooltip('show');
-        }
-      }
-    } */
-
     document.getElementById("submitTB").dataset.toggle = "modal";
     document.getElementById("submitTB").dataset.target = "#modalKonfirm";
     return false;
   }
 }
 
-/** Autocomplete Input Text **/
+$('form').on('submit', function() {
+    $('#btnCetak', this).prop('disabled', true);
+    $('#btnInput', this).prop('disabled', true);
+});
+
 $(function() {
   var barangKode = [];
   var barangNama = [];

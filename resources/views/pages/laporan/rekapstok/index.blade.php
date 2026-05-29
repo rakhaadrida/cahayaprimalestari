@@ -28,6 +28,16 @@
                                 @csrf
                                 <div class="container so-container">
                                     <div class="form-group row justify-content-center" style="margin-top: -10px">
+                                        @if(Auth::user()->roles == 'CIANJUR')
+                                            <label for="gudang" class="col-auto col-form-label text-bold">Gudang</label>
+                                            <span class="col-form-label text-bold">:</span>
+                                            <div class="col-2">
+                                                <select class="form-control form-control-sm mt-1" tabindex="5" id="gudang" name="gudang">
+                                                    <option value="0" selected>Supplier</option>
+                                                    <option value="1">Toko</option>
+                                                </select>
+                                            </div>
+                                        @endif
                                         <label for="tanggal" class="col-auto col-form-label text-bold">Tanggal Rekap</label>
                                         <span class="col-form-label text-bold">:</span>
                                         <div class="col-2">
