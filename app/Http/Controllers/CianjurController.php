@@ -17,6 +17,7 @@ use App\Models\JenisBarang;
 use App\Models\Sales;
 use App\Models\SalesOrder;
 use App\Models\StokBarang;
+use App\Models\Subjenis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +29,115 @@ use PDF;
 
 class CianjurController extends Controller
 {
+    public function indexBarang() {
+        $items = Barang::query()->where('tipe', 'TOKO')->get();
+
+        $warehouse = Gudang::query()->where('tipe', 'TOKO')->first();
+        
+        $productStocks = StokBarang::query()
+            ->where('id_gudang', $warehouse->id)
+            ->whereNull('deleted_at')
+            ->get();
+
+        $mapStockByProduct = [];
+        foreach($productStocks as $productStock) {
+            $mapStockByProduct[$productStock->id_barang] = $productStock->stok;
+        }
+
+        $data =  [
+            'items' => $items,
+            'mapStockByProduct' => $mapStockByProduct
+        ];
+
+        return view('pages.cianjur.barang.index', $data);
+    }
+
+    public function showBarang($id) {
+        $item = Barang::query()
+            ->select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
+            ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
+            ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
+            ->where('barang.id', $id)
+            ->first();
+
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->first();
+
+        $stok = StokBarang::query()
+            ->where('id_barang', $id)
+            ->where('id_gudang', $gudang->id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $hargaBarang = HargaBarang::where('id_barang', $id)->get();
+        $harga = Harga::All();
+
+        $data = [
+            'item' => $item,
+            'hargaBarang' => $hargaBarang,
+            'harga' => $harga,
+            'gudang' => $gudang,
+            'stok' => $stok
+        ];
+
+        return view('pages.cianjur.barang.show', $data);
+    }
+
+    public function createBarang() {
+        $lastcode = Barang::withTrashed()->where('tipe', 'TOKO')->max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'BRT'.sprintf("%04s", $lastnumber);
+
+        $jenis = JenisBarang::All();
+        $subjenis = Subjenis::All();
+        $harga = Harga::All();
+
+        $data = [
+            'newcode' => $newcode,
+            'jenis' => $jenis,
+            'subjenis' => $subjenis,
+            'harga' => $harga
+        ];
+
+        return view('pages.cianjur.barang.create', $data);
+    }
+
+    public function storeBarang(Request $request) {
+        Barang::create([
+            'id' => $request->kode,
+            'nama' => $request->nama,
+            'id_kategori' => $request->kodeJenis,
+            'id_sub' => $request->kodeSub,
+            'satuan' => $request->satuan,
+            'ukuran' => $request->ukuran,
+            'tipe' => 'TOKO'
+        ]);
+
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->get();
+
+        foreach($gudang as $g) {
+            StokBarang::create([
+                'id_barang' => $request->kode,
+                'id_gudang' => $g->id,
+                'status' => 'T',
+                'stok' => 0
+            ]);
+        }
+
+        $harga = Harga::All();
+        for($i = 0; $i < $harga->count(); $i++) {
+            HargaBarang::create([
+                'id_barang' => $request->kode,
+                'id_harga' => $request->kodeHarga[$i],
+                'harga' => str_replace(".", "", $request->harga[$i]),
+                'ppn' => str_replace(".", "", $request->ppn[$i]),
+                'harga_ppn' => str_replace(".", "", $request->hargaPPN[$i])
+            ]);
+            }
+
+        return redirect()->route('barang-cianjur');
+    }
+
     public function so() {
         $barang = Barang::All();
         $harga = HargaBarang::All();

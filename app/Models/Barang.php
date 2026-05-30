@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Utilities\Traits\FilterByProductType;
 
 class Barang extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, FilterByProductType;
+
     protected $table = 'barang';
     protected $keyType = "string";
-    protected $fillable = ['id', 'nama', 'id_kategori', 'id_sub', 'satuan', 'ukuran'];
+    protected $fillable = ['id', 'nama', 'id_kategori', 'id_sub', 'satuan', 'ukuran', 'tipe'];
     public $incrementing = false;
 
     public function jenis() {

@@ -87,6 +87,12 @@
 
     @if(Auth::user()->roles == 'CIANJUR')
         <hr class="sidebar-divider">
+        <li class="nav-item sidebar-menu-icon">
+            <a class="nav-link collapsed" href="{{ route('barang-cianjur') }}">
+                <i class="fas fa-fw fa-boxes"></i>
+                <span>Barang</span>
+            </a>
+        </li>
         <li class="nav-item sidebar-menu-icon" >
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCianjur" aria-expanded="true" aria-controls="collapseCianjur">
                 <i class="fas fa-fw fa-chart-area"></i>
@@ -96,7 +102,6 @@
                 <div class="py-2 collapse-inner rounded">
                     <a class="collapse-item" href="{{ route('so-cianjur') }}">Input Faktur Toko</a>
                     <a class="collapse-item" href="{{ route('cetak-faktur', ['status' => 'false', 'awal' => '0', 'akhir' => '0']) }}">Cetak Faktur</a>
-                    {{-- <a class="collapse-item" href="{{ route('trans') }}">Transaksi Harian</a> --}}
                     <a class="collapse-item d-flex justify-content-between align-items-center border-bottom-0" href="#" data-toggle="collapse" data-target="#collapseTransaction">
                         <span>Transaksi Harian</span>
                         <i class="fas fa-angle-down"></i>
@@ -107,12 +112,6 @@
                     </div>
                 </div>
             </div>
-        </li>
-        <li class="nav-item sidebar-menu-icon">
-            <a class="nav-link collapsed" href="{{ route('retur-jual', ['status' => 'false', 'id'=> '0']) }}">
-                <i class="fas fa-fw fa-recycle"></i>
-                <span>Retur</span>
-            </a>
         </li>
         <li class="nav-item sidebar-menu-icon">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="true" aria-controls="collapseLaporan">

@@ -546,6 +546,11 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     });
 
     Route::group(['roles' => 'CIANJUR'], function() {
+        Route::get('cianjur/barang', 'CianjurController@indexBarang')->name('barang-cianjur');
+        Route::get('cianjur/show-barang/{id}', 'CianjurController@showBarang')->name('show-barang-cianjur');
+        Route::get('cianjur/create-barang', 'CianjurController@createBarang')->name('create-barang-cianjur');
+        Route::post('cianjur/store-barang', 'CianjurController@storeBarang')->name('store-barang-cianjur');
+
         // Faktur
         Route::get('cianjur/so/index', 'CianjurController@so')->name('so-cianjur');
         Route::post('cianjur/so/process/{id}', 'CianjurController@process')->name('so-process-cianjur');
