@@ -160,6 +160,7 @@
                     ->selectRaw('sum(stok) as stok')
                     ->whereIn('id_kategori', $kodeJen)
                     ->where('stok', '!=', 0)
+                    ->where('id_gudang', '!=', 'GDG10')
                     ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                         $q->where('id_gudang', 'GDG00');
                     })
@@ -218,6 +219,7 @@
                                                     $stok = \App\Models\StokBarang::with(['barang'])
                                                         ->select('id_barang', DB::raw('sum(stok) as total'))
                                                         ->where('id_barang', $b->id)
+                                                        ->where('id_gudang', '!=', 'GDG10')
                                                         ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                             $q->where('id_gudang', 'GDG09');
                                                         })
@@ -307,6 +309,7 @@
                                                             $stok = \App\Models\StokBarang::with(['barang'])
                                                                 ->select('id_barang', DB::raw('sum(stok) as total'))
                                                                 ->where('id_barang', $b->id)
+                                                                ->where('id_gudang', '!=', 'GDG10')
                                                                 ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                                     $q->where('id_gudang', 'GDG09');
                                                                 })
@@ -392,6 +395,7 @@
                                                             $stok = \App\Models\StokBarang::with(['barang'])
                                                                 ->select('id_barang', DB::raw('sum(stok) as total'))
                                                                 ->where('id_barang', $b->id)
+                                                                ->where('id_gudang', '!=', 'GDG10')
                                                                 ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                                     $q->where('id_gudang', 'GDG09');
                                                                 })
@@ -473,6 +477,7 @@
                                                             $stok = \App\Models\StokBarang::with(['barang'])
                                                                 ->select('id_barang', DB::raw('sum(stok) as total'))
                                                                 ->where('id_barang', $b->id)
+                                                                ->where('id_gudang', '!=', 'GDG10')
                                                                 ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                                     $q->where('id_gudang', 'GDG09');
                                                                 })

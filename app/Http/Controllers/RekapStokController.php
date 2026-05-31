@@ -96,6 +96,8 @@ class RekapStokController extends Controller
     }
 
     public function cetak_pdf() {
+        set_time_limit(600);
+
         $jenis = JenisBarang::All();
         $gudang = Gudang::All();
 
@@ -107,6 +109,7 @@ class RekapStokController extends Controller
 
         $stok = StokBarang::with(['barang'])
             ->select('id_barang', DB::raw('sum(stok) as total'))
+            ->where('id_gudang', '!=', 'GDG10')
             ->groupBy('id_barang')
             ->get();
 
@@ -192,7 +195,13 @@ class RekapStokController extends Controller
 
         foreach($jenis as $j) {
             $sub = Subjenis::where('id_kategori', $j->id)->count();
-            $brg = Barang::where('id_kategori', $j->id)->count();
+
+            if($idGudang > 0) {
+                $brg = Barang::where('id_kategori', $j->id)->where('tipe', 'TOKO')->count();
+            } else {
+                $brg = Barang::where('id_kategori', $j->id)->count();
+            }
+
             $j->{'total'} = $brg + $sub;
         }
 

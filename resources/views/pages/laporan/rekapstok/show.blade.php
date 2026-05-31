@@ -93,7 +93,11 @@
                                                         @endphp
                                                         @foreach($sub as $s)
                                                             @php
-                                                                $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                                                                if($idGudang == 0) {
+                                                                    $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                                                                } else {
+                                                                    $barang = \App\Models\Barang::where('id_sub', $s->id)->where('tipe', 'TOKO')->get();
+                                                                }
                                                             @endphp
                                                             <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
                                                                 <td colspan="{{ $gudang->count() + 4 }}" align="center">
@@ -106,6 +110,7 @@
                                                                         $stok = \App\Models\StokBarang::with(['barang'])
                                                                             ->select('id_barang', DB::raw('sum(stok) as total'))
                                                                             ->where('id_barang', $b->id)
+                                                                            ->where('id_gudang', '!=', 'GDG10')
                                                                             ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                                                 $q->where('id_gudang', 'GDG09');
                                                                             })

@@ -84,7 +84,7 @@
               <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-outline-primary btn-block text-bold">Ubah</a>
+                  <a href="{{ route('edit-barang-cianjur', $item->id) }}" class="btn btn-outline-primary btn-block text-bold">Ubah</a>
                 </div>
                 <div class="col-2">
                   <a href="{{ route('barang-cianjur') }}" class="btn btn-outline-secondary btn-block text-bold">Kembali</a>

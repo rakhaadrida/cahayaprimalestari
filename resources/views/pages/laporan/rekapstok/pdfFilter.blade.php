@@ -196,7 +196,11 @@
                         @foreach($sub as $s)
                             @if($status != 1)
                                 @php
-                                    $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                                    if($idGudang == 0) {
+                                        $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+                                    } else {
+                                        $barang = \App\Models\Barang::where('id_sub', $s->id)->where('tipe', 'TOKO')->get();
+                                    }
                                 @endphp
                                 @if($baris <= 67)
                                     @if($baris != 67)
@@ -399,9 +403,16 @@
                                 @foreach($sub as $s)
                                     @if($status != 1)
                                         @php
-                                            $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                            if($idGudang == 0) {
+                                                $barang = \App\Models\Barang::where('id_sub', $s->id)
                                                 ->whereNotIn('id', $kodeBrg)
                                                 ->get();
+                                            } else {
+                                                $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                                ->whereNotIn('id', $kodeBrg)
+                                                ->where('tipe', 'TOKO')
+                                                ->get();
+                                            }
                                         @endphp
                                         @if($baris <= 134)
                                             @if(($s->id != $kodeSub) && ($baris != 134))
@@ -605,8 +616,16 @@
                                 @foreach($sub as $s)
                                     @if($status != 1)
                                         @php
-                                            $barang = \App\Models\Barang::where('id_sub', $s->id)
-                                                      ->whereNotIn('id', $kodeBrg)->get();
+                                            if($idGudang == 0) {
+                                                $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                                ->whereNotIn('id', $kodeBrg)
+                                                ->get();
+                                            } else {
+                                                $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                                ->whereNotIn('id', $kodeBrg)
+                                                ->where('tipe', 'TOKO')
+                                                ->get();
+                                            }
                                         @endphp
                                         @if($baris <= 201)
                                             @if(($s->id != $kodeSub) && ($baris != 201))
@@ -805,8 +824,16 @@
                                 @foreach($sub as $s)
                                     @if($status != 1)
                                         @php
-                                            $barang = \App\Models\Barang::where('id_sub', $s->id)
-                                                      ->whereNotIn('id', $kodeBrg)->get();
+                                            if($idGudang == 0) {
+                                                $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                                ->whereNotIn('id', $kodeBrg)
+                                                ->get();
+                                            } else {
+                                                $barang = \App\Models\Barang::where('id_sub', $s->id)
+                                                ->whereNotIn('id', $kodeBrg)
+                                                ->where('tipe', 'TOKO')
+                                                ->get();
+                                            }
                                         @endphp
                                         @if($baris <= 268)
                                             @if(($s->id != $kodeSub) && ($baris != 268))

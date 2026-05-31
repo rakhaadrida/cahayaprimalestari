@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
-      <h1 class="h3 mb-0 text-gray-800 menu-title">Tambah Data Barang</h1>
+      <h1 class="h3 mb-0 text-gray-800 menu-title">Data Barang {{ $item->nama }}</h1>
   </div>
   @if ($errors->any())
     <div class="alert alert-danger">
@@ -20,34 +20,38 @@
       <div class="table-responsive">
         <div class="card show">
           <div class="card-body">
-            <form action="{{ route('store-barang-cianjur') }}" method="POST">
+            <form action="{{ route('update-barang-cianjur', $item->id )}}" method="POST">
+              @method('PUT')
               @csrf
               <div class="form-group row">
-                <label for="kode" class="col-1 col-form-label text-bold">Kode </label>
+                <label for="kode" class="col-1 col-form-label text-bold">Kode</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode" 
-                  value="{{ $newcode }}" readonly>
+                  <input type="text" class="form-control col-form-label-sm text-bold" name="kode"
+                  value="{{ $item->id }}" readonly>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="nama" class="col-1 col-form-label text-bold">Nama</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-4">
-                  <input type="text" class="form-control col-form-label-sm" name="nama" placeholder="Nama Barang" value="{{ old('nama') }}" autocomplete="off" required autofocus>
+                  <input type="text" class="form-control col-form-label-sm" name="nama"
+                  value="{{ $item->nama }}" autocomplete="off" required autofocus>
                 </div>
               </div>
               <div class="form-group row">
                 <label for="kategori" class="col-1 col-form-label text-bold">Kategori</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" value="{{ old('kategori') }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="kategori" placeholder="Kategori Barang" id="kategori" @if($item->id_kategori != '') value="{{ $item->namaJenis }}" @endif required>
                 </div>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" value="{{ old('subjenis') }}" required>
+                  <input type="text" class="form-control col-form-label-sm" name="subjenis" placeholder="Sub Kategori Barang" id="subjenis" @if($item->id_sub != '') value="{{ $item->namaSub }}" @endif required>
                 </div>
-                <input type="hidden" name="kodeJenis" id="kodeJenis">
-                <input type="hidden" name="kodeSub" id="kodeSub">
+                <input type="hidden" name="kodeJenis" id="kodeJenis"
+                value="@if($item->id_kategori != '') {{$item->id_kategori}} @endif">
+                <input type="hidden" name="kodeSub" id="kodeSub"
+                value="@if($item->id_sub != '') {{$item->id_sub}} @endif">
               </div>
               <hr>
               <div class="form-group row">
@@ -55,23 +59,23 @@
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-6">
                   <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="radio" name="satuan" 
-                    value="Pcs / Dus" required>
+                    <input class="form-check-input" type="radio" name="satuan"
+                    value="Pcs / Dus" @if($item->satuan == "Pcs / Dus") checked @endif required >
                     <label class="form-check-label font-weight-normal" for="satuan1">Pcs / Dus</label>
                   </div>
                   <div class="form-check form-check-inline mt-2">
-                    <input class="form-check-input" type="radio" name="satuan" 
-                    value="Set" required>
+                    <input class="form-check-input" type="radio" name="satuan"
+                    value="Set" @if($item->satuan == "Set") checked @endif required >
                     <label class="form-check-label font-weight-normal" for="satuan4">Set</label>
                   </div>
                   <div class="form-check form-check-inline ml-4">
-                    <input class="form-check-input" type="radio" name="satuan" 
-                    value="Meter / Rol">
+                    <input class="form-check-input" type="radio" name="satuan"
+                    value="Meter / Rol" @if($item->satuan == "Meter / Rol") checked @endif>
                     <label class="form-check-label font-weight-normal" for="satuan2">Rol</label>
                   </div>
                   <div class="form-check form-check-inline ml-4">
-                    <input class="form-check-input" type="radio" name="satuan" 
-                    value="Meter">
+                    <input class="form-check-input" type="radio" name="satuan"
+                    value="Meter" @if($item->satuan == "Meter") checked @endif>
                     <label class="form-check-label font-weight-normal" for="satuan3">Meter</label>
                   </div>
                 </div>
@@ -80,18 +84,20 @@
                 <label for="ukuran" class="col-1 col-form-label text-bold">Ukuran</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="ukuran" placeholder="Ukuran per Satuan" value="{{ old('ukuran') }}" id="ukuran" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off" readonly>
+                  <input type="text" class="form-control col-form-label-sm" name="ukuran" value="{{ $item->ukuran }}" id="ukuran" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off" required @if($item->satuan == "Meter") readonly @endif>
                 </div>
-                <span class="col-form-label text-bold" id="labelUkuran"></span>
+                <span class="col-form-label text-bold" id="labelUkuran">{{ $item->satuan != "Meter" ? $item->satuan : '' }}</span>
               </div>
               <hr>
               <div class="form-group row">
                 <label for="ukuran" class="col-1 col-form-label text-bold">Stok</label>
                 <span class="col-form-label text-bold">:</span>
                 <div class="col-2">
-                  <input type="text" class="form-control col-form-label-sm" name="stok" value="{{ old('stok') }}" id="stok" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off">
+                  <input type="text" class="form-control col-form-label-sm" name="stok" value="{{ $stok->stok ?? 0 }}" id="stok" onkeypress="return angkaSaja(event)" data-toogle="tooltip" data-placement="top" title="Hanya input angka 0-9" autocomplete="off">
                 </div>
-                <span class="col-form-label text-bold" id="labelStok"></span>
+                <span class="col-form-label text-bold">
+                  @if($item->satuan == "Pcs / Dus") Pcs @elseif($item->satuan == "Set") Set @elseif($item->satuan == "Meter / Rol") Rol @else Meter @endif
+                </span>
               </div>
               <hr>
               @php $i = 0; @endphp
@@ -99,16 +105,36 @@
                 <div class="form-row">
                   <div class="form-group col-2">
                     <label for="harga" class="col-form-label text-bold">Price List</label>
-                    <input type="text" tabindex="-1" class="form-control col-form-label-sm harga" id="harga" name="harga[]" readonly/>
+                    <input type="text" tabindex="-1" class="form-control col-form-label-sm harga" id="harga" name="harga[]" readonly
+                      @foreach($items as $it)
+                        @if($it->id_harga == $h->id)
+                          value="{{ number_format($it->harga, 0, "", ".") }}"
+                          @break
+                        @endif
+                      @endforeach
+                    />
                   </div>
                   <div class="form-group col-2 ml-2">
                     <label for="ppn" class="col-form-label text-bold">PPN</label>
-                    <input type="text" tabindex="-1" class="form-control col-form-label-sm ppn" id="ppn" name="ppn[]" readonly/>
+                    <input type="text" tabindex="-1" class="form-control col-form-label-sm ppn" id="ppn" name="ppn[]" readonly
+                      @foreach($items as $it)
+                        @if($it->id_harga == $h->id)
+                          value="{{ number_format($it->ppn, 0, "", ".") }}"
+                          @break
+                        @endif
+                      @endforeach
+                    />
                   </div>
                   <div class="form-group col-2 ml-2">
                     <label for="hargaPPN" class="col-form-label text-bold">{{ $h->nama }}</label>
-                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSajaHarga(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required @if($i == 0) autofocus @endif/>
-                    <input type="hidden" name="kodeHarga[]" value="{{ $h->id }}">
+                    <input type="text" class="form-control col-form-label-sm hargaPPN" id="hargaPPN" name="hargaPPN[]" onkeypress="return angkaSajaHarga(event)" data-toogle="tooltip" data-placement="right" title="Hanya input angka 0-9" required @if($i == 0) autofocus @endif
+                      @foreach($items as $it)
+                        @if($it->id_harga == $h->id)
+                          value="{{ number_format($it->harga_ppn, 0, "", ".") }}"
+                          @break
+                        @endif
+                      @endforeach
+                    />
                   </div>
                 </div>
                 @php $i++; @endphp
@@ -116,7 +142,7 @@
               <hr>
               <div class="form-row justify-content-center">
                 <div class="col-2">
-                  <button type="submit" class="btn btn-success btn-block text-bold">Submit</button>
+                  <button type="submit" class="btn btn-success btn-block text-bold">Update</button>
                 </div>
                 <div class="col-2">
                   <button type="reset" class="btn btn-outline-danger btn-block text-bold">Reset</button>
@@ -142,20 +168,17 @@ const kodeJenis = document.getElementById('kodeJenis');
 const kodeSub = document.getElementById('kodeSub');
 const ukuran = document.getElementById('ukuran');
 const labelUkuran = document.getElementById('labelUkuran');
-const labelStok = document.getElementById('labelStok');
 const radios = document.querySelectorAll('input[type=radio][name="satuan"]');
 const harga = document.querySelectorAll(".harga");
 const ppn = document.querySelectorAll(".ppn");
 const hargaPPN = document.querySelectorAll(".hargaPPN");
-
-ukuran.addEventListener("keyup", formatNominal);
 
 Array.prototype.forEach.call(radios, function(radio) {
    radio.addEventListener('change', displayUkuran);
 });
 
 kategori.addEventListener("keyup", displayKategori);
-kategori.addEventListener("blur", displayKategori); 
+kategori.addEventListener("blur", displayKategori);
 
 function displayKategori(e) {
   if(e.target.value == '') {
@@ -213,20 +236,22 @@ function displayKategori(e) {
         });
       });
     }
+    else if(e.target.value == '') {
+      kodeJenis.value = '';
+    }
   @endforeach
 }
 
 subjenis.addEventListener("keyup", displaySubjenis);
-subjenis.addEventListener("blur", displaySubjenis); 
+subjenis.addEventListener("blur", displaySubjenis);
 
 function displaySubjenis(e) {
-  if(e.target.value == '') {
-    kodeSub.value = '';
-  }
-
   @foreach($subjenis as $j)
     if('{{ $j->nama }}' == e.target.value) {
       kodeSub.value = '{{ $j->id }}';
+    }
+    else if(e.target.value == '') {
+      kodeSub.value = '';
     }
   @endforeach
 }
@@ -236,29 +261,28 @@ function displayUkuran(e) {
     ukuran.removeAttribute('readonly');
     ukuran.setAttribute('required', 'true');
     ukuran.setAttribute('placeholder', '');
-
     labelUkuran.textContent = e.target.value;
-
-    if(e.target.value == 'Pcs / Dus') {
-      labelStok.textContent = ' Pcs';
-    } else if(e.target.value == 'Set') {
-      labelStok.textContent = ' Set';
-    } else if(e.target.value == 'Meter / Rol') {
-      labelStok.textContent = ' Rol';
-    }
   } else {
     ukuran.setAttribute('readonly', 'true');
     ukuran.removeAttribute('required');
     ukuran.value = '';
-
     labelUkuran.textContent = '';
-    labelStok.textContent = ' Meter';
   }
+}
+
+function angkaSaja(evt, inputan) {
+  evt = (evt) ? evt : window.event;
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      $(ukuran).tooltip('show');
+
+    return false;
+  }
+  return true;
 }
 
 for(let i = 0; i < harga.length; i++) {
   hargaPPN[i].addEventListener('keyup', function(e) {
-    console.log(e.target.value.replace(/\./g, ""));
     harga[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") / 1.1));
     ppn[i].value = addCommas(Math.floor(+e.target.value.replace(/\./g, "") - harga[i].value.replace(/\./g, "")));
   });
@@ -296,25 +320,17 @@ function addCommas(nStr) {
 	return x1 + x2;
 }
 
-function angkaSaja(evt, inputan) {
-  evt = (evt) ? evt : window.event;
-  var charCode = (evt.which) ? evt.which : evt.keyCode;
-  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-      $(ukuran).tooltip('show');
-
-    return false;
-  }
-  return true;
-}
-
-function formatNominal(e){
-  $(this).val(function(index, value) {
-    return value
-    .replace(/\D/g, "")
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-    ;
-  });
-}
+$(function() {
+  $("[autofocus]").on("focus", function() {
+    if (this.setSelectionRange) {
+      var len = this.value.length * 2;
+      this.setSelectionRange(len, len);
+    } else {
+      this.value = this.value;
+    }
+    this.scrollTop = 999999;
+  }).focus();
+});
 
 $(function() {
   var jenis = [];

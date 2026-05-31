@@ -32,8 +32,8 @@
               <th>Nama</th>
               <th style="width: 90px">Stok</th>
               <th style="width: 70px">Detail</th>
-              <th style="width: 70px">Harga</th>
-              <th style="width: 70px">Stok</th>
+              {{-- <th style="width: 70px">Harga</th> --}}
+              {{-- <th style="width: 70px">Stok</th> --}}
               <th style="width: 70px">Ubah</th>
               <th style="width: 70px">Hapus</th>
             </tr>
@@ -49,18 +49,18 @@
                     <i class="fas fa-fw fa-eye"></i>
                   </a>
                 </td>
-                <td align="center" style="width: 15px">
-                  <a href="{{ route('hargaBarang', $item->id) }}" class="btn btn-sm btn-warning">
+                {{-- <td align="center" style="width: 15px">
+                  <a href="{{ route('create-harga-barang-cianjur', $item->id) }}" class="btn btn-sm btn-warning">
                     <i class="fas fa-fw fa-money-bill-alt"></i>
                   </a>
                 </td>
                 <td align="center" style="width: 15px">
-                  <a href="{{ route('stokBarang', $item->id) }}" class="btn btn-sm btn-primary">
+                  <a href="{{ route('create-stok-barang-cianjur', $item->id) }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-fw fa-warehouse"></i>
                   </a>
-                </td>
+                </td> --}}
                 <td align="center" style="width: 15px">
-                  <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-sm btn-info">
+                  <a href="{{ route('edit-barang-cianjur', $item->id) }}" class="btn btn-sm btn-info">
                     <i class="fas fa-fw fa-edit"></i>
                   </a>
                 </td>
@@ -76,7 +76,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="8" class="text-center text-bold h4 p-2">Tidak Ada Data</td>
+                <td colspan="6" class="text-center text-bold h4 p-2">Tidak Ada Data</td>
               </tr>
             @endforelse
           </tbody>
@@ -98,7 +98,7 @@
       "columnDefs": [
         { 
             orderable: false, 
-            targets: [3, 4, 5, 6, 7]
+            targets: [3, 4, 5]
         }
       ]
     });
