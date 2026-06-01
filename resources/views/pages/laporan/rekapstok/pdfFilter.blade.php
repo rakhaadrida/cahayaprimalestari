@@ -162,6 +162,8 @@
                 ->where('stok', '!=', 0)
                 ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                     $q->where('id_gudang', 'GDG00');
+                }, function ($q) {
+                    $q->where('id_gudang', '!=', 'GDG10');
                 })
                 ->groupBy('id_gudang')
                 ->get();
@@ -223,6 +225,8 @@
                                                         ->where('id_barang', $b->id)
                                                         ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                             $q->where('id_gudang', 'GDG09');
+                                                        }, function ($q) {
+                                                            $q->where('id_gudang', '!=', 'GDG10');
                                                         })
                                                         ->groupBy('id_barang')
                                                         ->get();
@@ -435,6 +439,8 @@
                                                                 ->groupBy('id_barang')
                                                                 ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                                     $q->where('id_gudang', 'GDG09');
+                                                                }, function ($q) {
+                                                                    $q->where('id_gudang', '!=', 'GDG10');
                                                                 })
                                                                 ->get();
 
@@ -647,6 +653,8 @@
                                                                 ->where('id_barang', $b->id)
                                                                 ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                                     $q->where('id_gudang', 'GDG09');
+                                                                }, function ($q) {
+                                                                    $q->where('id_gudang', '!=', 'GDG10');
                                                                 })
                                                                 ->groupBy('id_barang')
                                                                 ->get();
@@ -851,6 +859,8 @@
                                                                 ->where('id_barang', $b->id)
                                                                 ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
                                                                     $q->where('id_gudang', 'GDG09');
+                                                                }, function ($q) {
+                                                                    $q->where('id_gudang', '!=', 'GDG10');
                                                                 })
                                                                 ->groupBy('id_barang')
                                                                 ->get();

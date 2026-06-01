@@ -186,11 +186,6 @@ class RekapStokController extends Controller
             } 
         }
 
-        $stok = StokBarang::with(['barang'])
-            ->select('id_barang', DB::raw('sum(stok) as total'))
-            ->groupBy('id_barang')
-            ->get();
-
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
 
         foreach($jenis as $j) {
@@ -240,7 +235,6 @@ class RekapStokController extends Controller
         $data = [
             'jenis' => $jenis,
             'gudang' => $gudang,
-            'stok' => $stok,
             'waktu' => $waktu,
             'awal' => $tglAwal,
             'kemarin' => $kemarin,
@@ -254,6 +248,8 @@ class RekapStokController extends Controller
     }
 
     public function excel_filter(Request $request) {
+        set_time_limit(600);
+        
         $tglAwal = $request->tanggal;
         $tglAwal = $this->formatTanggal($tglAwal, 'Y-m-d');
 
