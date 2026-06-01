@@ -33,8 +33,8 @@
         <i class="fas fa-file-excel fa-sm text-dark-50 mr-1"></i>  Import Data Barang
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <button class="dropdown-item" data-toggle="modal" data-target="#importExcelModal">Import Harga</button>
-        <a class="dropdown-item" href="#">Import Stok</a>
+        <button class="dropdown-item" data-toggle="modal" data-target="#importHargaModal">Import Harga</button>
+        <button class="dropdown-item" data-toggle="modal" data-target="#importStokModal">Import Stok</button>
       </div>
     </div>
   </div>
@@ -99,14 +99,14 @@
         </table>
       </div>
 
-      <div class="modal fade" id="importExcelModal" tabindex="-1">
+      <div class="modal fade" id="importHargaModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true" class="h2 text-bold">&times;</span>
               </button>
-              <h4 class="modal-title">Import Data Excel</h4>
+              <h4 class="modal-title">Import Harga Barang</h4>
             </div>
             <div class="modal-body">
               <p>Silakan download template terlebih dahulu agar format excel sesuai sistem.</p>
@@ -128,7 +128,43 @@
                     </ul>
                   </div>
                 </div>
-                <button type="submit" id="btnImport" class="btn btn-sm btn-primary mb-2">Import Excel</button>
+                <button type="submit" id="btnImport" class="btn btn-sm btn-primary mb-2">Import Harga</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="importStokModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true" class="h2 text-bold">&times;</span>
+              </button>
+              <h4 class="modal-title">Import Stok Barang</h4>
+            </div>
+            <div class="modal-body">
+              <p>Silakan download template terlebih dahulu agar format excel sesuai sistem.</p>
+              <a href="{{ route('excel-stok-cianjur') }}" class="btn btn-success btn-sm mb-1">Download Template</a>
+              <hr>
+              <form action="{{ route('import-stok-cianjur') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="form-group">
+                  <label>Upload File Excel</label>
+                  <div class="custom-file">
+                    <input type="file" name="file" class="custom-file-input mb-1" accept=".xls,.xlsx" required>
+                    <label class="custom-file-label" for="excelFile">
+                        Pilih file
+                    </label>
+                    <ul class="small text-muted">
+                      <li>Format: .xlsx</li>
+                      <li>Maksimal 5MB</li>
+                      <li>Jangan ubah nama kolom template</li>
+                    </ul>
+                  </div>
+                </div>
+                <button type="submit" id="btnImport" class="btn btn-sm btn-primary mb-2">Import Stok</button>
               </form>
             </div>
           </div>

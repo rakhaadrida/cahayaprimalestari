@@ -1,7 +1,7 @@
 <html>
   <body>
     <center>
-      <h2 class="text-bold text-dark">Template Import Harga Barang</h2>
+      <h2 class="text-bold text-dark">Template Import Stok Barang</h2>
       <h2></h2>
     </center>
     <br>
@@ -11,8 +11,8 @@
           <th>No</th>
           <th>Kode Barang</th>
           <th>Nama Barang</th>
-          <th>Harga Saat Ini</th>
-          <th>Harga Baru</th>
+          <th>Stok Saat Ini</th>
+          <th>Stok Baru</th>
         </tr>
       </thead>
       <tbody>
@@ -21,7 +21,7 @@
             <td align="center">{{ ++$key }}</td>
             <td align="center">{{ $item->id }}</td>
             <td>{{ $item->nama }}</td>
-            <td align="right">{{ $item->harga }}</td>
+            <td align="right">{{ $item->stok }}</td>
             <td align="right"></td>
           </tr>
         @endforeach

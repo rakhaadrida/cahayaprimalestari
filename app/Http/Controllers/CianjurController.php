@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\BarangExport;
 use App\Exports\BarangHargaExport;
+use App\Exports\BarangStokExport;
 use App\Imports\BarangImport;
+use App\Imports\BarangStokImport;
 use App\Models\AccReceivable;
 use App\Models\AR_Retur;
 use App\Models\Barang;
@@ -422,6 +424,23 @@ class CianjurController extends Controller
         ]);
 
         Excel::import(new BarangImport, $request->file('file'));
+
+        return back()->with('success', 'Import berhasil');
+    }
+
+    public function excelStok() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new BarangStokExport(), 'Template-Import-Stok-Barang.xlsx');
+    }
+
+    public function importStok(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        Excel::import(new BarangStokImport, $request->file('file'));
 
         return back()->with('success', 'Import berhasil');
     }
