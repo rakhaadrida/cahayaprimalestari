@@ -2,23 +2,37 @@
 
 namespace App\Imports;
 
-use App\Models\Barang;
+use App\Models\HargaBarang;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class BarangImport implements ToModel, WithHeadingRow
 {
-    /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+    public function headingRow(): int
+    {
+        return 4;
+    }
+
     public function model(array $row)
     {
-        return new Barang([
-            'nama_produk' => $row['nama_produk'],
-            'harga'       => $row['harga'],
-            'stok'        => $row['stok'],
-        ]);
-
+        if (empty(trim($row['harga_baru'] ?? ''))) {
+            return null;
+        } 
+        
+        $hargaBaru = (int) preg_replace('/[^0-9]/','',$row['harga_baru']);
+        $harga = $hargaBaru / 1.1;
+        $ppn = $hargaBaru - $harga;
+        
+        return HargaBarang::updateOrCreate(
+            [
+                'id_barang' => $row['kode_barang'],
+                'id_harga' => 'HRG01'
+            ],
+            [
+                'harga' => $harga,
+                'ppn' => $ppn,
+                'harga_ppn' => $hargaBaru
+            ]
+        );
     }
 }

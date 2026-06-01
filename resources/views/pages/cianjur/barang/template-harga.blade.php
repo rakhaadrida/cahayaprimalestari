@@ -9,10 +9,10 @@
       <thead class="text-center text-dark text-bold" style="background-color: lightgreen">
         <tr>
           <th>No</th>
-          <th>Kode Barang</th>
-          <th>Nama Barang</th>
-          <th>Harga Saat Ini</th>
-          <th>Harga Baru</th>
+          <th>Kode_barang</th>
+          <th>Nama_barang</th>
+          <th>Harga_saat_ini</th>
+          <th>Harga_baru</th>
         </tr>
       </thead>
       <tbody>

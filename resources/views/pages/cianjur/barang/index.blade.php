@@ -6,6 +6,14 @@
 
 @section('content')
 <div class="container-fluid">
+  @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="padding-top: 5px;">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+  @endif
   <div class="d-sm-flex align-items-center justify-content-between mb-2">
     <h1 class="h3 mb-0 text-gray-800 menu-title">Data Barang</h1>
     <div class="justify-content-end">
@@ -30,11 +38,6 @@
       </div>
     </div>
   </div>
-  @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-  @endif
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
@@ -109,7 +112,7 @@
               <p>Silakan download template terlebih dahulu agar format excel sesuai sistem.</p>
               <a href="{{ route('excel-harga-cianjur') }}" class="btn btn-success btn-sm mb-1">Download Template</a>
               <hr>
-              <form action="" method="POST" enctype="multipart/form-data">
+              <form action="{{ route('import-harga-cianjur') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                   <label>Upload File Excel</label>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\BarangExport;
 use App\Exports\BarangHargaExport;
+use App\Imports\BarangImport;
 use App\Models\AccReceivable;
 use App\Models\AR_Retur;
 use App\Models\Barang;
@@ -420,7 +421,7 @@ class CianjurController extends Controller
             'file' => 'required|mimes:xls,xlsx'
         ]);
 
-        Excel::import(new ProductImport, $request->file('file'));
+        Excel::import(new BarangImport, $request->file('file'));
 
         return back()->with('success', 'Import berhasil');
     }
