@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BarangExport;
+use App\Exports\BarangHargaExport;
 use App\Models\AccReceivable;
 use App\Models\AR_Retur;
 use App\Models\Barang;
@@ -405,6 +406,23 @@ class CianjurController extends Controller
         $tglFile = Carbon::parse($tanggal)->format('d-M');
 
         return Excel::download(new BarangExport(), 'Master Barang-'.$tglFile.'.xlsx');
+    }
+
+    public function excelHarga() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new BarangHargaExport(), 'Template-Import-Harga-Barang.xlsx');
+    }
+
+    public function importHarga(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        Excel::import(new ProductImport, $request->file('file'));
+
+        return back()->with('success', 'Import berhasil');
     }
 
     public function so() {

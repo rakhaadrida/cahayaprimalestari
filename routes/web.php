@@ -562,7 +562,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
         Route::get('cianjur/index-barang-hapus', 'CianjurController@indexDeletedBarang')->name('deleted-barang-cianjur');
         Route::get('cianjur/restore-barang/{id}', 'CianjurController@restoreBarang')->name('restore-barang-cianjur');
         Route::get('cianjur/destroy-barang/{id}', 'CianjurController@destroyBarang')->name('destroy-barang-cianjur');
+        
         Route::get('cianjur/excel-barang', 'CianjurController@excelBarang')->name('excel-barang-cianjur');
+        Route::get('cianjur/excel-harga', 'CianjurController@excelHarga')->name('excel-harga-cianjur');
+        Route::post('cianjur/import-harga', 'CianjurController@importHarga')->name('import-harga-cianjur');
 
         // Faktur
         Route::get('cianjur/so/index', 'CianjurController@so')->name('so-cianjur');
