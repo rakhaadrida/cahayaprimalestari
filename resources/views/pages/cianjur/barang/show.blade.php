@@ -87,7 +87,7 @@
                   <a href="{{ route('edit-barang-cianjur', $item->id) }}" class="btn btn-outline-primary btn-block text-bold">Ubah</a>
                 </div>
                 <div class="col-2">
-                  <a href="{{ route('barang-cianjur') }}" class="btn btn-outline-secondary btn-block text-bold">Kembali</a>
+                  <a href="{{ url()->previous() }}" class="btn btn-outline-secondary btn-block text-bold">Kembali</a>
                 </div>
               </div>
             </form>

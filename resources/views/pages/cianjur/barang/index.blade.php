@@ -13,11 +13,11 @@
         <i class="fas fa-plus fa-sm text-white-50 mr-1"></i>  Tambah Barang
       </a>
       <span class="vertical-hr mr-2 ml-1"></span>
-      <a href="{{ route('barang-trash') }}" class="btn btn-sm btn-outline-danger shadow-sm">
+      <a href="{{ route('deleted-barang-cianjur') }}" class="btn btn-sm btn-outline-danger shadow-sm">
         <i class="fas fa-trash-alt fa-sm text-dark-50 mr-1"></i>  Data Tak Terpakai
       </a>
       <span class="vertical-hr mr-2 ml-1"></span>
-      <a href="{{ route('barang-excel') }}" class="btn btn-sm btn-success shadow-sm">
+      <a href="{{ route('excel-barang-cianjur') }}" class="btn btn-sm btn-success shadow-sm">
         <i class="fas fa-file-excel fa-sm text-dark-50 mr-1"></i>  Download Excel
       </a>
     </div>
@@ -65,7 +65,7 @@
                   </a>
                 </td>
                 <td align="center" style="width: 20px">
-                  <form action="{{ route('barang.destroy', $item->id) }}" method="POST" class="d-inline">
+                  <form action="{{ route('delete-barang-cianjur', $item->id) }}" method="POST" class="d-inline">
                     @csrf
                     @method('delete')
                     <button class="btn btn-sm btn-danger">

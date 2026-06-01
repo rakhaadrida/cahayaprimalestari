@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\Exportable;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\View\View;
 use App\Models\Barang;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,9 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
         $items = Barang::select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
             ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
             ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
+            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                $q->where('tipe', 'TOKO');
+            })
             ->withTrashed()
             ->get();
 
@@ -57,7 +61,11 @@ class BarangExport implements FromView, ShouldAutoSize, WithStyles
         $drawing->setWorksheet($sheet);
         $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(8);
 
-        $items = Barang::withTrashed()->get();
+        $items = Barang::withTrashed()
+            ->when(Auth::user()->roles == 'CIANJUR', function ($q) {
+                $q->where('tipe', 'TOKO');
+            })
+            ->get();
 
         $range = 4 + $items->count();
         $rangeStr = strval($range);

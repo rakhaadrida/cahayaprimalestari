@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BarangExport;
 use App\Models\AccReceivable;
 use App\Models\AR_Retur;
 use App\Models\Barang;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class CianjurController extends Controller
@@ -53,7 +55,7 @@ class CianjurController extends Controller
     }
 
     public function showBarang($id) {
-        $item = Barang::query()
+        $item = Barang::withTrashed()
             ->select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
             ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
             ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
@@ -300,6 +302,109 @@ class CianjurController extends Controller
         }
 
         return redirect()->route('barang-cianjur');
+    }
+
+    public function deleteBarang($id) {
+        $item = Barang::findOrFail($id);
+        $item->delete();
+
+        $items = StokBarang::where('id_barang', $id);
+        $items->delete();
+
+        $item = HargaBarang::where('id_barang', $id);
+        $item->delete();
+
+        return redirect()->route('barang-cianjur');
+    }
+
+    public function indexDeletedBarang() {
+        $items = Barang::onlyTrashed()->where('tipe', 'TOKO')->get();
+        $warehouse = Gudang::query()->where('tipe', 'TOKO')->first();
+        
+        $productStocks = StokBarang::onlyTrashed()
+            ->where('id_gudang', $warehouse->id)
+            ->get();
+
+        $mapStockByProduct = [];
+        foreach($productStocks as $productStock) {
+            $mapStockByProduct[$productStock->id_barang] = $productStock->stok;
+        }
+
+        $data = [
+            'items' => $items,
+            'mapStockByProduct' => $mapStockByProduct,
+        ];
+
+        return view('pages.cianjur.barang.trash', $data);
+    }
+
+    public function restoreBarang($id) {
+        try {
+            DB::beginTransaction();
+
+            $items = Barang::onlyTrashed()->where('tipe', 'TOKO');
+            $stocks = StokBarang::onlyTrashed();
+            $prices = HargaBarang::onlyTrashed();
+
+            if($id) {
+                $items = $items->where('id', $id);
+                $stocks = $stocks->where('id_barang', $id);
+                $prices = $prices->where('id_barang', $id);
+            }
+
+            $items->restore();
+            $stocks->restore();
+            $prices->restore();
+
+            DB::commit();
+
+            return redirect()->route('deleted-barang-cianjur');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while updating data'
+            ]);
+        }
+    }
+
+    public function destroyBarang($id) {
+        try {
+            DB::beginTransaction();
+
+            $items = Barang::onlyTrashed()->where('tipe', 'TOKO');
+            $stocks = StokBarang::onlyTrashed();
+            $prices = HargaBarang::onlyTrashed();
+
+            if($id) {
+                $items = $items->where('id', $id);
+                $stocks = $stocks->where('id_barang', $id);
+                $prices = $prices->where('id_barang', $id);
+            }
+
+            $items->forceDelete();
+            $stocks->forceDelete();
+            $prices->forceDelete();
+
+            DB::commit();
+
+            return redirect()->route('deleted-barang-cianjur');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while updating data'
+            ]);
+        }
+    }
+
+    public function excelBarang() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new BarangExport(), 'Master Barang-'.$tglFile.'.xlsx');
     }
 
     public function so() {
