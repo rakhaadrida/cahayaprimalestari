@@ -16,6 +16,7 @@ use App\Models\JenisBarang;
 use App\Models\Subjenis;
 use App\Models\Barang;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class RekapFilterPerBarangExport implements FromView, ShouldAutoSize, WithStyles
@@ -36,11 +37,12 @@ class RekapFilterPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $tglRekap = Carbon::parse($awal)->isoFormat('dddd, D MMMM Y');
         $kemarin = Carbon::yesterday()->toDateString();
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
-        // $waktu = $waktu->format('d F Y, H:i:s');
         $sub = Subjenis::where('id_kategori', $this->kode)->get();
-        $gudang = Gudang::All();
+        $gudang = Gudang::query()->where('tipe', '!=', 'TOKO')->get();
         $tahun = Carbon::now('+07:00');
         $sejak = '2020';
+
+        $isCianjur = Auth::user()->roles == 'CIANJUR' ? true : false;
 
         $data = [
             'waktu' => $waktu,
@@ -51,7 +53,8 @@ class RekapFilterPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             'sejak' => $sejak,
             'awal' => $tglAwal,
             'kemarin' => $kemarin,
-            'tglRekap' => $tglRekap
+            'tglRekap' => $tglRekap,
+            'isCianjur' => $isCianjur,
         ];
         
         return view('pages.laporan.rekapstok.excelFilter', $data);
@@ -77,7 +80,7 @@ class RekapFilterPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         } 
 
         $alpha = range('A', 'Z');
-        $gudang = Gudang::All();
+        $gudang = Gudang::query()->where('tipe', '!=', 'TOKO')->get();
         $angkaHuruf = $gudang->count() + 2;
         $huruf = $alpha[$angkaHuruf];
         

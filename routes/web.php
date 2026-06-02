@@ -546,6 +546,30 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     });
 
     Route::group(['roles' => 'CIANJUR'], function() {
+        Route::get('cianjur/barang', 'CianjurController@indexBarang')->name('barang-cianjur');
+        Route::get('cianjur/show-barang/{id}', 'CianjurController@showBarang')->name('show-barang-cianjur');
+        Route::get('cianjur/create-barang', 'CianjurController@createBarang')->name('create-barang-cianjur');
+        Route::post('cianjur/store-barang', 'CianjurController@storeBarang')->name('store-barang-cianjur');
+        Route::get('cianjur/barang/{id}', 'CianjurController@editBarang')->name('edit-barang-cianjur');
+        Route::put('cianjur/update-barang/{id}', 'CianjurController@updateBarang')->name('update-barang-cianjur');
+        Route::delete('cianjur/delete-barang/{id}', 'CianjurController@deleteBarang')->name('delete-barang-cianjur');
+
+        Route::get('cianjur/create-harga-barang/{id}', 'CianjurController@createHargaBarang')->name('create-harga-barang-cianjur');
+        Route::post('cianjur/store-harga-barang', 'CianjurController@storeHargaBarang')->name('store-harga-barang-cianjur');
+        Route::get('cianjur/create-stok-barang/{id}', 'CianjurController@createStokBarang')->name('create-stok-barang-cianjur');
+        Route::post('cianjur/store-stok-barang', 'CianjurController@storeStokBarang')->name('store-stok-barang-cianjur');
+
+        Route::get('cianjur/index-barang-hapus', 'CianjurController@indexDeletedBarang')->name('deleted-barang-cianjur');
+        Route::get('cianjur/restore-barang/{id}', 'CianjurController@restoreBarang')->name('restore-barang-cianjur');
+        Route::get('cianjur/destroy-barang/{id}', 'CianjurController@destroyBarang')->name('destroy-barang-cianjur');
+        
+        Route::get('cianjur/excel-barang', 'CianjurController@excelBarang')->name('excel-barang-cianjur');
+        Route::get('cianjur/excel-harga', 'CianjurController@excelHarga')->name('excel-harga-cianjur');
+        Route::get('cianjur/excel-stok', 'CianjurController@excelStok')->name('excel-stok-cianjur');
+
+        Route::post('cianjur/import-harga', 'CianjurController@importHarga')->name('import-harga-cianjur');
+        Route::post('cianjur/import-stok', 'CianjurController@importStok')->name('import-stok-cianjur');
+
         // Faktur
         Route::get('cianjur/so/index', 'CianjurController@so')->name('so-cianjur');
         Route::post('cianjur/so/process/{id}', 'CianjurController@process')->name('so-process-cianjur');

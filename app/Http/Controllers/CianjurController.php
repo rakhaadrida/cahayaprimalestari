@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BarangExport;
+use App\Exports\BarangHargaExport;
+use App\Exports\BarangStokExport;
+use App\Imports\BarangImport;
+use App\Imports\BarangStokImport;
 use App\Models\AccReceivable;
 use App\Models\AR_Retur;
 use App\Models\Barang;
@@ -17,6 +22,7 @@ use App\Models\JenisBarang;
 use App\Models\Sales;
 use App\Models\SalesOrder;
 use App\Models\StokBarang;
+use App\Models\Subjenis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,12 +30,423 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class CianjurController extends Controller
 {
+    public function indexBarang() {
+        $items = Barang::query()->where('tipe', 'TOKO')->get();
+
+        $warehouse = Gudang::query()->where('tipe', 'TOKO')->first();
+        
+        $productStocks = StokBarang::query()
+            ->where('id_gudang', $warehouse->id)
+            ->whereNull('deleted_at')
+            ->get();
+
+        $mapStockByProduct = [];
+        foreach($productStocks as $productStock) {
+            $mapStockByProduct[$productStock->id_barang] = $productStock->stok;
+        }
+
+        $data =  [
+            'items' => $items,
+            'mapStockByProduct' => $mapStockByProduct
+        ];
+
+        return view('pages.cianjur.barang.index', $data);
+    }
+
+    public function showBarang($id) {
+        $item = Barang::withTrashed()
+            ->select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
+            ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
+            ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
+            ->where('barang.id', $id)
+            ->first();
+
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->first();
+
+        $stok = StokBarang::query()
+            ->where('id_barang', $id)
+            ->where('id_gudang', $gudang->id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $hargaBarang = HargaBarang::where('id_barang', $id)->get();
+        $harga = Harga::query()->where('id', 'HRG01')->get();
+
+        $data = [
+            'item' => $item,
+            'hargaBarang' => $hargaBarang,
+            'harga' => $harga,
+            'gudang' => $gudang,
+            'stok' => $stok
+        ];
+
+        return view('pages.cianjur.barang.show', $data);
+    }
+
+    public function createBarang() {
+        $lastcode = Barang::withTrashed()->where('tipe', 'TOKO')->max('id');
+        $lastnumber = (int) substr($lastcode, 3, 4);
+        $lastnumber++;
+        $newcode = 'BRT'.sprintf("%04s", $lastnumber);
+
+        $jenis = JenisBarang::All();
+        $subjenis = Subjenis::All();
+        $harga = Harga::query()->where('id', 'HRG01')->get();
+
+        $data = [
+            'newcode' => $newcode,
+            'jenis' => $jenis,
+            'subjenis' => $subjenis,
+            'harga' => $harga
+        ];
+
+        return view('pages.cianjur.barang.create', $data);
+    }
+
+    public function storeBarang(Request $request) {
+        Barang::create([
+            'id' => $request->kode,
+            'nama' => $request->nama,
+            'id_kategori' => $request->kodeJenis,
+            'id_sub' => $request->kodeSub,
+            'satuan' => $request->satuan,
+            'ukuran' => $request->ukuran,
+            'tipe' => 'TOKO'
+        ]);
+
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->get();
+
+        foreach($gudang as $g) {
+            StokBarang::create([
+                'id_barang' => $request->kode,
+                'id_gudang' => $g->id,
+                'status' => 'T',
+                'stok' => $request->stok ?? 0
+            ]);
+        }
+
+        $harga = Harga::query()->where('id', 'HRG01')->get();
+        for($i = 0; $i < $harga->count(); $i++) {
+            HargaBarang::create([
+                'id_barang' => $request->kode,
+                'id_harga' => $request->kodeHarga[$i],
+                'harga' => str_replace(".", "", $request->harga[$i]),
+                'ppn' => str_replace(".", "", $request->ppn[$i]),
+                'harga_ppn' => str_replace(".", "", $request->hargaPPN[$i])
+            ]);
+            }
+
+        return redirect()->route('barang-cianjur');
+    }
+
+    public function editBarang($id) {
+        $item = Barang::query()
+            ->select('barang.*', 'jenisbarang.nama AS namaJenis', 'subjenis.nama AS namaSub')
+            ->leftJoin('jenisbarang', 'jenisbarang.id', 'barang.id_kategori')
+            ->leftJoin('subjenis', 'subjenis.id', 'barang.id_sub')
+            ->findOrFail($id);
+
+        $jenis = JenisBarang::All();
+        $subjenis = Subjenis::All();
+        $harga = Harga::query()->where('id', 'HRG01')->get();
+        $items = HargaBarang::where('id_barang', $id)->get();
+
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->first();
+
+        $stok = StokBarang::query()
+            ->where('id_barang', $id)
+            ->where('id_gudang', $gudang->id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        $data = [
+            'item' => $item,
+            'jenis' => $jenis,
+            'subjenis' => $subjenis,
+            'harga' => $harga,
+            'items' => $items,
+            'stok' => $stok
+        ];
+
+        return view('pages.cianjur.barang.edit', $data);
+    }
+
+    public function updateBarang(Request $request, $id) {
+        $item = Barang::where('id', $id)->first();
+        
+        $item->{'nama'} = $request->nama;
+        $item->{'id_kategori'} = $request->kodeJenis;
+        $item->{'id_sub'} = $request->kodeSub;
+        $item->{'satuan'} = $request->satuan;
+        $item->{'ukuran'} = $request->ukuran;
+        
+        $item->save();
+
+        $kode = $id;
+        $items = HargaBarang::where('id_barang', $kode)->get();
+        $itemsRow = HargaBarang::where('id_barang', $kode)->count();
+        $harga = Harga::query()->where('id', 'HRG01')->get();
+
+        $j = 0;
+        for($i = 0; $i < $harga->count(); $i++) {
+            if($items->count() == $harga->count()) {
+                $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+            }
+            else if(($items->count() > 0) && ($j < $items->count())) {
+                if($items[$j]->id_harga == $harga[$i]->id) {
+                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i],
+                    $request->ppn[$i], $request->hargaPPN[$i]);
+                    $j++;
+                }
+                else {
+                    $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+                }
+            }
+            else {
+                $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+            }
+        }
+
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->get();
+
+        foreach($gudang as $g) {
+            $this->updateStok($kode, $g->id, $request->stok);
+        }
+
+        return redirect()->route('barang-cianjur');
+    }
+
+    public function createHargaBarang($id) {
+        $items = HargaBarang::where('id_barang', $id)->get();
+        $harga = Harga::query()->where('id', 'HRG01')->get();
+        $barang = Barang::where('id', $id)->first();
+
+        $data = [
+            'items' => $items,
+            'harga' => $harga,
+            'barang' => $barang
+        ];
+
+        return view('pages.cianjur.barang.harga', $data);
+    }
+
+    public function storeHargaBarang(Request $request) {
+        $kode = $request->kode;
+
+        $items = HargaBarang::where('id_barang', $kode)->get();
+        $itemsRow = HargaBarang::where('id_barang', $kode)->count();
+        $harga = Harga::query()->where('id', 'HRG01')->get();
+
+        $j = 0;
+        for($i = 0; $i < $harga->count(); $i++) {
+            if($items->count() == $harga->count()) {
+                $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+            }
+            else if(($items->count() > 0) && ($j < $items->count())) {
+                if($items[$j]->id_harga == $harga[$i]->id) {
+                    $this->updateHarga($kode, $harga[$i]->id, $request->harga[$i],
+                    $request->ppn[$i], $request->hargaPPN[$i]);
+                    $j++;
+                }
+                else {
+                    $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+                }
+            }
+            else {
+                $this->createHarga($kode, $harga[$i]->id, $request->harga[$i], $request->ppn[$i], $request->hargaPPN[$i]);
+            }
+        }
+
+        return redirect()->route('barang-cianjur');
+    }
+
+    public function createStokBarang($id) {
+        $items = StokBarang::where('id_barang', $id)->get();
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->get();
+        $barang = Barang::where('id', $id)->first();
+
+        $data = [
+            'items' => $items,
+            'gudang' => $gudang,
+            'barang' => $barang
+        ];
+
+        return view('pages.cianjur.barang.stok', $data);
+    }
+
+    public function storeStokBarang(Request $request) {
+        $kode = $request->kode;
+
+        $items = StokBarang::where('id_barang', $kode)->where('status', 'T')->get();
+        $itemsRow = StokBarang::where('id_barang', $kode)->count();
+        $gudang = Gudang::query()->where('tipe', 'TOKO')->get();
+
+        $j = 0;
+        for($i = 0; $i < $gudang->count(); $i++) {
+            if($items->count() == $gudang->count()) {
+                $this->updateStok($kode, $gudang[$i]->id, $request->stok[$i]);
+            }
+            else if(($items->count() > 0) && ($j < $items->count())) {
+                if($items[$j]->id_gudang == $gudang[$i]->id) {
+                    $this->updateStok($kode, $gudang[$i]->id, $request->stok[$i]);
+                    $j++;
+                }
+                else {
+                    $this->createStok($kode, $gudang[$i]->id, $request->stok[$i]);
+                }
+            }
+            else {
+                $this->createStok($kode, $gudang[$i]->id, $request->stok[$i]);
+            }
+        }
+
+        return redirect()->route('barang-cianjur');
+    }
+
+    public function deleteBarang($id) {
+        $item = Barang::findOrFail($id);
+        $item->delete();
+
+        $items = StokBarang::where('id_barang', $id);
+        $items->delete();
+
+        $item = HargaBarang::where('id_barang', $id);
+        $item->delete();
+
+        return redirect()->route('barang-cianjur');
+    }
+
+    public function indexDeletedBarang() {
+        $items = Barang::onlyTrashed()->where('tipe', 'TOKO')->get();
+        $warehouse = Gudang::query()->where('tipe', 'TOKO')->first();
+        
+        $productStocks = StokBarang::onlyTrashed()
+            ->where('id_gudang', $warehouse->id)
+            ->get();
+
+        $mapStockByProduct = [];
+        foreach($productStocks as $productStock) {
+            $mapStockByProduct[$productStock->id_barang] = $productStock->stok;
+        }
+
+        $data = [
+            'items' => $items,
+            'mapStockByProduct' => $mapStockByProduct,
+        ];
+
+        return view('pages.cianjur.barang.trash', $data);
+    }
+
+    public function restoreBarang($id) {
+        try {
+            DB::beginTransaction();
+
+            $items = Barang::onlyTrashed()->where('tipe', 'TOKO');
+            $stocks = StokBarang::onlyTrashed();
+            $prices = HargaBarang::onlyTrashed();
+
+            if($id) {
+                $items = $items->where('id', $id);
+                $stocks = $stocks->where('id_barang', $id);
+                $prices = $prices->where('id_barang', $id);
+            }
+
+            $items->restore();
+            $stocks->restore();
+            $prices->restore();
+
+            DB::commit();
+
+            return redirect()->route('deleted-barang-cianjur');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while updating data'
+            ]);
+        }
+    }
+
+    public function destroyBarang($id) {
+        try {
+            DB::beginTransaction();
+
+            $items = Barang::onlyTrashed()->where('tipe', 'TOKO');
+            $stocks = StokBarang::onlyTrashed();
+            $prices = HargaBarang::onlyTrashed();
+
+            if($id) {
+                $items = $items->where('id', $id);
+                $stocks = $stocks->where('id_barang', $id);
+                $prices = $prices->where('id_barang', $id);
+            }
+
+            $items->forceDelete();
+            $stocks->forceDelete();
+            $prices->forceDelete();
+
+            DB::commit();
+
+            return redirect()->route('deleted-barang-cianjur');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while updating data'
+            ]);
+        }
+    }
+
+    public function excelBarang() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new BarangExport(), 'Master Barang-'.$tglFile.'.xlsx');
+    }
+
+    public function excelHarga() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new BarangHargaExport(), 'Template-Import-Harga-Barang.xlsx');
+    }
+
+    public function importHarga(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        Excel::import(new BarangImport, $request->file('file'));
+
+        return back()->with('success', 'Import berhasil');
+    }
+
+    public function excelStok() {
+        $tanggal = Carbon::now()->toDateString();
+        $tglFile = Carbon::parse($tanggal)->format('d-M');
+
+        return Excel::download(new BarangStokExport(), 'Template-Import-Stok-Barang.xlsx');
+    }
+
+    public function importStok(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        Excel::import(new BarangStokImport, $request->file('file'));
+
+        return back()->with('success', 'Import berhasil');
+    }
+
     public function so() {
-        $barang = Barang::All();
+        $barang = Barang::query()->where('tipe', 'TOKO')->get();
         $harga = HargaBarang::All();
 
         $stok = StokBarang::query()
@@ -376,5 +793,38 @@ class CianjurController extends Controller
         ];
 
         return view('pages.cianjur.so.edit', $data);
-     }
+    }
+
+    protected function createHarga($kode, $id, $harga, $ppn, $hargaPPN) {
+        HargaBarang::create([
+            'id_barang' => $kode,
+            'id_harga' => $id,
+            'harga' => str_replace(".", "", $harga),
+            'ppn' => str_replace(".", "", $ppn),
+            'harga_ppn' => str_replace(".", "", $hargaPPN)
+        ]);
+    }
+
+    protected function updateHarga($kode, $id, $harga, $ppn, $hargaPPN) {
+        $updateHarga = HargaBarang::where('id_barang', $kode)->where('id_harga', $id)->first();
+        $updateHarga->{'harga'} = str_replace(".", "", $harga);
+        $updateHarga->{'ppn'} = str_replace(".", "", $ppn);
+        $updateHarga->{'harga_ppn'} = str_replace(".", "", $hargaPPN);
+        $updateHarga->save();
+    }
+
+    protected function createStok($kode, $id, $stok) {
+        StokBarang::create([
+            'id_barang' => $kode,
+            'id_gudang' => $id,
+            'status' => 'T',
+            'stok' => $stok,
+        ]);
+    }
+
+    protected function updateStok($kode, $id, $stok) {
+        $updateStok = StokBarang::where('id_barang', $kode)->where('id_gudang', $id)->first();
+        $updateStok->{'stok'} = $stok;
+        $updateStok->save();
+    }
 }
