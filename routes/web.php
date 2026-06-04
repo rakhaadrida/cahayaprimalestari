@@ -225,6 +225,7 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
 
         Route::get('/so/index-mitra/{status}', 'CianjurController@salesOrderMitra')->name('so-mitra');
         Route::post('/so/change/edit-mitra/{id}', 'CianjurController@editSalesOrderMitra')->name('so-edit-mitra');
+        Route::post('/so/check/stock-mitra/{code}', 'CianjurController@getStokMitra')->name('so-stock-mitra');
 
         // Tanda Terima
         Route::get('/tandaterima', 'TandaTerimaController@index')->name('ttr');

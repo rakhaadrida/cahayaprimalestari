@@ -219,6 +219,59 @@
                                                 </td>
                                             </tr>
 
+                                            <div class="modal modalGudang" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true" id="closeModal" class="h2 text-bold">&times;</span>
+                                                            </button>
+                                                            <h4 class="modal-title text-bold">Pilih Gudang</h4>
+                                                        </div>
+                                                        <div class="modal-body text-dark">
+                                                            <p>Qty order melebihi stok pada gudang <strong>{{ $stok->count() != 0 ? $stok[0]->gudang->nama : '' }}</strong>. Pilih gudang lainnya untuk memenuhi qty order.</p>
+                                                            <input type="hidden" id="kodeModal{{$i-1}}" value="{{$i-1}}">
+                                                            <div class="form-group row" style="margin-top: -10px">
+                                                                <label for="kode" class="col-4 col-form-label text-bold">Qty Order</label>
+                                                                <span class="col-auto col-form-label text-bold">:</span>
+                                                                <span class="col-form-label text-bold qtyOrder"></span>
+                                                                <span class="col-form-label text-bold qtySatuan"></span>
+                                                                <span class="col-form-label text-bold qtyOrderUkuran"></span>
+                                                                <span class="col-form-label text-bold qtyUkuran"></span>
+                                                            </div>
+                                                            <div class="form-group row" style="margin-top: -30px">
+                                                                <label for="kode" class="col-4 col-form-label text-bold">Stok Cianjur</label>
+                                                                <span class="col-auto col-form-label text-bold">:</span>
+                                                                <span class="col-form-label text-bold stokCianjur"></span>
+                                                                <span class="col-form-label text-bold stokSatuan"></span>
+                                                                <span class="col-form-label text-bold stokCianjurUkuran"></span>
+                                                                <span class="col-form-label text-bold stokUkuran"></span>
+                                                            </div>
+                                                            <div class="form-group row" style="margin-top: -20px">
+                                                                <label for="kode" class="col-4 col-form-label text-bold">Sisa Qty Order</label>
+                                                                <span class="col-auto col-form-label text-bold">:</span>
+                                                                <span class="col-form-label text-bold sisaQty"></span>
+                                                                <span class="col-form-label text-bold sisaSatuan"></span>
+                                                                <span class="col-form-label text-bold sisaQtyUkuran"></span>
+                                                                <span class="col-form-label text-bold sisaUkuran"></span>
+                                                            </div>
+                                                            <label for="pilih" style="margin-bottom: -5px">Pilih Gudang Tambahan</label>
+                                                            @foreach($gudang as $g)
+                                                                @if($g->id != "GDG09")
+                                                                    <div class="row">
+                                                                        <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudang{{$i-1}}"></span><span class="col-form-label text-bold gudangSatuan{{$i-1}}"></span><span class="col-form-label text-bold stokGudangUkuran{{$i-1}}"></span><span class="col-form-label text-bold gudangUkuran{{$i-1}}"></span>)</label>
+                                                                        <input type="hidden" class="kodeGud{{$i-1}}" value="{{$g->id}}">
+                                                                        <div class="col-3">
+                                                                            <button type="button" class="btn btn-sm btn-success btn-block text-bold mt-1 btnPilih{{$i-1}}">Pilih</button>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="modal" id="notif{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="modalKonfirm" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
@@ -436,9 +489,9 @@
         const grandtotal = document.getElementById('grandtotal');
         const newRow = document.getElementsByClassName('table-add')[0];
         const jumBaris = document.getElementById('jumBaris');
-        const teksJohar = document.querySelectorAll('.stokJohar');
+        const teksCianjur = document.querySelectorAll('.stokCianjur');
         const teksSatuan = document.querySelectorAll('.stokSatuan');
-        const teksJoharUkuran = document.querySelectorAll('.stokJoharUkuran');
+        const teksCianjurUkuran = document.querySelectorAll('.stokCianjurUkuran');
         const teksUkuran = document.querySelectorAll('.stokUkuran');
         const qtyOrder = document.querySelectorAll('.qtyOrder');
         const qtySatuan = document.querySelectorAll('.qtySatuan');
@@ -460,9 +513,8 @@
         const limitAngka = document.getElementById('limitAngka');
         var netPast; var tab = '{{ $tab }}'; var tempTempo = '';
         var kodeModal; var totPast; var g; var gdg; var tempQty = 0;
-        var sisa; var stokJohar; var stokLain; var totStok; var cekModal;
+        var sisa; var stokCianjur; var stokLain; var totStok; var cekModal;
 
-        /** Call Fungsi Setelah Inputan Terisi **/
         namaCust.addEventListener('keyup', displayCust);
         namaCust.addEventListener('blur', displayCust);
         namaSales.addEventListener('keyup', displaySales);
@@ -526,7 +578,6 @@
             }
         }
 
-        /** Tampil Id Sales **/
         function displaySales(e) {
            let idCabang = 0;
 
@@ -561,7 +612,6 @@
             tanggalKirim.value = value;
         }
 
-        /** Tampil Input Tempo **/
         function displayJenis(e) {
             if(e.target.value != 'CPL') {
                 if((e.target.value == 'Extrana') && (tempTempo == 0))
@@ -582,7 +632,6 @@
             }
         }
 
-        /** Tampil Input Tempo **/
         function displayTempo(e) {
             if(radiosJen[1].checked) {
                 tempo.removeAttribute('readonly');
@@ -596,7 +645,6 @@
             }
         }
 
-        /** Add New Table Line **/
         function displayRow(e) {
             const lastRow = $(tablePO).find('tr:last').attr("id");
             const lastNo = $(tablePO).find('tr:last td:first-child').text();
@@ -674,11 +722,11 @@
                           <span id="qtyUkuran${newNum}" class="col-form-label text-bold qtyUkuran"></span>
                         </div>
                         <div class="form-group row" style="margin-top: -30px">
-                          <label for="kode" class="col-4 col-form-label text-bold">Stok {{ $gudang[0]->nama }}</label>
+                          <label for="kode" class="col-4 col-form-label text-bold">Stok Cianjur</label>
                           <span class="col-auto col-form-label text-bold">:</span>
-                          <span id="stokJohar${newNum}" class="col-form-label text-bold"></span>
+                          <span id="stokCianjur${newNum}" class="col-form-label text-bold"></span>
                           <span id="stokSatuan${newNum}" class="col-form-label text-bold"></span>
-                          <span id="stokJoharUkuran${newNum}" class="col-form-label text-bold"></span>
+                          <span id="stokCianjurUkuran${newNum}" class="col-form-label text-bold"></span>
                           <span id="stokUkuran${newNum}" class="col-form-label text-bold"></span>
                         </div>
                         <div class="form-group row" style="margin-top: -20px">
@@ -691,7 +739,7 @@
                         </div>
                         <label for="pilih" style="margin-bottom: -5px">Pilih Gudang Tambahan</label>
                         @foreach($gudang as $g)
-                        @if($g->id != "GDG01")
+                        @if($g->id != "GDG09")
                         <div class="row">
                         <label for="kode" class="col-8 col-form-label text-bold">{{ $g->nama }} (Stok : <span class="col-form-label text-bold stokGudangRow${newNum}"></span><span class="col-form-label text-bold gudangSatuanRow${newNum}"></span><span class="col-form-label text-bold stokGudangUkuranRow${newNum}"></span><span class="col-form-label text-bold gudangUkuranRow${newNum}"></span>)</label>
                             <input type="hidden" class="kodeGudRow${newNum}" value="{{$g->id}}">
@@ -745,9 +793,9 @@
             const diskonRpRow = document.getElementById("diskonRpRow"+newNum);
             const nettoRow = document.getElementById("nettoRow"+newNum);
             const hapusRow = document.getElementById("icRemoveRow"+newNum);
-            const teksJoharRow = document.getElementById("stokJohar"+newNum);
+            const teksCianjurRow = document.getElementById("stokCianjur"+newNum);
             const teksSatuanRow = document.getElementById("stokSatuan"+newNum);
-            const teksJoharUkuranRow = document.getElementById("stokJoharUkuran"+newNum);
+            const teksCianjurUkuranRow = document.getElementById("stokCianjurUkuran"+newNum);
             const teksUkuranRow = document.getElementById("stokUkuran"+newNum);
             const qtyOrderRow = document.getElementById("qtyOrder"+newNum);
             const qtySatuanRow = document.getElementById("qtySatuan"+newNum);
@@ -764,7 +812,6 @@
             document.getElementById("submitSO").tabIndex = tab++;
             document.getElementById("resetSO").tabIndex = tab++;
 
-            /** Tampil Harga **/
             brgRow.addEventListener("keyup", displayHargaRow);
             kodeRow.addEventListener("keyup", displayHargaRow);
             brgRow.addEventListener("blur", displayHargaRow);
@@ -837,7 +884,7 @@
             }
 
             function resetQtyRow(e) {
-                kodeGudangRow.value = '{{ $gudang[0]->id }}';
+                kodeGudangRow.value = 'GDG09';
                 qtyGudangRow.value = '';
                 qtyRow.value = '';
                 satuanRow.value = '';
@@ -865,7 +912,6 @@
                 grandtotal.value = totalNotPPN.value;
             }
 
-            /** Inputan hanya bisa angka **/
             qtyRow.addEventListener("keypress", function (e, evt) {
                 evt = (evt) ? evt : window.event;
                 var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
@@ -889,35 +935,49 @@
             });
 
             /** Tampil Jumlah **/
-            qtyRow.addEventListener("blur", displayQtyRow);
+            qtyRow.addEventListener("blur", checkQtyRow);
             if(teksSatRow.value == 'Pcs')
-                satuanRow.addEventListener("blur", displayQtyRow);
+                satuanRow.addEventListener("blur", checkQtyRow);
             else
-                satuanRow.addEventListener("change", displayQtyRow);
+                satuanRow.addEventListener("change", checkQtyRow);
 
-            function displayQtyRow(e) {
-                stokJohar = 0;
+            function checkQtyRow(e) {
+                stokCianjur = 0;
                 stokLain = [];
                 totStok = 0;
-                @foreach($stok as $s)
-                    if(('{{ $s->id_barang }}' == kodeRow.value)) {
-                        totStok = '{{ $s->stok }}';
-                    }
-                @endforeach
 
-                hitungQtyRow(e.target.id, e.target.value, teksSatRow.value, ukuranRow.value);
+                if(e.target.value != '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/so/check/stock-mitra/' + kodeRow.value,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        dataType: 'json',
+                        success:function(data) {
+                            stokCianjur = data.stokCianjur.stok;
+                            totStok = data.totalStok;
+                            stokLain = data.stokLain;
+                            displayQtyRow(e.target.id, e.target.value, stokCianjur, totStok, stokLain)
+                        }
+                    });
+                }
+            }
 
-                if(e.target.value == "") {
+            function displayQtyRow(id, qtyValue, stokCianjur, totStok, stokLain) {
+                hitungQtyRow(id, qtyValue, teksSatRow.value, ukuranRow.value);
+
+                if(qtyValue == "") {
                     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
                     totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
                     jumlahRow.value = "";
                     nettoRow.value = "";
-                    kodeGudangRow.value = "{{ $gudang[0]->id }}";
+                    kodeGudangRow.value = "GDG09";
                     qtyGudangRow.value = "";
                     qtyRow.value = "";
                     satuanRow.value = "";
                 }
-                else if(((e.target.id == `qtyRow${newNum}`) && (+e.target.value > totStok)) || ((e.target.id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+e.target.value * +ukuranRow.value) > totStok)) {
+                else if(((id == `qtyRow${newNum}`) && (+qtyValue > totStok)) || ((id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+qtyValue * +ukuranRow.value) > totStok)) {
                     $('#notif'+newNum).modal("show");
                     nmbrgRow.textContent = brgRow.value;
                     totalstokRow.textContent = `${totStok} ${teksSatRow.value}`;
@@ -939,8 +999,63 @@
                     return false;
                 }
                 else {
-                    kodeGudangRow.value = "{{ $gudang[0]->id }}";
-                    qtyGudangRow.value = qtyRow.value;
+                    if(((id == `qtyRow${newNum}`) && (+qtyValue > stokCianjur)) || ((id == `satuanRow${newNum}`) && (teksSatRow.value == 'Pcs') && (+qtyValue * +ukuranRow.value) > stokCianjur)) {
+                        var arrJumQtyRow = qtyGudangRow.value.split(',');
+                        var jumQtyRow = arrJumQtyRow.reduce(getSum, 0);
+                        if((tempQty == 0) || ((tempQty > 0) && (jumQtyRow != qtyValue))) {
+                            $('#gud'+newNum).modal("show");
+                            kodeModal = newNum;
+                            teksCianjurRow.textContent = `${stokCianjur}`;
+                            teksSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
+                            if(teksSatRow.value == 'Pcs') {
+                                teksCianjurUkuranRow.textContent = `\u00A0/ ${stokCianjur / ukuranRow.value}`;
+                                teksUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
+                            } else {
+                                teksCianjurUkuranRow.textContent = ``;
+                                teksUkuranRow.textContent = ``;
+                            }
+
+                            qtyOrderRow.textContent = `${qtyRow.value}`;
+                            qtySatuanRow.textContent = `\u00A0${teksSatRow.value} `;
+                            if(teksSatRow.value == 'Pcs') {
+                                qtyOrderUkuranRow.textContent = `\u00A0/ ${qtyRow.value / ukuranRow.value}`;
+                                qtyUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
+                            } else {
+                                qtyOrderUkuranRow.textContent = ``;
+                                qtyUkuranRow.textContent = ``;
+                            }
+
+                            sisaQtyRow.textContent = `${+qtyRow.value - +stokCianjur}`;
+                            sisaSatuanRow.textContent = `\u00A0${teksSatRow.value} `;
+                            if(teksSatRow.value == 'Pcs') {
+                                sisaQtyUkuranRow.textContent = `\u00A0/ ${(qtyRow.value - +stokCianjur) / ukuranRow.value}`;
+                                sisaUkuranRow.textContent = `\u00A0${teksSatUkRow.value}`;
+                            } else {
+                                sisaQtyUkuranRow.textContent = ``;
+                                sisaUkuranRow.textContent = ``;
+                            }
+
+                            const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
+                            const gudangSatuanRow = document.querySelectorAll('.gudangSatuanRow'+newNum);
+                            const stokGudangUkuranRow = document.querySelectorAll('.stokGudangUkuranRow'+newNum);
+                            const gudangUkuranRow = document.querySelectorAll('.gudangUkuranRow'+newNum);
+                            for(let i = 0; i < stokGudangRow.length; i++) {
+                                stokGudangRow[i].textContent = `${stokLain[i]}`;
+                                gudangSatuanRow[i].textContent = `\u00A0${teksSatRow.value}`;
+                                if(teksSatRow.value == 'Pcs') {
+                                    stokGudangUkuranRow[i].textContent = `\u00A0/ ${stokLain[i] / ukuranRow.value}`;
+                                    gudangUkuranRow[i].textContent = `\u00A0${teksSatUkRow.value}`;
+                                } else {
+                                    stokGudangUkuranRow[i].textContent = ``;
+                                    gudangUkuranRow[i].textContent = ``;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        kodeGudangRow.value = "GDG09";
+                        qtyGudangRow.value = qtyRow.value;
+                    }
 
                     netPast = +nettoRow.value.replace(/\./g, "");
                     jumlahRow.value = addCommas(qtyRow.value * hargaRow.value.replace(/\./g, ""));
@@ -953,7 +1068,6 @@
                     nettoRow.value = addCommas(+jumlahRow.value.replace(/\./g, "") - +diskonRpRow.value.replace(/\./g, ""));
                     checkSubtotal(netPast, +nettoRow.value.replace(/\./g, ""));
                 }
-
                 tempQty = qtyValue;
                 ppn.value = 0;
                 totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
@@ -975,8 +1089,8 @@
                 cekModal = 0;
                 const kodeGudRow = document.querySelectorAll(".kodeGudRow"+newNum);
                 const stokGudangRow = document.querySelectorAll('.stokGudangRow'+newNum);
-                kodeGudangRow.value = "{{ $gudang[0]->id }}";
-                qtyGudangRow.value = stokJohar;
+                kodeGudangRow.value = 'GDG09';
+                qtyGudangRow.value = stokCianjur;
 
                 const btnPilihRow = document.querySelectorAll(".btnPilihRow"+newNum);
                 for(let i = 0; i < btnPilihRow.length; i++) {
@@ -1041,7 +1155,6 @@
                 @endforeach
             }
 
-            /** Inputan hanya bisa angka **/
             diskonRow.addEventListener("keypress", function (e, evt) {
                 evt = (evt) ? evt : window.event;
                 var charCodeRow = (evt.which) ? evt.which : evt.keyCode;
@@ -1054,7 +1167,6 @@
                 return true;
             });
 
-            /** Tampil Diskon Rp **/
             diskonRow.addEventListener("keyup", displayDiskonRow);
             diskonRow.addEventListener("blur", displayDiskonRow);
 
@@ -1077,7 +1189,6 @@
                 grandtotal.value = totalNotPPN.value;
             }
 
-            /** Delete Table Row **/
             hapusRow.addEventListener("click", function (e) {
                 if(qtyRow.value != "") {
                     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +nettoRow.value.replace(/\./g, ""));
@@ -1113,7 +1224,6 @@
                     kodeBarang[4].focus();
             })
 
-            /** Autocomplete Nama  Barang **/
             $(function() {
                 var idBarang = [];
                 var nmBarang = [];
@@ -1210,7 +1320,6 @@
             });
         }
 
-        /** Tampil Harga Barang **/
         for(let i = 0; i < brgNama.length; i++) {
             brgNama[i].addEventListener("keyup", displayHarga) ;
             kodeBarang[i].addEventListener("keyup", displayHarga);
@@ -1285,14 +1394,13 @@
             }
 
             function resetQty(e) {
-                kodeGudang[i].value = '{{ $gudang[0]->id }}';
+                kodeGudang[i].value = 'GDG09';
                 qtyGudang[i].value = '';
                 qty[i].value = '';
                 satuan[i].value = '';
             }
         }
 
-        // Pilih Tipe
         for(let i = 0; i < harga.length; i++) {
             harga[i].addEventListener("keyup", displayHargaCustom);
             harga[i].addEventListener("blur", displayHargaCustom);
@@ -1317,40 +1425,53 @@
             }
         }
 
-        /** Tampil Jumlah Harga Otomatis **/
         for(let i = 0; i < qty.length; i++) {
-            qty[i].addEventListener("blur", displayQty);
+            qty[i].addEventListener("blur", checkQty);
 
             if(teksSat[i].value == 'Pcs')
-                satuan[i].addEventListener("blur", displayQty);
+                satuan[i].addEventListener("blur", checkQty);
             else
-                satuan[i].addEventListener("change", displayQty);
+                satuan[i].addEventListener("change", checkQty);
 
-            function displayQty(e) {
-                stokJohar = 0;
+            function checkQty(e) {
+                stokCianjur = 0;
                 stokLain = [];
                 totStok = 0;
 
-                @foreach($stok as $s)
-                    if(('{{ $s->id_barang }}' == kodeBarang[i].value)) {
-                        totStok = '{{ $s->stok }}';
-                    }
-                @endforeach
+                if(e.target.value != '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/so/check/stock-mitra/' + kodeBarang[i].value,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        dataType: 'json',
+                        success:function(data) {
+                            stokCianjur = data.stokCianjur.stok;
+                            totStok = data.totalStok;
+                            stokLain = data.stokLain;
+                            
+                            displayQty(e.target.id, e.target.value, stokCianjur, totStok, stokLain)
+                        }
+                    });
+                }
+            }
 
-                hitungQty(i, e.target.id, e.target.value, teksSat[i].value, ukuran[i].value);
+            function displayQty(id, qtyValue, stokCianjur, totStok, stokLain) {
+                hitungQty(i, id, qtyValue, teksSat[i].value, ukuran[i].value);
 
-                if(e.target.value == "") {
+                if(qtyValue == "") {
                     subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
                     totalNotPPN.value = addCommas(+totalNotPPN.value.replace(/\./g, "") - +netto[i].value.replace(/\./g, ""));
                     jumlah[i].value = "";
                     diskonRp[i].value = "";
                     netto[i].value = "";
-                    kodeGudang[i].value = '{{ $gudang[0]->id }}';
+                    kodeGudang[i].value = "GDG09";
                     qtyGudang[i].value = "";
                     qty[i].value = "";
                     satuan[i].value = "";
                 }
-                else if(((e.target.id == 'qty') && (+e.target.value > totStok)) || ((e.target.id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+e.target.value * +ukuran[i].value) > totStok))) {
+                else if(((id == 'qty') && (+qtyValue > totStok)) || ((id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+qtyValue * +ukuran[i].value) > totStok))) {
                     $('#notif'+i).modal("show");
                     nmbrg[i].textContent = brgNama[i].value;
                     totalstok[i].textContent = `${totStok} ${teksSat[i].value}`;
@@ -1372,9 +1493,64 @@
 
                     return false;
                 }
-                else { 
-                    kodeGudang[i].value = '{{ $gudang[0]->id }}';
-                    qtyGudang[i].value = qty[i].value;
+                else {
+                    if(((id == 'qty') && (+qtyValue > stokCianjur)) || ((id == 'satuan') && (teksSat[i].value == 'Pcs') && ((+qtyValue * +ukuran[i].value) > stokCianjur))) {
+                        var arrJumQty = qtyGudang[i].value.split(',');
+                        var jumQty = arrJumQty.reduce(getSum, 0);
+                        if((tempQty == 0) || ((tempQty > 0) && (jumQty != qtyValue))) {
+                            $('#'+i).modal("show");
+                            kodeModal = i;
+                            teksCianjur[i].textContent = `${stokCianjur}`;
+                            teksSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+                            if(teksSat[i].value == 'Pcs') {
+                                teksCianjurUkuran[i].textContent = `\u00A0/ ${stokCianjur / ukuran[i].value}`;
+                                teksUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
+                            } else {
+                                teksCianjurUkuran[i].textContent = ``;
+                                teksUkuran[i].textContent = ``;
+                            }
+
+                            qtyOrder[i].textContent = `${qty[i].value}`;
+                            qtySatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+                            if(teksSat[i].value == 'Pcs') {
+                                qtyOrderUkuran[i].textContent = `\u00A0/ ${qty[i].value / ukuran[i].value}`;
+                                qtyUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
+                            } else {
+                                qtyOrderUkuran[i].textContent = ``;
+                                qtyUkuran[i].textContent = ``;
+                            }
+
+                            sisaQty[i].textContent = `${+qty[i].value - +stokCianjur}`;
+                            sisaSatuan[i].textContent = `\u00A0${teksSat[i].value} `;
+                            if(teksSat[i].value == 'Pcs') {
+                                sisaQtyUkuran[i].textContent = `\u00A0/ ${(qty[i].value - +stokCianjur) / ukuran[i].value}`;
+                                sisaUkuran[i].textContent = `\u00A0${teksSatUk[i].value}`;
+                            } else {
+                                sisaQtyUkuran[i].textContent = ``;
+                                sisaUkuran[i].textContent = ``;
+                            }
+
+                            const stokGudang = document.querySelectorAll('.stokGudang'+i);
+                            const gudangSatuan = document.querySelectorAll('.gudangSatuan'+i);
+                            const stokGudangUkuran = document.querySelectorAll('.stokGudangUkuran'+i);
+                            const gudangUkuran = document.querySelectorAll('.gudangUkuran'+i);
+                            for(let j = 0; j < stokGudang.length; j++) {
+                                stokGudang[j].textContent = `${stokLain[j] != null ? stokLain[j] : 0}`;
+                                gudangSatuan[j].textContent = `\u00A0${teksSat[i].value}`;
+                                if(teksSat[i].value == 'Pcs') {
+                                    stokGudangUkuran[j].textContent = `\u00A0/ ${stokLain[j] != null ? stokLain[j] : 0 / ukuran[i].value}`;
+                                    gudangUkuran[j].textContent = `\u00A0${teksSatUk[i].value}`;
+                                } else {
+                                    stokGudangUkuran[j].textContent = ``;
+                                    gudangUkuran[j].textContent = ``;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        kodeGudang[i].value = "GDG09";
+                        qtyGudang[i].value = qty[i].value;
+                    }
 
                     netPast = +netto[i].value.replace(/\./g, "");
                     jumlah[i].value = addCommas(qty[i].value * harga[i].value.replace(/\./g, ""));
@@ -1387,7 +1563,6 @@
                     netto[i].value = addCommas(+jumlah[i].value.replace(/\./g, "") - +diskonRp[i].value.replace(/\./g, ""));
                     checkSubtotal(netPast, +netto[i].value.replace(/\./g, ""));
                 }
-
                 tempQty = qtyValue;
                 ppn.value = 0;
                 totalNotPPN.value = addCommas(+subtotal.value.replace(/\./g, "") - +diskonFaktur.value.replace(/\./g, ""));
@@ -1395,7 +1570,6 @@
             }
         }
 
-        // Pilih Tipe
         for(let i = 0; i < tipe.length; i++) {
             tipe[i].addEventListener("keyup", displayTipe);
             tipe[i].addEventListener("blur", displayTipe);
@@ -1430,7 +1604,6 @@
             }
         }
 
-        /** Tampil Diskon Rupiah Otomatis **/
         for(let i = 0; i < diskon.length; i++) {
             diskon[i].addEventListener("keyup", displayDiskon);
             diskon[i].addEventListener("blur", displayDiskon);
@@ -1454,14 +1627,13 @@
             }
         }
 
-        /** Tampil Kode Gudang Tambahan **/
         for(let j = 0; j < modalGudang.length; j++) {
             $('#'+j).on('show.bs.modal', function(e) {
                 cekModal = 0;
                 const kodeGud = document.querySelectorAll(".kodeGud"+j);
                 const stokGudang = document.querySelectorAll('.stokGudang'+j);
-                kodeGudang[j].value = 'GDG01';
-                qtyGudang[j].value = stokJohar;
+                kodeGudang[j].value = 'GDG09';
+                qtyGudang[j].value = stokCianjur;
 
                 const btnPilih = document.querySelectorAll(".btnPilih"+j);
 
@@ -1500,7 +1672,6 @@
             return +total + +num;
         }
 
-        /** Hitung Qty **/
         function hitungQty(urutan, kode, angka, teks, ukuran) {
             if(kode == 'qty') {
                 if((teks == 'Pcs') || (teks == 'Set'))
@@ -1513,7 +1684,6 @@
             }
         }
 
-        /** Hitung Diskon **/
         function hitungDiskon(angka) {
             var totDiskon = 100;
             angka = angka.replace(/\,/g, ".");
@@ -1525,7 +1695,6 @@
             return totDiskon;
         }
 
-        /** Check Jumlah Netto onChange **/
         function checkSubtotal(Past, Now) {
             if(Past > Now) {
                 subtotal.value = addCommas(+subtotal.value.replace(/\./g, "") - (+Past - +Now));
@@ -1536,7 +1705,6 @@
             }
         }
 
-        /** Hitung PPN Dan Total **/
         function total_ppn(sub) {
             grandtotal.value = addCommas(+sub + +ppn.value.replace(/\./g, ""));
         }
@@ -1546,7 +1714,6 @@
             grandtotal.value = totalNotPPN.value;
         }
 
-        /** Inputan hanya bisa angka **/
         function angkaSaja(evt, inputan, teks) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1569,7 +1736,6 @@
             return true;
         }
 
-        /** Inputan hanya bisa angka **/
         function angkaSajaHarga(evt, inputan) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1583,7 +1749,6 @@
             return true;
         }
 
-        /** Inputan hanya bisa angka dan plus **/
         function angkaPlus(evt, inputan) {
             evt = (evt) ? evt : window.event;
             var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1597,7 +1762,6 @@
             return true;
         }
 
-        /** Add Nominal Separators **/
         function formatNominal(e){
             $(this).val(function(index, value) {
                 return value
@@ -1607,7 +1771,6 @@
             });
         }
 
-        /** Add Thousand Separators **/
         function addCommas(nStr) {
             nStr += '';
             x = nStr.split(',');
@@ -1620,7 +1783,6 @@
             return x1 + x2;
         }
 
-        /** Delete Baris Pada Tabel **/
         for(let i = 0; i < hapusBaris.length; i++) {
             hapusBaris[i].addEventListener("click", function (e) {
                 if(qty[i].value != "") {
@@ -1675,7 +1837,6 @@
         }
 
         function checkRequired(e) {
-            // if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radios).is(':checked')) || (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
             if((namaCust.value == "") || (namaSales.value == "") || (tanggalKirim.value == "") || (!$(radiosJen).is(':checked')) || (kodeBarang[0].value == "") || (qty[0].value == "")) {
                 e.stopPropagation();
             }
