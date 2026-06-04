@@ -681,9 +681,9 @@ class CianjurController extends Controller
 
         $stok = StokBarang::query()
             ->join('gudang', 'gudang.id', 'stok.id_gudang')
-            ->where('id_gudang', 'GDG09')->get();
+            ->where('tipe', 'BIASA')->get();
 
-        $gudang = Gudang::query()->where('id', 'GDG09')->get();
+        $gudang = Gudang::query()->where('tipe', 'BIASA')->get();
         $lastSO = SalesOrder::where('created_at', '!=', NULL)->latest()->take(1)->get();
 
         $waktu = Carbon::now('+07:00');
@@ -793,6 +793,23 @@ class CianjurController extends Controller
         ];
 
         return view('pages.cianjur.so.edit', $data);
+    }
+
+    public function getStokMitra(Request $request, $code) {
+        $gudang = Gudang::where('tipe', 'BIASA')->where('id', '!=', 'GDG09')->pluck('id')->toArray();
+
+        $stokCianjur = StokBarang::where('id_barang', $code)->where('id_gudang', 'GDG09')->first();
+        $totalStok = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)->sum('stok');
+        $stokLain = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)
+            ->pluck('stok')->toArray();
+
+        $data = [
+            'stokCianjur' => $stokCianjur,
+            'totalStok' => $totalStok + $stokCianjur->stok,
+            'stokLain' => $stokLain
+        ];
+
+        return response()->json($data);
     }
 
     protected function createHarga($kode, $id, $harga, $ppn, $hargaPPN) {
