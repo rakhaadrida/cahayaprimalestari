@@ -11,39 +11,26 @@
 |
 */
 
-use App\Models\ReturJual;
-use Carbon\Carbon;
+use App\Models\NeedApproval;
+use App\Models\SalesOrder;
 
 Route::get('test', function() {
-    $items = ReturJual::join('detilrj', 'detilrj.id_retur', 'returjual.id')
-        ->where('id_kirim', 'KRM23120052')->groupBy('id_kirim')->get();
-    $tabel = ceil($items->first()->detilrj->count() / 12);
+    $items = NeedApproval::query()
+        ->whereIn('id_dokumen', ['IV26060414', 'IV26060415'])
+        ->get();
 
-    if($tabel > 1) {
-        for($i = 1; $i < $tabel; $i++) {
-            $item = collect([
-                'id' => $items->first()->id,
-                'tanggal' => $items->first()->tanggal,
-                'id_customer' => $items->first()->id_customer,
-                'status' => $items->first()->status
-            ]);
-
-            $items->push($item);
-        }
+    foreach($items as $item) {
+        $item->delete();
     }
-    $items = $items->values();
 
-    $today = Carbon::now()->isoFormat('dddd, D MMM Y');
-    $waktu = Carbon::now();
-    $waktu = Carbon::parse($waktu)->format('H:i:s');
+    $items = SalesOrder::query()
+        ->whereIn('id', ['IV26060414', 'IV26060415'])
+        ->get();
 
-    $data = [
-        'items' => $items,
-        'today' => $today,
-        'waktu' => $waktu
-    ];
-
-    return view('pages.retur.cetakJualAlter', $data);
+    foreach($items as $item) {
+        $item->status = 'BATAL';
+        $item->save();
+    }
 });
 
 Route::middleware(['auth', 'admin', 'roles'])->group(function() {
