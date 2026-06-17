@@ -955,7 +955,7 @@
                         },
                         dataType: 'json',
                         success:function(data) {
-                            stokCianjur = data.stokCianjur.stok;
+                            stokCianjur = data.stokCianjur;
                             totStok = data.totalStok;
                             stokLain = data.stokLain;
                             displayQtyRow(e.target.id, e.target.value, stokCianjur, totStok, stokLain)
@@ -1342,54 +1342,54 @@
                 }
 
                 @foreach($barang as $br)
-                if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
-                    kodeBarang[i].value = '{{ $br->id }}';
-                    brgNama[i].value = '{{ $br->nama }}';
-                    satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
-                    if(satuanUkuran.innerHTML == 'Dus') {
-                        pcs.innerHTML = 'Pcs';
-                        teksSatUk[i].value = 'Dus';
-                        teksSat[i].value = 'Pcs';
-                    }
-                    else if(satuanUkuran.innerHTML == 'Rol') {
-                        pcs.innerHTML = 'Rol';
-                        teksSat[i].value = 'Rol';
-                        teksSatUk[i].value = 'Meter';
-                        satuanUkuran.innerHTML = 'Meter';
-                        satuan[i].value = '{{ $br->ukuran }}';
-                        satuan[i].setAttribute('readonly', 'true');
-                    }
-                    else if(satuanUkuran.innerHTML == 'Set') {
-                        pcs.innerHTML = 'Set';
-                        satuanUkuran.innerHTML = 'Dus';
-                        teksSatUk[i].value = 'Dus';
-                        teksSat[i].value = 'Set';
-                    }
-                    else {
-                        pcs.innerHTML = 'Meter';
-                        teksSat[i].value = 'Meter';
-                        teksSatUk[i].value = '';
-                        satuanUkuran.innerHTML = '';
-                        satuan[i].value = '{{ $br->ukuran }}';
-                        satuan[i].setAttribute('readonly', 'true');
-                    }
-                    ukuran[i].value = '{{ $br->ukuran }}';
+                    if(('{{ $br->nama }}' == e.target.value) || ('{{ $br->id }}' == e.target.value)) {
+                        kodeBarang[i].value = '{{ $br->id }}';
+                        brgNama[i].value = '{{ $br->nama }}';
+                        satuanUkuran.innerHTML = '{{ substr($br->satuan, -3) }}';
+                        if(satuanUkuran.innerHTML == 'Dus') {
+                            pcs.innerHTML = 'Pcs';
+                            teksSatUk[i].value = 'Dus';
+                            teksSat[i].value = 'Pcs';
+                        }
+                        else if(satuanUkuran.innerHTML == 'Rol') {
+                            pcs.innerHTML = 'Rol';
+                            teksSat[i].value = 'Rol';
+                            teksSatUk[i].value = 'Meter';
+                            satuanUkuran.innerHTML = 'Meter';
+                            satuan[i].value = '{{ $br->ukuran }}';
+                            satuan[i].setAttribute('readonly', 'true');
+                        }
+                        else if(satuanUkuran.innerHTML == 'Set') {
+                            pcs.innerHTML = 'Set';
+                            satuanUkuran.innerHTML = 'Dus';
+                            teksSatUk[i].value = 'Dus';
+                            teksSat[i].value = 'Set';
+                        }
+                        else {
+                            pcs.innerHTML = 'Meter';
+                            teksSat[i].value = 'Meter';
+                            teksSatUk[i].value = '';
+                            satuanUkuran.innerHTML = '';
+                            satuan[i].value = '{{ $br->ukuran }}';
+                            satuan[i].setAttribute('readonly', 'true');
+                        }
+                        ukuran[i].value = '{{ $br->ukuran }}';
 
-                    if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}') || ('{{ $br->jenis->nama == 'POWERLINDO' }}')) {
-                        harga[i].removeAttribute('readonly');
-                    } else {
-                        harga[i].setAttribute('readonly', 'true');
+                        if(('{{ $br->jenis->nama == 'NITTO' }}') || ('{{ $br->jenis->nama == 'BOSS' }}') || ('{{ $br->jenis->nama == 'POWERLINDO' }}')) {
+                            harga[i].removeAttribute('readonly');
+                        } else {
+                            harga[i].setAttribute('readonly', 'true');
+                        }
                     }
-                }
                 @endforeach
 
-                        @foreach($harga as $hb)
-                if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
-                    tipe[i].value = '{{ $hb->hargaBarang->tipe }}';
-                    harga[i].value = addCommas('{{ $hb->harga_ppn }}');
-                    qty[i].setAttribute('required', true);
-                    diskon[i].setAttribute('required', true);
-                }
+                @foreach($harga as $hb)
+                    if(('{{ $hb->id_barang }}' == kodeBarang[i].value) && ('{{ $hb->id_harga }}' == 'HRG01')) {
+                        tipe[i].value = '{{ $hb->hargaBarang->tipe }}';
+                        harga[i].value = addCommas('{{ $hb->harga_ppn }}');
+                        qty[i].setAttribute('required', true);
+                        diskon[i].setAttribute('required', true);
+                    }
                 @endforeach
             }
 
@@ -1447,7 +1447,7 @@
                         },
                         dataType: 'json',
                         success:function(data) {
-                            stokCianjur = data.stokCianjur.stok;
+                            stokCianjur = data.stokCianjur;
                             totStok = data.totalStok;
                             stokLain = data.stokLain;
                             

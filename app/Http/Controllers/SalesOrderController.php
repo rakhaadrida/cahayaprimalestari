@@ -261,8 +261,11 @@ class SalesOrderController extends Controller
 
                     $updateStok = StokBarang::where('id_barang', $request->kodeBarang[$i])
                                 ->where('id_gudang', $arrGudang[$j])->first();
-                    $updateStok->{'stok'} -= $arrStok[$j];
-                    $updateStok->save();
+
+                    if($updateStok != NULL) {
+                        $updateStok->{'stok'} -= $arrStok[$j];
+                        $updateStok->save();
+                    }
                 }
             }
         }

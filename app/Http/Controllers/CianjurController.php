@@ -799,13 +799,13 @@ class CianjurController extends Controller
         $gudang = Gudang::where('tipe', 'BIASA')->where('id', '!=', 'GDG09')->pluck('id')->toArray();
 
         $stokCianjur = StokBarang::where('id_barang', $code)->where('id_gudang', 'GDG09')->first();
+        
         $totalStok = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)->sum('stok');
-        $stokLain = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)
-            ->pluck('stok')->toArray();
+        $stokLain = StokBarang::where('id_barang', $code)->whereIn('id_gudang', $gudang)->pluck('stok')->toArray();
 
         $data = [
-            'stokCianjur' => $stokCianjur,
-            'totalStok' => $totalStok + $stokCianjur->stok,
+            'stokCianjur' => $stokCianjur ? $stokCianjur->stok : 0,
+            'totalStok' => $totalStok + ($stokCianjur ? $stokCianjur->stok : 0),
             'stokLain' => $stokLain
         ];
 
