@@ -263,19 +263,18 @@
                       @endphp
                       <td align="right" >
                         <input type="text" name="diskonRp[]" id="diskonRp" readonly class="form-control-plaintext form-control-sm text-bold text-right text-dark diskonRp"
-                        value="{{ number_format((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100, 0, "", ".") }}" >
+                        value="{{ number_format($item->diskonRp, 0, "", ".") }}">
                       </td>
                       <td align="right">
-                        <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" value="{{ number_format(($item->qty * $item->harga) -
-                        ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100), 0, "", ".") }}" >
+                        <input type="text" name="netto[]" id="netto" readonly class="form-control-plaintext form-control-sm text-bold text-dark text-right netto" 
+                        value="{{ number_format(($item->qty * $item->harga) - $item->diskonRp, 0, "", ".") }}" >
                       </td>
                       <td align="center" class="align-middle">
                         <a href="#" class="icRemove">
                           <i class="fas fa-fw fa-times fa-lg ic-remove mt-1"></i>
                         </a>
                       </td>
-                      @php $subtotal += ($item->qty * $item->harga) -
-                        ((($item->qty * $item->harga) * str_replace(",", ".", $diskon)) / 100);
+                      @php $subtotal += ($item->qty * $item->harga) - $item->diskonRp;
                       @endphp
                     </tr>
                     <div class="modal modalGudang" id="{{$i-1}}" tabindex="-1" role="dialog" aria-labelledby="{{$i-1}}-" aria-hidden="true">

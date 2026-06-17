@@ -1,4 +1,3 @@
-{{-- <!DOCTYPE html> --}}
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -304,10 +303,7 @@
       }
 
       .tr-detail-cetak-so {
-          /* color: black; */
           line-height: 7px;
-          /* font-family: 'saxMono', sans-serif; */
-          /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
       .tr-detail-cetak-so td {
@@ -316,7 +312,6 @@
       }
 
       tr.baris-so {
-        /* height: 15px !important; */
         height: 21px !important;
       }
 
@@ -324,7 +319,6 @@
         border-left: 0;
         border-right: 0;
         border-top: 0;
-        /* border-bottom: 1px solid black; */
       }
 
       .footer-cetak-so {
@@ -444,7 +438,6 @@
         @php $i = 1; $no = 1; $kur = 0; $kode = []; $subtotal = 0; @endphp
       @endif
       <div class="cetak-all-container" style="margin-bottom: -55px; page-break-after: always;">
-
         <div class="container-fluid float-left logo-cetak-so">
           <h2 class="text-bold">INVOICE</h2>
           <h3 class="text-bold">POWER ELEKTRIK</h3>
@@ -481,7 +474,6 @@
         </div>
         <br>
         <br>
-
         @php
             $stat = $det;
             if($det <= 12)
@@ -490,23 +482,20 @@
               $so = $items[$urut-$kur]->id;
 
             $itemsDet = \App\Models\DetilSO::with(['barang'])
-                    ->select('id_barang', 'diskon', 'diskonRp')
-                    ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                    ->select('id_barang', 'diskon')
+                    ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
                     ->where('id_so', $so)
                     ->whereNotIn('id_barang', $kode)
                     ->groupBy('id_barang', 'diskon')
                     ->get();
             $det = $itemsDet->count();
         @endphp
-        <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
           <thead class="text-center th-detail-cetak-so">
             <tr>
               <td style="width: 10px; border-left: 1px dotted">No</td>
               <td style="width: 340px">Nama Barang</td>
               <td style="width: 75px">Qty</td>
-              {{-- <td style="width: 65px" class="text-right">Qty</td> --}}
-              {{-- <td style="width: 80px"></td> --}}
               <td style="width: 50px">Harga</td>
               <td style="width: 90px">Total</td>
               <td colspan="2">Diskon</td>
@@ -657,13 +646,6 @@
           </table>
         </div>
       </div>
-
-{{--      <div class="waktu-cetak-so">--}}
-{{--          <span class="waktu-cetak">Pembayaran ke Rekening Bank BCA</span>--}}
-{{--      </div>--}}
-{{--      <div class="waktu-cetak-so-second">--}}
-{{--          <span class="cetak-ke">a/n Indah Ramadhon 5790416491</span>--}}
-{{--      </div>--}}
     @endforeach
 
     <script type="text/javascript">

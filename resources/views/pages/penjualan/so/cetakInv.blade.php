@@ -1,15 +1,11 @@
-{{-- <!DOCTYPE html> --}}
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
     <style>
       body {
-          /* margin: 0; */
           width: 914.7px;
           height: 520px;
-          /* width: 8.54in;
-          height: 5.43in; */
           font-family: "Calibri", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
           font-size: 1.2rem;
           font-weight: 700;
@@ -55,7 +51,6 @@
           width: 87.29%;
           padding-right: 0.75rem;
           padding-left: 0.75rem;
-          /* margin-right: auto; */
           margin-left: auto;
           color: black;
       }
@@ -122,20 +117,6 @@
         padding-right: 0.15rem;
       }
 
-      /* .table-sm th {
-        padding-top: 0.4rem;
-        padding-bottom: 0.4rem;
-        padding-left: 0.3rem;
-        padding-right: 0.3rem;
-      }
-
-      .table-sm td {
-        padding-top: 0.4rem;
-        padding-bottom: 0.3rem;
-        padding-left: 0.1rem;
-        padding-right: 0.1rem;
-      } */
-
       .table-bordered {
           border: 1px solid #afbbc5;
       }
@@ -170,32 +151,19 @@
           border-right: 1px solid black;
           padding-top: 5px;
           padding-bottom: 10px;
-          /* margin-top: 0px; */
-          /* margin-left: 35px;
-          margin-right: 30px; */
-          /* margin-top: 0;     // margin minimum
           margin-left: 0;
-          margin-right: 0; */
-          margin-left: 0;
-          /* margin-top: 0; */
-          /* margin-left: 20px; */
           margin-right: 0;
       }
 
       .title-header {
-        /* font-family: "Dotrice"; */
         font-weight: bold;
         font-family: Arial, Helvetica, sans-serif;
-        /* font-family: "Fake Receipt", Times, serif; */
-        /* margin-left: 10px !important; */
       }
 
       .subtitle-cetak-so-one {
         font-family: 'Courier New', Courier, monospace;
         color: black;
-        /* font-family: "Dotrice"; */
         margin-top: -5px;
-        /* margin-left: 8px; */
         font-size: 15px;
         font-weight: normal;
       }
@@ -203,7 +171,6 @@
       .subtitle-cetak-so-second {
         font-family: 'Courier New', Courier, monospace;
         color: black;
-        /* font-family: "Dotrice"; */
         margin-left: -9px;
         margin-top: -2px;
         font-size: 15px;
@@ -213,24 +180,16 @@
 
       .sub-title {
         font-family: 'Calibri', Helvetica, sans-serif;
-        /* font-family: 'Courier New', Courier, monospace; */
-        /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
       .logo-cetak-so {
         margin-top: -99px;
-        /* margin-left: 20px; */
       }
  
       .logo-cetak-so img {
-        /* width: 135px; */
-        /* height: 50px; */
         width: 148px;
         height: 45px;
         margin-bottom: -2.5px;
-        /* margin-top: -99px; */
-        /* margin-left: 5px; // Margin Minimum */
-        /* margin-left: 20px; */
       }
 
       .telpon-logo {
@@ -242,10 +201,8 @@
       }
 
       .customer-cetak-so {
-        /* font-family: 'Courier New', Courier, monospace; */
         color: black;
         font-weight: 500;
-        /* font-family: 'Consolas', Helvetica, sans-serif; */
         font-size: 16px;
         width: 260px;
         margin-top: -110px;
@@ -257,7 +214,6 @@
       }
 
       .nama-cetak-so {
-        /* font-family: "Dotrice"; */
         color: black;
         margin-top: 8px;
         margin-bottom: 5px;
@@ -272,7 +228,6 @@
       }
 
       .telepon-cetak-so {
-        /* margin-bottom: -15px; */
         color: black;
         line-height: 18px;
       }
@@ -281,9 +236,7 @@
         margin-top: -30px;
         font-size: 15px;
         border-spacing: 0px;
-        /* margin-left: 0; // margin Minimum */
         margin-right: 30px;
-        /* margin-left: 20px; */
       }
 
       .table-info-cetak-so td {
@@ -300,22 +253,15 @@
       }
 
       .tr-info-cetak-so td{
-        /* font-family: 'Consolas', sans-serif; */
-        /* font-family: 'Consolas', Helvetica, sans-serif; */
         line-height: 9px;
       }
 
       .table-cetak {
         font-size: 16px;
         width: 90.1% !important;
-        /* height: 225px; */
         height: 52.5% !important;
-        /* margin-left: 0; // Margin minimum */
-        /* margin-left: 20px; */
         margin-right: 34.5px;
         margin-top: -13px;
-        /* border: 1px solid black; */
-        /* margin-bottom: 40px !important; */
       }
 
       .table-cetak thead td {
@@ -327,14 +273,10 @@
         line-height: 6px;
         border-top: 1px dotted;
         border-bottom: 1px dotted;
-        /* font-family: monospace, sans-serif; */
       }
 
       .tr-detail-cetak-so {
-          /* color: black; */
           line-height: 7px;
-          /* font-family: 'saxMono', sans-serif; */
-          /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
       .tr-detail-cetak-so td {
@@ -343,7 +285,6 @@
       }
 
       tr.baris-so {
-        /* height: 15px !important; */
         height: 21px !important;
       }
 
@@ -351,11 +292,9 @@
         border-left: 0;
         border-right: 0;
         border-top: 0;
-        /* border-bottom: 1px solid black; */
       }
 
       .footer-cetak-so {
-          /* display: inline-block; */
           border: 1px dotted;
           border-top-left-radius: 10px;
           border-top-right-radius: 10px;
@@ -364,8 +303,7 @@
           border-left: 1px solid black;
           border-right: 1px solid black;
           margin-bottom: -40px;
-          margin-left: 0; 
-          /* margin-left: 20px; */
+          margin-left: 0;
           margin-right: 30px;
           margin-top: -15px;
       }
@@ -377,8 +315,6 @@
       }
 
       .ttd-penerima {
-        /* font-family: "Dotrice-Bold"; */
-        /* font-family: Arial, Helvetica, sans-serif; */
         font-size: 15px;
         padding-left: 5px;
         margin-bottom: 12px;
@@ -386,7 +322,6 @@
       }
 
       .info_bayar {
-        /* font-family: 'Courier New', Courier, monospace; */
         color: black;
         margin-top: -7px;
         margin-left: 5px;
@@ -396,7 +331,6 @@
       }
 
       .ttd-gudang {
-        /* font-family: Arial, Helvetica, sans-serif; */
         font-size: 15px;
         margin-top: -5px;
         margin-left: 1px;
@@ -405,7 +339,6 @@
       }
 
       .ttd-mengetahui {
-        /* font-family: Arial, Helvetica, sans-serif; */
         font-size: 15px;
         margin-top: -10px;
         margin-bottom: -5px;
@@ -420,11 +353,8 @@
       }
 
       .total-faktur {
-        /* font-family: "dotricebold"; */
-        /* font-family: Arial, Helvetica, sans-serif; */
         margin-top: 0px;
         margin-left: 5px;
-        /* border: solid black; */
         font-size: 14px;
       }
 
@@ -434,32 +364,25 @@
       }
 
       .title-total {
-        /* width: 145px; */
         font-size: 14px;
       }
 
       .angka-total {
         width: 180px;
-        /* font-family: "epson1"; */
-        /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         font-size: 16px;
         padding-right: 0.01rem !important;
       }
 
       .angka-total-akhir {
         width: 145px;
-        /* font-family: "epson1"; */
-        /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
         font-size: 17px;
       }
 
       .waktu-cetak-so {
         font-weight: 700;
         margin-left: 30px;
-        /* margin-right: 100px; // Margin minimum */
         margin-right: 100px; /* Margin custom */ 
         margin-top: 33px;
-        /* border: solid black; */
       }
 
       .waktu-cetak {
@@ -519,17 +442,14 @@
         </div>
         <div class="float-right customer-cetak-so">
           <span class="kode-cetak-so">Kepada Yth :</span>
-          {{-- <span>{{ $item->id_customer }}</span> --}}
           <br>
           <span class="nama-cetak-so">{{ $items->first()->customer->nama }}</span>
           <br>
           <span class="alamat-cetak-so text-wrap">{{ substr($items->first()->customer->alamat, 0, 96) }}</span>
           <br>
-          {{-- <span class="telepon-cetak-so">{{ $item->customer->telepon }}</span> --}}
         </div>
         <br>
         <br>
-
         <table class="table table-sm table-responsive-sm table-hover table-info-cetak-so">
           <thead class="text-center" style="font-weight: 600">
             <tr class="th-info-cetak-so">
@@ -551,32 +471,27 @@
               <td align="center">
                 {{ \Carbon\Carbon::parse($items->first()->tgl_so)->add($items->first()->tempo, 'days')->format('d-M-y') }}
               </td>
-              {{-- <td align="center">{{ $items->first()->customer->sales->nama }}</td> --}}
               <td align="center">{{ $items->first()->sales->nama }}</td>
               <td align="center">{{ Auth::user()->name }}</td>
             </tr>
           </tbody>
         </table>
-        
-        @php 
-        // sum(diskonRp) as diskonRp
+      
+        @php
         $itemsDet = \App\Models\DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
-                          ->select('id_barang', 'nama', 'satuan', 'diskon', 'diskonRp')
-                          ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                          ->select('id_barang', 'nama', 'satuan', 'diskon')
+                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
                           ->where('id_so', $items->first()->id)
                           ->whereNotIn('id_barang', $kode)
                           ->groupBy('id_barang', 'diskon')
                           ->get();
         @endphp
-        <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
           <thead class="text-center th-detail-cetak-so">
             <tr>
               <td style="width: 10px; border-left: 1px dotted">No</td>
               <td style="width: 340px">Nama Barang</td>
               <td style="width: 75px">Qty</td>
-              {{-- <td style="width: 65px" class="text-right">Qty</td> --}}
-              {{-- <td style="width: 80px"></td> --}}
               <td style="width: 50px">Harga</td>
               <td style="width: 90px">Total</td>
               <td colspan="2">Diskon</td>
@@ -609,15 +524,6 @@
                   } 
                   $diskon = number_format((($diskon - 100) * -1), 2, ",", "");
                 @endphp
-                {{-- @if(sizeof($arrDiskon) == 1)
-                  <td style="width: 135px; font-size: 14.5px" align="right">
-                    {{ $diskon }}%
-                  </td>
-                @else
-                  <td style="width: 135px; font-size: 14.5px" align="right">
-                    {{ str_replace(".", ",", $itemDet->diskon) }} ({{ $diskon }}%)
-                  </td>
-                @endif --}}
                 <td style="width: 55px; font-size: 14.5px" align="right">
                   {{ $diskon }}%
                 </td>
@@ -636,8 +542,6 @@
             @if($itemsDet->count() < 12)
               <tr class="text-center">
                 <td colspan="8"></td>
-                {{-- <td></td>
-                <td colspan="2"></td> --}}
               </tr>
             @endif
           </tbody>
@@ -717,7 +621,6 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        {{-- <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total + $items->first()->diskon, 0, "", ".") : '' }}</td> --}}
                         <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($subtotal + $items->first()->diskon, 0, "", ".") : '' }}</td>
                       </tr>
                       <tr>
@@ -726,7 +629,6 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
-                        {{-- <td class="text-right angka-total" @if($itemsDet->count() > 12) style="letter-spacing: 0.7px;" @endif>{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : 'ke halaman' }}</td> --}}
                         <td class="text-right angka-total" @if($itemsDet->count() > 12) style="letter-spacing: 0.7px;" @endif>{{ $itemsDet->count() <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
                       </tr>
                       <tr>
@@ -742,7 +644,6 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>
-                        {{-- <td class="text-right angka-total-akhir">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : '' }}</td> --}}
                         <td class="text-right angka-total-akhir">{{ $itemsDet->count() <= 12 ? number_format($subtotal, 0, "", ".") : '' }}</td>
                       </tr>
                     </table>

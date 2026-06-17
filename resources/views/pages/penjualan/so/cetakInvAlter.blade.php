@@ -1,4 +1,3 @@
-{{-- <!DOCTYPE html> --}}
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -304,10 +303,7 @@
       }
 
       .tr-detail-cetak-so {
-          /* color: black; */
           line-height: 7px;
-          /* font-family: 'saxMono', sans-serif; */
-          /* font-family: 'Consolas', Helvetica, sans-serif; */
       }
 
       .tr-detail-cetak-so td {
@@ -316,7 +312,6 @@
       }
 
       tr.baris-so {
-        /* height: 15px !important; */
         height: 21px !important;
       }
 
@@ -324,7 +319,6 @@
         border-left: 0;
         border-right: 0;
         border-top: 0;
-        /* border-bottom: 1px solid black; */
       }
 
       .footer-cetak-so {
@@ -352,13 +346,11 @@
         font-size: 18px;
         padding-left: 25px;
         margin-bottom: 12px;
-        /*margin-top: -20px;*/
           margin-top: 10px;
       }
 
       .ttd-gudang {
         font-size: 18px;
-        /*margin-top: -35px;*/
           margin-top: -5px;
         margin-left: 35px;
         margin-bottom: -4px;
@@ -367,8 +359,7 @@
 
       .ttd-mengetahui {
         font-size: 18px;
-        /*margin-top: -37px;*/
-          margin-top: -7px;
+        margin-top: -7px;
         margin-left: 45px;
         margin-bottom: -5px;
         line-height: 10px;
@@ -383,7 +374,7 @@
       .tabel-total-faktur {
         line-height: 15px;
         margin-bottom: 3px;
-          margin-top: 10px;
+        margin-top: 10px;
       }
 
       .title-total {
@@ -449,7 +440,6 @@
           <h2 class="text-bold">INVOICE</h2>
           <h3 class="text-bold">POWER ELEKTRIK</h3>
           <h4>Jakarta Pusat</h4>
-
             <div class="subtitle-one">
                 <span class="sub-title">Tanggal</span>
                 <span class="sub-title-dot">:</span>
@@ -483,24 +473,20 @@
         <br>
 
         @php
-        // sum(diskonRp) as diskonRp
         $itemsDet = \App\Models\DetilSO::join('barang', 'barang.id', 'detilso.id_barang')
-                          ->select('id_barang', 'nama', 'satuan', 'diskon', 'diskonRp')
-                          ->selectRaw('avg(harga) as harga, sum(qty) as qty')
+                          ->select('id_barang', 'nama', 'satuan', 'diskon')
+                          ->selectRaw('avg(harga) as harga, sum(qty) as qty, sum(diskonRp) as diskonRp')
                           ->where('id_so', $items->first()->id)
                           ->whereNotIn('id_barang', $kode)
                           ->groupBy('id_barang', 'diskon')
                           ->get();
         @endphp
-        <!-- Tabel Data Detil BM-->
         <table class="table table-sm table-responsive-sm table-cetak" style="page-break-inside: auto">
           <thead class="text-center th-detail-cetak-so">
             <tr>
               <td style="width: 10px; border-left: 1px dotted">No</td>
               <td style="width: 340px">Nama Barang</td>
               <td style="width: 75px">Qty</td>
-              {{-- <td style="width: 65px" class="text-right">Qty</td> --}}
-              {{-- <td style="width: 80px"></td> --}}
               <td style="width: 50px">Harga</td>
               <td style="width: 90px">Total</td>
               <td colspan="2">Diskon</td>
@@ -551,8 +537,6 @@
             @if($itemsDet->count() < 12)
               <tr class="text-center">
                 <td colspan="8"></td>
-                {{-- <td></td>
-                <td colspan="2"></td> --}}
               </tr>
             @endif
           </tbody>
@@ -620,7 +604,6 @@
                     <table class="tabel-total-faktur">
                       <tr>
                         <td class="title-total text-bold">Jumlah</td>
-                        {{-- <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total + $items->first()->diskon, 0, "", ".") : '' }}</td> --}}
                         <td class="text-right angka-total">{{ $itemsDet->count() <= 12 ? number_format($subtotal + $items->first()->diskon, 0, "", ".") : '' }}</td>
                       </tr>
                       <tr>
@@ -629,7 +612,6 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Netto</td>
-                        {{-- <td class="text-right angka-total" @if($itemsDet->count() > 12) style="letter-spacing: 0.7px;" @endif>{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : 'ke halaman' }}</td> --}}
                         <td class="text-right angka-total" @if($itemsDet->count() > 12) style="letter-spacing: 0.7px;" @endif>{{ $itemsDet->count() <= 12 ? number_format($subtotal, 0, "", ".") : 'ke halaman' }}</td>
                       </tr>
                       <tr>
@@ -645,7 +627,6 @@
                       </tr>
                       <tr>
                         <td class="title-total text-bold">Nilai Tagihan</td>
-                        {{-- <td class="text-right angka-total-akhir">{{ $itemsDet->count() <= 12 ? number_format($items->first()->total, 0, "", ".") : '' }}</td> --}}
                         <td class="text-right angka-total-akhir">{{ $itemsDet->count() <= 12 ? number_format($subtotal, 0, "", ".") : '' }}</td>
                       </tr>
                     </table>
@@ -656,13 +637,6 @@
           </table>
         </div>
       </div>
-
-{{--      <div class="waktu-cetak-so">--}}
-{{--          <span class="waktu-cetak">Pembayaran ke Rekening Bank BCA</span>--}}
-{{--      </div>--}}
-{{--      <div class="waktu-cetak-so-second">--}}
-{{--          <span class="cetak-ke">a/n Indah Ramadhon 5790416491</span>--}}
-{{--      </div>--}}
     @endforeach
 
     <script type="text/javascript">
