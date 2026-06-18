@@ -11,24 +11,25 @@
 |
 */
 
-use App\Models\NeedApproval;
-use App\Models\SalesOrder;
+use App\Models\AccReceivable;
+use App\Models\StokBarang;
 
 Route::get('test', function() {
-    $items = NeedApproval::query()
-        ->whereIn('id_dokumen', ['IV26060414', 'IV26060415'])
+    $items = AccReceivable::query()
+        ->whereIn('id_so', ['IV26060414', 'IV26060415'])
         ->get();
 
     foreach($items as $item) {
         $item->delete();
     }
 
-    $items = SalesOrder::query()
-        ->whereIn('id', ['IV26060414', 'IV26060415'])
+    $items = StokBarang::query()
+        ->where('id_barang', 'BRG0372')
+        ->where('id_gudang', 'GDG08')
         ->get();
 
     foreach($items as $item) {
-        $item->status = 'BATAL';
+        $item->stok = 0;
         $item->save();
     }
 });
