@@ -33,7 +33,7 @@ class BKPerKategoriExport implements FromView, ShouldAutoSize, WithStyles
 
     public function view(): View
     {
-        set_time_limit(300);
+        set_time_limit(600);
 
         $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
         $tahun = Carbon::now('+07:00');

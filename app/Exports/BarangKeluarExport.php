@@ -24,9 +24,9 @@ class BarangKeluarExport implements WithMultipleSheets
 
     public function sheets(): array
     {
+        set_time_limit(600);    
+    
         $sheets = [];
-
-        set_time_limit(300);
 
         $sales = DetilSO::select('barang.id_kategori', 'jenisbarang.nama AS namaJenis')
             ->join('so', 'so.id', 'detilso.id_so')
