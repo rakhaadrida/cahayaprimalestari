@@ -34,6 +34,8 @@ Route::get('test', function() {
     }
 });
 
+Route::get('cancelled-order', 'PatchController@cancelledOrder')->name('cancelled-order');
+
 Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
