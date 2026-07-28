@@ -46,7 +46,7 @@ class CancelledOrderListExport implements FromView, ShouldAutoSize, WithStyles
                 'customer.nama AS customer_name',
                 'so.total AS subtotal',
                 'approval.status AS status',
-                'approval.keterangan AS description',
+                'approval.keterangan AS description'
             )
             ->join('so', 'so.id', 'approval.id_dokumen')
             ->leftJoin('customer', 'customer.id', 'so.id_customer')

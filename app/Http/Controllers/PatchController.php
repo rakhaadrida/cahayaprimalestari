@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\CancelledOrderExport;
+use App\Models\AccReceivable;
 use App\Models\DetilSO;
 use App\Models\NeedApproval;
 use App\Models\NeedAppDetil;
+use App\Models\SalesOrder;
 use App\Models\StokBarang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -70,4 +72,47 @@ class PatchController extends Controller
 
         return Excel::download(new CancelledOrderExport(), 'Faktur-Batal-'.$fileDate.'.xlsx');
     }
+
+    public function restoreOrder() {
+        try {
+            $items = SalesOrder::query()
+                ->whereIn('id', ['IV26071140'])
+                ->get();
+
+            foreach($items as $item) {
+                $item->status = 'CETAK';
+                $item->save();
+            }
+
+            return 'Restore Order Successful';
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while cancel data'
+            ]);
+        }   
+    } 
+
+    public function removeReceivable() {
+        try {
+            $items = AccReceivable::query()
+                ->whereIn('id_so', ['IV26070000'])
+                ->get();
+
+            foreach($items as $item) {
+                $item->delete();
+            }
+
+            return 'Remove Receivable Successful';
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors([
+                'message' => 'An error occurred while cancel data'
+            ]);
+        }   
+    } 
 }

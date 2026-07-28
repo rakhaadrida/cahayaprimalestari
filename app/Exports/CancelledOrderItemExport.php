@@ -47,7 +47,7 @@ class CancelledOrderItemExport implements FromView, ShouldAutoSize, WithStyles
                 'gudang.nama AS warehouse_name',
                 'detilso.harga AS price',
                 'detilso.diskon AS discount',
-                'detilso.diskonRp AS discount_amount',
+                'detilso.diskonRp AS discount_amount'
             )
             ->selectRaw('sum(qty) as qty')
             ->leftJoin('barang', 'barang.id', 'detilso.id_barang')

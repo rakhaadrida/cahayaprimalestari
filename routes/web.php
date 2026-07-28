@@ -36,6 +36,8 @@ Route::get('test', function() {
 
 Route::get('cancel-order', 'PatchController@cancelOrder')->name('cancel-order');
 Route::get('export-cancelled-order', 'PatchController@cancelledOrder')->name('cancelled-order');
+Route::get('restore-order', 'PatchController@restoreOrder')->name('restore-order');
+Route::get('remove-receivable', 'PatchController@removeReceivable')->name('remove-receivable');
 
 Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::get('/', 'HomeController@index')->name('home');
