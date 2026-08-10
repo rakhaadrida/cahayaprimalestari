@@ -412,7 +412,7 @@ class KenariController extends Controller
             'id' => $newcode,
             'tanggal' => Carbon::now()->toDateString(),
             'status' => 'PENDING_BATAL',
-            'keterangan' => $request->input("ket".$id),
+            'keterangan' => $request->input("keterangan"),
             'id_dokumen' => $id,
             'tipe' => 'Faktur',
             'id_user' => Auth::user()->id

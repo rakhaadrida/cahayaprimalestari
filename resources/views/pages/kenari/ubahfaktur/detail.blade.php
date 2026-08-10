@@ -60,6 +60,7 @@
                   </div>
                 </div>
               </div>
+              <input type="hidden" id="keterangan" name="keterangan" value="">
               <hr>
               <!-- End Inputan Data Id, Tanggal, Supplier PO -->
 
@@ -400,6 +401,8 @@ function checkEditable(kode) {
   else {
     @foreach($items as $item)
       if('{{ $item->id }}' == kode.id) {
+        document.getElementById("keterangan").value = ket.value;
+
         const form = document.getElementById("btn"+kode.id).form; 
       
         form.method = "POST";
