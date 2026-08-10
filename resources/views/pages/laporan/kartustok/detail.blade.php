@@ -179,6 +179,7 @@
                                                             ->select('id', 'id_tb', 'id_barang', 'tgl_tb as tanggal', 'transferbarang.created_at', 'id_asal', 'id_tujuan', 'qty')->where('id_barang', $item->id)
                                                             ->whereHas('tb', function($q) use($awal, $akhir, $cabang) {
                                                                 $q->whereBetween('tgl_tb', [$awal, $akhir])
+                                                                ->where('status', '!=', 'BATAL')
                                                                 ->when(Auth::user()->roles == 'CIANJUR' || $cabang > 0, function ($q) {
                                                                     $q->where(function ($where) {
                                                                         $where->where('detiltb.id_asal', 'GDG09')

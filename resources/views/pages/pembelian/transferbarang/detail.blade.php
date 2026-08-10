@@ -201,8 +201,14 @@ function checkEditable(kode) {
   else {
     @foreach($items as $item)
       if('{{ $item->id }}' == kode.id) {
-        document.getElementById("btn"+kode.id).formMethod = "POST";
-        document.getElementById("btn"+kode.id).formAction = '{{ route('tb-status', $item->id) }}';
+        const form = document.getElementById("btn"+kode.id).form; 
+      
+        form.method = "POST";
+        form.action = '{{ route('tb-status', $item->id) }}';
+        
+        document.getElementById("btn"+kode.id).disabled = true;
+
+        form.submit();
       }
     @endforeach
   }
