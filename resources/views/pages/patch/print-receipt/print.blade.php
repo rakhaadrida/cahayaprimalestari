@@ -322,7 +322,7 @@
           <h6 class="logo-address">JL KRAMAT PULO GUNDUL</h6>
           <h6 class="logo-address address-line-two">KRAMAT SENTIONG - JAKPUS</h6>
         </div>
-        <div class="float-right customer-cetak-so">
+        <div class="float-right customer-cetak-so" style="display: none">
           <span class="text-right text-bold">Tanggal Cetak</span>
           <span>:</span>
           <span>{{ $today }}</span>
