@@ -91,11 +91,6 @@
     </div>
   </div>
 </div>
-{{-- @if($status == "true")
-  <!-- Tampilan Cetak -->
-  <iframe src="{{url('cetak-bm-all/'.$awal.'/'.$akhir)}}" id="frameCetak" name="frameCetak" frameborder="0" hidden></iframe>
-@endif --}}
-<!-- /.container-fluid -->
 @endsection
 
 @push('addon-script')
@@ -110,16 +105,6 @@ $('#dataTable').dataTable({
 const kodeAwal = document.getElementById('kodeAwal');
 const kodeAkhir = document.getElementById('kodeAkhir');
 const btnCetak = document.getElementById('btnCetak');
-
-/* @if($status == "true")
-  const printFrame = document.getElementById("frameCetak").contentWindow;
-
-  printFrame.window.onafterprint = function(e) {
-    window.location = "{{ route('cetak-bm-update', ['awal' => $awal, 'akhir' => $akhir]) }}";
-  }
-  
-  printFrame.window.print();
-@endif */
 
 function checkRequired(e) {
   if((kodeAwal.value == '') || (kodeAkhir.value == '')) {

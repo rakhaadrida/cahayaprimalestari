@@ -46,6 +46,10 @@ Route::middleware(['auth', 'admin', 'roles'])->group(function() {
     Route::post('password/process', 'UserController@process')->name('user-process');
 
     Route::group(['roles' => ['ADMIN', 'SUPER']], function() {
+        Route::get('index-print-receipt', 'PatchController@indexPrintReceipt')->name('index-print-receipt');
+        Route::get('print-receipt', 'PatchController@printReceipt')->name('print-receipt');
+        Route::get('update-print-receipt/{start}/{end}', 'PatchController@updatePrintReceipt')->name('update-print-receipt');
+
         Route::resource('supplier', 'SupplierController');
         Route::resource('sales', 'SalesController');
         Route::resource('customer', 'CustomerController');
