@@ -9,8 +9,16 @@ trait FilterByWarehouseType
 {
     protected static function bootFilterByWarehouseType(): void
     {
-        static::addGlobalScope('warehouse_type', function (Builder $builder) {
+        /* static::addGlobalScope('warehouse_type', function (Builder $builder) {
             if (Auth::user()->roles != 'CIANJUR') {
+                $builder->where($builder->getModel()->getTable() . '.tipe', '!=', 'TOKO');
+            }
+        }); */
+
+        static::addGlobalScope('warehouse_type', function (Builder $builder) {
+            $user = Auth::user();
+
+            if (!$user || $user->roles != 'CIANJUR') {
                 $builder->where($builder->getModel()->getTable() . '.tipe', '!=', 'TOKO');
             }
         });

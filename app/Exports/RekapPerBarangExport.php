@@ -78,18 +78,18 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         
         $range = 4 + $totSub + $sub->count();
         $rangeStr = strval($range);
-        $rangeTot = 'C'.$rangeStr;
-        $rangeTab = $huruf.$rangeStr;
+        $rangeTot = 'D'.$rangeStr;
+        $rangeTab = 'D'.$rangeStr;
 
-        $header = 'A4:'.$huruf.'4';
+        $header = 'A4:D4';
         $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
         
-        $sheet->mergeCells('A1:'.$huruf.'1');
-        $sheet->mergeCells('A2:'.$huruf.'2');
-        $title = 'A1:'.$huruf.'2';
+        $sheet->mergeCells('A1:D1');
+        $sheet->mergeCells('A2:D2');
+        $title = 'A1:D2';
         $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A2:'.$huruf.'2')->getFont()->setBold(false)->setSize(12);
+        $sheet->getStyle('A2:D2')->getFont()->setBold(false)->setSize(12);
 
         $styleArray = [
             'borders' => [
@@ -106,19 +106,19 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
         $rangeIsiTable = 'A5:'.$rangeTab;
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
 
-        $rangeBarang = 'C4:'.$rangeTot;
+        $rangeBarang = 'D4:'.$rangeTot;
         $sheet->getStyle($rangeBarang)->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFF00');
         
-        $namaJenis = 'A5:'.$huruf.'5';
+        $namaJenis = 'A5:D5';
         $sheet->getStyle($namaJenis)->getFont()->setBold(true)->setSize(12);
         $sheet->getStyle($namaJenis)->getAlignment()->setHorizontal('center');
         $sheet->getStyle($namaJenis)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('ffddb5');
 
-        $rangeTot = 'C6:K'.$rangeStr;
+        $rangeTot = 'D6:L'.$rangeStr;
         $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
 
         $no = 0;
@@ -131,7 +131,7 @@ class RekapPerBarangExport implements FromView, ShouldAutoSize, WithStyles
             
             $rangeSub += $barang->count();
             $rangeJen = strval($rangeSub);
-            $rangeBar = 'A'.$rangeSub.':'.$huruf.$rangeSub;
+            $rangeBar = 'A'.$rangeSub.':D'.$rangeSub;
 
             if($no != $sub->count() - 1) {
                 $sheet->getStyle($rangeBar)->getFont()->setBold(true)->setSize(12);

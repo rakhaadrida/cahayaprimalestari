@@ -131,4 +131,114 @@ class BarangMasukExport implements FromView, ShouldAutoSize, WithStyles
         $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
         
     } 
+
+    /* public function view(): View
+    {
+        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
+        $tahun = Carbon::now('+07:00');
+        $sejak = '2020';
+
+        $awal = $this->formatTanggal('2023-01-01', 'd M y');
+        $akhir = $this->formatTanggal('2023-12-31', 'd M y');
+        $tanggal = $awal.'-'.$akhir;
+
+        $tglAwal = '2023-01-01';
+        $tglAkhir = '2023-12-31';
+
+        $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                    ->join('barang', 'barang.id', 'detilbm.id_barang')
+                    ->select('id_bm', 'id_barang')
+                    ->selectRaw('sum(qty) as qty')
+                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                    ->whereIn('supplier.id', ['SUP04', 'SUP35', 'SUP36'])
+                    ->where('barang.id_kategori', 'KAT01')
+                    ->where('status', '!=', 'BATAL')
+                    ->groupBy('id_supplier', 'id_barang', 'id_gudang')
+                    ->orderBy('barangmasuk.tanggal')
+                    ->orderBy('supplier.nama')
+                    ->get();
+
+        $data = [
+            'waktu' => $waktu,
+            'tglAwal' => $tglAwal,
+            'tglAkhir' => $tglAkhir,
+            'tahun' => $tahun,
+            'sejak' => $sejak,
+            'items' => $items,
+            'tanggal' => $tanggal
+        ];
+        
+        return view('pages.laporan.barangmasuk.excel', $data);
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $awal = $this->formatTanggal('2023-01-01', 'd M y');
+        $akhir = $this->formatTanggal('2023-12-31', 'd M y');
+        $tanggal = $awal.'-'.$akhir;
+
+        $tglAwal = '2023-01-01';
+        $tglAkhir = '2023-12-31';
+        
+        $sheet->setTitle('BM-'.$tanggal);
+
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setName('Logo');
+        $drawing->setPath(public_path('/backend/img/Logo_CPL.jpg'));
+        $drawing->setHeight(50);
+        $drawing->setCoordinates('A1');
+        $drawing->setWorksheet($sheet);
+        $sheet->getColumnDimension('A')->setAutoSize(false)->setWidth(5);
+                
+        $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                    ->join('barang', 'barang.id', 'detilbm.id_barang')
+                    ->select('id_bm', 'id_barang')
+                    ->selectRaw('sum(qty) as qty')
+                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                    ->whereIn('supplier.id', ['SUP04', 'SUP35', 'SUP36'])
+                    ->where('barang.id_kategori', 'KAT01')
+                    ->where('status', '!=', 'BATAL')
+                    ->groupBy('id_supplier', 'id_barang', 'id_gudang')
+                    ->orderBy('supplier.nama')
+                    ->get();
+
+        $range = 5 + $items->count();
+        $rangeStr = strval($range);
+        $rangeTab = 'G'.$rangeStr;
+
+        $header = 'A5:G5';
+        $sheet->getStyle($header)->getFont()->setBold(true)->setSize(12);
+        $sheet->getStyle($header)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle($header)->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('ffddb5');
+        
+        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A2:G2');
+        $sheet->mergeCells('A3:G3');
+        $title = 'A1:G3';
+        $sheet->getStyle($title)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A3:G3')->getFont()->setBold(false)->setSize(12);
+
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+
+        $rangeTot = 'G6:G'.$rangeStr;
+        $sheet->getStyle($rangeTot)->getNumberFormat()->setFormatCode('#,##0');
+
+        $rangeTable = 'A5:'.$rangeTab;
+        $sheet->getStyle($rangeTable)->applyFromArray($styleArray);
+
+        $rangeIsiTable = 'A6:'.$rangeTab;
+        $sheet->getStyle($rangeIsiTable)->getFont()->setSize(12);
+        
+    } */
 }

@@ -10,20 +10,25 @@
         <tr>
           <td>No</td>
           <td>Nama Barang</td>
+          <td>Harga</td>
           <td>Total Stok</td>
-          @foreach($gudang as $g)
+          {{-- @foreach($gudang as $g)
             <td>{{ $g->nama }}</td>
-          @endforeach
+          @endforeach --}}
         </tr>
       </thead>
       <tbody id="tablePO">
         @php $i = 1; @endphp
         @foreach($sub as $s)
           @php
-            $barang = \App\Models\Barang::where('id_sub', $s->id)->get();
+            $barang = \App\Models\Barang::leftJoin('hargabarang', function($join) {
+                $join->on('barang.id', '=', 'hargabarang.id_barang')
+                     ->where('hargabarang.id_harga', '=', 'HRG01');
+                })
+                ->where('id_sub', $s->id)->get();
           @endphp 
           <tr class="text-dark text-bold" style="background-color: rgb(255, 221, 181)">
-            <td colspan="{{ $gudang->count() + 3 }}" align="center">{{ $s->nama }}</td>
+            <td colspan="4" align="center">{{ $s->nama }}</td>
           </tr>
           @foreach($barang as $b)
             @php
@@ -41,8 +46,9 @@
             <tr class="text-dark ">
               <td align="center">{{ $i }}</td>
               <td>{{ $b->nama }}</td>
-               <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
-              @foreach($gudang as $g)
+              <td>{{ $b->harga_ppn }}</td>
+              <td align="right">{{ $stok->count() != 0 ? $stok[0]->total : ''}}</td>
+              {{-- @foreach($gudang as $g)
                 @php
                   if($g->tipe != 'RETUR') {
                     $stokGd = \App\Models\StokBarang::where('id_barang', $b->id)
@@ -54,7 +60,7 @@
                   }
                 @endphp
                 <td align="right">{{ (($stokGd->count() != 0) && ($stokGd[0]->stok != 0)) ? $stokGd[0]->stok : '' }}</td>
-              @endforeach
+              @endforeach --}}
             </tr>
             @php $i++ @endphp
           @endforeach

@@ -28,7 +28,8 @@ class RekapStokExport implements WithMultipleSheets
     {
         $sheets = [];
 
-        $jenis = JenisBarang::All();
+        // $jenis = JenisBarang::All();
+        $jenis = JenisBarang::query()->whereIn('id', ['KAT01', 'KAT03'])->get();
 
         foreach($jenis as $item) {
             $sheets[] = new RekapPerBarangExport($item->id, $item->nama);

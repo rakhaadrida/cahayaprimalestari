@@ -32,6 +32,40 @@ class RekapBMKController extends Controller
         return view('pages.laporan.barangmasuk.index', $data);
     }
 
+    /* public function index() {
+        set_time_limit(600);
+        $waktu = Carbon::now('+07:00')->isoFormat('dddd, D MMMM Y, HH:mm:ss');
+        $tanggal = Carbon::now('+07:00')->toDateString();
+
+        $tglAwal = '2023-01-01';
+        $tglAkhir = '2023-12-31';
+
+        $items = DetilBM::join('barangmasuk', 'barangmasuk.id', 'detilbm.id_bm')
+                    ->join('supplier', 'supplier.id', 'barangmasuk.id_supplier')
+                    ->join('barang', 'barang.id', 'detilbm.id_barang')
+                    ->select('id_bm', 'id_barang')
+                    ->selectRaw('sum(qty) as qty')
+                    ->whereBetween('tanggal', [$tglAwal, $tglAkhir])
+                    ->whereIn('supplier.id', ['SUP04', 'SUP35', 'SUP36'])
+                    ->where('barang.id_kategori', 'KAT01')
+                    ->where('status', '!=', 'BATAL')
+                    ->groupBy('id_supplier', 'id_barang', 'id_gudang')
+                    ->orderBy('supplier.nama')
+                    ->get();
+
+        $tanggal = $this->formatTanggal($tanggal, 'd-M-y');
+        
+        $data = [
+            'items' => $items,
+            'waktu' => $waktu,
+            'tanggal' => $tanggal,
+            'tglAwal' => NULL,
+            'tglAkhir' => NULL
+        ];
+
+        return view('pages.laporan.barangmasuk.index', $data);
+    } */
+
     public function formatTanggal($tanggal, $format) {
         $formatTanggal = Carbon::parse($tanggal)->format($format);
         return $formatTanggal;

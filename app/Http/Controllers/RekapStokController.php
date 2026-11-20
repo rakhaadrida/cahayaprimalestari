@@ -19,7 +19,7 @@ use PDF;
 class RekapStokController extends Controller
 {
     public function index() {
-        $jenis = JenisBarang::All();
+        $jenis = JenisBarang::query()->whereIn('id', ['KAT01', 'KAT03'])->get();
         $gudang = Gudang::All();
 
         if(Auth::user()->roles == 'CIANJUR') {
@@ -42,7 +42,7 @@ class RekapStokController extends Controller
     }
 
     public function show(Request $request) {
-        set_time_limit(300);
+        set_time_limit(600);
 
         $awal = $request->tanggal;
         $tglAwal = Carbon::parse($awal)->format('Y-m-d');
