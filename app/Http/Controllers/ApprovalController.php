@@ -578,13 +578,34 @@ class ApprovalController extends Controller
         return redirect()->route('approval'); 
     }
 
-    public function histori() {
-        $items = Approval::with(['so', 'bm'])
-                ->select('id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
-                ->orderBy('created_at', 'desc')->groupBy('id_dokumen')->get();
+    public function histori(Request $request) {
+        $startDate = $request->tglAwal;
+        $endDate = $request->tglAkhir;
+
+        if($startDate == NULL) {
+            $startDate = Carbon::today()->subDays(7)->startOfDay();
+        } else {
+            $startDate = Carbon::parse($startDate)->format('Y-m-d');
+        }
+
+        if($endDate == NULL) {
+            $endDate   = Carbon::today()->endOfDay();
+        } else {
+            $endDate = Carbon::parse($endDate)->format('Y-m-d');
+        } 
+
+        $items = Approval::query()
+            ->with(['so', 'bm'])
+            ->select('id_dokumen', 'tanggal', 'status', 'keterangan', 'tipe')
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->orderBy('created_at', 'desc')
+            ->groupBy('id_dokumen')
+            ->get();
         
         $data = [
-            'items' => $items
+            'items' => $items,
+            'startDate' => Carbon::parse($startDate)->format('d-m-Y'),
+            'endDate' => Carbon::parse($endDate)->format('d-m-Y')
         ];
         return view('pages.approval.histori', $data);
     }
